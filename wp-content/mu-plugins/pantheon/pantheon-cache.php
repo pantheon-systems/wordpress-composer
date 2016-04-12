@@ -154,8 +154,9 @@ class Pantheon_Cache {
 
 		// Validate default_ttl
 		$out['default_ttl'] = absint( $in['default_ttl'] );
-		if ( ! $out['default_ttl'] )
-			$out['default_ttl'] = 600;
+		if ( $out['default_ttl'] < 60 && isset( $_ENV['PANTHEON_ENVIRONMENT'] ) && 'live' === $_ENV['PANTHEON_ENVIRONMENT'] ) {
+			$out['default_ttl'] = 60;
+		}
 
 		return $out;
 	}
@@ -269,6 +270,7 @@ class Pantheon_Cache {
 
 		if ( ! empty( $_POST['pantheon-cache-nonce'] ) && wp_verify_nonce( $_POST['pantheon-cache-nonce'], 'pantheon-cache-clear-all' ) ) {
 			$this->enqueue_regex( '/.*' );
+			wp_cache_flush();
 			wp_redirect( admin_url( 'options-general.php?page=pantheon-cache&cache-cleared=true' ) );
 			exit();
 		}
