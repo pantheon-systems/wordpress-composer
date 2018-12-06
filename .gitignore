@@ -35,6 +35,7 @@ pantheon.upstream.yml
 *.tar
 *.zip
 *.tgz
+!wp-includes/**/*.gz
 
 # Logs and databases #
 ######################
