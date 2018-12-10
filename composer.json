@@ -4,7 +4,7 @@
     "type": "wordpress-core",
     "extra": {
         "branch-alias": {
-            "dev-master": "4.x-dev"
+            "dev-master": "5.x-dev"
         },
         "wordpress-install-dir": "web/wp"
     },
