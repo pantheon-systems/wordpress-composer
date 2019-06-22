@@ -1,5 +1,5 @@
 {
-    "name": "ataylorme/pantheon-wordpress-composer",
+    "name": "ataylorme/wordpress-composer",
     "description": "WordPress for Pantheon with a composer.json file.",
     "type": "wordpress-core",
     "extra": {
