@@ -5,8 +5,7 @@
     "extra": {
         "branch-alias": {
             "dev-master": "5.x-dev"
-        },
-        "wordpress-install-dir": "web/wp"
+        }
     },
     "require": {
         "johnpbloch/wordpress-core-installer": "^1.0"
