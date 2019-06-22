@@ -7,9 +7,6 @@
             "dev-master": "5.x-dev"
         }
     },
-    "require": {
-        "johnpbloch/wordpress-core-installer": "^1.0"
-    },
     "license": [
         "GPL-2.0+"
     ]
