@@ -82,131 +82,19 @@ this["wp"] = this["wp"] || {}; this["wp"]["url"] =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 449);
+/******/ 	return __webpack_require__(__webpack_require__.s = "lbya");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 11:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ _slicedToArray; });
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayWithHoles.js
-var arrayWithHoles = __webpack_require__(38);
-
-// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/iterableToArrayLimit.js
-function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-
-  try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js
-var unsupportedIterableToArray = __webpack_require__(31);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/nonIterableRest.js
-var nonIterableRest = __webpack_require__(39);
-
-// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js
-
-
-
-
-function _slicedToArray(arr, i) {
-  return Object(arrayWithHoles["a" /* default */])(arr) || _iterableToArrayLimit(arr, i) || Object(unsupportedIterableToArray["a" /* default */])(arr, i) || Object(nonIterableRest["a" /* default */])();
-}
-
-/***/ }),
-
-/***/ 2:
+/***/ "YLtl":
 /***/ (function(module, exports) {
 
 (function() { module.exports = window["lodash"]; }());
 
 /***/ }),
 
-/***/ 24:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _arrayLikeToArray; });
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
-  }
-
-  return arr2;
-}
-
-/***/ }),
-
-/***/ 31:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _unsupportedIterableToArray; });
-/* harmony import */ var _babel_runtime_helpers_esm_arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(24);
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return Object(_babel_runtime_helpers_esm_arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Object(_babel_runtime_helpers_esm_arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(o, minLen);
-}
-
-/***/ }),
-
-/***/ 38:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _arrayWithHoles; });
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-/***/ }),
-
-/***/ 39:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _nonIterableRest; });
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-/***/ }),
-
-/***/ 449:
+/***/ "lbya":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -238,6 +126,8 @@ __webpack_require__.d(__webpack_exports__, "safeDecodeURI", function() { return 
 __webpack_require__.d(__webpack_exports__, "safeDecodeURIComponent", function() { return /* reexport */ safeDecodeURIComponent; });
 __webpack_require__.d(__webpack_exports__, "filterURLForDisplay", function() { return /* reexport */ filterURLForDisplay; });
 __webpack_require__.d(__webpack_exports__, "cleanForSlug", function() { return /* reexport */ cleanForSlug; });
+__webpack_require__.d(__webpack_exports__, "getFilename", function() { return /* reexport */ getFilename; });
+__webpack_require__.d(__webpack_exports__, "normalizePath", function() { return /* reexport */ normalizePath; });
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/is-url.js
 /**
@@ -261,13 +151,13 @@ function isURL(url) {
   try {
     new URL(url);
     return true;
-  } catch (_unused) {
+  } catch {
     return false;
   }
 }
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/is-email.js
-var EMAIL_REGEXP = /^(mailto:)?[a-z0-9._%+-]+@[a-z0-9][a-z0-9.-]*\.[a-z]{2,63}$/i;
+const EMAIL_REGEXP = /^(mailto:)?[a-z0-9._%+-]+@[a-z0-9][a-z0-9.-]*\.[a-z]{2,63}$/i;
 /**
  * Determines whether the given string looks like an email.
  *
@@ -300,7 +190,7 @@ function isEmail(email) {
  * @return {string|void} The protocol part of the URL.
  */
 function getProtocol(url) {
-  var matches = /^([^\s:]+:)/.exec(url);
+  const matches = /^([^\s:]+:)/.exec(url);
 
   if (matches) {
     return matches[1];
@@ -344,7 +234,7 @@ function isValidProtocol(protocol) {
  * @return {string|void} The authority part of the URL.
  */
 function getAuthority(url) {
-  var matches = /^[^\/\s:]+:(?:\/\/)?\/?([^\/\s#?]+)[\/#?]{0,1}\S*$/.exec(url);
+  const matches = /^[^\/\s:]+:(?:\/\/)?\/?([^\/\s#?]+)[\/#?]{0,1}\S*$/.exec(url);
 
   if (matches) {
     return matches[1];
@@ -388,7 +278,7 @@ function isValidAuthority(authority) {
  * @return {string|void} The path part of the URL.
  */
 function getPath(url) {
-  var matches = /^[^\/\s:]+:(?:\/\/)?[^\/\s#?]+[\/]([^\s#?]+)[#?]{0,1}\S*$/.exec(url);
+  const matches = /^[^\/\s:]+:(?:\/\/)?[^\/\s#?]+[\/]([^\s#?]+)[#?]{0,1}\S*$/.exec(url);
 
   if (matches) {
     return matches[1];
@@ -431,7 +321,7 @@ function isValidPath(path) {
  * @return {string|void} The query string part of the URL.
  */
 function getQueryString(url) {
-  var query;
+  let query;
 
   try {
     query = new URL(url, 'http://example.com').search.substring(1);
@@ -442,18 +332,7 @@ function getQueryString(url) {
   }
 }
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js + 1 modules
-var slicedToArray = __webpack_require__(11);
-
 // CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/build-query-string.js
-
-
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 /**
  * Generates URL-encoded query string using input query data.
  *
@@ -479,40 +358,23 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
  * @return {string} Query string.
  */
 function buildQueryString(data) {
-  var string = '';
-  var stack = Object.entries(data);
-  var pair;
+  let string = '';
+  const stack = Object.entries(data);
+  let pair;
 
   while (pair = stack.shift()) {
-    var _pair = pair,
-        _pair2 = Object(slicedToArray["a" /* default */])(_pair, 2),
-        key = _pair2[0],
-        value = _pair2[1]; // Support building deeply nested data, from array or object values.
+    let [key, value] = pair; // Support building deeply nested data, from array or object values.
 
-
-    var hasNestedData = Array.isArray(value) || value && value.constructor === Object;
+    const hasNestedData = Array.isArray(value) || value && value.constructor === Object;
 
     if (hasNestedData) {
       // Push array or object values onto the stack as composed of their
       // original key and nested index or key, retaining order by a
       // combination of Array#reverse and Array#unshift onto the stack.
-      var valuePairs = Object.entries(value).reverse();
+      const valuePairs = Object.entries(value).reverse();
 
-      var _iterator = _createForOfIteratorHelper(valuePairs),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var _step$value = Object(slicedToArray["a" /* default */])(_step.value, 2),
-              member = _step$value[0],
-              memberValue = _step$value[1];
-
-          stack.unshift(["".concat(key, "[").concat(member, "]"), memberValue]);
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
+      for (const [member, memberValue] of valuePairs) {
+        stack.unshift([`${key}[${member}]`, memberValue]);
       }
     } else if (value !== undefined) {
       // Null is treated as special case, equivalent to empty string.
@@ -572,11 +434,11 @@ function isValidQueryString(queryString) {
  */
 
 function getPathAndQueryString(url) {
-  var path = getPath(url);
-  var queryString = getQueryString(url);
-  var value = '/';
+  const path = getPath(url);
+  const queryString = getQueryString(url);
+  let value = '/';
   if (path) value += path;
-  if (queryString) value += "?".concat(queryString);
+  if (queryString) value += `?${queryString}`;
   return value;
 }
 
@@ -595,7 +457,7 @@ function getPathAndQueryString(url) {
  * @return {string|void} The fragment part of the URL.
  */
 function getFragment(url) {
-  var matches = /^\S+?(#[^\s\?]*)/.exec(url);
+  const matches = /^\S+?(#[^\s\?]*)/.exec(url);
 
   if (matches) {
     return matches[1];
@@ -624,17 +486,7 @@ function isValidFragment(fragment) {
   return /^#[^\s#?\/]*$/.test(fragment);
 }
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/defineProperty.js
-var defineProperty = __webpack_require__(5);
-
 // CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/get-query-args.js
-
-
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 /**
  * Internal dependencies
  */
@@ -655,11 +507,11 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
  */
 
 function setPath(object, path, value) {
-  var length = path.length;
-  var lastIndex = length - 1;
+  const length = path.length;
+  const lastIndex = length - 1;
 
-  for (var i = 0; i < length; i++) {
-    var key = path[i];
+  for (let i = 0; i < length; i++) {
+    let key = path[i];
 
     if (!key && Array.isArray(object)) {
       // If key is empty string and next value is array, derive key from
@@ -669,7 +521,7 @@ function setPath(object, path, value) {
     // created as an array. Otherwise, it will be created as an object.
 
 
-    var isNextKeyArrayIndex = !isNaN(Number(path[i + 1]));
+    const isNextKeyArrayIndex = !isNaN(Number(path[i + 1]));
     object[key] = i === lastIndex ? // If at end of path, assign the intended value.
     value : // Otherwise, advance to the next object in the path, creating
     // it if it does not yet exist.
@@ -678,7 +530,8 @@ function setPath(object, path, value) {
     if (Array.isArray(object[key]) && !isNextKeyArrayIndex) {
       // If we current key is non-numeric, but the next value is an
       // array, coerce the value to an object.
-      object[key] = _objectSpread({}, object[key]);
+      object[key] = { ...object[key]
+      };
     } // Update working reference object to the next in the path.
 
 
@@ -702,21 +555,17 @@ function setPath(object, path, value) {
 
 
 function getQueryArgs(url) {
-  return (getQueryString(url) || ''). // Normalize space encoding, accounting for PHP URL encoding
+  return (getQueryString(url) || '' // Normalize space encoding, accounting for PHP URL encoding
   // corresponding to `application/x-www-form-urlencoded`.
   //
   // See: https://tools.ietf.org/html/rfc1866#section-8.2.1
-  replace(/\+/g, '%20').split('&').reduce(function (accumulator, keyValue) {
-    var _keyValue$split$filte = keyValue.split('=') // Filtering avoids decoding as `undefined` for value, where
+  ).replace(/\+/g, '%20').split('&').reduce((accumulator, keyValue) => {
+    const [key, value = ''] = keyValue.split('=') // Filtering avoids decoding as `undefined` for value, where
     // default is restored in destructuring assignment.
-    .filter(Boolean).map(decodeURIComponent),
-        _keyValue$split$filte2 = Object(slicedToArray["a" /* default */])(_keyValue$split$filte, 2),
-        key = _keyValue$split$filte2[0],
-        _keyValue$split$filte3 = _keyValue$split$filte2[1],
-        value = _keyValue$split$filte3 === void 0 ? '' : _keyValue$split$filte3;
+    .filter(Boolean).map(decodeURIComponent);
 
     if (key) {
-      var segments = key.replace(/\]/g, '').split('[');
+      const segments = key.replace(/\]/g, '').split('[');
       setPath(accumulator, segments, value);
     }
 
@@ -735,9 +584,9 @@ function getQueryArgs(url) {
  * includes query arguments, the arguments are merged with (and take precedent
  * over) the existing set.
  *
- * @param {string} [url='']  URL to which arguments should be appended. If omitted,
- *                           only the resulting querystring is returned.
- * @param {Object} [args]    Query arguments to apply to URL.
+ * @param {string} [url=''] URL to which arguments should be appended. If omitted,
+ *                          only the resulting querystring is returned.
+ * @param {Object} [args]   Query arguments to apply to URL.
  *
  * @example
  * ```js
@@ -748,17 +597,17 @@ function getQueryArgs(url) {
  */
 
 function addQueryArgs() {
-  var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-  var args = arguments.length > 1 ? arguments[1] : undefined;
+  let url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  let args = arguments.length > 1 ? arguments[1] : undefined;
 
   // If no arguments are to be appended, return original URL.
   if (!args || !Object.keys(args).length) {
     return url;
   }
 
-  var baseUrl = url; // Determine whether URL already had query arguments.
+  let baseUrl = url; // Determine whether URL already had query arguments.
 
-  var queryStringIndex = url.indexOf('?');
+  const queryStringIndex = url.indexOf('?');
 
   if (queryStringIndex !== -1) {
     // Merge into existing query arguments.
@@ -775,13 +624,9 @@ function addQueryArgs() {
  * Internal dependencies
  */
 
-/* eslint-disable jsdoc/valid-types */
-
 /**
  * @typedef {{[key: string]: QueryArgParsed}} QueryArgObject
  */
-
-/* eslint-enable */
 
 /**
  * @typedef {string|string[]|QueryArgObject} QueryArgParsed
@@ -849,23 +694,21 @@ function hasQueryArg(url, arg) {
  */
 
 function removeQueryArgs(url) {
-  var queryStringIndex = url.indexOf('?');
+  const queryStringIndex = url.indexOf('?');
 
   if (queryStringIndex === -1) {
     return url;
   }
 
-  var query = getQueryArgs(url);
-  var baseURL = url.substr(0, queryStringIndex);
+  const query = getQueryArgs(url);
+  const baseURL = url.substr(0, queryStringIndex);
 
   for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     args[_key - 1] = arguments[_key];
   }
 
-  args.forEach(function (arg) {
-    return delete query[arg];
-  });
-  var queryString = buildQueryString(query);
+  args.forEach(arg => delete query[arg]);
+  const queryString = buildQueryString(query);
   return queryString ? baseURL + '?' + queryString : baseURL;
 }
 
@@ -874,7 +717,7 @@ function removeQueryArgs(url) {
  * Internal dependencies
  */
 
-var USABLE_HREF_REGEXP = /^(?:[a-z]+:|#|\?|\.|\/)/i;
+const USABLE_HREF_REGEXP = /^(?:[a-z]+:|#|\?|\.|\/)/i;
 /**
  * Prepends "http://" to a url, if it looks like something that is meant to be a TLD.
  *
@@ -945,7 +788,7 @@ function safeDecodeURIComponent(uriComponent) {
 /**
  * Returns a URL for display.
  *
- * @param {string} url Original URL.
+ * @param {string}      url       Original URL.
  * @param {number|null} maxLength URL length.
  *
  * @example
@@ -957,15 +800,15 @@ function safeDecodeURIComponent(uriComponent) {
  * @return {string} Displayed URL.
  */
 function filterURLForDisplay(url) {
-  var maxLength = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  let maxLength = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
   // Remove protocol and www prefixes.
-  var filteredURL = url.replace(/^(?:https?:)\/\/(?:www\.)?/, ''); // Ends with / and only has that single slash, strip it.
+  let filteredURL = url.replace(/^(?:https?:)\/\/(?:www\.)?/, ''); // Ends with / and only has that single slash, strip it.
 
   if (filteredURL.match(/^[^\/]+\/$/)) {
     filteredURL = filteredURL.replace('/', '');
   }
 
-  var mediaRegexp = /([\w|:])*\.(?:jpg|jpeg|gif|png|svg)/;
+  const mediaRegexp = /([\w|:])*\.(?:jpg|jpeg|gif|png|svg)/;
 
   if (!maxLength || filteredURL.length <= maxLength || !filteredURL.match(mediaRegexp)) {
     return filteredURL;
@@ -973,24 +816,22 @@ function filterURLForDisplay(url) {
 
 
   filteredURL = filteredURL.split('?')[0];
-  var urlPieces = filteredURL.split('/');
-  var file = urlPieces[urlPieces.length - 1];
+  const urlPieces = filteredURL.split('/');
+  const file = urlPieces[urlPieces.length - 1];
 
   if (file.length <= maxLength) {
     return '…' + filteredURL.slice(-maxLength);
   } // If the file is greater than max length, truncate the file.
 
 
-  var index = file.lastIndexOf('.');
-  var _ref = [file.slice(0, index), file.slice(index + 1)],
-      fileName = _ref[0],
-      extension = _ref[1];
-  var truncatedFile = fileName.slice(-3) + '.' + extension;
+  const index = file.lastIndexOf('.');
+  const [fileName, extension] = [file.slice(0, index), file.slice(index + 1)];
+  const truncatedFile = fileName.slice(-3) + '.' + extension;
   return file.slice(0, maxLength - truncatedFile.length - 1) + '…' + truncatedFile;
 }
 
 // EXTERNAL MODULE: external "lodash"
-var external_lodash_ = __webpack_require__(2);
+var external_lodash_ = __webpack_require__("YLtl");
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/clean-for-slug.js
 /**
@@ -1022,6 +863,60 @@ function cleanForSlug(string) {
   return Object(external_lodash_["trim"])(Object(external_lodash_["deburr"])(string).replace(/[\s\./]+/g, '-').replace(/[^\w-]+/g, '').toLowerCase(), '-');
 }
 
+// CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/get-filename.js
+/**
+ * Returns the filename part of the URL.
+ *
+ * @param {string} url The full URL.
+ *
+ * @example
+ * ```js
+ * const filename1 = getFilename( 'http://localhost:8080/this/is/a/test.jpg' ); // 'test.jpg'
+ * const filename2 = getFilename( '/this/is/a/test.png' ); // 'test.png'
+ * ```
+ *
+ * @return {string|void} The filename part of the URL.
+ */
+function getFilename(url) {
+  let filename;
+
+  try {
+    filename = new URL(url, 'http://example.com').pathname.split('/').pop();
+  } catch (error) {}
+
+  if (filename) {
+    return filename;
+  }
+}
+
+// CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/normalize-path.js
+/**
+ * Given a path, returns a normalized path where equal query parameter values
+ * will be treated as identical, regardless of order they appear in the original
+ * text.
+ *
+ * @param {string} path Original path.
+ *
+ * @return {string} Normalized path.
+ */
+function normalizePath(path) {
+  const splitted = path.split('?');
+  const query = splitted[1];
+  const base = splitted[0];
+
+  if (!query) {
+    return base;
+  } // 'b=1&c=2&a=5'
+
+
+  return base + '?' + query // [ 'b=1', 'c=2', 'a=5' ]
+  .split('&') // [ [ 'b, '1' ], [ 'c', '2' ], [ 'a', '5' ] ]
+  .map(entry => entry.split('=')) // [ [ 'a', '5' ], [ 'b, '1' ], [ 'c', '2' ] ]
+  .sort((a, b) => a[0].localeCompare(b[0])) // [ 'a=5', 'b=1', 'c=2' ]
+  .map(pair => pair.join('=')) // 'a=5&b=1&c=2'
+  .join('&');
+}
+
 // CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/index.js
 
 
@@ -1049,27 +944,7 @@ function cleanForSlug(string) {
 
 
 
-/***/ }),
 
-/***/ 5:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _defineProperty; });
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
 
 /***/ })
 

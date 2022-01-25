@@ -9,9 +9,7 @@
 /** WordPress Administration Bootstrap */
 require_once __DIR__ . '/admin.php';
 
-wp_enqueue_script( 'wp-components' );
-wp_enqueue_style( 'wp-components' );
-
+// Used in the HTML title tag.
 /* translators: Page title of the About WordPress page in the admin. */
 $title = _x( 'About', 'page title' );
 
@@ -22,19 +20,15 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 	<div class="wrap about__container">
 
 		<div class="about__header">
-			<div class="about__header-image">
-				<img alt="<?php _e( 'Code is Poetry' ); ?>" src="<?php echo admin_url( 'images/about-badge.svg' ); ?>" />
-			</div>
-
 			<div class="about__header-title">
-				<p>
+				<h1>
 					<?php _e( 'WordPress' ); ?>
-					<?php echo $display_version; ?>
-				</p>
+					<span class="screen-reader-text"><?php echo $display_version; ?></span>
+				</h1>
 			</div>
 
 			<div class="about__header-text">
-				<?php _e( 'Jazz up your stories in an editor that’s cleaner, crisper, and does more to get out of your way.' ); ?>
+				<?php _e( 'Build the site you&#8217;ve always wanted &#8212; with blocks' ); ?>
 			</div>
 
 			<nav class="about__header-navigation nav-tab-wrapper wp-clearfix" aria-label="<?php esc_attr_e( 'Secondary menu' ); ?>">
@@ -45,73 +39,219 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 			</nav>
 		</div>
 
-		<div class="about__section is-feature has-subtle-background-color">
-			<div class="column">
-				<h1 class="is-smaller-heading">
-					<?php
-					printf(
-						/* translators: %s: The current WordPress version number. */
-						__( 'Step into WordPress %s.' ),
-						$display_version
-					);
-					?>
-				</h1>
-				<p>
-					<?php
-					_e( 'With this new version, WordPress brings you fresh colors. The editor helps you work in a few places you couldn’t before—at least, not without getting into code or hiring a pro. The controls you use most, like changing font sizes, are in more places—right where you need them. And layout changes that should be simple, like full-height images, are even simpler to make.' );
-					?>
-				</p>
-			</div>
+		<hr class="is-large" />
+
+		<div class="about__section">
+			<h2 class="aligncenter">
+				<?php _e( 'Full Site Editing is here' ); ?>
+			</h2>
+			<p class="aligncenter is-subheading">
+				<?php _e( 'It puts you in control of your whole site, right in the WordPress Admin.' ); ?>
+			</p>
 		</div>
 
 		<hr />
 
-		<div class="about__section changelog">
-			<div class="column has-border has-subtle-background-color">
-				<h2 class="is-smaller-heading"><?php _e( 'Maintenance and Security Releases' ); ?></h2>
+		<div class="about__section has-2-columns has-gutters is-wider-left">
+			<div class="column about__image is-vertically-aligned-center is-edge-to-edge">
+				<img src="https://s.w.org/images/core/5.9/twenty-twenty-two.png" alt="" />
+			</div>
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'Say hello to Twenty Twenty&#8209;Two' ); ?>
+				</h3>
+				<p>
+					<?php _e( 'And say hello to the first default block theme in the history of WordPress. This is more than just a new default theme. It&#8217;s a brand-new way to work with WordPress themes.' ); ?>
+				</p>
+				<p>
+					<?php _e( 'Block themes put a wide array of visual choices in your hands, from color schemes and typeface combinations to page templates and image filters &#8212; all together, in the site editing interface. By making changes in one place, you can give Twenty Twenty&#8209;Two the same look and feel as your brand or other websites &#8212; or take your site&#8217;s look in another direction.' ); ?>
+				</p>
+				<?php if ( current_user_can( 'switch_themes' ) ) : ?>
 				<p>
 					<?php
 					printf(
-						/* translators: %s: WordPress version number. */
-						__( '<strong>Version %s</strong> addressed one security issue.' ),
-						'5.7.2'
-					);
-					?>
-					<?php
-					printf(
-						/* translators: %s: HelpHub URL. */
-						__( 'For more information, see <a href="%s">the release notes</a>.' ),
-						sprintf(
-							/* translators: %s: WordPress version. */
-							esc_url( __( 'https://wordpress.org/support/wordpress-version/version-%s/' ) ),
-							sanitize_title( '5.7.2' )
-						)
+						/* translators: %s: Link to Themes screen. */
+						__( 'The Twenty Twenty&#8209;Two theme is already available to you. It came installed with WordPress 5.9, and you will find it with <a href="%s">your other installed themes</a>.' ),
+						admin_url( 'themes.php' )
 					);
 					?>
 				</p>
+				<?php endif; ?>
+			</div>
+		</div>
 
+		<div class="about__section has-2-columns has-gutters is-wider-right">
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'Your personal paintbox awaits' ); ?>
+				</h3>
+				<p>
+					<?php _e( 'More block themes built for full site editing features are in the Theme Directory alongside the Twenty Twenty&#8209;Two theme, just waiting to be explored. Expect more to come!' ); ?>
+				</p>
+				<p>
+					<?php _e( 'When you use any of those new themes, you no longer need the Customizer. Instead, you have all the power of the Styles interface inside the Site Editor. Just as in Twenty Twenty&#8209;Two, you build your site&#8217;s look and feel there, with the tools you need for the job in a fluid interface that practically comes alive in your hands.' ); ?>
+				</p>
+			</div>
+			<div class="column about__image is-vertically-aligned-center is-edge-to-edge">
+				<img src="https://s.w.org/images/core/5.9/global-styles.png" alt="" />
+			</div>
+		</div>
+
+		<div class="about__section has-2-columns has-gutters is-wider-left">
+			<div class="column about__image is-vertically-aligned-center is-edge-to-edge">
+				<img src="https://s.w.org/images/core/5.9/navigation-block.png" alt="" />
+			</div>
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'The Navigation block' ); ?>
+				</h3>
+				<p>
+					<?php _e( 'Blocks come to site navigation, the heart of user experience.' ); ?>
+				</p>
+				<p>
+					<?php _e( 'The new Navigation block gives you the power to choose: an always-on responsive menu or one that adapts to your user&#8217;s screen size. Whatever you create, know it&#8217;s there to reuse wherever you like, whether in a brand new template or after switching themes.' ); ?>
+				</p>
+			</div>
+		</div>
+
+		<hr class="is-large" />
+
+		<div class="about__section">
+			<h2 class="aligncenter">
+				<?php _e( 'More improvements and updates' ); ?>
+			</h2>
+			<p class="aligncenter is-subheading">
+				<?php _e( 'Do you love to blog or produce content? New tweaks to the publishing flow help you say more, faster.' ); ?>
+			</p>
+		</div>
+
+		<hr />
+
+		<div class="about__section has-2-columns has-gutters is-wider-left">
+			<div class="column about__image is-vertically-aligned-center is-edge-to-edge">
+				<img src="https://s.w.org/images/core/5.9/block-controls.png" alt="" />
+			</div>
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'Better block controls' ); ?>
+				</h3>
+				<p>
+					<?php _e( 'WordPress 5.9 features new typography tools, flexible layout controls, and finer control over details like spacing, borders, and more &#8212; to help you get not just the look, but the polish that says you care about details.' ); ?>
+				</p>
+			</div>
+		</div>
+
+		<div class="about__section has-2-columns has-gutters is-wider-right">
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'The power of patterns' ); ?>
+				</h3>
+				<p>
+					<?php _e( 'The WordPress Pattern Directory is the home of a wide range of block patterns built to save you time and add core site functionality. And you can edit them as you see fit. Need something different in the header or footer for your theme? Swap it out with a new one in a few clicks.' ); ?>
+				</p>
+				<p>
+					<?php _e( 'With a near full-screen view that draws you in to see fine details, the Pattern Explorer makes it easy to compare patterns and choose the one your users will expect.' ); ?>
+				</p>
+			</div>
+			<div class="column about__image is-vertically-aligned-center is-edge-to-edge">
+				<img src="https://s.w.org/images/core/5.9/pattern-explorer.png" alt="" />
+			</div>
+		</div>
+
+		<div class="about__section has-2-columns has-gutters is-wider-left">
+			<div class="column about__image is-vertically-aligned-center is-edge-to-edge">
+				<img src="https://s.w.org/images/core/5.9/list-view.png" alt="" />
+			</div>
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'A revamped List View' ); ?>
+				</h3>
+				<p>
+					<?php _e( 'In 5.9, the List View lets you drag and drop your content exactly where you want it. Managing complex documents is easier, too: simple controls let you expand and collapse sections as you build your site &#8212; and add HTML anchors to your blocks to help users get around the page.' ); ?>
+				</p>
+			</div>
+		</div>
+
+		<div class="about__section has-2-columns has-gutters is-wider-right">
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'A better Gallery block' ); ?>
+				</h3>
+				<p>
+					<?php _e( 'Treat every image in a Gallery block the same way you would treat it in the Image block.' ); ?>
+				</p>
+				<p>
+					<?php _e( 'Style every image in your gallery differently from the next (with different crops, or duotones, for instance) or make them all the same. And change the layout with drag-and-drop.' ); ?>
+				</p>
+			</div>
+			<div class="column about__image is-vertically-aligned-center is-edge-to-edge">
+				<img src="https://s.w.org/images/core/5.9/gallery-block.png" alt="" />
+			</div>
+		</div>
+
+		<hr class="is-large" />
+
+		<div class="about__section">
+			<h2 class="aligncenter" style="margin-bottom:0;">
+				<?php
+				printf(
+					/* translators: %s: Version number. */
+					__( 'WordPress %s for developers' ),
+					$display_version
+				);
+				?>
+			</h2>
+		</div>
+
+		<div class="about__section has-gutters has-2-columns">
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'Introducing block themes' ); ?>
+				</h3>
 				<p>
 					<?php
 					printf(
-						/* translators: 1: WordPress version number, 2: Plural number of bugs. More than one security issue. */
-						_n(
-							'<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bug.',
-							'<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bugs.',
-							26
-						),
-						'5.7.1',
-						number_format_i18n( 26 )
+						/* translators: %s: Block-based themes dev note link. */
+						__( 'A new way to build themes: Block themes use blocks to define the templates that structure your entire site. The new templates and template parts are defined in HTML and use the custom styling offered in theme.json. More information is available in the <a href="%s">block themes dev note</a>.' ),
+						'https://make.wordpress.org/core/2022/01/04/block-themes-a-new-way-to-build-themes-in-wordpress-5-9/'
 					);
 					?>
+				</p>
+			</div>
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'Multiple stylesheets for a block' ); ?>
+				</h3>
+				<p>
 					<?php
 					printf(
-						/* translators: %s: HelpHub URL. */
-						__( 'For more information, see <a href="%s">the release notes</a>.' ),
-						sprintf(
-							/* translators: %s: WordPress version. */
-							esc_url( __( 'https://wordpress.org/support/wordpress-version/version-%s/' ) ),
-							sanitize_title( '5.7.1' )
-						)
+						/* translators: %s: Multiple stylesheets dev note link. */
+						__( 'Now you can register more than one stylesheet per block. You can use this to share styles across blocks you write, or to load styles for individual blocks, so your styles are only loaded when the block is used. Find out more about <a href="%s">using multiple stylesheets in a block</a>.' ),
+						'https://make.wordpress.org/core/2021/12/15/using-multiple-stylesheets-per-block/'
+					);
+					?>
+				</p>
+			</div>
+		</div>
+		<div class="about__section has-gutters has-2-columns">
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'Block&#8209;level locking' ); ?>
+				</h3>
+				<p>
+					<?php _e( 'Now you can lock any block (or a few of them) in a pattern, just by adding a lock attribute to its settings in block.json &#8212; leaving the rest of the pattern free for site editors to adapt to their content.' ); ?>
+				</p>
+			</div>
+			<div class="column is-edge-to-edge">
+				<h3>
+					<?php _e( 'A refactored Gallery block' ); ?>
+				</h3>
+				<p>
+					<?php
+					printf(
+						/* translators: %s: Gallery Refactor dev note link. */
+						__( 'The changes to the Gallery block listed above are the result of a near-complete refactoring. Have you built a plugin or theme on the Gallery block functionality? Be sure to read the <a href="%s">Gallery block compatibility dev note</a>.' ),
+						'https://make.wordpress.org/core/2021/08/20/gallery-block-refactor-dev-note/'
 					);
 					?>
 				</p>
@@ -120,148 +260,25 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 
 		<hr class="is-large" />
 
-		<div class="about__section has-2-columns">
-			<h2 class="is-section-header is-smaller-heading">
-				<?php _e( 'Now the editor is easier to use' ); ?>
-			</h2>
+		<div class="about__section has-subtle-background-color has-2-columns is-wider-right">
+			<div class="column about__image is-vertically-aligned-center">
+				<img src="https://s.w.org/images/core/5.9/learn-video.png" alt="" />
+			</div>
 			<div class="column">
-				<p>
-					<?php
-					_e( '<strong>Font-size adjustment in more places:</strong> now, font-size controls are right where you need them in the List and Code blocks. No more trekking to another screen to make that single change!' );
-					?>
-				</p>
-				<p>
-					<?php
-					_e( '<strong>Reusable blocks:</strong> several enhancements make reusable blocks more stable and easier to use. And now they save automatically with the post when you click the Update button.' );
-					?>
-				</p>
-				<p>
-					<?php
-					_e( '<strong>Inserter drag-and-drop:</strong> drag blocks and block patterns from the inserter right into your post.' );
-					?>
-				</p>
-			</div>
-			<div class="column about__image">
-				<video controls>
-					<source src="https://s.w.org/images/core/5.7/about-57-drag-drop-image.mp4" type="video/mp4" />
-					<source src="https://s.w.org/images/core/5.7/about-57-drag-drop-image.webm" type="video/webm" />
-				</video>
-			</div>
-		</div>
-
-		<div class="about__section has-2-columns">
-			<h2 class="is-section-header is-smaller-heading">
-				<?php _e( 'You can do more without writing custom code' ); ?>
-			</h2>
-			<div class="column">
-				<p>
-					<?php
-					_e( '<strong>Full-height alignment:</strong> have you ever wanted to make a block, like the Cover block, fill the whole window? Now you can.' );
-					?>
-				</p>
-				<p>
-					<?php
-					_e( '<strong>Buttons block:</strong> now you can choose a vertical or a horizontal layout. And you can set the width of a button to a preset percentage.' );
-					?>
-				</p>
-				<p>
-					<?php
-					_e( '<strong>Social Icons block:</strong> now you can change the size of the icons.' );
-					?>
-				</p>
-			</div>
-			<div class="column about__image">
-				<img src="https://s.w.org/images/core/5.7/about-57-cover.jpg" alt="" />
-			</div>
-		</div>
-
-		<hr />
-
-		<div class="about__section has-subtle-background-color">
-			<div class="column">
-				<h2 class="is-smaller-heading"><?php _e( 'A Simpler Default Color Palette' ); ?></h2>
-			</div>
-		</div>
-
-		<div class="about__section has-subtle-background-color">
-			<figure class="column about__image" id="about-image-comparison">
-				<div class="about__image-comparison no-js">
-					<img src="https://s.w.org/images/core/5.7/about-57-color-old.png" alt="<?php esc_attr_e( 'Dashboard with old color scheme.' ); ?>" />
-					<div class="about__image-comparison-resize">
-						<img src="https://s.w.org/images/core/5.7/about-57-color-new.png" alt="<?php esc_attr_e( 'Dashboard with new color scheme.' ); ?>" />
-					</div>
-				</div>
-				<figcaption><?php _e( 'Above, the Dashboard before and after the color update in 5.7.' ); ?></figcaption>
-			</figure>
-		</div>
-
-		<div class="about__section has-2-columns has-subtle-background-color">
-			<div class="column">
+				<h3><?php _e( 'Learn more about the new features in 5.9' ); ?></h3>
 				<p>
 					<?php
 					printf(
-						/* translators: %s: WCAG information link. */
-						__( 'This new streamlined color palette collapses all the colors that used to be in the WordPress source code down to seven core colors and a range of 56 shades that meet the <a href="%s">WCAG 2.0 AA recommended contrast ratio</a> against white or black.' ),
-						'https://www.w3.org/WAI/WCAG2AAA-Conformance'
-					);
-					?>
-				</p>
-				<p>
-					<?php
-					_e( 'The colors are perceptually uniform from light to dark in each range, which means they start at white and get darker by the same amount with each step.' );
-					?>
-				</p>
-			</div>
-			<div class="column">
-				<p>
-					<?php
-					_e( 'Half the range has a 4.5 or higher contrast ratio against black, and the other half maintains the same contrast against white.' );
-					?>
-				</p>
-				<p>
-					<?php
-					printf(
-						/* translators: %s: Color palette dev note link. */
-						__( 'Find the new palette in the default WordPress Dashboard color scheme, and use it when you’re building themes, plugins, or any other components. For all the details, <a href="%s">check out the Color Palette dev note</a>.' ),
-						'https://make.wordpress.org/core/2021/02/23/standardization-of-wp-admin-colors-in-wordpress-5-7'
+						/* translators: %s: Learn WordPress link. */
+						__( 'Want to dive into 5.9 but don&#8217;t know where to start? Visit <a href="%s">learn.wordpress.org</a> for expanding resources on new features in WordPress 5.9.' ),
+						'https://learn.wordpress.org'
 					);
 					?>
 				</p>
 			</div>
 		</div>
 
-		<div class="about__section has-subtle-background-color">
-			<div class="column about__image">
-				<picture>
-					<source media="(max-width: 600px)" srcset="<?php echo admin_url( 'images/about-color-palette-vert.svg' ); ?>" />
-					<img alt="" src="<?php echo admin_url( 'images/about-color-palette.svg' ); ?>" />
-				</picture>
-			</div>
-		</div>
-
-		<hr />
-
-		<div class="about__section has-2-columns">
-			<div class="column">
-				<h3><?php _e( 'From HTTP to HTTPS in a single click' ); ?></h3>
-				<p><?php _e( 'Starting now, switching a site from HTTP to HTTPS is a one-click move. WordPress will automatically update database URLs when you make the switch. No more hunting and guessing!' ); ?></p>
-				<h3><?php _e( 'New Robots API' ); ?></h3>
-				<p>
-					<?php
-					_e( 'The new Robots API lets you include the filter directives in the robots meta tag, and the API includes the <code>max-image-preview: large</code> directive by default. That means search engines can show bigger image previews, which can boost your traffic (unless the site is marked <em>not-public</em>).' );
-					?>
-				</p>
-			</div>
-			<div class="column">
-				<h3><?php _e( 'Ongoing cleanup after update to jQuery 3.5.1' ); ?></h3>
-				<p><?php _e( 'For years jQuery helped make things move on the screen in ways the basic tools couldn’t—but that keeps changing, and so does jQuery.' ); ?></p>
-				<p><?php _e( 'In 5.7, jQuery gets more focused and less intrusive, with fewer messages in the console.' ); ?></p>
-				<h3><?php _e( 'Lazy-load your iframes' ); ?></h3>
-				<p><?php _e( 'Now it’s simple to let iframes lazy-load. By default, WordPress will add a <code>loading="lazy"</code> attribute to iframe tags when both width and height are specified.' ); ?></p>
-			</div>
-		</div>
-
-		<hr class="is-small" />
+		<hr class="is-large" />
 
 		<div class="about__section">
 			<div class="column">
@@ -269,9 +286,9 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 				<p>
 					<?php
 					printf(
-						/* translators: %s: WordPress 5.7 Field Guide link. */
-						__( 'Check out the latest version of the WordPress Field Guide. It highlights developer notes for each change you may want to be aware of. <a href="%s">WordPress 5.7 Field Guide.</a>' ),
-						'https://make.wordpress.org/core/2021/02/23/wordpress-5-7-field-guide'
+						/* translators: %s: WordPress 5.9 Field Guide link. */
+						__( 'Check out the latest version of the WordPress Field Guide. It highlights developer notes for each change you may want to be aware of. <a href="%s">WordPress 5.9 Field Guide.</a>' ),
+						'https://make.wordpress.org/core/2022/01/10/wordpress-5-9-field-guide/'
 					);
 					?>
 				</p>
@@ -292,83 +309,6 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 
 <?php require_once ABSPATH . 'wp-admin/admin-footer.php'; ?>
 
-<script>
-	window.addEventListener( 'load', function() {
-		var createElement = wp.element.createElement;
-		var Fragment = wp.element.Fragment;
-		var render = wp.element.render;
-		var useState = wp.element.useState;
-		var ResizableBox = wp.components.ResizableBox;
-
-		var container = document.getElementById( 'about-image-comparison' );
-		var images = container ? container.querySelectorAll( 'img' ) : [];
-		if ( ! images.length ) {
-			// Something's wrong, return early.
-			return;
-		}
-
-		var beforeImage = images.item( 0 );
-		var afterImage = images.item( 1 );
-		var caption = container.querySelector( 'figcaption' ).innerText;
-
-		function ImageComparison( props ) {
-			var stateHelper = useState( props.width );
-			var width = stateHelper[0];
-			var setWidth = stateHelper[1];
-
-			return createElement(
-				'div',
-				{
-					className: 'about__image-comparison'
-				},
-				createElement( 'img', { src: beforeImage.src, alt: beforeImage.alt } ),
-				createElement(
-					ResizableBox,
-					{
-						size: {
-							width: width,
-							height: props.height
-						},
-						onResizeStop: function( event, direction, elt, delta ) {
-							setWidth( parseInt( width + delta.width, 10 ) );
-						},
-						showHandle: true,
-						enable: {
-							top: false,
-							right: ! wp.i18n.isRTL(),
-							bottom: false,
-							left: wp.i18n.isRTL(),
-						},
-						className: 'about__image-comparison-resize'
-					},
-					createElement(
-						'div',
-						{
-							style: { width: '100%', height: '100%', overflow: 'hidden' }
-						},
-						createElement('img', { src: afterImage.src, alt: afterImage.alt } )
-					)
-				)
-			);
-		}
-
-		render(
-			createElement(
-				Fragment,
-				{},
-				createElement(
-					ImageComparison,
-					{
-						width: beforeImage.clientWidth / 2,
-						height: beforeImage.clientHeight
-					}
-				),
-				createElement( 'figcaption', {}, caption )
-			),
-			container
-		);
-	} );
-</script>
 <?php
 
 // These are strings we may use to describe maintenance/security releases, where we aim for no new strings.

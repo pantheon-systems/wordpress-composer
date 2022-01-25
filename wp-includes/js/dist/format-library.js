@@ -82,123 +82,191 @@ this["wp"] = this["wp"] || {}; this["wp"]["formatLibrary"] =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 450);
+/******/ 	return __webpack_require__(__webpack_require__.s = "t1DA");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 0:
+/***/ "1Yn1":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("GRId");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("Tqx9");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+const code = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
+  viewBox: "0 0 24 24",
+  xmlns: "http://www.w3.org/2000/svg"
+}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
+  d: "M20.8 10.7l-4.3-4.3-1.1 1.1 4.3 4.3c.1.1.1.3 0 .4l-4.3 4.3 1.1 1.1 4.3-4.3c.7-.8.7-1.9 0-2.6zM4.2 11.8l4.3-4.3-1-1-4.3 4.3c-.7.7-.7 1.8 0 2.5l4.3 4.3 1.1-1.1-4.3-4.3c-.2-.1-.2-.3-.1-.4z"
+}));
+/* harmony default export */ __webpack_exports__["a"] = (code);
+
+
+/***/ }),
+
+/***/ "1ZqX":
+/***/ (function(module, exports) {
+
+(function() { module.exports = window["wp"]["data"]; }());
+
+/***/ }),
+
+/***/ "Bpkj":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("GRId");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("Tqx9");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+const link = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
+  d: "M15.6 7.2H14v1.5h1.6c2 0 3.7 1.7 3.7 3.7s-1.7 3.7-3.7 3.7H14v1.5h1.6c2.8 0 5.2-2.3 5.2-5.2 0-2.9-2.3-5.2-5.2-5.2zM4.7 12.4c0-2 1.7-3.7 3.7-3.7H10V7.2H8.4c-2.9 0-5.2 2.3-5.2 5.2 0 2.9 2.3 5.2 5.2 5.2H10v-1.5H8.4c-2 0-3.7-1.7-3.7-3.7zm4.6.9h5.3v-1.5H9.3v1.5z"
+}));
+/* harmony default export */ __webpack_exports__["a"] = (link);
+
+
+/***/ }),
+
+/***/ "Crq9":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("GRId");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("Tqx9");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+const formatStrikethrough = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
+  d: "M9.1 9v-.5c0-.6.2-1.1.7-1.4.5-.3 1.2-.5 2-.5.7 0 1.4.1 2.1.3.7.2 1.4.5 2.1.9l.2-1.9c-.6-.3-1.2-.5-1.9-.7-.8-.1-1.6-.2-2.4-.2-1.5 0-2.7.3-3.6 1-.8.7-1.2 1.5-1.2 2.6V9h2zM20 12H4v1h8.3c.3.1.6.2.8.3.5.2.9.5 1.1.8.3.3.4.7.4 1.2 0 .7-.2 1.1-.8 1.5-.5.3-1.2.5-2.1.5-.8 0-1.6-.1-2.4-.3-.8-.2-1.5-.5-2.2-.8L7 18.1c.5.2 1.2.4 2 .6.8.2 1.6.3 2.4.3 1.7 0 3-.3 3.9-1 .9-.7 1.3-1.6 1.3-2.8 0-.9-.2-1.7-.7-2.2H20v-1z"
+}));
+/* harmony default export */ __webpack_exports__["a"] = (formatStrikethrough);
+
+
+/***/ }),
+
+/***/ "GRId":
 /***/ (function(module, exports) {
 
 (function() { module.exports = window["wp"]["element"]; }());
 
 /***/ }),
 
-/***/ 1:
+/***/ "Mmq9":
 /***/ (function(module, exports) {
 
-(function() { module.exports = window["wp"]["i18n"]; }());
+(function() { module.exports = window["wp"]["url"]; }());
 
 /***/ }),
 
-/***/ 11:
+/***/ "Mp0b":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ _slicedToArray; });
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayWithHoles.js
-var arrayWithHoles = __webpack_require__(38);
-
-// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/iterableToArrayLimit.js
-function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-
-  try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js
-var unsupportedIterableToArray = __webpack_require__(31);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/nonIterableRest.js
-var nonIterableRest = __webpack_require__(39);
-
-// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("GRId");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("Tqx9");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
 
 
+/**
+ * WordPress dependencies
+ */
 
+const linkOff = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
+  d: "M15.6 7.3h-.7l1.6-3.5-.9-.4-3.9 8.5H9v1.5h2l-1.3 2.8H8.4c-2 0-3.7-1.7-3.7-3.7s1.7-3.7 3.7-3.7H10V7.3H8.4c-2.9 0-5.2 2.3-5.2 5.2 0 2.9 2.3 5.2 5.2 5.2H9l-1.4 3.2.9.4 5.7-12.5h1.4c2 0 3.7 1.7 3.7 3.7s-1.7 3.7-3.7 3.7H14v1.5h1.6c2.9 0 5.2-2.3 5.2-5.2 0-2.9-2.4-5.2-5.2-5.2z"
+}));
+/* harmony default export */ __webpack_exports__["a"] = (linkOff);
 
-function _slicedToArray(arr, i) {
-  return Object(arrayWithHoles["a" /* default */])(arr) || _iterableToArrayLimit(arr, i) || Object(unsupportedIterableToArray["a" /* default */])(arr, i) || Object(nonIterableRest["a" /* default */])();
-}
 
 /***/ }),
 
-/***/ 13:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "Tqx9":
+/***/ (function(module, exports) {
 
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _objectWithoutProperties; });
-/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(44);
-
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-  var target = Object(_babel_runtime_helpers_esm_objectWithoutPropertiesLoose__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(source, excluded);
-  var key, i;
-
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-
-  return target;
-}
+(function() { module.exports = window["wp"]["primitives"]; }());
 
 /***/ }),
 
-/***/ 135:
+/***/ "YLtl":
+/***/ (function(module, exports) {
+
+(function() { module.exports = window["lodash"]; }());
+
+/***/ }),
+
+/***/ "axFQ":
+/***/ (function(module, exports) {
+
+(function() { module.exports = window["wp"]["blockEditor"]; }());
+
+/***/ }),
+
+/***/ "btIw":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_esm_objectWithoutProperties__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("GRId");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("Tqx9");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
 
 
+/**
+ * WordPress dependencies
+ */
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+const keyboardReturn = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "-2 -2 24 24"
+}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
+  d: "M6.734 16.106l2.176-2.38-1.093-1.028-3.846 4.158 3.846 4.157 1.093-1.027-2.176-2.38h2.811c1.125 0 2.25.03 3.374 0 1.428-.001 3.362-.25 4.963-1.277 1.66-1.065 2.868-2.906 2.868-5.859 0-2.479-1.327-4.896-3.65-5.93-1.82-.813-3.044-.8-4.806-.788l-.567.002v1.5c.184 0 .368 0 .553-.002 1.82-.007 2.704-.014 4.21.657 1.854.827 2.76 2.657 2.76 4.561 0 2.472-.973 3.824-2.178 4.596-1.258.807-2.864 1.04-4.163 1.04h-.02c-1.115.03-2.229 0-3.344 0H6.734z"
+}));
+/* harmony default export */ __webpack_exports__["a"] = (keyboardReturn);
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
+/***/ }),
+
+/***/ "gdqT":
+/***/ (function(module, exports) {
+
+(function() { module.exports = window["wp"]["a11y"]; }());
+
+/***/ }),
+
+/***/ "iClF":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("GRId");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /**
  * WordPress dependencies
  */
@@ -216,15 +284,16 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
  */
 
 function Icon(_ref) {
-  var icon = _ref.icon,
-      _ref$size = _ref.size,
-      size = _ref$size === void 0 ? 24 : _ref$size,
-      props = Object(_babel_runtime_helpers_esm_objectWithoutProperties__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"])(_ref, ["icon", "size"]);
-
-  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["cloneElement"])(icon, _objectSpread({
+  let {
+    icon,
+    size = 24,
+    ...props
+  } = _ref;
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["cloneElement"])(icon, {
     width: size,
-    height: size
-  }, props));
+    height: size,
+    ...props
+  });
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Icon);
@@ -232,52 +301,20 @@ function Icon(_ref) {
 
 /***/ }),
 
-/***/ 195:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
-
-
-/**
- * WordPress dependencies
- */
-
-var link = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 24 24"
-}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
-  d: "M15.6 7.2H14v1.5h1.6c2 0 3.7 1.7 3.7 3.7s-1.7 3.7-3.7 3.7H14v1.5h1.6c2.8 0 5.2-2.3 5.2-5.2 0-2.9-2.3-5.2-5.2-5.2zM4.7 12.4c0-2 1.7-3.7 3.7-3.7H10V7.2H8.4c-2.9 0-5.2 2.3-5.2 5.2 0 2.9 2.3 5.2 5.2 5.2H10v-1.5H8.4c-2 0-3.7-1.7-3.7-3.7zm4.6.9h5.3v-1.5H9.3v1.5z"
-}));
-/* harmony default export */ __webpack_exports__["a"] = (link);
-
-
-/***/ }),
-
-/***/ 2:
+/***/ "l3Sj":
 /***/ (function(module, exports) {
 
-(function() { module.exports = window["lodash"]; }());
+(function() { module.exports = window["wp"]["i18n"]; }());
 
 /***/ }),
 
-/***/ 21:
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["richText"]; }());
-
-/***/ }),
-
-/***/ 218:
+/***/ "oMoS":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("GRId");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("Tqx9");
 /* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
 
 
@@ -285,266 +322,52 @@ var link = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement
  * WordPress dependencies
  */
 
-var keyboardReturn = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "-2 -2 24 24"
-}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
-  d: "M6.734 16.106l2.176-2.38-1.093-1.028-3.846 4.158 3.846 4.157 1.093-1.027-2.176-2.38h2.811c1.125 0 2.25.03 3.374 0 1.428-.001 3.362-.25 4.963-1.277 1.66-1.065 2.868-2.906 2.868-5.859 0-2.479-1.327-4.896-3.65-5.93-1.82-.813-3.044-.8-4.806-.788l-.567.002v1.5c.184 0 .368 0 .553-.002 1.82-.007 2.704-.014 4.21.657 1.854.827 2.76 2.657 2.76 4.561 0 2.472-.973 3.824-2.178 4.596-1.258.807-2.864 1.04-4.163 1.04h-.02c-1.115.03-2.229 0-3.344 0H6.734z"
-}));
-/* harmony default export */ __webpack_exports__["a"] = (keyboardReturn);
-
-
-/***/ }),
-
-/***/ 220:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
-
-
-/**
- * WordPress dependencies
- */
-
-var textColor = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "-2 -2 24 24"
-}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
-  d: "M13.23 15h1.9L11 4H9L5 15h1.88l1.07-3h4.18zm-1.53-4.54H8.51L10 5.6z"
-}));
-/* harmony default export */ __webpack_exports__["a"] = (textColor);
-
-
-/***/ }),
-
-/***/ 221:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
-
-
-/**
- * WordPress dependencies
- */
-
-var linkOff = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 24 24"
-}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
-  d: "M15.6 7.3h-.7l1.6-3.5-.9-.4-3.9 8.5H9v1.5h2l-1.3 2.8H8.4c-2 0-3.7-1.7-3.7-3.7s1.7-3.7 3.7-3.7H10V7.3H8.4c-2.9 0-5.2 2.3-5.2 5.2 0 2.9 2.3 5.2 5.2 5.2H9l-1.4 3.2.9.4 5.7-12.5h1.4c2 0 3.7 1.7 3.7 3.7s-1.7 3.7-3.7 3.7H14v1.5h1.6c2.9 0 5.2-2.3 5.2-5.2 0-2.9-2.4-5.2-5.2-5.2z"
-}));
-/* harmony default export */ __webpack_exports__["a"] = (linkOff);
-
-
-/***/ }),
-
-/***/ 24:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _arrayLikeToArray; });
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
-  }
-
-  return arr2;
-}
-
-/***/ }),
-
-/***/ 299:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
-
-
-/**
- * WordPress dependencies
- */
-
-var formatStrikethrough = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 24 24"
-}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
-  d: "M9.1 9v-.5c0-.6.2-1.1.7-1.4.5-.3 1.2-.5 2-.5.7 0 1.4.1 2.1.3.7.2 1.4.5 2.1.9l.2-1.9c-.6-.3-1.2-.5-1.9-.7-.8-.1-1.6-.2-2.4-.2-1.5 0-2.7.3-3.6 1-.8.7-1.2 1.5-1.2 2.6V9h2zM20 12H4v1h8.3c.3.1.6.2.8.3.5.2.9.5 1.1.8.3.3.4.7.4 1.2 0 .7-.2 1.1-.8 1.5-.5.3-1.2.5-2.1.5-.8 0-1.6-.1-2.4-.3-.8-.2-1.5-.5-2.2-.8L7 18.1c.5.2 1.2.4 2 .6.8.2 1.6.3 2.4.3 1.7 0 3-.3 3.9-1 .9-.7 1.3-1.6 1.3-2.8 0-.9-.2-1.7-.7-2.2H20v-1z"
-}));
-/* harmony default export */ __webpack_exports__["a"] = (formatStrikethrough);
-
-
-/***/ }),
-
-/***/ 3:
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["components"]; }());
-
-/***/ }),
-
-/***/ 31:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _unsupportedIterableToArray; });
-/* harmony import */ var _babel_runtime_helpers_esm_arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(24);
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return Object(_babel_runtime_helpers_esm_arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Object(_babel_runtime_helpers_esm_arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(o, minLen);
-}
-
-/***/ }),
-
-/***/ 313:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
-
-
-/**
- * WordPress dependencies
- */
-
-var button = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
+const button = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
   viewBox: "0 0 24 24",
   xmlns: "http://www.w3.org/2000/svg"
 }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
-  d: "M19 6.5H5c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm.5 9c0 .3-.2.5-.5.5H5c-.3 0-.5-.2-.5-.5v-7c0-.3.2-.5.5-.5h14c.3 0 .5.2.5.5v7zM8 13h8v-1.5H8V13z"
+  d: "M19 6.5H5c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm.5 9c0 .3-.2.5-.5.5H5c-.3 0-.5-.2-.5-.5v-7c0-.3.2-.5.5-.5h14c.3 0 .5.2.5.5v7zM8 12.8h8v-1.5H8v1.5z"
 }));
 /* harmony default export */ __webpack_exports__["a"] = (button);
 
 
 /***/ }),
 
-/***/ 314:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__);
-
-
-/**
- * WordPress dependencies
- */
-
-var code = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["SVG"], {
-  viewBox: "0 0 24 24",
-  xmlns: "http://www.w3.org/2000/svg"
-}, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_1__["Path"], {
-  d: "M20.8 10.7l-4.3-4.3-1.1 1.1 4.3 4.3c.1.1.1.3 0 .4l-4.3 4.3 1.1 1.1 4.3-4.3c.7-.8.7-1.9 0-2.6zM4.2 11.8l4.3-4.3-1-1-4.3 4.3c-.7.7-.7 1.8 0 2.5l4.3 4.3 1.1-1.1-4.3-4.3c-.2-.1-.2-.3-.1-.4z"
-}));
-/* harmony default export */ __webpack_exports__["a"] = (code);
-
-
-/***/ }),
-
-/***/ 32:
+/***/ "qRz9":
 /***/ (function(module, exports) {
 
-(function() { module.exports = window["wp"]["url"]; }());
+(function() { module.exports = window["wp"]["richText"]; }());
 
 /***/ }),
 
-/***/ 38:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _arrayWithHoles; });
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-/***/ }),
-
-/***/ 39:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _nonIterableRest; });
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-/***/ }),
-
-/***/ 4:
+/***/ "rmEH":
 /***/ (function(module, exports) {
 
-(function() { module.exports = window["wp"]["data"]; }());
+(function() { module.exports = window["wp"]["htmlEntities"]; }());
 
 /***/ }),
 
-/***/ 44:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _objectWithoutPropertiesLoose; });
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
-
-/***/ }),
-
-/***/ 450:
+/***/ "t1DA":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js
-var objectWithoutProperties = __webpack_require__(13);
-
 // EXTERNAL MODULE: external ["wp","richText"]
-var external_wp_richText_ = __webpack_require__(21);
+var external_wp_richText_ = __webpack_require__("qRz9");
 
 // EXTERNAL MODULE: external ["wp","element"]
-var external_wp_element_ = __webpack_require__(0);
+var external_wp_element_ = __webpack_require__("GRId");
 
 // EXTERNAL MODULE: external ["wp","i18n"]
-var external_wp_i18n_ = __webpack_require__(1);
+var external_wp_i18n_ = __webpack_require__("l3Sj");
 
 // EXTERNAL MODULE: external ["wp","blockEditor"]
-var external_wp_blockEditor_ = __webpack_require__(6);
+var external_wp_blockEditor_ = __webpack_require__("axFQ");
 
 // EXTERNAL MODULE: external ["wp","primitives"]
-var external_wp_primitives_ = __webpack_require__(7);
+var external_wp_primitives_ = __webpack_require__("Tqx9");
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/icons/build-module/library/format-bold.js
 
@@ -553,7 +376,7 @@ var external_wp_primitives_ = __webpack_require__(7);
  * WordPress dependencies
  */
 
-var formatBold = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
+const formatBold = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24"
 }, Object(external_wp_element_["createElement"])(external_wp_primitives_["Path"], {
@@ -571,29 +394,35 @@ var formatBold = Object(external_wp_element_["createElement"])(external_wp_primi
 
 
 
-var bold_name = 'core/bold';
+const bold_name = 'core/bold';
 
-var title = Object(external_wp_i18n_["__"])('Bold');
+const title = Object(external_wp_i18n_["__"])('Bold');
 
-var bold = {
+const bold = {
   name: bold_name,
-  title: title,
+  title,
   tagName: 'strong',
   className: null,
-  edit: function edit(_ref) {
-    var isActive = _ref.isActive,
-        value = _ref.value,
-        onChange = _ref.onChange,
-        onFocus = _ref.onFocus;
+
+  edit(_ref) {
+    let {
+      isActive,
+      value,
+      onChange,
+      onFocus
+    } = _ref;
 
     function onToggle() {
       onChange(Object(external_wp_richText_["toggleFormat"])(value, {
-        type: bold_name
+        type: bold_name,
+        title
       }));
     }
 
     function onClick() {
-      onToggle();
+      onChange(Object(external_wp_richText_["toggleFormat"])(value, {
+        type: bold_name
+      }));
       onFocus();
     }
 
@@ -614,10 +443,11 @@ var bold = {
       onInput: onToggle
     }));
   }
+
 };
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/library/code.js
-var code = __webpack_require__(314);
+var code = __webpack_require__("1Yn1");
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/code/index.js
 
@@ -629,35 +459,37 @@ var code = __webpack_require__(314);
 
 
 
-var code_name = 'core/code';
+const code_name = 'core/code';
 
-var code_title = Object(external_wp_i18n_["__"])('Inline code');
+const code_title = Object(external_wp_i18n_["__"])('Inline code');
 
-var code_code = {
+const code_code = {
   name: code_name,
   title: code_title,
   tagName: 'code',
   className: null,
-  __unstableInputRule: function __unstableInputRule(value) {
-    var BACKTICK = '`';
-    var _value = value,
-        start = _value.start,
-        text = _value.text;
-    var characterBefore = text.slice(start - 1, start); // Quick check the text for the necessary character.
+
+  __unstableInputRule(value) {
+    const BACKTICK = '`';
+    const {
+      start,
+      text
+    } = value;
+    const characterBefore = text.slice(start - 1, start); // Quick check the text for the necessary character.
 
     if (characterBefore !== BACKTICK) {
       return value;
     }
 
-    var textBefore = text.slice(0, start - 1);
-    var indexBefore = textBefore.lastIndexOf(BACKTICK);
+    const textBefore = text.slice(0, start - 1);
+    const indexBefore = textBefore.lastIndexOf(BACKTICK);
 
     if (indexBefore === -1) {
       return value;
     }
 
-    var startIndex = indexBefore;
-    var endIndex = start - 2;
+    const startIndex = indexBefore;
+    const endIndex = start - 2;
 
     if (startIndex === endIndex) {
       return value;
@@ -670,15 +502,19 @@ var code_code = {
     }, startIndex, endIndex);
     return value;
   },
-  edit: function edit(_ref) {
-    var value = _ref.value,
-        onChange = _ref.onChange,
-        onFocus = _ref.onFocus,
-        isActive = _ref.isActive;
+
+  edit(_ref) {
+    let {
+      value,
+      onChange,
+      onFocus,
+      isActive
+    } = _ref;
 
     function onClick() {
       onChange(Object(external_wp_richText_["toggleFormat"])(value, {
-        type: code_name
+        type: code_name,
+        title: code_title
       }));
       onFocus();
     }
@@ -687,31 +523,21 @@ var code_code = {
       icon: code["a" /* default */],
       title: code_title,
       onClick: onClick,
-      isActive: isActive
+      isActive: isActive,
+      role: "menuitemcheckbox"
     });
   }
+
 };
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/defineProperty.js
-var defineProperty = __webpack_require__(5);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js + 1 modules
-var slicedToArray = __webpack_require__(11);
-
 // EXTERNAL MODULE: external ["wp","components"]
-var external_wp_components_ = __webpack_require__(3);
+var external_wp_components_ = __webpack_require__("tI+e");
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/library/keyboard-return.js
-var keyboard_return = __webpack_require__(218);
+var keyboard_return = __webpack_require__("btIw");
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/image/index.js
 
-
-
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 /**
  * WordPress dependencies
@@ -722,12 +548,12 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 
 
-var ALLOWED_MEDIA_TYPES = ['image'];
-var image_name = 'core/image';
+const ALLOWED_MEDIA_TYPES = ['image'];
+const image_name = 'core/image';
 
-var image_title = Object(external_wp_i18n_["__"])('Inline image');
+const image_title = Object(external_wp_i18n_["__"])('Inline image');
 
-var image_image = {
+const image_image = {
   name: image_name,
   title: image_title,
   keywords: [Object(external_wp_i18n_["__"])('photo'), Object(external_wp_i18n_["__"])('media')],
@@ -744,20 +570,19 @@ var image_image = {
 };
 
 function InlineUI(_ref) {
-  var value = _ref.value,
-      onChange = _ref.onChange,
-      activeObjectAttributes = _ref.activeObjectAttributes,
-      contentRef = _ref.contentRef;
-  var style = activeObjectAttributes.style;
-
-  var _useState = Object(external_wp_element_["useState"])(style === null || style === void 0 ? void 0 : style.replace(/\D/g, '')),
-      _useState2 = Object(slicedToArray["a" /* default */])(_useState, 2),
-      width = _useState2[0],
-      setWidth = _useState2[1];
-
-  var anchorRef = Object(external_wp_richText_["useAnchorRef"])({
+  let {
+    value,
+    onChange,
+    activeObjectAttributes,
+    contentRef
+  } = _ref;
+  const {
+    style
+  } = activeObjectAttributes;
+  const [width, setWidth] = Object(external_wp_element_["useState"])(style === null || style === void 0 ? void 0 : style.replace(/\D/g, ''));
+  const anchorRef = Object(external_wp_richText_["useAnchorRef"])({
     ref: contentRef,
-    value: value,
+    value,
     settings: image_image
   });
   return Object(external_wp_element_["createElement"])(external_wp_components_["Popover"], {
@@ -767,17 +592,17 @@ function InlineUI(_ref) {
     className: "block-editor-format-toolbar__image-popover"
   }, Object(external_wp_element_["createElement"])("form", {
     className: "block-editor-format-toolbar__image-container-content",
-    onSubmit: function onSubmit(event) {
-      var newReplacements = value.replacements.slice();
+    onSubmit: event => {
+      const newReplacements = value.replacements.slice();
       newReplacements[value.start] = {
         type: image_name,
-        attributes: _objectSpread(_objectSpread({}, activeObjectAttributes), {}, {
-          style: "width: ".concat(width, "px;")
-        })
+        attributes: { ...activeObjectAttributes,
+          style: width ? `width: ${width}px;` : ''
+        }
       };
-      onChange(_objectSpread(_objectSpread({}, value), {}, {
+      onChange({ ...value,
         replacements: newReplacements
-      }));
+      });
       event.preventDefault();
     }
   }, Object(external_wp_element_["createElement"])(external_wp_components_["TextControl"], {
@@ -786,9 +611,7 @@ function InlineUI(_ref) {
     label: Object(external_wp_i18n_["__"])('Width'),
     value: width,
     min: 1,
-    onChange: function onChange(newWidth) {
-      return setWidth(newWidth);
-    }
+    onChange: newWidth => setWidth(newWidth)
   }), Object(external_wp_element_["createElement"])(external_wp_components_["Button"], {
     icon: keyboard_return["a" /* default */],
     label: Object(external_wp_i18n_["__"])('Apply'),
@@ -797,17 +620,15 @@ function InlineUI(_ref) {
 }
 
 function Edit(_ref2) {
-  var value = _ref2.value,
-      onChange = _ref2.onChange,
-      onFocus = _ref2.onFocus,
-      isObjectActive = _ref2.isObjectActive,
-      activeObjectAttributes = _ref2.activeObjectAttributes,
-      contentRef = _ref2.contentRef;
-
-  var _useState3 = Object(external_wp_element_["useState"])(false),
-      _useState4 = Object(slicedToArray["a" /* default */])(_useState3, 2),
-      isModalOpen = _useState4[0],
-      setIsModalOpen = _useState4[1];
+  let {
+    value,
+    onChange,
+    onFocus,
+    isObjectActive,
+    activeObjectAttributes,
+    contentRef
+  } = _ref2;
+  const [isModalOpen, setIsModalOpen] = Object(external_wp_element_["useState"])(false);
 
   function openModal() {
     setIsModalOpen(true);
@@ -829,26 +650,30 @@ function Edit(_ref2) {
     isActive: isObjectActive
   }), isModalOpen && Object(external_wp_element_["createElement"])(external_wp_blockEditor_["MediaUpload"], {
     allowedTypes: ALLOWED_MEDIA_TYPES,
-    onSelect: function onSelect(_ref3) {
-      var id = _ref3.id,
-          url = _ref3.url,
-          alt = _ref3.alt,
-          imgWidth = _ref3.width;
+    onSelect: _ref3 => {
+      let {
+        id,
+        url,
+        alt,
+        width: imgWidth
+      } = _ref3;
       closeModal();
       onChange(Object(external_wp_richText_["insertObject"])(value, {
         type: image_name,
         attributes: {
-          className: "wp-image-".concat(id),
-          style: "width: ".concat(Math.min(imgWidth, 150), "px;"),
-          url: url,
-          alt: alt
+          className: `wp-image-${id}`,
+          style: `width: ${Math.min(imgWidth, 150)}px;`,
+          url,
+          alt
         }
       }));
       onFocus();
     },
     onClose: closeModal,
-    render: function render(_ref4) {
-      var open = _ref4.open;
+    render: _ref4 => {
+      let {
+        open
+      } = _ref4;
       open();
       return null;
     }
@@ -867,7 +692,7 @@ function Edit(_ref2) {
  * WordPress dependencies
  */
 
-var formatItalic = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
+const formatItalic = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24"
 }, Object(external_wp_element_["createElement"])(external_wp_primitives_["Path"], {
@@ -885,29 +710,35 @@ var formatItalic = Object(external_wp_element_["createElement"])(external_wp_pri
 
 
 
-var italic_name = 'core/italic';
+const italic_name = 'core/italic';
 
-var italic_title = Object(external_wp_i18n_["__"])('Italic');
+const italic_title = Object(external_wp_i18n_["__"])('Italic');
 
-var italic = {
+const italic = {
   name: italic_name,
   title: italic_title,
   tagName: 'em',
   className: null,
-  edit: function edit(_ref) {
-    var isActive = _ref.isActive,
-        value = _ref.value,
-        onChange = _ref.onChange,
-        onFocus = _ref.onFocus;
+
+  edit(_ref) {
+    let {
+      isActive,
+      value,
+      onChange,
+      onFocus
+    } = _ref;
 
     function onToggle() {
       onChange(Object(external_wp_richText_["toggleFormat"])(value, {
-        type: italic_name
+        type: italic_name,
+        title: italic_title
       }));
     }
 
     function onClick() {
-      onToggle();
+      onChange(Object(external_wp_richText_["toggleFormat"])(value, {
+        type: italic_name
+      }));
       onFocus();
     }
 
@@ -928,25 +759,29 @@ var italic = {
       onInput: onToggle
     }));
   }
+
 };
 
 // EXTERNAL MODULE: external ["wp","url"]
-var external_wp_url_ = __webpack_require__(32);
+var external_wp_url_ = __webpack_require__("Mmq9");
 
 // EXTERNAL MODULE: external ["wp","htmlEntities"]
-var external_wp_htmlEntities_ = __webpack_require__(64);
+var external_wp_htmlEntities_ = __webpack_require__("rmEH");
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/library/link-off.js
-var link_off = __webpack_require__(221);
+var link_off = __webpack_require__("Mp0b");
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/library/link.js
-var library_link = __webpack_require__(195);
+var library_link = __webpack_require__("Bpkj");
 
 // EXTERNAL MODULE: external ["wp","a11y"]
-var external_wp_a11y_ = __webpack_require__(48);
+var external_wp_a11y_ = __webpack_require__("gdqT");
+
+// EXTERNAL MODULE: external ["wp","data"]
+var external_wp_data_ = __webpack_require__("1ZqX");
 
 // EXTERNAL MODULE: external "lodash"
-var external_lodash_ = __webpack_require__(2);
+var external_lodash_ = __webpack_require__("YLtl");
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/link/utils.js
 /**
@@ -971,7 +806,7 @@ function isValidHref(href) {
     return false;
   }
 
-  var trimmedHref = href.trim();
+  const trimmedHref = href.trim();
 
   if (!trimmedHref) {
     return false;
@@ -979,7 +814,7 @@ function isValidHref(href) {
 
 
   if (/^\S+:/.test(trimmedHref)) {
-    var protocol = Object(external_wp_url_["getProtocol"])(trimmedHref);
+    const protocol = Object(external_wp_url_["getProtocol"])(trimmedHref);
 
     if (!Object(external_wp_url_["isValidProtocol"])(protocol)) {
       return false;
@@ -991,25 +826,25 @@ function isValidHref(href) {
       return false;
     }
 
-    var authority = Object(external_wp_url_["getAuthority"])(trimmedHref);
+    const authority = Object(external_wp_url_["getAuthority"])(trimmedHref);
 
     if (!Object(external_wp_url_["isValidAuthority"])(authority)) {
       return false;
     }
 
-    var path = Object(external_wp_url_["getPath"])(trimmedHref);
+    const path = Object(external_wp_url_["getPath"])(trimmedHref);
 
     if (path && !Object(external_wp_url_["isValidPath"])(path)) {
       return false;
     }
 
-    var queryString = Object(external_wp_url_["getQueryString"])(trimmedHref);
+    const queryString = Object(external_wp_url_["getQueryString"])(trimmedHref);
 
     if (queryString && !Object(external_wp_url_["isValidQueryString"])(queryString)) {
       return false;
     }
 
-    var fragment = Object(external_wp_url_["getFragment"])(trimmedHref);
+    const fragment = Object(external_wp_url_["getFragment"])(trimmedHref);
 
     if (fragment && !Object(external_wp_url_["isValidFragment"])(fragment)) {
       return false;
@@ -1036,14 +871,16 @@ function isValidHref(href) {
  */
 
 function createLinkFormat(_ref) {
-  var url = _ref.url,
-      type = _ref.type,
-      id = _ref.id,
-      opensInNewWindow = _ref.opensInNewWindow;
-  var format = {
+  let {
+    url,
+    type,
+    id,
+    opensInNewWindow
+  } = _ref;
+  const format = {
     type: 'core/link',
     attributes: {
-      url: url
+      url
     }
   };
   if (type) format.attributes.type = type;
@@ -1056,19 +893,159 @@ function createLinkFormat(_ref) {
 
   return format;
 }
+/* eslint-disable jsdoc/no-undefined-types */
+
+/**
+ * Get the start and end boundaries of a given format from a rich text value.
+ *
+ *
+ * @param {RichTextValue} value      the rich text value to interrogate.
+ * @param {string}        format     the identifier for the target format (e.g. `core/link`, `core/bold`).
+ * @param {number?}       startIndex optional startIndex to seek from.
+ * @param {number?}       endIndex   optional endIndex to seek from.
+ * @return {Object}	object containing start and end values for the given format.
+ */
+
+/* eslint-enable jsdoc/no-undefined-types */
+
+function getFormatBoundary(value, format) {
+  let startIndex = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : value.start;
+  let endIndex = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : value.end;
+  const EMPTY_BOUNDARIES = {
+    start: null,
+    end: null
+  };
+  const {
+    formats
+  } = value;
+  let targetFormat;
+  let initialIndex;
+
+  if (!(formats !== null && formats !== void 0 && formats.length)) {
+    return EMPTY_BOUNDARIES;
+  } // Clone formats to avoid modifying source formats.
+
+
+  const newFormats = formats.slice();
+  const formatAtStart = Object(external_lodash_["find"])(newFormats[startIndex], {
+    type: format.type
+  });
+  const formatAtEnd = Object(external_lodash_["find"])(newFormats[endIndex], {
+    type: format.type
+  });
+  const formatAtEndMinusOne = Object(external_lodash_["find"])(newFormats[endIndex - 1], {
+    type: format.type
+  });
+
+  if (!!formatAtStart) {
+    // Set values to conform to "start"
+    targetFormat = formatAtStart;
+    initialIndex = startIndex;
+  } else if (!!formatAtEnd) {
+    // Set values to conform to "end"
+    targetFormat = formatAtEnd;
+    initialIndex = endIndex;
+  } else if (!!formatAtEndMinusOne) {
+    // This is an edge case which will occur if you create a format, then place
+    // the caret just before the format and hit the back ARROW key. The resulting
+    // value object will have start and end +1 beyond the edge of the format boundary.
+    targetFormat = formatAtEndMinusOne;
+    initialIndex = endIndex - 1;
+  } else {
+    return EMPTY_BOUNDARIES;
+  }
+
+  const index = newFormats[initialIndex].indexOf(targetFormat);
+  const walkingArgs = [newFormats, initialIndex, targetFormat, index]; // Walk the startIndex "backwards" to the leading "edge" of the matching format.
+
+  startIndex = walkToStart(...walkingArgs); // Walk the endIndex "forwards" until the trailing "edge" of the matching format.
+
+  endIndex = walkToEnd(...walkingArgs); // Safe guard: start index cannot be less than 0
+
+  startIndex = startIndex < 0 ? 0 : startIndex; // // Return the indicies of the "edges" as the boundaries.
+
+  return {
+    start: startIndex,
+    end: endIndex
+  };
+}
+/**
+ * Walks forwards/backwards towards the boundary of a given format within an
+ * array of format objects. Returns the index of the boundary.
+ *
+ * @param {Array}  formats         the formats to search for the given format type.
+ * @param {number} initialIndex    the starting index from which to walk.
+ * @param {Object} targetFormatRef a reference to the format type object being sought.
+ * @param {number} formatIndex     the index at which we expect the target format object to be.
+ * @param {string} direction       either 'forwards' or 'backwards' to indicate the direction.
+ * @return {number} the index of the boundary of the given format.
+ */
+
+function walkToBoundary(formats, initialIndex, targetFormatRef, formatIndex, direction) {
+  let index = initialIndex;
+  const directions = {
+    forwards: 1,
+    backwards: -1
+  };
+  const directionIncrement = directions[direction] || 1; // invalid direction arg default to forwards
+
+  const inverseDirectionIncrement = directionIncrement * -1;
+
+  while (formats[index] && formats[index][formatIndex] === targetFormatRef) {
+    // Increment/decrement in the direction of operation.
+    index = index + directionIncrement;
+  } // Restore by one in inverse direction of operation
+  // to avoid out of bounds.
+
+
+  index = index + inverseDirectionIncrement;
+  return index;
+}
+
+const walkToStart = Object(external_lodash_["partialRight"])(walkToBoundary, 'backwards');
+const walkToEnd = Object(external_lodash_["partialRight"])(walkToBoundary, 'forwards');
+
+// CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/link/use-link-instance-key.js
+// Weakly referenced map allows unused ids to be garbage collected.
+const weakMap = new WeakMap(); // Incrementing zero-based ID value
+
+let use_link_instance_key_id = -1;
+const prefix = 'link-control-instance';
+
+function getKey(_id) {
+  return `${prefix}-${_id}`;
+}
+/**
+ * Builds a unique link control key for the given object reference.
+ *
+ * @param {Object} instance an unique object reference specific to this link control instance.
+ * @return {string} the unique key to use for this link control.
+ */
+
+
+function useLinkInstanceKey(instance) {
+  if (!instance) {
+    return;
+  }
+
+  if (weakMap.has(instance)) {
+    return getKey(weakMap.get(instance));
+  }
+
+  use_link_instance_key_id += 1;
+  weakMap.set(instance, use_link_instance_key_id);
+  return getKey(use_link_instance_key_id);
+}
+
+/* harmony default export */ var use_link_instance_key = (useLinkInstanceKey);
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/link/inline.js
 
 
-
-
-function inline_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function inline_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { inline_ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { inline_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 /**
  * WordPress dependencies
  */
+
 
 
 
@@ -1082,16 +1059,21 @@ function inline_objectSpread(target) { for (var i = 1; i < arguments.length; i++
 
 
 
-function InlineLinkUI(_ref) {
-  var isActive = _ref.isActive,
-      activeAttributes = _ref.activeAttributes,
-      addingLink = _ref.addingLink,
-      value = _ref.value,
-      onChange = _ref.onChange,
-      speak = _ref.speak,
-      stopAddingLink = _ref.stopAddingLink,
-      contentRef = _ref.contentRef;
 
+function InlineLinkUI(_ref) {
+  let {
+    isActive,
+    activeAttributes,
+    addingLink,
+    value,
+    onChange,
+    speak,
+    stopAddingLink,
+    contentRef
+  } = _ref;
+  const richLinkTextValue = getRichTextValueFromSelection(value, isActive); // Get the text content minus any HTML tags.
+
+  const richTextText = richLinkTextValue.text;
   /**
    * Pending settings to be applied to the next link. When inserting a new
    * link, toggle values cannot be applied immediately, because there is not
@@ -1100,29 +1082,52 @@ function InlineLinkUI(_ref) {
    *
    * @type {[Object|undefined,Function]}
    */
-  var _useState = Object(external_wp_element_["useState"])(),
-      _useState2 = Object(slicedToArray["a" /* default */])(_useState, 2),
-      nextLinkValue = _useState2[0],
-      setNextLinkValue = _useState2[1];
 
-  var linkValue = inline_objectSpread({
+  const [nextLinkValue, setNextLinkValue] = Object(external_wp_element_["useState"])();
+  const {
+    createPageEntity,
+    userCanCreatePages
+  } = Object(external_wp_data_["useSelect"])(select => {
+    const {
+      getSettings
+    } = select(external_wp_blockEditor_["store"]);
+
+    const _settings = getSettings();
+
+    return {
+      createPageEntity: _settings.__experimentalCreatePageEntity,
+      userCanCreatePages: _settings.__experimentalUserCanCreatePages
+    };
+  }, []);
+  const linkValue = {
     url: activeAttributes.url,
     type: activeAttributes.type,
     id: activeAttributes.id,
-    opensInNewTab: activeAttributes.target === '_blank'
-  }, nextLinkValue);
+    opensInNewTab: activeAttributes.target === '_blank',
+    title: richTextText,
+    ...nextLinkValue
+  };
+
+  function removeLink() {
+    const newValue = Object(external_wp_richText_["removeFormat"])(value, 'core/link');
+    onChange(newValue);
+    stopAddingLink();
+    speak(Object(external_wp_i18n_["__"])('Link removed.'), 'assertive');
+  }
 
   function onChangeLink(nextValue) {
     // Merge with values from state, both for the purpose of assigning the
     // next state value, and for use in constructing the new link format if
     // the link is ready to be applied.
-    nextValue = inline_objectSpread(inline_objectSpread({}, nextLinkValue), nextValue); // LinkControl calls `onChange` immediately upon the toggling a setting.
+    nextValue = { ...nextLinkValue,
+      ...nextValue
+    }; // LinkControl calls `onChange` immediately upon the toggling a setting.
 
-    var didToggleSetting = linkValue.opensInNewTab !== nextValue.opensInNewTab && linkValue.url === nextValue.url; // If change handler was called as a result of a settings change during
+    const didToggleSetting = linkValue.opensInNewTab !== nextValue.opensInNewTab && linkValue.url === nextValue.url; // If change handler was called as a result of a settings change during
     // link insertion, it must be held in state until the link is ready to
     // be applied.
 
-    var didToggleSettingForNewLink = didToggleSetting && nextValue.url === undefined; // If link will be assigned, the state value can be considered flushed.
+    const didToggleSettingForNewLink = didToggleSetting && nextValue.url === undefined; // If link will be assigned, the state value can be considered flushed.
     // Otherwise, persist the pending changes.
 
     setNextLinkValue(didToggleSettingForNewLink ? nextValue : undefined);
@@ -1131,22 +1136,46 @@ function InlineLinkUI(_ref) {
       return;
     }
 
-    var newUrl = Object(external_wp_url_["prependHTTP"])(nextValue.url);
-    var format = createLinkFormat({
+    const newUrl = Object(external_wp_url_["prependHTTP"])(nextValue.url);
+    const linkFormat = createLinkFormat({
       url: newUrl,
       type: nextValue.type,
       id: nextValue.id !== undefined && nextValue.id !== null ? String(nextValue.id) : undefined,
       opensInNewWindow: nextValue.opensInNewTab
     });
+    const newText = nextValue.title || newUrl;
 
     if (Object(external_wp_richText_["isCollapsed"])(value) && !isActive) {
-      var newText = nextValue.title || newUrl;
-      var toInsert = Object(external_wp_richText_["applyFormat"])(Object(external_wp_richText_["create"])({
+      // Scenario: we don't have any actively selected text or formats.
+      const toInsert = Object(external_wp_richText_["applyFormat"])(Object(external_wp_richText_["create"])({
         text: newText
-      }), format, 0, newText.length);
+      }), linkFormat, 0, newText.length);
       onChange(Object(external_wp_richText_["insert"])(value, toInsert));
     } else {
-      var newValue = Object(external_wp_richText_["applyFormat"])(value, format);
+      // Scenario: we have any active text selection or an active format
+      let newValue;
+
+      if (newText === richTextText) {
+        // If we're not updating the text then ignore
+        newValue = Object(external_wp_richText_["applyFormat"])(value, linkFormat);
+      } else {
+        // Create new RichText value for the new text in order that we
+        // can apply formats to it.
+        newValue = Object(external_wp_richText_["create"])({
+          text: newText
+        }); // Apply the new Link format to this new text value.
+
+        newValue = Object(external_wp_richText_["applyFormat"])(newValue, linkFormat, 0, newText.length); // Update the original (full) RichTextValue replacing the
+        // target text with the *new* RichTextValue containing:
+        // 1. The new text content.
+        // 2. The new link format.
+        // Note original formats will be lost when applying this change.
+        // That is expected behaviour.
+        // See: https://github.com/WordPress/gutenberg/pull/33849#issuecomment-936134179.
+
+        newValue = Object(external_wp_richText_["replace"])(value, richTextText, newValue);
+      }
+
       newValue.start = newValue.end;
       newValue.activeFormats = [];
       onChange(newValue);
@@ -1167,30 +1196,85 @@ function InlineLinkUI(_ref) {
     }
   }
 
-  var anchorRef = Object(external_wp_richText_["useAnchorRef"])({
+  const anchorRef = Object(external_wp_richText_["useAnchorRef"])({
     ref: contentRef,
-    value: value,
+    value,
     settings: link_link
-  }); // The focusOnMount prop shouldn't evolve during render of a Popover
+  }); // Generate a string based key that is unique to this anchor reference.
+  // This is used to force re-mount the LinkControl component to avoid
+  // potential stale state bugs caused by the component not being remounted
+  // See https://github.com/WordPress/gutenberg/pull/34742.
+
+  const forceRemountKey = use_link_instance_key(anchorRef); // The focusOnMount prop shouldn't evolve during render of a Popover
   // otherwise it causes a render of the content.
 
-  var focusOnMount = Object(external_wp_element_["useRef"])(addingLink ? 'firstElement' : false);
+  const focusOnMount = Object(external_wp_element_["useRef"])(addingLink ? 'firstElement' : false);
+
+  async function handleCreate(pageTitle) {
+    const page = await createPageEntity({
+      title: pageTitle,
+      status: 'draft'
+    });
+    return {
+      id: page.id,
+      type: page.type,
+      title: page.title.rendered,
+      url: page.link,
+      kind: 'post-type'
+    };
+  }
+
+  function createButtonText(searchTerm) {
+    return Object(external_wp_element_["createInterpolateElement"])(Object(external_wp_i18n_["sprintf"])(
+    /* translators: %s: search term. */
+    Object(external_wp_i18n_["__"])('Create Page: <mark>%s</mark>'), searchTerm), {
+      mark: Object(external_wp_element_["createElement"])("mark", null)
+    });
+  }
+
   return Object(external_wp_element_["createElement"])(external_wp_components_["Popover"], {
     anchorRef: anchorRef,
     focusOnMount: focusOnMount.current,
     onClose: stopAddingLink,
     position: "bottom center"
   }, Object(external_wp_element_["createElement"])(external_wp_blockEditor_["__experimentalLinkControl"], {
+    key: forceRemountKey,
     value: linkValue,
     onChange: onChangeLink,
-    forceIsEditingLink: addingLink
+    onRemove: removeLink,
+    forceIsEditingLink: addingLink,
+    hasRichPreviews: true,
+    createSuggestion: createPageEntity && handleCreate,
+    withCreateSuggestion: userCanCreatePages,
+    createSuggestionButtonText: createButtonText,
+    hasTextControl: true
   }));
+}
+
+function getRichTextValueFromSelection(value, isActive) {
+  // Default to the selection ranges on the RichTextValue object.
+  let textStart = value.start;
+  let textEnd = value.end; // If the format is currently active then the rich text value
+  // should always be taken from the bounds of the active format
+  // and not the selected text.
+
+  if (isActive) {
+    const boundary = getFormatBoundary(value, {
+      type: 'core/link'
+    });
+    textStart = boundary.start; // Text *selection* always extends +1 beyond the edge of the format.
+    // We account for that here.
+
+    textEnd = boundary.end + 1;
+  } // Get a RichTextValue containing the selected text content.
+
+
+  return Object(external_wp_richText_["slice"])(value, textStart, textEnd);
 }
 
 /* harmony default export */ var inline = (Object(external_wp_components_["withSpokenMessages"])(InlineLinkUI));
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/link/index.js
-
 
 
 /**
@@ -1209,27 +1293,26 @@ function InlineLinkUI(_ref) {
  */
 
 
-var link_name = 'core/link';
 
-var link_title = Object(external_wp_i18n_["__"])('Link');
+const link_name = 'core/link';
+
+const link_title = Object(external_wp_i18n_["__"])('Link');
 
 function link_Edit(_ref) {
-  var isActive = _ref.isActive,
-      activeAttributes = _ref.activeAttributes,
-      value = _ref.value,
-      onChange = _ref.onChange,
-      onFocus = _ref.onFocus,
-      contentRef = _ref.contentRef;
-
-  var _useState = Object(external_wp_element_["useState"])(false),
-      _useState2 = Object(slicedToArray["a" /* default */])(_useState, 2),
-      addingLink = _useState2[0],
-      setAddingLink = _useState2[1];
+  let {
+    isActive,
+    activeAttributes,
+    value,
+    onChange,
+    onFocus,
+    contentRef
+  } = _ref;
+  const [addingLink, setAddingLink] = Object(external_wp_element_["useState"])(false);
 
   function addLink() {
-    var text = Object(external_wp_richText_["getTextContent"])(Object(external_wp_richText_["slice"])(value));
+    const text = Object(external_wp_richText_["getTextContent"])(Object(external_wp_richText_["slice"])(value));
 
-    if (text && Object(external_wp_url_["isURL"])(text)) {
+    if (text && Object(external_wp_url_["isURL"])(text) && isValidHref(text)) {
       onChange(Object(external_wp_richText_["applyFormat"])(value, {
         type: link_name,
         attributes: {
@@ -1240,7 +1323,7 @@ function link_Edit(_ref) {
       onChange(Object(external_wp_richText_["applyFormat"])(value, {
         type: link_name,
         attributes: {
-          url: "mailto:".concat(text)
+          url: `mailto:${text}`
         }
       }));
     } else {
@@ -1293,7 +1376,7 @@ function link_Edit(_ref) {
   }));
 }
 
-var link_link = {
+const link_link = {
   name: link_name,
   title: link_title,
   tagName: 'a',
@@ -1304,15 +1387,18 @@ var link_link = {
     id: 'data-id',
     target: 'target'
   },
-  __unstablePasteRule: function __unstablePasteRule(value, _ref2) {
-    var html = _ref2.html,
-        plainText = _ref2.plainText;
+
+  __unstablePasteRule(value, _ref2) {
+    let {
+      html,
+      plainText
+    } = _ref2;
 
     if (Object(external_wp_richText_["isCollapsed"])(value)) {
       return value;
     }
 
-    var pastedText = (html || plainText).replace(/<[^>]+>/g, '').trim(); // A URL was pasted, turn the selection into a link
+    const pastedText = (html || plainText).replace(/<[^>]+>/g, '').trim(); // A URL was pasted, turn the selection into a link
 
     if (!Object(external_wp_url_["isURL"])(pastedText)) {
       return value;
@@ -1327,11 +1413,12 @@ var link_link = {
       }
     });
   },
+
   edit: link_Edit
 };
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/library/format-strikethrough.js
-var format_strikethrough = __webpack_require__(299);
+var format_strikethrough = __webpack_require__("Crq9");
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/strikethrough/index.js
 
@@ -1343,24 +1430,28 @@ var format_strikethrough = __webpack_require__(299);
 
 
 
-var strikethrough_name = 'core/strikethrough';
+const strikethrough_name = 'core/strikethrough';
 
-var strikethrough_title = Object(external_wp_i18n_["__"])('Strikethrough');
+const strikethrough_title = Object(external_wp_i18n_["__"])('Strikethrough');
 
-var strikethrough = {
+const strikethrough = {
   name: strikethrough_name,
   title: strikethrough_title,
   tagName: 's',
   className: null,
-  edit: function edit(_ref) {
-    var isActive = _ref.isActive,
-        value = _ref.value,
-        onChange = _ref.onChange,
-        onFocus = _ref.onFocus;
+
+  edit(_ref) {
+    let {
+      isActive,
+      value,
+      onChange,
+      onFocus
+    } = _ref;
 
     function onClick() {
       onChange(Object(external_wp_richText_["toggleFormat"])(value, {
-        type: strikethrough_name
+        type: strikethrough_name,
+        title: strikethrough_title
       }));
       onFocus();
     }
@@ -1369,9 +1460,11 @@ var strikethrough = {
       icon: format_strikethrough["a" /* default */],
       title: strikethrough_title,
       onClick: onClick,
-      isActive: isActive
+      isActive: isActive,
+      role: "menuitemcheckbox"
     });
   }
+
 };
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/underline/index.js
@@ -1383,25 +1476,32 @@ var strikethrough = {
 
 
 
-var underline_name = 'core/underline';
-var underline = {
+const underline_name = 'core/underline';
+
+const underline_title = Object(external_wp_i18n_["__"])('Underline');
+
+const underline = {
   name: underline_name,
-  title: Object(external_wp_i18n_["__"])('Underline'),
+  title: underline_title,
   tagName: 'span',
   className: null,
   attributes: {
     style: 'style'
   },
-  edit: function edit(_ref) {
-    var value = _ref.value,
-        onChange = _ref.onChange;
 
-    var onToggle = function onToggle() {
+  edit(_ref) {
+    let {
+      value,
+      onChange
+    } = _ref;
+
+    const onToggle = () => {
       onChange(Object(external_wp_richText_["toggleFormat"])(value, {
         type: underline_name,
         attributes: {
           style: 'text-decoration: underline;'
-        }
+        },
+        title: underline_title
       }));
     };
 
@@ -1414,16 +1514,26 @@ var underline = {
       onInput: onToggle
     }));
   }
+
 };
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/icon/index.js
-var icon = __webpack_require__(135);
+var icon = __webpack_require__("iClF");
 
-// EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/library/text-color.js
-var text_color = __webpack_require__(220);
+// CONCATENATED MODULE: ./node_modules/@wordpress/icons/build-module/library/text-color.js
 
-// EXTERNAL MODULE: external ["wp","data"]
-var external_wp_data_ = __webpack_require__(4);
+
+/**
+ * WordPress dependencies
+ */
+
+const textColor = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, Object(external_wp_element_["createElement"])(external_wp_primitives_["Path"], {
+  d: "M12.9 6h-2l-4 11h1.9l1.1-3h4.2l1.1 3h1.9L12.9 6zm-2.5 6.5l1.5-4.9 1.7 4.9h-3.2z"
+}));
+/* harmony default export */ var text_color = (textColor);
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/text-color/inline.js
 
@@ -1440,91 +1550,162 @@ var external_wp_data_ = __webpack_require__(4);
 
 
 
+
+
 /**
  * Internal dependencies
  */
 
 
-function getActiveColor(formatName, formatValue, colors) {
-  var activeColorFormat = Object(external_wp_richText_["getActiveFormat"])(formatValue, formatName);
 
-  if (!activeColorFormat) {
-    return;
-  }
+function parseCSS() {
+  let css = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  return css.split(';').reduce((accumulator, rule) => {
+    if (rule) {
+      const [property, value] = rule.split(':');
+      if (property === 'color') accumulator.color = value;
+      if (property === 'background-color' && value !== transparentValue) accumulator.backgroundColor = value;
+    }
 
-  var styleColor = activeColorFormat.attributes.style;
-
-  if (styleColor) {
-    return styleColor.replace(new RegExp("^color:\\s*"), '');
-  }
-
-  var currentClass = activeColorFormat.attributes.class;
-
-  if (currentClass) {
-    var colorSlug = currentClass.replace(/.*has-([^\s]*)-color.*/, '$1');
-    return Object(external_wp_blockEditor_["getColorObjectByAttributeValues"])(colors, colorSlug).color;
-  }
+    return accumulator;
+  }, {});
 }
 
-var inline_ColorPicker = function ColorPicker(_ref) {
-  var name = _ref.name,
-      value = _ref.value,
-      onChange = _ref.onChange;
-  var colors = Object(external_wp_data_["useSelect"])(function (select) {
-    var _select = select('core/block-editor'),
-        getSettings = _select.getSettings;
-
-    return Object(external_lodash_["get"])(getSettings(), ['colors'], []);
-  });
-  var onColorChange = Object(external_wp_element_["useCallback"])(function (color) {
-    if (color) {
-      var colorObject = Object(external_wp_blockEditor_["getColorObjectByColorValue"])(colors, color);
-      onChange(Object(external_wp_richText_["applyFormat"])(value, {
-        type: name,
-        attributes: colorObject ? {
-          class: Object(external_wp_blockEditor_["getColorClassName"])('color', colorObject.slug)
-        } : {
-          style: "color:".concat(color)
-        }
-      }));
-    } else {
-      onChange(Object(external_wp_richText_["removeFormat"])(value, name));
+function parseClassName() {
+  let className = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  let colorSettings = arguments.length > 1 ? arguments[1] : undefined;
+  return className.split(' ').reduce((accumulator, name) => {
+    // `colorSlug` could contain dashes, so simply match the start and end.
+    if (name.startsWith('has-') && name.endsWith('-color')) {
+      const colorSlug = name.replace(/^has-/, '').replace(/-color$/, '');
+      const colorObject = Object(external_wp_blockEditor_["getColorObjectByAttributeValues"])(colorSettings, colorSlug);
+      accumulator.color = colorObject.color;
     }
-  }, [colors, onChange]);
-  var activeColor = Object(external_wp_element_["useMemo"])(function () {
-    return getActiveColor(name, value, colors);
-  }, [name, value, colors]);
+
+    return accumulator;
+  }, {});
+}
+
+function getActiveColors(value, name, colorSettings) {
+  const activeColorFormat = Object(external_wp_richText_["getActiveFormat"])(value, name);
+
+  if (!activeColorFormat) {
+    return {};
+  }
+
+  return { ...parseCSS(activeColorFormat.attributes.style),
+    ...parseClassName(activeColorFormat.attributes.class, colorSettings)
+  };
+}
+
+function setColors(value, name, colorSettings, colors) {
+  const {
+    color,
+    backgroundColor
+  } = { ...getActiveColors(value, name, colorSettings),
+    ...colors
+  };
+
+  if (!color && !backgroundColor) {
+    return Object(external_wp_richText_["removeFormat"])(value, name);
+  }
+
+  const styles = [];
+  const classNames = [];
+  const attributes = {};
+
+  if (backgroundColor) {
+    styles.push(['background-color', backgroundColor].join(':'));
+  } else {
+    // Override default browser color for mark element.
+    styles.push(['background-color', transparentValue].join(':'));
+  }
+
+  if (color) {
+    const colorObject = Object(external_wp_blockEditor_["getColorObjectByColorValue"])(colorSettings, color);
+
+    if (colorObject) {
+      classNames.push(Object(external_wp_blockEditor_["getColorClassName"])('color', colorObject.slug));
+    } else {
+      styles.push(['color', color].join(':'));
+    }
+  }
+
+  if (styles.length) attributes.style = styles.join(';');
+  if (classNames.length) attributes.class = classNames.join(' ');
+  return Object(external_wp_richText_["applyFormat"])(value, {
+    type: name,
+    attributes
+  });
+}
+
+function ColorPicker(_ref) {
+  let {
+    name,
+    property,
+    value,
+    onChange
+  } = _ref;
+  const colors = Object(external_wp_data_["useSelect"])(select => {
+    const {
+      getSettings
+    } = select(external_wp_blockEditor_["store"]);
+    return Object(external_lodash_["get"])(getSettings(), ['colors'], []);
+  }, []);
+  const onColorChange = Object(external_wp_element_["useCallback"])(color => {
+    onChange(setColors(value, name, colors, {
+      [property]: color
+    }));
+  }, [colors, onChange, property]);
+  const activeColors = Object(external_wp_element_["useMemo"])(() => getActiveColors(value, name, colors), [name, value, colors]);
   return Object(external_wp_element_["createElement"])(external_wp_blockEditor_["ColorPalette"], {
-    value: activeColor,
+    value: activeColors[property],
     onChange: onColorChange
   });
-};
+}
 
 function InlineColorUI(_ref2) {
-  var name = _ref2.name,
-      value = _ref2.value,
-      onChange = _ref2.onChange,
-      onClose = _ref2.onClose,
-      contentRef = _ref2.contentRef;
-  var anchorRef = Object(external_wp_richText_["useAnchorRef"])({
+  let {
+    name,
+    value,
+    onChange,
+    onClose,
+    contentRef
+  } = _ref2;
+
+  /* 
+   As you change the text color by typing a HEX value into a field,
+   the return value of document.getSelection jumps to the field you're editing,
+   not the highlighted text. Given that useAnchorRef uses document.getSelection,
+   it will return null, since it can't find the <mark> element within the HEX input.
+   This caches the last truthy value of the selection anchor reference.
+   */
+  const anchorRef = Object(external_wp_blockEditor_["useCachedTruthy"])(Object(external_wp_richText_["useAnchorRef"])({
     ref: contentRef,
-    value: value,
-    settings: textColor
-  });
-  return Object(external_wp_element_["createElement"])(external_wp_blockEditor_["URLPopover"], {
-    value: value,
+    value,
+    settings: text_color_textColor
+  }));
+  return Object(external_wp_element_["createElement"])(external_wp_components_["Popover"], {
     onClose: onClose,
     className: "components-inline-color-popover",
     anchorRef: anchorRef
-  }, Object(external_wp_element_["createElement"])(inline_ColorPicker, {
+  }, Object(external_wp_element_["createElement"])(external_wp_components_["TabPanel"], {
+    tabs: [{
+      name: 'color',
+      title: Object(external_wp_i18n_["__"])('Text')
+    }, {
+      name: 'backgroundColor',
+      title: Object(external_wp_i18n_["__"])('Background')
+    }]
+  }, tab => Object(external_wp_element_["createElement"])(ColorPicker, {
     name: name,
+    property: tab.name,
     value: value,
     onChange: onChange
-  }));
+  })));
 }
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/text-color/index.js
-
 
 
 /**
@@ -1545,87 +1726,116 @@ function InlineColorUI(_ref2) {
  */
 
 
-var text_color_name = 'core/text-color';
+const transparentValue = 'rgba(0, 0, 0, 0)';
+const text_color_name = 'core/text-color';
 
-var text_color_title = Object(external_wp_i18n_["__"])('Text color');
+const text_color_title = Object(external_wp_i18n_["__"])('Highlight');
 
-var EMPTY_ARRAY = [];
+const EMPTY_ARRAY = [];
 
-function TextColorEdit(_ref) {
-  var value = _ref.value,
-      _onChange = _ref.onChange,
-      isActive = _ref.isActive,
-      activeAttributes = _ref.activeAttributes,
-      contentRef = _ref.contentRef;
-  var allowCustomControl = Object(external_wp_blockEditor_["__experimentalUseEditorFeature"])('color.custom');
-  var colors = Object(external_wp_blockEditor_["__experimentalUseEditorFeature"])('color.palette') || EMPTY_ARRAY;
+function getComputedStyleProperty(element, property) {
+  const {
+    ownerDocument
+  } = element;
+  const {
+    defaultView
+  } = ownerDocument;
+  const style = defaultView.getComputedStyle(element);
+  const value = style.getPropertyValue(property);
 
-  var _useState = Object(external_wp_element_["useState"])(false),
-      _useState2 = Object(slicedToArray["a" /* default */])(_useState, 2),
-      isAddingColor = _useState2[0],
-      setIsAddingColor = _useState2[1];
+  if (property === 'background-color' && value === transparentValue && element.parentElement) {
+    return getComputedStyleProperty(element.parentElement, property);
+  }
 
-  var enableIsAddingColor = Object(external_wp_element_["useCallback"])(function () {
-    return setIsAddingColor(true);
-  }, [setIsAddingColor]);
-  var disableIsAddingColor = Object(external_wp_element_["useCallback"])(function () {
-    return setIsAddingColor(false);
-  }, [setIsAddingColor]);
-  var colorIndicatorStyle = Object(external_wp_element_["useMemo"])(function () {
-    var activeColor = getActiveColor(text_color_name, value, colors);
+  return value;
+}
 
-    if (!activeColor) {
-      return undefined;
-    }
+function fillComputedColors(element, _ref) {
+  let {
+    color,
+    backgroundColor
+  } = _ref;
 
-    return {
-      backgroundColor: activeColor
-    };
-  }, [value, colors]);
-  var hasColorsToChoose = !Object(external_lodash_["isEmpty"])(colors) || !allowCustomControl;
+  if (!color && !backgroundColor) {
+    return;
+  }
+
+  return {
+    color: color || getComputedStyleProperty(element, 'color'),
+    backgroundColor: backgroundColor === transparentValue ? getComputedStyleProperty(element, 'background-color') : backgroundColor
+  };
+}
+
+function TextColorEdit(_ref2) {
+  let {
+    value,
+    onChange,
+    isActive,
+    activeAttributes,
+    contentRef
+  } = _ref2;
+  const allowCustomControl = Object(external_wp_blockEditor_["useSetting"])('color.custom');
+  const colors = Object(external_wp_blockEditor_["useSetting"])('color.palette') || EMPTY_ARRAY;
+  const [isAddingColor, setIsAddingColor] = Object(external_wp_element_["useState"])(false);
+  const enableIsAddingColor = Object(external_wp_element_["useCallback"])(() => setIsAddingColor(true), [setIsAddingColor]);
+  const disableIsAddingColor = Object(external_wp_element_["useCallback"])(() => setIsAddingColor(false), [setIsAddingColor]);
+  const colorIndicatorStyle = Object(external_wp_element_["useMemo"])(() => fillComputedColors(contentRef.current, getActiveColors(value, text_color_name, colors)), [value, colors]);
+  const hasColorsToChoose = !Object(external_lodash_["isEmpty"])(colors) || !allowCustomControl;
 
   if (!hasColorsToChoose && !isActive) {
     return null;
   }
 
   return Object(external_wp_element_["createElement"])(external_wp_element_["Fragment"], null, Object(external_wp_element_["createElement"])(external_wp_blockEditor_["RichTextToolbarButton"], {
-    key: isActive ? 'text-color' : 'text-color-not-active',
     className: "format-library-text-color-button",
-    name: isActive ? 'text-color' : undefined,
-    icon: Object(external_wp_element_["createElement"])(external_wp_element_["Fragment"], null, Object(external_wp_element_["createElement"])(icon["a" /* default */], {
-      icon: text_color["a" /* default */]
-    }), isActive && Object(external_wp_element_["createElement"])("span", {
-      className: "format-library-text-color-button__indicator",
+    isActive: isActive,
+    icon: Object(external_wp_element_["createElement"])(icon["a" /* default */], {
+      icon: text_color,
       style: colorIndicatorStyle
-    })),
+    }),
     title: text_color_title // If has no colors to choose but a color is active remove the color onClick
     ,
-    onClick: hasColorsToChoose ? enableIsAddingColor : function () {
-      return _onChange(Object(external_wp_richText_["removeFormat"])(value, text_color_name));
-    }
+    onClick: hasColorsToChoose ? enableIsAddingColor : () => onChange(Object(external_wp_richText_["removeFormat"])(value, text_color_name)),
+    role: "menuitemcheckbox"
   }), isAddingColor && Object(external_wp_element_["createElement"])(InlineColorUI, {
     name: text_color_name,
     onClose: disableIsAddingColor,
     activeAttributes: activeAttributes,
     value: value,
-    onChange: function onChange() {
-      _onChange.apply(void 0, arguments);
-
-      disableIsAddingColor();
-    },
+    onChange: onChange,
     contentRef: contentRef
   }));
 }
 
-var textColor = {
+const text_color_textColor = {
   name: text_color_name,
   title: text_color_title,
-  tagName: 'span',
+  tagName: 'mark',
   className: 'has-inline-color',
   attributes: {
     style: 'style',
     class: 'class'
   },
+
+  /*
+   * Since this format relies on the <mark> tag, it's important to
+   * prevent the default yellow background color applied by most
+   * browsers. The solution is to detect when this format is used with a
+   * text color but no background color, and in such cases to override
+   * the default styling with a transparent background.
+   *
+   * @see https://github.com/WordPress/gutenberg/pull/35516
+   */
+  __unstableFilterAttributeValue(key, value) {
+    if (key !== 'style') return value; // We should not add a background-color if it's already set
+
+    if (value && value.includes('background-color')) return value;
+    const addedCSS = ['background-color', transparentValue].join(':'); // Prepend `addedCSS` to avoid a double `;;` as any the existing CSS
+    // rules will already include a `;`.
+
+    return value ? [addedCSS, value].join(';') : addedCSS;
+  },
+
   edit: TextColorEdit
 };
 
@@ -1636,7 +1846,7 @@ var textColor = {
  * WordPress dependencies
  */
 
-var subscript = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
+const subscript = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24"
 }, Object(external_wp_element_["createElement"])(external_wp_primitives_["Path"], {
@@ -1654,24 +1864,28 @@ var subscript = Object(external_wp_element_["createElement"])(external_wp_primit
 
 
 
-var subscript_name = 'core/subscript';
+const subscript_name = 'core/subscript';
 
-var subscript_title = Object(external_wp_i18n_["__"])('Subscript');
+const subscript_title = Object(external_wp_i18n_["__"])('Subscript');
 
-var subscript_subscript = {
+const subscript_subscript = {
   name: subscript_name,
   title: subscript_title,
   tagName: 'sub',
   className: null,
-  edit: function edit(_ref) {
-    var isActive = _ref.isActive,
-        value = _ref.value,
-        onChange = _ref.onChange,
-        onFocus = _ref.onFocus;
+
+  edit(_ref) {
+    let {
+      isActive,
+      value,
+      onChange,
+      onFocus
+    } = _ref;
 
     function onToggle() {
       onChange(Object(external_wp_richText_["toggleFormat"])(value, {
-        type: subscript_name
+        type: subscript_name,
+        title: subscript_title
       }));
     }
 
@@ -1684,9 +1898,11 @@ var subscript_subscript = {
       icon: library_subscript,
       title: subscript_title,
       onClick: onClick,
-      isActive: isActive
+      isActive: isActive,
+      role: "menuitemcheckbox"
     });
   }
+
 };
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/icons/build-module/library/superscript.js
@@ -1696,7 +1912,7 @@ var subscript_subscript = {
  * WordPress dependencies
  */
 
-var superscript = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
+const superscript = Object(external_wp_element_["createElement"])(external_wp_primitives_["SVG"], {
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24"
 }, Object(external_wp_element_["createElement"])(external_wp_primitives_["Path"], {
@@ -1714,24 +1930,28 @@ var superscript = Object(external_wp_element_["createElement"])(external_wp_prim
 
 
 
-var superscript_name = 'core/superscript';
+const superscript_name = 'core/superscript';
 
-var superscript_title = Object(external_wp_i18n_["__"])('Superscript');
+const superscript_title = Object(external_wp_i18n_["__"])('Superscript');
 
-var superscript_superscript = {
+const superscript_superscript = {
   name: superscript_name,
   title: superscript_title,
   tagName: 'sup',
   className: null,
-  edit: function edit(_ref) {
-    var isActive = _ref.isActive,
-        value = _ref.value,
-        onChange = _ref.onChange,
-        onFocus = _ref.onFocus;
+
+  edit(_ref) {
+    let {
+      isActive,
+      value,
+      onChange,
+      onFocus
+    } = _ref;
 
     function onToggle() {
       onChange(Object(external_wp_richText_["toggleFormat"])(value, {
-        type: superscript_name
+        type: superscript_name,
+        title: superscript_title
       }));
     }
 
@@ -1744,13 +1964,15 @@ var superscript_superscript = {
       icon: library_superscript,
       title: superscript_title,
       onClick: onClick,
-      isActive: isActive
+      isActive: isActive,
+      role: "menuitemcheckbox"
     });
   }
+
 };
 
 // EXTERNAL MODULE: ./node_modules/@wordpress/icons/build-module/library/button.js
-var library_button = __webpack_require__(313);
+var library_button = __webpack_require__("oMoS");
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/keyboard/index.js
 
@@ -1762,24 +1984,28 @@ var library_button = __webpack_require__(313);
 
 
 
-var keyboard_name = 'core/keyboard';
+const keyboard_name = 'core/keyboard';
 
-var keyboard_title = Object(external_wp_i18n_["__"])('Keyboard input');
+const keyboard_title = Object(external_wp_i18n_["__"])('Keyboard input');
 
-var keyboard = {
+const keyboard = {
   name: keyboard_name,
   title: keyboard_title,
   tagName: 'kbd',
   className: null,
-  edit: function edit(_ref) {
-    var isActive = _ref.isActive,
-        value = _ref.value,
-        onChange = _ref.onChange,
-        onFocus = _ref.onFocus;
+
+  edit(_ref) {
+    let {
+      isActive,
+      value,
+      onChange,
+      onFocus
+    } = _ref;
 
     function onToggle() {
       onChange(Object(external_wp_richText_["toggleFormat"])(value, {
-        type: keyboard_name
+        type: keyboard_name,
+        title: keyboard_title
       }));
     }
 
@@ -1792,9 +2018,11 @@ var keyboard = {
       icon: library_button["a" /* default */],
       title: keyboard_title,
       onClick: onClick,
-      isActive: isActive
+      isActive: isActive,
+      role: "menuitemcheckbox"
     });
   }
+
 };
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/default-formats.js
@@ -1812,11 +2040,9 @@ var keyboard = {
 
 
 
-/* harmony default export */ var default_formats = ([bold, code_code, image_image, italic, link_link, strikethrough, underline, textColor, subscript_subscript, superscript_superscript, keyboard]);
+/* harmony default export */ var default_formats = ([bold, code_code, image_image, italic, link_link, strikethrough, underline, text_color_textColor, subscript_subscript, superscript_superscript, keyboard]);
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/format-library/build-module/index.js
-
-
 /**
  * WordPress dependencies
  */
@@ -1826,63 +2052,21 @@ var keyboard = {
  */
 
 
-default_formats.forEach(function (_ref) {
-  var name = _ref.name,
-      settings = Object(objectWithoutProperties["a" /* default */])(_ref, ["name"]);
-
+default_formats.forEach(_ref => {
+  let {
+    name,
+    ...settings
+  } = _ref;
   return Object(external_wp_richText_["registerFormatType"])(name, settings);
 });
 
 
 /***/ }),
 
-/***/ 48:
+/***/ "tI+e":
 /***/ (function(module, exports) {
 
-(function() { module.exports = window["wp"]["a11y"]; }());
-
-/***/ }),
-
-/***/ 5:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _defineProperty; });
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-/***/ }),
-
-/***/ 6:
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["blockEditor"]; }());
-
-/***/ }),
-
-/***/ 64:
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["htmlEntities"]; }());
-
-/***/ }),
-
-/***/ 7:
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["primitives"]; }());
+(function() { module.exports = window["wp"]["components"]; }());
 
 /***/ })
 

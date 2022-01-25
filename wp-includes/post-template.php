@@ -876,7 +876,7 @@ function post_password_required( $post = null ) {
 	 *
 	 * @param bool    $required Whether the user needs to supply a password. True if password has not been
 	 *                          provided or is incorrect, false if password has been supplied or is not required.
-	 * @param WP_Post $post     Post data.
+	 * @param WP_Post $post     Post object.
 	 */
 	return apply_filters( 'post_password_required', $required, $post );
 }
@@ -1005,9 +1005,9 @@ function wp_link_pages( $args = '' ) {
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $output HTML output of paginated posts' page links.
-	 * @param array  $args   An array of arguments. See wp_link_pages()
-	 *                       for information on accepted arguments.
+	 * @param string       $output HTML output of paginated posts' page links.
+	 * @param array|string $args   An array or query string of arguments. See wp_link_pages()
+	 *                             for information on accepted arguments.
 	 */
 	$html = apply_filters( 'wp_link_pages', $output, $args );
 
@@ -1643,10 +1643,10 @@ function wp_get_attachment_link( $id = 0, $size = 'thumbnail', $permalink = fals
 	 * Filters a retrieved attachment page link.
 	 *
 	 * @since 2.7.0
-	 * @since 5.1.0 Added the $attr parameter.
+	 * @since 5.1.0 Added the `$attr` parameter.
 	 *
 	 * @param string       $link_html The page link HTML output.
-	 * @param int          $id        Post ID.
+	 * @param int|WP_Post  $id        Post ID or object. Can be 0 for the current global post.
 	 * @param string|int[] $size      Requested image size. Can be any registered image size name, or
 	 *                                an array of width and height values in pixels (in that order).
 	 * @param bool         $permalink Whether to add permalink to image. Default false.
@@ -1734,10 +1734,12 @@ function get_the_password_form( $post = 0 ) {
 	 * size attribute in the form input.
 	 *
 	 * @since 2.7.0
+	 * @since 5.8.0 Added the `$post` parameter.
 	 *
-	 * @param string $output The password form HTML output.
+	 * @param string  $output The password form HTML output.
+	 * @param WP_Post $post   Post object.
 	 */
-	return apply_filters( 'the_password_form', $output );
+	return apply_filters( 'the_password_form', $output, $post );
 }
 
 /**

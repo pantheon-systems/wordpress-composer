@@ -58,7 +58,7 @@ function login_header( $title = 'Log In', $message = '', $wp_error = null ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $shake_error_codes Error codes that shake the login form.
+	 * @param string[] $shake_error_codes Error codes that shake the login form.
 	 */
 	$shake_error_codes = apply_filters( 'shake_error_codes', $shake_error_codes );
 
@@ -185,8 +185,8 @@ function login_header( $title = 'Log In', $message = '', $wp_error = null ) {
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param array  $classes An array of body classes.
-	 * @param string $action  The action that brought the visitor to the login page.
+	 * @param string[] $classes An array of body classes.
+	 * @param string   $action  The action that brought the visitor to the login page.
 	 */
 	$classes = apply_filters( 'login_body_class', $classes, $action );
 
@@ -312,12 +312,74 @@ function login_footer( $input_id = '' ) {
 	</div><?php // End of <div id="login">. ?>
 
 	<?php
+	if (
+		! $interim_login &&
+		/**
+		 * Filters the Languages select input activation on the login screen.
+		 *
+		 * @since 5.9.0
+		 *
+		 * @param bool Whether to display the Languages select input on the login screen.
+		 */
+		apply_filters( 'login_display_language_dropdown', true )
+	) {
+		$languages = get_available_languages();
+
+		if ( ! empty( $languages ) ) {
+			?>
+			<div class="language-switcher">
+				<form id="language-switcher" action="" method="get">
+
+					<label for="language-switcher-locales">
+						<span class="dashicons dashicons-translation" aria-hidden="true"></span>
+						<span class="screen-reader-text"><?php _e( 'Language' ); ?></span>
+					</label>
+
+					<?php
+					$args = array(
+						'id'                          => 'language-switcher-locales',
+						'name'                        => 'wp_lang',
+						'selected'                    => determine_locale(),
+						'show_available_translations' => false,
+						'explicit_option_en_us'       => true,
+						'languages'                   => $languages,
+					);
+
+					/**
+					 * Filters default arguments for the Languages select input on the login screen.
+					 *
+					 * @since 5.9.0
+					 *
+					 * @param array $args Arguments for the Languages select input on the login screen.
+					 */
+					wp_dropdown_languages( apply_filters( 'login_language_dropdown_args', $args ) );
+					?>
+
+					<?php if ( $interim_login ) { ?>
+						<input type="hidden" name="interim-login" value="1" />
+					<?php } ?>
+
+					<?php if ( isset( $_GET['redirect_to'] ) && '' !== $_GET['redirect_to'] ) { ?>
+						<input type="hidden" name="redirect_to" value="<?php echo esc_url_raw( $_GET['redirect_to'] ); ?>" />
+					<?php } ?>
+
+					<?php if ( isset( $_GET['action'] ) && '' !== $_GET['action'] ) { ?>
+						<input type="hidden" name="action" value="<?php echo esc_attr( $_GET['action'] ); ?>" />
+					<?php } ?>
+
+						<input type="submit" class="button" value="<?php esc_attr_e( 'Change' ); ?>">
+
+					</form>
+				</div>
+		<?php } ?>
+	<?php } ?>
+	<?php
 
 	if ( ! empty( $input_id ) ) {
 		?>
 		<script type="text/javascript">
 		try{document.getElementById('<?php echo $input_id; ?>').focus();}catch(e){}
-		if(typeof wpOnload=='function')wpOnload();
+		if(typeof wpOnload==='function')wpOnload();
 		</script>
 		<?php
 	}
@@ -419,6 +481,10 @@ if ( SITECOOKIEPATH !== COOKIEPATH ) {
 	setcookie( TEST_COOKIE, 'WP Cookie check', 0, SITECOOKIEPATH, COOKIE_DOMAIN, $secure );
 }
 
+if ( isset( $_GET['wp_lang'] ) ) {
+	setcookie( 'wp_lang', sanitize_text_field( $_GET['wp_lang'] ), 0, COOKIEPATH, COOKIE_DOMAIN, $secure );
+}
+
 /**
  * Fires when the login form is initialized.
  *
@@ -430,8 +496,22 @@ do_action( 'login_init' );
  * Fires before a specified login form action.
  *
  * The dynamic portion of the hook name, `$action`, refers to the action
- * that brought the visitor to the login form. Actions include 'postpass',
- * 'logout', 'lostpassword', etc.
+ * that brought the visitor to the login form.
+ *
+ * Possible hook names include:
+ *
+ *  - `login_form_checkemail`
+ *  - `login_form_confirm_admin_email`
+ *  - `login_form_confirmaction`
+ *  - `login_form_entered_recovery_mode`
+ *  - `login_form_login`
+ *  - `login_form_logout`
+ *  - `login_form_lostpassword`
+ *  - `login_form_postpass`
+ *  - `login_form_register`
+ *  - `login_form_resetpass`
+ *  - `login_form_retrievepassword`
+ *  - `login_form_rp`
  *
  * @since 2.8.0
  */
@@ -710,9 +790,9 @@ switch ( $action ) {
 
 		if ( isset( $_GET['error'] ) ) {
 			if ( 'invalidkey' === $_GET['error'] ) {
-				$errors->add( 'invalidkey', __( 'Your password reset link appears to be invalid. Please request a new link below.' ) );
+				$errors->add( 'invalidkey', __( '<strong>Error</strong>: Your password reset link appears to be invalid. Please request a new link below.' ) );
 			} elseif ( 'expiredkey' === $_GET['error'] ) {
-				$errors->add( 'expiredkey', __( 'Your password reset link has expired. Please request a new link below.' ) );
+				$errors->add( 'expiredkey', __( '<strong>Error</strong>: Your password reset link has expired. Please request a new link below.' ) );
 			}
 		}
 
@@ -793,7 +873,7 @@ switch ( $action ) {
 		list( $rp_path ) = explode( '?', wp_unslash( $_SERVER['REQUEST_URI'] ) );
 		$rp_cookie       = 'wp-resetpass-' . COOKIEHASH;
 
-		if ( isset( $_GET['key'] ) ) {
+		if ( isset( $_GET['key'] ) && isset( $_GET['login'] ) ) {
 			$value = sprintf( '%s:%s', wp_unslash( $_GET['login'] ), wp_unslash( $_GET['key'] ) );
 			setcookie( $rp_cookie, $value, 0, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
 
@@ -828,7 +908,7 @@ switch ( $action ) {
 		$errors = new WP_Error();
 
 		if ( isset( $_POST['pass1'] ) && $_POST['pass1'] !== $_POST['pass2'] ) {
-			$errors->add( 'password_reset_mismatch', __( 'The passwords do not match.' ) );
+			$errors->add( 'password_reset_mismatch', __( '<strong>Error</strong>: The passwords do not match.' ) );
 		}
 
 		/**
@@ -921,7 +1001,7 @@ switch ( $action ) {
 		</p>
 		<?php
 
-		login_footer( 'user_pass' );
+		login_footer( 'pass1' );
 		break;
 
 	case 'register':
@@ -969,10 +1049,13 @@ switch ( $action ) {
 		 * Filters the registration redirect URL.
 		 *
 		 * @since 3.0.0
+		 * @since 5.9.0 Added the `$errors` parameter.
 		 *
-		 * @param string $registration_redirect The redirect destination URL.
+		 * @param string       $registration_redirect The redirect destination URL.
+		 * @param int|WP_Error $errors                User id if registration was successful,
+		 *                                            WP_Error object otherwise.
 		 */
-		$redirect_to = apply_filters( 'registration_redirect', $registration_redirect );
+		$redirect_to = apply_filters( 'registration_redirect', $registration_redirect, $errors );
 
 		login_header( __( 'Registration Form' ), '<p class="message register">' . __( 'Register For This Site' ) . '</p>', $errors );
 
@@ -1246,14 +1329,17 @@ switch ( $action ) {
 			if ( isset( $_GET['loggedout'] ) && $_GET['loggedout'] ) {
 				$errors->add( 'loggedout', __( 'You are now logged out.' ), 'message' );
 			} elseif ( isset( $_GET['registration'] ) && 'disabled' === $_GET['registration'] ) {
-				$errors->add( 'registerdisabled', __( 'User registration is currently not allowed.' ) );
+				$errors->add( 'registerdisabled', __( '<strong>Error</strong>: User registration is currently not allowed.' ) );
 			} elseif ( strpos( $redirect_to, 'about.php?updated' ) ) {
 				$errors->add( 'updated', __( '<strong>You have successfully updated WordPress!</strong> Please log back in to see what&#8217;s new.' ), 'message' );
 			} elseif ( WP_Recovery_Mode_Link_Service::LOGIN_ACTION_ENTERED === $action ) {
 				$errors->add( 'enter_recovery_mode', __( 'Recovery Mode Initialized. Please log in to continue.' ), 'message' );
 			} elseif ( isset( $_GET['redirect_to'] ) && false !== strpos( $_GET['redirect_to'], 'wp-admin/authorize-application.php' ) ) {
 				$query_component = wp_parse_url( $_GET['redirect_to'], PHP_URL_QUERY );
-				parse_str( $query_component, $query );
+				$query           = array();
+				if ( $query_component ) {
+					parse_str( $query_component, $query );
+				}
 
 				if ( ! empty( $query['app_name'] ) ) {
 					/* translators: 1: Website name, 2: Application name. */
