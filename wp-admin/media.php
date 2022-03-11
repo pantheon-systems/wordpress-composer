@@ -45,7 +45,6 @@ switch ( $action ) {
 
 		// No break.
 	case 'edit':
-		// Used in the HTML title tag.
 		$title = __( 'Edit Media' );
 
 		if ( empty( $errors ) ) {

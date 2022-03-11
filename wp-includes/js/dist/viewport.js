@@ -146,10 +146,7 @@ var external_wp_data_ = __webpack_require__("1ZqX");
  *
  * @return {Object} Updated state.
  */
-function reducer() {
-  let state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  let action = arguments.length > 1 ? arguments[1] : undefined;
-
+function reducer(state = {}, action) {
   switch (action.type) {
     case 'SET_IS_MATCHING':
       return action.values;
@@ -314,7 +311,7 @@ var external_wp_element_ = __webpack_require__("GRId");
  *
  * @see isViewportMatch
  *
- * @param {Object} queries Object of prop name to viewport query.
+ * @param {Object} queries  Object of prop name to viewport query.
  *
  * @example
  *

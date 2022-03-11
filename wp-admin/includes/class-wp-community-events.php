@@ -474,7 +474,7 @@ class WP_Community_Events {
 
 		$future_wordcamps = array_filter(
 			$future_events,
-			static function( $wordcamp ) {
+			function( $wordcamp ) {
 				return 'wordcamp' === $wordcamp['type'];
 			}
 		);

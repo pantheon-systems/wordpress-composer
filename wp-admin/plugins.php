@@ -153,7 +153,6 @@ if ( $action ) {
 				$plugins = array();
 			}
 
-			// Used in the HTML title tag.
 			$title       = __( 'Update Plugins' );
 			$parent_file = 'plugins.php';
 
@@ -598,7 +597,6 @@ get_current_screen()->set_screen_reader_content(
 	)
 );
 
-// Used in the HTML title tag.
 $title       = __( 'Plugins' );
 $parent_file = 'plugins.php';
 

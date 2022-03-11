@@ -47,6 +47,7 @@ function wp_register_border_support( $block_type ) {
  *
  * @param WP_Block_Type $block_type       Block type.
  * @param array         $block_attributes Block attributes.
+ *
  * @return array Border CSS classes and inline styles.
  */
 function wp_apply_border_support( $block_type, $block_attributes ) {
@@ -62,23 +63,8 @@ function wp_apply_border_support( $block_type, $block_attributes ) {
 		wp_has_border_feature_support( $block_type, 'radius' ) &&
 		isset( $block_attributes['style']['border']['radius'] )
 	) {
-		$border_radius = $block_attributes['style']['border']['radius'];
-
-		if ( is_array( $border_radius ) ) {
-			// We have individual border radius corner values.
-			foreach ( $border_radius as $key => $radius ) {
-				// Convert CamelCase corner name to kebab-case.
-				$corner   = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $key ) );
-				$styles[] = sprintf( 'border-%s-radius: %s;', $corner, $radius );
-			}
-		} else {
-			// This check handles original unitless implementation.
-			if ( is_numeric( $border_radius ) ) {
-				$border_radius .= 'px';
-			}
-
-			$styles[] = sprintf( 'border-radius: %s;', $border_radius );
-		}
+		$border_radius = (int) $block_attributes['style']['border']['radius'];
+		$styles[]      = sprintf( 'border-radius: %dpx;', $border_radius );
 	}
 
 	// Border style.
@@ -95,14 +81,8 @@ function wp_apply_border_support( $block_type, $block_attributes ) {
 		wp_has_border_feature_support( $block_type, 'width' ) &&
 		isset( $block_attributes['style']['border']['width'] )
 	) {
-		$border_width = $block_attributes['style']['border']['width'];
-
-		// This check handles original unitless implementation.
-		if ( is_numeric( $border_width ) ) {
-			$border_width .= 'px';
-		}
-
-		$styles[] = sprintf( 'border-width: %s;', $border_width );
+		$border_width = intval( $block_attributes['style']['border']['width'] );
+		$styles[]     = sprintf( 'border-width: %dpx;', $border_width );
 	}
 
 	// Border color.
@@ -144,8 +124,8 @@ function wp_apply_border_support( $block_type, $block_attributes ) {
  * @access private
  *
  * @param WP_Block_Type $block_type Block type.
- * @return bool Whether serialization of the current block's border properties
- *              should occur.
+ *
+ * @return boolean
  */
 function wp_skip_border_serialization( $block_type ) {
 	$border_support = _wp_array_get( $block_type->supports, array( '__experimentalBorder' ), false );
@@ -169,7 +149,8 @@ function wp_skip_border_serialization( $block_type ) {
  * @param WP_Block_Type $block_type Block type to check for support.
  * @param string        $feature    Name of the feature to check support for.
  * @param mixed         $default    Fallback value for feature support, defaults to false.
- * @return bool Whether the feature is supported.
+ *
+ * @return boolean Whether or not the feature is supported.
  */
 function wp_has_border_feature_support( $block_type, $feature, $default = false ) {
 	// Check if all border support features have been opted into via `"__experimentalBorder": true`.

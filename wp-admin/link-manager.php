@@ -46,7 +46,6 @@ if ( $doaction && isset( $_REQUEST['linkcheck'] ) ) {
 
 $wp_list_table->prepare_items();
 
-// Used in the HTML title tag.
 $title       = __( 'Links' );
 $this_file   = 'link-manager.php';
 $parent_file = $this_file;

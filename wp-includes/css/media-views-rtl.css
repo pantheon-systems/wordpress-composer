@@ -1395,7 +1395,7 @@
 	top: 50%;
 	right: 15%;
 	width: 70%;
-	margin: -5px 0 0;
+	margin: -5px 0 0 0;
 }
 
 .media-uploader-status {
@@ -1438,8 +1438,34 @@
 }
 
 .media-uploader-status .upload-dismiss-errors {
+	position: absolute;
+	top: -3px;
+	left: -5px;
+	padding: 5px;
+	border-radius: 50%;
 	transition: none;
 	text-decoration: none;
+}
+
+.uploader-inline .media-uploader-status .upload-dismiss-errors {
+	top: 2px;
+	left: 2px;
+}
+
+.media-uploader-status .upload-dismiss-errors::before {
+	content: "\f153";
+	display: block;
+	font: normal 16px/1 dashicons;
+	color: #787c82;
+}
+
+.uploader-inline .errors.media-uploader-status .upload-dismiss-errors::before {
+	color: #646970;
+}
+
+.errors.media-uploader-status .upload-dismiss-errors:hover::before,
+.errors.media-uploader-status .upload-dismiss-errors:focus::before {
+	color: #d63638;
 }
 
 .upload-errors .upload-error {
@@ -1951,7 +1977,7 @@
 }
 
 .media-modal .imgedit-wrap .imgedit-panel-content {
-	padding: 16px 16px 0;
+	padding: 16px 16px 0 16px;
 	position: absolute;
 	top: 0;
 	left: 282px;
@@ -2115,16 +2141,12 @@
 .embed-link-settings,
 .embed-media-settings {
 	position: absolute;
-	top: 82px;
+	top: 70px;
 	right: 0;
 	left: 0;
 	bottom: 0;
 	padding: 0 16px;
 	overflow: auto;
-}
-
-.media-embed .embed-link-settings .link-text {
-	margin-top: 0;
 }
 
 /*
@@ -2268,7 +2290,7 @@
 
 .image-details .custom-size .sep {
 	float: right;
-	margin: 26px 6px 0;
+	margin: 26px 6px 0 6px;
 }
 
 .image-details .custom-size .description {
@@ -2407,7 +2429,7 @@
 	float: right;
 	width: 25%;
 	text-align: left;
-	margin: 8px 1% 0;
+	margin: 8px 1% 0 1%;
 	line-height: 1.1;
 }
 
@@ -2604,7 +2626,7 @@
 
 	.media-sidebar .setting,
 	.attachment-details .setting {
-		margin: 6px 0;
+		margin: 6px 0px;
 	}
 
 	.media-sidebar .setting input,
@@ -2898,7 +2920,7 @@
 
 	/* Change margin direction on load more button in responsive views. */
 	.load-more-wrapper .load-more-jump {
-		margin: 12px 0 0;
+		margin: 12px 0 0 0;
 	}
 
 }
@@ -2912,7 +2934,7 @@
 
 	/* Change margin direction on load more button in responsive views. */
 	.load-more-wrapper .load-more-jump {
-		margin: 12px 0 0;
+		margin: 12px 0 0 0;
 	}
 
 }

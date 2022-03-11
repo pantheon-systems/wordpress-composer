@@ -31,7 +31,7 @@ function wp_register_alignment_support( $block_type ) {
 }
 
 /**
- * Adds CSS classes for block alignment to the incoming attributes array.
+ * Add CSS classes for block alignment to the incoming attributes array.
  * This will be applied to the block markup in the front-end.
  *
  * @since 5.6.0
@@ -39,6 +39,7 @@ function wp_register_alignment_support( $block_type ) {
  *
  * @param WP_Block_Type $block_type       Block Type.
  * @param array         $block_attributes Block attributes.
+ *
  * @return array Block alignment CSS classes and inline styles.
  */
 function wp_apply_alignment_support( $block_type, $block_attributes ) {

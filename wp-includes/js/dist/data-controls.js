@@ -150,12 +150,12 @@ function apiFetch(request) {
  * @param {Array} args Arguments passed without change to the `@wordpress/data` control.
  */
 
-function select() {
+function select(...args) {
   _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_2___default()('`select` control in `@wordpress/data-controls`', {
     since: '5.7',
     alternative: 'built-in `resolveSelect` control in `@wordpress/data`'
   });
-  return _wordpress_data__WEBPACK_IMPORTED_MODULE_1__["controls"].resolveSelect(...arguments);
+  return _wordpress_data__WEBPACK_IMPORTED_MODULE_1__["controls"].resolveSelect(...args);
 }
 /**
  * Control for calling a selector in a registered data store.
@@ -164,12 +164,12 @@ function select() {
  * @param {Array} args Arguments passed without change to the `@wordpress/data` control.
  */
 
-function syncSelect() {
+function syncSelect(...args) {
   _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_2___default()('`syncSelect` control in `@wordpress/data-controls`', {
     since: '5.7',
     alternative: 'built-in `select` control in `@wordpress/data`'
   });
-  return _wordpress_data__WEBPACK_IMPORTED_MODULE_1__["controls"].select(...arguments);
+  return _wordpress_data__WEBPACK_IMPORTED_MODULE_1__["controls"].select(...args);
 }
 /**
  * Control for dispatching an action in a registered data store.
@@ -178,12 +178,12 @@ function syncSelect() {
  * @param {Array} args Arguments passed without change to the `@wordpress/data` control.
  */
 
-function dispatch() {
+function dispatch(...args) {
   _wordpress_deprecated__WEBPACK_IMPORTED_MODULE_2___default()('`dispatch` control in `@wordpress/data-controls`', {
     since: '5.7',
     alternative: 'built-in `dispatch` control in `@wordpress/data`'
   });
-  return _wordpress_data__WEBPACK_IMPORTED_MODULE_1__["controls"].dispatch(...arguments);
+  return _wordpress_data__WEBPACK_IMPORTED_MODULE_1__["controls"].dispatch(...args);
 }
 /**
  * Dispatches a control action for awaiting on a promise to be resolved.
@@ -240,17 +240,13 @@ const __unstableAwaitPromise = function (promise) {
  */
 
 const controls = {
-  AWAIT_PROMISE: _ref => {
-    let {
-      promise
-    } = _ref;
-    return promise;
-  },
+  AWAIT_PROMISE: ({
+    promise
+  }) => promise,
 
-  API_FETCH(_ref2) {
-    let {
-      request
-    } = _ref2;
+  API_FETCH({
+    request
+  }) {
     return _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()(request);
   }
 

@@ -12,7 +12,6 @@
 			"default": "div"
 		},
 		"templateLock": {
-			"type": [ "string", "boolean" ],
 			"enum": [ "all", "insert", false ]
 		}
 	},
@@ -25,12 +24,7 @@
 			"link": true
 		},
 		"spacing": {
-			"padding": true,
-			"blockGap": true,
-			"__experimentalDefaultControls": {
-				"padding": true,
-				"blockGap": true
-			}
+			"padding": true
 		},
 		"__experimentalBorder": {
 			"color": true,

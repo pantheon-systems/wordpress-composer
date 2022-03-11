@@ -34,7 +34,6 @@
  * @property string $locale
  * @property string $rich_editing
  * @property string $syntax_highlighting
- * @property string $use_ssl
  */
 class WP_User {
 	/**

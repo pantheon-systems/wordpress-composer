@@ -41,7 +41,7 @@ class WP_Site_Health_Auto_Updates {
 
 		$tests = array_filter( $tests );
 		$tests = array_map(
-			static function( $test ) {
+			function( $test ) {
 				$test = (object) $test;
 
 				if ( empty( $test->severity ) ) {
@@ -156,7 +156,7 @@ class WP_Site_Health_Auto_Updates {
 	 *
 	 * @return array|false The test results. False if the auto-updates failed.
 	 */
-	public function test_if_failed_update() {
+	function test_if_failed_update() {
 		$failed = get_site_option( 'auto_core_update_failed' );
 
 		if ( ! $failed ) {
@@ -226,7 +226,7 @@ class WP_Site_Health_Auto_Updates {
 		// Search all directories we've found for evidence of version control.
 		foreach ( $vcs_dirs as $vcs_dir ) {
 			foreach ( $check_dirs as $check_dir ) {
-				// phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition,Squiz.PHP.DisallowMultipleAssignments
+				// phpcs:ignore
 				if ( $checkout = @is_dir( rtrim( $check_dir, '\\/' ) . "/$vcs_dir" ) ) {
 					break 2;
 				}
@@ -272,7 +272,7 @@ class WP_Site_Health_Auto_Updates {
 	 *
 	 * @return array The test results.
 	 */
-	public function test_check_wp_filesystem_method() {
+	function test_check_wp_filesystem_method() {
 		// Make sure the `request_filesystem_credentials()` function is available during our REST API call.
 		if ( ! function_exists( 'request_filesystem_credentials' ) ) {
 			require_once ABSPATH . '/wp-admin/includes/file.php';
@@ -306,7 +306,7 @@ class WP_Site_Health_Auto_Updates {
 	 *
 	 * @return array|false The test results. False if they're not writeable.
 	 */
-	public function test_all_files_writable() {
+	function test_all_files_writable() {
 		global $wp_filesystem;
 
 		require ABSPATH . WPINC . '/version.php'; // $wp_version; // x.y.z
@@ -391,7 +391,7 @@ class WP_Site_Health_Auto_Updates {
 	 *
 	 * @return array|false The test results. False if it isn't a development version.
 	 */
-	public function test_accepts_dev_updates() {
+	function test_accepts_dev_updates() {
 		require ABSPATH . WPINC . '/version.php'; // $wp_version; // x.y.z
 		// Only for dev versions.
 		if ( false === strpos( $wp_version, '-' ) ) {
@@ -429,7 +429,7 @@ class WP_Site_Health_Auto_Updates {
 	 *
 	 * @return array The test results.
 	 */
-	public function test_accepts_minor_updates() {
+	function test_accepts_minor_updates() {
 		if ( defined( 'WP_AUTO_UPDATE_CORE' ) && false === WP_AUTO_UPDATE_CORE ) {
 			return array(
 				'description' => sprintf(

@@ -497,7 +497,6 @@ class WP_REST_Server {
 			$json_error_message = $this->get_json_last_error();
 
 			if ( $json_error_message ) {
-				$this->set_status( 500 );
 				$json_error_obj = new WP_Error(
 					'rest_encode_error',
 					$json_error_message,
@@ -1078,8 +1077,8 @@ class WP_REST_Server {
 	 * @since 5.6.0
 	 *
 	 * @param WP_REST_Request $request  The request object.
-	 * @param string          $route    The matched route regex.
 	 * @param array           $handler  The matched route handler.
+	 * @param string          $route    The matched route regex.
 	 * @param WP_Error|null   $response The current error object if any.
 	 * @return WP_REST_Response
 	 */
@@ -1229,7 +1228,6 @@ class WP_REST_Server {
 		$response->add_link( 'help', 'https://developer.wordpress.org/rest-api/' );
 		$this->add_active_theme_link_to_index( $response );
 		$this->add_site_logo_to_index( $response );
-		$this->add_site_icon_to_index( $response );
 
 		/**
 		 * Filters the REST API root index data.
@@ -1276,7 +1274,6 @@ class WP_REST_Server {
 
 	/**
 	 * Exposes the site logo through the WordPress REST API.
-	 *
 	 * This is used for fetching this information when user has no rights
 	 * to update settings.
 	 *
@@ -1285,47 +1282,14 @@ class WP_REST_Server {
 	 * @param WP_REST_Response $response REST API response.
 	 */
 	protected function add_site_logo_to_index( WP_REST_Response $response ) {
-		$site_logo_id = get_theme_mod( 'custom_logo', 0 );
-
-		$this->add_image_to_index( $response, $site_logo_id, 'site_logo' );
-	}
-
-	/**
-	 * Exposes the site icon through the WordPress REST API.
-	 *
-	 * This is used for fetching this information when user has no rights
-	 * to update settings.
-	 *
-	 * @since 5.9.0
-	 *
-	 * @param WP_REST_Response $response REST API response.
-	 */
-	protected function add_site_icon_to_index( WP_REST_Response $response ) {
-		$site_icon_id = get_option( 'site_icon', 0 );
-
-		$this->add_image_to_index( $response, $site_icon_id, 'site_icon' );
-	}
-
-	/**
-	 * Exposes an image through the WordPress REST API.
-	 * This is used for fetching this information when user has no rights
-	 * to update settings.
-	 *
-	 * @since 5.9.0
-	 *
-	 * @param WP_REST_Response $response REST API response.
-	 * @param int              $image_id Image attachment ID.
-	 * @param string           $type     Type of Image.
-	 */
-	protected function add_image_to_index( WP_REST_Response $response, $image_id, $type ) {
-		$response->data[ $type ] = (int) $image_id;
-		if ( $image_id ) {
+		$site_logo_id                = get_theme_mod( 'custom_logo' );
+		$response->data['site_logo'] = $site_logo_id;
+		if ( $site_logo_id ) {
 			$response->add_link(
 				'https://api.w.org/featuredmedia',
-				rest_url( rest_get_route_for_post( $image_id ) ),
+				rest_url( 'wp/v2/media/' . $site_logo_id ),
 				array(
 					'embeddable' => true,
-					'type'       => $type,
 				)
 			);
 		}
@@ -1397,11 +1361,11 @@ class WP_REST_Server {
 			}
 
 			/**
-			 * Filters the publicly-visible data for a single REST API route.
+			 * Filters the REST API endpoint data.
 			 *
 			 * @since 4.4.0
 			 *
-			 * @param array $data Publicly-visible data for the route.
+			 * @param WP_REST_Request $request Request data. The namespace is passed as the 'namespace' parameter.
 			 */
 			$available[ $route ] = apply_filters( 'rest_endpoints_description', $data );
 		}
@@ -1438,16 +1402,12 @@ class WP_REST_Server {
 			'endpoints' => array(),
 		);
 
-		$allow_batch = false;
-
 		if ( isset( $this->route_options[ $route ] ) ) {
 			$options = $this->route_options[ $route ];
 
 			if ( isset( $options['namespace'] ) ) {
 				$data['namespace'] = $options['namespace'];
 			}
-
-			$allow_batch = isset( $options['allow_batch'] ) ? $options['allow_batch'] : false;
 
 			if ( isset( $options['schema'] ) && 'help' === $context ) {
 				$data['schema'] = call_user_func( $options['schema'] );
@@ -1468,12 +1428,6 @@ class WP_REST_Server {
 			$endpoint_data   = array(
 				'methods' => array_keys( $callback['methods'] ),
 			);
-
-			$callback_batch = isset( $callback['allow_batch'] ) ? $callback['allow_batch'] : $allow_batch;
-
-			if ( $callback_batch ) {
-				$endpoint_data['allow_batch'] = $callback_batch;
-			}
 
 			if ( isset( $callback['args'] ) ) {
 				$endpoint_data['args'] = array();

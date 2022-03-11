@@ -13,15 +13,7 @@ if ( ! defined( 'PO_MAX_LINE_LEN' ) ) {
 	define( 'PO_MAX_LINE_LEN', 79 );
 }
 
-/*
- * The `auto_detect_line_endings` setting has been deprecated in PHP 8.1,
- * but will continue to work until PHP 9.0.
- * For now, we're silencing the deprecation notice as there may still be
- * translation files around which haven't been updated in a long time and
- * which still use the old MacOS standalone `\r` as a line ending.
- * This fix should be revisited when PHP 9.0 is in alpha/beta.
- */
-@ini_set( 'auto_detect_line_endings', 1 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+ini_set( 'auto_detect_line_endings', 1 );
 
 /**
  * Routines for working with PO files
@@ -36,7 +28,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 *
 		 * @return string msgid/msgstr PO entry for this PO file headers, doesn't contain newline at the end
 		 */
-		public function export_headers() {
+		function export_headers() {
 			$header_string = '';
 			foreach ( $this->headers as $header => $value ) {
 				$header_string .= "$header: $value\n";
@@ -55,7 +47,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 *
 		 * @return string sequence of mgsgid/msgstr PO strings, doesn't containt newline at the end
 		 */
-		public function export_entries() {
+		function export_entries() {
 			// TODO: Sorting.
 			return implode( "\n\n", array_map( array( 'PO', 'export_entry' ), $this->entries ) );
 		}
@@ -66,7 +58,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param bool $include_headers whether to include the headers in the export
 		 * @return string ready for inclusion in PO file string for headers and all the enrtries
 		 */
-		public function export( $include_headers = true ) {
+		function export( $include_headers = true ) {
 			$res = '';
 			if ( $include_headers ) {
 				$res .= $this->export_headers();
@@ -83,7 +75,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param bool   $include_headers Whether to include the headers in the export.
 		 * @return bool true on success, false on error
 		 */
-		public function export_to_file( $filename, $include_headers = true ) {
+		function export_to_file( $filename, $include_headers = true ) {
 			$fh = fopen( $filename, 'w' );
 			if ( false === $fh ) {
 				return false;
@@ -103,7 +95,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 *
 		 * @param string $text Text to include as a comment.
 		 */
-		public function set_comment_before_headers( $text ) {
+		function set_comment_before_headers( $text ) {
 			$this->comments_before_headers = $text;
 		}
 
@@ -293,7 +285,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param string $filename
 		 * @return bool
 		 */
-		public function import_from_file( $filename ) {
+		function import_from_file( $filename ) {
 			$f = fopen( $filename, 'r' );
 			if ( ! $f ) {
 				return false;
@@ -335,7 +327,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param int      $lineno
 		 * @return null|false|array
 		 */
-		public function read_entry( $f, $lineno = 0 ) {
+		function read_entry( $f, $lineno = 0 ) {
 			$entry = new Translation_Entry();
 			// Where were we in the last step.
 			// Can be: comment, msgctxt, msgid, msgid_plural, msgstr, msgstr_plural.
@@ -464,7 +456,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param string   $action
 		 * @return bool
 		 */
-		public function read_line( $f, $action = 'read' ) {
+		function read_line( $f, $action = 'read' ) {
 			static $last_line     = '';
 			static $use_last_line = false;
 			if ( 'clear' === $action ) {
@@ -486,7 +478,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param Translation_Entry $entry
 		 * @param string            $po_comment_line
 		 */
-		public function add_comment_to_entry( &$entry, $po_comment_line ) {
+		function add_comment_to_entry( &$entry, $po_comment_line ) {
 			$first_two = substr( $po_comment_line, 0, 2 );
 			$comment   = trim( substr( $po_comment_line, 2 ) );
 			if ( '#:' === $first_two ) {

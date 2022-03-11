@@ -15,8 +15,6 @@ if ( ! current_user_can( 'export' ) ) {
 
 /** Load WordPress export API */
 require_once ABSPATH . 'wp-admin/includes/export.php';
-
-// Used in the HTML title tag.
 $title = __( 'Export' );
 
 /**
@@ -27,7 +25,7 @@ $title = __( 'Export' );
 function export_add_js() {
 	?>
 <script type="text/javascript">
-	jQuery( function($) {
+	jQuery(document).ready(function($){
 		var form = $('#export-filters'),
 			filters = form.find('.export-filters');
 		filters.hide();
@@ -39,7 +37,7 @@ function export_add_js() {
 				case 'pages': $('#page-filters').slideDown(); break;
 			}
 		});
-	} );
+	});
 </script>
 	<?php
 }

@@ -17,7 +17,7 @@ if ( ! class_exists( 'POMO_Reader', false ) ) :
 		/**
 		 * PHP5 constructor.
 		 */
-		public function __construct() {
+		function __construct() {
 			if ( function_exists( 'mb_substr' )
 				&& ( (int) ini_get( 'mbstring.func_overload' ) & 2 ) // phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.mbstring_func_overloadDeprecated
 			) {
@@ -46,7 +46,7 @@ if ( ! class_exists( 'POMO_Reader', false ) ) :
 		 *
 		 * @param string $endian Set the endianness of the file. Accepts 'big', or 'little'.
 		 */
-		public function setEndian( $endian ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+		function setEndian( $endian ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 			$this->endian = $endian;
 		}
 
@@ -56,7 +56,7 @@ if ( ! class_exists( 'POMO_Reader', false ) ) :
 		 * @return mixed The integer, corresponding to the next 32 bits from
 		 *  the stream of false if there are not enough bytes or on error
 		 */
-		public function readint32() {
+		function readint32() {
 			$bytes = $this->read( 4 );
 			if ( 4 != $this->strlen( $bytes ) ) {
 				return false;
@@ -73,7 +73,7 @@ if ( ! class_exists( 'POMO_Reader', false ) ) :
 		 * @return mixed Array of integers or false if there isn't
 		 *  enough data or on error
 		 */
-		public function readint32array( $count ) {
+		function readint32array( $count ) {
 			$bytes = $this->read( 4 * $count );
 			if ( 4 * $count != $this->strlen( $bytes ) ) {
 				return false;
@@ -88,7 +88,7 @@ if ( ! class_exists( 'POMO_Reader', false ) ) :
 		 * @param int    $length
 		 * @return string
 		 */
-		public function substr( $string, $start, $length ) {
+		function substr( $string, $start, $length ) {
 			if ( $this->is_overloaded ) {
 				return mb_substr( $string, $start, $length, 'ascii' );
 			} else {
@@ -100,7 +100,7 @@ if ( ! class_exists( 'POMO_Reader', false ) ) :
 		 * @param string $string
 		 * @return int
 		 */
-		public function strlen( $string ) {
+		function strlen( $string ) {
 			if ( $this->is_overloaded ) {
 				return mb_strlen( $string, 'ascii' );
 			} else {
@@ -113,7 +113,7 @@ if ( ! class_exists( 'POMO_Reader', false ) ) :
 		 * @param int    $chunk_size
 		 * @return array
 		 */
-		public function str_split( $string, $chunk_size ) {
+		function str_split( $string, $chunk_size ) {
 			if ( ! function_exists( 'str_split' ) ) {
 				$length = $this->strlen( $string );
 				$out    = array();
@@ -129,21 +129,21 @@ if ( ! class_exists( 'POMO_Reader', false ) ) :
 		/**
 		 * @return int
 		 */
-		public function pos() {
+		function pos() {
 			return $this->_pos;
 		}
 
 		/**
 		 * @return true
 		 */
-		public function is_resource() {
+		function is_resource() {
 			return true;
 		}
 
 		/**
 		 * @return true
 		 */
-		public function close() {
+		function close() {
 			return true;
 		}
 	}
@@ -155,7 +155,7 @@ if ( ! class_exists( 'POMO_FileReader', false ) ) :
 		/**
 		 * @param string $filename
 		 */
-		public function __construct( $filename ) {
+		function __construct( $filename ) {
 			parent::__construct();
 			$this->_f = fopen( $filename, 'rb' );
 		}
@@ -176,7 +176,7 @@ if ( ! class_exists( 'POMO_FileReader', false ) ) :
 		 * @param int $bytes
 		 * @return string|false Returns read string, otherwise false.
 		 */
-		public function read( $bytes ) {
+		function read( $bytes ) {
 			return fread( $this->_f, $bytes );
 		}
 
@@ -184,7 +184,7 @@ if ( ! class_exists( 'POMO_FileReader', false ) ) :
 		 * @param int $pos
 		 * @return bool
 		 */
-		public function seekto( $pos ) {
+		function seekto( $pos ) {
 			if ( -1 == fseek( $this->_f, $pos, SEEK_SET ) ) {
 				return false;
 			}
@@ -195,28 +195,28 @@ if ( ! class_exists( 'POMO_FileReader', false ) ) :
 		/**
 		 * @return bool
 		 */
-		public function is_resource() {
+		function is_resource() {
 			return is_resource( $this->_f );
 		}
 
 		/**
 		 * @return bool
 		 */
-		public function feof() {
+		function feof() {
 			return feof( $this->_f );
 		}
 
 		/**
 		 * @return bool
 		 */
-		public function close() {
+		function close() {
 			return fclose( $this->_f );
 		}
 
 		/**
 		 * @return string
 		 */
-		public function read_all() {
+		function read_all() {
 			$all = '';
 			while ( ! $this->feof() ) {
 				$all .= $this->read( 4096 );
@@ -238,7 +238,7 @@ if ( ! class_exists( 'POMO_StringReader', false ) ) :
 		/**
 		 * PHP5 constructor.
 		 */
-		public function __construct( $str = '' ) {
+		function __construct( $str = '' ) {
 			parent::__construct();
 			$this->_str = $str;
 			$this->_pos = 0;
@@ -260,7 +260,7 @@ if ( ! class_exists( 'POMO_StringReader', false ) ) :
 		 * @param string $bytes
 		 * @return string
 		 */
-		public function read( $bytes ) {
+		function read( $bytes ) {
 			$data        = $this->substr( $this->_str, $this->_pos, $bytes );
 			$this->_pos += $bytes;
 			if ( $this->strlen( $this->_str ) < $this->_pos ) {
@@ -273,7 +273,7 @@ if ( ! class_exists( 'POMO_StringReader', false ) ) :
 		 * @param int $pos
 		 * @return int
 		 */
-		public function seekto( $pos ) {
+		function seekto( $pos ) {
 			$this->_pos = $pos;
 			if ( $this->strlen( $this->_str ) < $this->_pos ) {
 				$this->_pos = $this->strlen( $this->_str );
@@ -284,14 +284,14 @@ if ( ! class_exists( 'POMO_StringReader', false ) ) :
 		/**
 		 * @return int
 		 */
-		public function length() {
+		function length() {
 			return $this->strlen( $this->_str );
 		}
 
 		/**
 		 * @return string
 		 */
-		public function read_all() {
+		function read_all() {
 			return $this->substr( $this->_str, $this->_pos, $this->strlen( $this->_str ) );
 		}
 
@@ -306,7 +306,7 @@ if ( ! class_exists( 'POMO_CachedFileReader', false ) ) :
 		/**
 		 * PHP5 constructor.
 		 */
-		public function __construct( $filename ) {
+		function __construct( $filename ) {
 			parent::__construct();
 			$this->_str = file_get_contents( $filename );
 			if ( false === $this->_str ) {
@@ -348,7 +348,7 @@ if ( ! class_exists( 'POMO_CachedIntFileReader', false ) ) :
 		 *
 		 * @see POMO_CachedIntFileReader::__construct()
 		 */
-		public function POMO_CachedIntFileReader( $filename ) {
+		function POMO_CachedIntFileReader( $filename ) {
 			_deprecated_constructor( self::class, '5.4.0', static::class );
 			self::__construct( $filename );
 		}

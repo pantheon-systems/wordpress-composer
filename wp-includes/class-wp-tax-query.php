@@ -236,7 +236,7 @@ class WP_Tax_Query {
 	 *
 	 * @param string $primary_table     Database table where the object being filtered is stored (eg wp_users).
 	 * @param string $primary_id_column ID column for the filtered object in $primary_table.
-	 * @return string[] {
+	 * @return array {
 	 *     Array containing JOIN and WHERE SQL clauses to append to the main query.
 	 *
 	 *     @type string $join  SQL fragment to append to the main JOIN clause.
@@ -258,7 +258,7 @@ class WP_Tax_Query {
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return string[] {
+	 * @return array {
 	 *     Array containing JOIN and WHERE SQL clauses to append to the main query.
 	 *
 	 *     @type string $join  SQL fragment to append to the main JOIN clause.
@@ -291,7 +291,7 @@ class WP_Tax_Query {
 	 * @param array $query Query to parse (passed by reference).
 	 * @param int   $depth Optional. Number of tree levels deep we currently are.
 	 *                     Used to calculate indentation. Default 0.
-	 * @return string[] {
+	 * @return array {
 	 *     Array containing JOIN and WHERE SQL clauses to append to a single query array.
 	 *
 	 *     @type string $join  SQL fragment to append to the main JOIN clause.
@@ -373,7 +373,7 @@ class WP_Tax_Query {
 	 *
 	 * @param array $clause       Query clause (passed by reference).
 	 * @param array $parent_query Parent query array.
-	 * @return string[] {
+	 * @return array {
 	 *     Array containing JOIN and WHERE SQL clauses to append to a first-order query.
 	 *
 	 *     @type string $join  SQL fragment to append to the main JOIN clause.

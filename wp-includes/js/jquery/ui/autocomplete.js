@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Autocomplete 1.13.1
+ * jQuery UI Autocomplete 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -17,8 +17,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -32,11 +30,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.autocomplete", {
-	version: "1.13.1",
+	version: "1.12.1",
 	defaultElement: "<input>",
 	options: {
 		appendTo: null,
@@ -62,7 +59,6 @@ $.widget( "ui.autocomplete", {
 
 	requestIndex: 0,
 	pending: 0,
-	liveRegionTimer: null,
 
 	_create: function() {
 
@@ -104,58 +100,58 @@ $.widget( "ui.autocomplete", {
 				suppressKeyPressRepeat = false;
 				var keyCode = $.ui.keyCode;
 				switch ( event.keyCode ) {
-					case keyCode.PAGE_UP:
-						suppressKeyPress = true;
-						this._move( "previousPage", event );
-						break;
-					case keyCode.PAGE_DOWN:
-						suppressKeyPress = true;
-						this._move( "nextPage", event );
-						break;
-					case keyCode.UP:
-						suppressKeyPress = true;
-						this._keyEvent( "previous", event );
-						break;
-					case keyCode.DOWN:
-						suppressKeyPress = true;
-						this._keyEvent( "next", event );
-						break;
-					case keyCode.ENTER:
+				case keyCode.PAGE_UP:
+					suppressKeyPress = true;
+					this._move( "previousPage", event );
+					break;
+				case keyCode.PAGE_DOWN:
+					suppressKeyPress = true;
+					this._move( "nextPage", event );
+					break;
+				case keyCode.UP:
+					suppressKeyPress = true;
+					this._keyEvent( "previous", event );
+					break;
+				case keyCode.DOWN:
+					suppressKeyPress = true;
+					this._keyEvent( "next", event );
+					break;
+				case keyCode.ENTER:
 
-						// when menu is open and has focus
-						if ( this.menu.active ) {
+					// when menu is open and has focus
+					if ( this.menu.active ) {
 
-							// #6055 - Opera still allows the keypress to occur
-							// which causes forms to submit
-							suppressKeyPress = true;
-							event.preventDefault();
-							this.menu.select( event );
+						// #6055 - Opera still allows the keypress to occur
+						// which causes forms to submit
+						suppressKeyPress = true;
+						event.preventDefault();
+						this.menu.select( event );
+					}
+					break;
+				case keyCode.TAB:
+					if ( this.menu.active ) {
+						this.menu.select( event );
+					}
+					break;
+				case keyCode.ESCAPE:
+					if ( this.menu.element.is( ":visible" ) ) {
+						if ( !this.isMultiLine ) {
+							this._value( this.term );
 						}
-						break;
-					case keyCode.TAB:
-						if ( this.menu.active ) {
-							this.menu.select( event );
-						}
-						break;
-					case keyCode.ESCAPE:
-						if ( this.menu.element.is( ":visible" ) ) {
-							if ( !this.isMultiLine ) {
-								this._value( this.term );
-							}
-							this.close( event );
+						this.close( event );
 
-							// Different browsers have different default behavior for escape
-							// Single press can mean undo or clear
-							// Double press in IE means clear the whole form
-							event.preventDefault();
-						}
-						break;
-					default:
-						suppressKeyPressRepeat = true;
+						// Different browsers have different default behavior for escape
+						// Single press can mean undo or clear
+						// Double press in IE means clear the whole form
+						event.preventDefault();
+					}
+					break;
+				default:
+					suppressKeyPressRepeat = true;
 
-						// search timeout should be triggered before the input value is changed
-						this._searchTimeout( event );
-						break;
+					// search timeout should be triggered before the input value is changed
+					this._searchTimeout( event );
+					break;
 				}
 			},
 			keypress: function( event ) {
@@ -173,18 +169,18 @@ $.widget( "ui.autocomplete", {
 				// Replicate some key handlers to allow them to repeat in Firefox and Opera
 				var keyCode = $.ui.keyCode;
 				switch ( event.keyCode ) {
-					case keyCode.PAGE_UP:
-						this._move( "previousPage", event );
-						break;
-					case keyCode.PAGE_DOWN:
-						this._move( "nextPage", event );
-						break;
-					case keyCode.UP:
-						this._keyEvent( "previous", event );
-						break;
-					case keyCode.DOWN:
-						this._keyEvent( "next", event );
-						break;
+				case keyCode.PAGE_UP:
+					this._move( "previousPage", event );
+					break;
+				case keyCode.PAGE_DOWN:
+					this._move( "nextPage", event );
+					break;
+				case keyCode.UP:
+					this._keyEvent( "previous", event );
+					break;
+				case keyCode.DOWN:
+					this._keyEvent( "next", event );
+					break;
 				}
 			},
 			input: function( event ) {
@@ -200,6 +196,11 @@ $.widget( "ui.autocomplete", {
 				this.previous = this._value();
 			},
 			blur: function( event ) {
+				if ( this.cancelBlur ) {
+					delete this.cancelBlur;
+					return;
+				}
+
 				clearTimeout( this.searching );
 				this.close( event );
 				this._change( event );
@@ -215,24 +216,31 @@ $.widget( "ui.autocomplete", {
 				role: null
 			} )
 			.hide()
-
-			// Support: IE 11 only, Edge <= 14
-			// For other browsers, we preventDefault() on the mousedown event
-			// to keep the dropdown from taking focus from the input. This doesn't
-			// work for IE/Edge, causing problems with selection and scrolling (#9638)
-			// Happily, IE and Edge support an "unselectable" attribute that
-			// prevents an element from receiving focus, exactly what we want here.
-			.attr( {
-				"unselectable": "on"
-			} )
 			.menu( "instance" );
 
 		this._addClass( this.menu.element, "ui-autocomplete", "ui-front" );
 		this._on( this.menu.element, {
 			mousedown: function( event ) {
 
-				// Prevent moving focus out of the text field
+				// prevent moving focus out of the text field
 				event.preventDefault();
+
+				// IE doesn't prevent moving focus even with event.preventDefault()
+				// so we set a flag to know when we should ignore the blur event
+				this.cancelBlur = true;
+				this._delay( function() {
+					delete this.cancelBlur;
+
+					// Support: IE 8 only
+					// Right clicking a menu item or selecting text from the menu items will
+					// result in focus moving out of the input. However, we've already received
+					// and ignored the blur event because of the cancelBlur flag set above. So
+					// we restore focus to ensure that the menu closes properly based on the user's
+					// next actions.
+					if ( this.element[ 0 ] !== $.ui.safeActiveElement( this.document[ 0 ] ) ) {
+						this.element.trigger( "focus" );
+					}
+				} );
 			},
 			menufocus: function( event, ui ) {
 				var label, item;
@@ -263,11 +271,9 @@ $.widget( "ui.autocomplete", {
 
 				// Announce the value in the liveRegion
 				label = ui.item.attr( "aria-label" ) || item.value;
-				if ( label && String.prototype.trim.call( label ).length ) {
-					clearTimeout( this.liveRegionTimer );
-					this.liveRegionTimer = this._delay( function() {
-						this.liveRegion.html( $( "<div>" ).text( label ) );
-					}, 100 );
+				if ( label && $.trim( label ).length ) {
+					this.liveRegion.children().hide();
+					$( "<div>" ).text( label ).appendTo( this.liveRegion );
 				}
 			},
 			menuselect: function( event, ui ) {
@@ -377,7 +383,7 @@ $.widget( "ui.autocomplete", {
 	_initSource: function() {
 		var array, url,
 			that = this;
-		if ( Array.isArray( this.options.source ) ) {
+		if ( $.isArray( this.options.source ) ) {
 			array = this.options.source;
 			this.source = function( request, response ) {
 				response( $.ui.autocomplete.filter( array, request.term ) );
@@ -449,7 +455,7 @@ $.widget( "ui.autocomplete", {
 	_response: function() {
 		var index = ++this.requestIndex;
 
-		return function( content ) {
+		return $.proxy( function( content ) {
 			if ( index === this.requestIndex ) {
 				this.__response( content );
 			}
@@ -458,7 +464,7 @@ $.widget( "ui.autocomplete", {
 			if ( !this.pending ) {
 				this._removeClass( "ui-autocomplete-loading" );
 			}
-		}.bind( this );
+		}, this );
 	},
 
 	__response: function( content ) {
@@ -577,7 +583,7 @@ $.widget( "ui.autocomplete", {
 			return;
 		}
 		if ( this.menu.isFirstItem() && /^previous/.test( direction ) ||
-			this.menu.isLastItem() && /^next/.test( direction ) ) {
+				this.menu.isLastItem() && /^next/.test( direction ) ) {
 
 			if ( !this.isMultiLine ) {
 				this._value( this.term );
@@ -618,7 +624,7 @@ $.widget( "ui.autocomplete", {
 		var editable = element.prop( "contentEditable" );
 
 		if ( editable === "inherit" ) {
-			return this._isContentEditable( element.parent() );
+		  return this._isContentEditable( element.parent() );
 		}
 
 		return editable === "true";
@@ -662,13 +668,11 @@ $.widget( "ui.autocomplete", $.ui.autocomplete, {
 		} else {
 			message = this.options.messages.noResults;
 		}
-		clearTimeout( this.liveRegionTimer );
-		this.liveRegionTimer = this._delay( function() {
-			this.liveRegion.html( $( "<div>" ).text( message ) );
-		}, 100 );
+		this.liveRegion.children().hide();
+		$( "<div>" ).text( message ).appendTo( this.liveRegion );
 	}
 } );
 
 return $.ui.autocomplete;
 
-} );
+} ) );

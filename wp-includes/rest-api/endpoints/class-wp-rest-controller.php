@@ -504,14 +504,11 @@ abstract class WP_REST_Controller {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @global array $wp_rest_additional_fields Holds registered fields, organized by object type.
-	 *
 	 * @param string $object_type Optional. The object type.
-	 * @return array Registered additional fields (if any), empty array if none or if the object type
-	 *               could not be inferred.
+	 * @return array Registered additional fields (if any), empty array if none or if the object type could
+	 *               not be inferred.
 	 */
 	protected function get_additional_fields( $object_type = null ) {
-		global $wp_rest_additional_fields;
 
 		if ( ! $object_type ) {
 			$object_type = $this->get_object_type();
@@ -520,6 +517,8 @@ abstract class WP_REST_Controller {
 		if ( ! $object_type ) {
 			return array();
 		}
+
+		global $wp_rest_additional_fields;
 
 		if ( ! $wp_rest_additional_fields || ! isset( $wp_rest_additional_fields[ $object_type ] ) ) {
 			return array();
@@ -597,7 +596,7 @@ abstract class WP_REST_Controller {
 		// Return the list of all requested fields which appear in the schema.
 		return array_reduce(
 			$requested_fields,
-			static function( $response_fields, $field ) use ( $fields ) {
+			function( $response_fields, $field ) use ( $fields ) {
 				if ( in_array( $field, $fields, true ) ) {
 					$response_fields[] = $field;
 					return $response_fields;

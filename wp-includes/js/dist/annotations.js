@@ -150,13 +150,12 @@ const ANNOTATION_ATTRIBUTE_PREFIX = 'annotation-text-';
 /**
  * Applies given annotations to the given record.
  *
- * @param {Object} record      The record to apply annotations to.
- * @param {Array}  annotations The annotation to apply.
+ * @param {Object} record The record to apply annotations to.
+ * @param {Array} annotations The annotation to apply.
  * @return {Object} A record with the annotations applied.
  */
 
-function applyAnnotations(record) {
-  let annotations = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+function applyAnnotations(record, annotations = []) {
   annotations.forEach(annotation => {
     let {
       start,
@@ -236,11 +235,10 @@ function retrieveAnnotationPositions(formats) {
  */
 
 
-function updateAnnotationsWithPositions(annotations, positions, _ref) {
-  let {
-    removeAnnotation,
-    updateAnnotationRange
-  } = _ref;
+function updateAnnotationsWithPositions(annotations, positions, {
+  removeAnnotation,
+  updateAnnotationRange
+}) {
   annotations.forEach(currentAnnotation => {
     const position = positions[currentAnnotation.id]; // If we cannot find an annotation, delete it.
 
@@ -276,20 +274,18 @@ const annotation_annotation = {
     return null;
   },
 
-  __experimentalGetPropsForEditableTreePreparation(select, _ref2) {
-    let {
-      richTextIdentifier,
-      blockClientId
-    } = _ref2;
+  __experimentalGetPropsForEditableTreePreparation(select, {
+    richTextIdentifier,
+    blockClientId
+  }) {
     return {
       annotations: select(STORE_NAME).__experimentalGetAnnotationsForRichText(blockClientId, richTextIdentifier)
     };
   },
 
-  __experimentalCreatePrepareEditableTree(_ref3) {
-    let {
-      annotations
-    } = _ref3;
+  __experimentalCreatePrepareEditableTree({
+    annotations
+  }) {
     return (formats, text) => {
       if (annotations.length === 0) {
         return formats;
@@ -369,12 +365,10 @@ var external_wp_data_ = __webpack_require__("1ZqX");
  */
 
 const addAnnotationClassName = OriginalComponent => {
-  return Object(external_wp_data_["withSelect"])((select, _ref) => {
-    let {
-      clientId,
-      className
-    } = _ref;
-
+  return Object(external_wp_data_["withSelect"])((select, {
+    clientId,
+    className
+  }) => {
     const annotations = select(STORE_NAME).__experimentalGetAnnotationsForBlock(clientId);
 
     return {
@@ -430,11 +424,8 @@ function isValidAnnotationRange(annotation) {
  */
 
 
-function reducer_annotations() {
+function reducer_annotations(state = {}, action) {
   var _state$blockClientId;
-
-  let state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  let action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
     case 'ANNOTATION_ADD':
@@ -518,7 +509,7 @@ const EMPTY_ARRAY = [];
 /**
  * Returns the annotations for a specific client ID.
  *
- * @param {Object} state    Editor state.
+ * @param {Object} state Editor state.
  * @param {string} clientId The ID of the block to get the annotations for.
  *
  * @return {Array} The annotations applicable to this block.
@@ -621,15 +612,14 @@ var v4 = __webpack_require__("7Cbv");
  * @return {Object} Action object.
  */
 
-function __experimentalAddAnnotation(_ref) {
-  let {
-    blockClientId,
-    richTextIdentifier = null,
-    range = null,
-    selector = 'range',
-    source = 'default',
-    id = Object(v4["a" /* default */])()
-  } = _ref;
+function __experimentalAddAnnotation({
+  blockClientId,
+  richTextIdentifier = null,
+  range = null,
+  selector = 'range',
+  source = 'default',
+  id = Object(v4["a" /* default */])()
+}) {
   const action = {
     type: 'ANNOTATION_ADD',
     id,
@@ -663,8 +653,8 @@ function __experimentalRemoveAnnotation(annotationId) {
  * Updates the range of an annotation.
  *
  * @param {string} annotationId ID of the annotation to update.
- * @param {number} start        The start of the new range.
- * @param {number} end          The end of the new range.
+ * @param {number} start The start of the new range.
+ * @param {number} end The end of the new range.
  *
  * @return {Object} Action object.
  */

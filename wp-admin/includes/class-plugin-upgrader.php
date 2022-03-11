@@ -347,7 +347,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 				)
 			);
 
-			$results[ $plugin ] = $result;
+			$results[ $plugin ] = $this->result;
 
 			// Prevent credentials auth screen from displaying multiple times.
 			if ( false === $result ) {
