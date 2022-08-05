@@ -50,9 +50,6 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
      */
     public static function new64($high, $low)
     {
-        if (PHP_INT_SIZE === 4) {
-            throw new SodiumException("Error, use 32-bit");
-        }
         $i64 = new SplFixedArray(2);
         $i64[0] = $high & 0xffffffff;
         $i64[1] = $low & 0xffffffff;
@@ -89,9 +86,6 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
      */
     protected static function add64($x, $y)
     {
-        if (PHP_INT_SIZE === 4) {
-            throw new SodiumException("Error, use 32-bit");
-        }
         $l = ($x[1] + $y[1]) & 0xffffffff;
         return self::new64(
             (int) ($x[0] + $y[0] + (
@@ -125,9 +119,6 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
      */
     protected static function xor64(SplFixedArray $x, SplFixedArray $y)
     {
-        if (PHP_INT_SIZE === 4) {
-            throw new SodiumException("Error, use 32-bit");
-        }
         if (!is_numeric($x[0])) {
             throw new SodiumException('x[0] is not an integer');
         }
@@ -156,9 +147,6 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
      */
     public static function rotr64($x, $c)
     {
-        if (PHP_INT_SIZE === 4) {
-            throw new SodiumException("Error, use 32-bit");
-        }
         if ($c >= 64) {
             $c %= 64;
         }
@@ -176,8 +164,8 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
         $l0 = 0;
         $c = 64 - $c;
 
-        /** @var int $c */
         if ($c < 32) {
+            /** @var int $h0 */
             $h0 = ((int) ($x[0]) << $c) | (
                 (
                     (int) ($x[1]) & ((1 << $c) - 1)
@@ -185,8 +173,10 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
                     (32 - $c)
                 ) >> (32 - $c)
             );
+            /** @var int $l0 */
             $l0 = (int) ($x[1]) << $c;
         } else {
+            /** @var int $h0 */
             $h0 = (int) ($x[1]) << ($c - 32);
         }
 
@@ -194,9 +184,12 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
         $c1 = 64 - $c;
 
         if ($c1 < 32) {
+            /** @var int $h1 */
             $h1 = (int) ($x[0]) >> $c1;
+            /** @var int $l1 */
             $l1 = ((int) ($x[1]) >> $c1) | ((int) ($x[0]) & ((1 << $c1) - 1)) << (32 - $c1);
         } else {
+            /** @var int $l1 */
             $l1 = (int) ($x[0]) >> ($c1 - 32);
         }
 

@@ -65,7 +65,7 @@ class WP_Recovery_Mode_Link_Service {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @global string $pagenow The filename of the current screen.
+	 * @global string $pagenow
 	 *
 	 * @param int $ttl Number of seconds the link should be valid for.
 	 */

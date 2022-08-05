@@ -264,21 +264,7 @@ class WP_REST_Server {
 			$current_user = null;
 		}
 
-		/**
-		 * Filters whether JSONP is enabled for the REST API.
-		 *
-		 * @since 4.4.0
-		 *
-		 * @param bool $jsonp_enabled Whether JSONP is enabled. Default true.
-		 */
-		$jsonp_enabled = apply_filters( 'rest_jsonp_enabled', true );
-
-		$jsonp_callback = false;
-		if ( isset( $_GET['_jsonp'] ) ) {
-			$jsonp_callback = $_GET['_jsonp'];
-		}
-
-		$content_type = ( $jsonp_callback && $jsonp_enabled ) ? 'application/javascript' : 'application/json';
+		$content_type = isset( $_GET['_jsonp'] ) ? 'application/javascript' : 'application/json';
 		$this->send_header( 'Content-Type', $content_type . '; charset=' . get_option( 'blog_charset' ) );
 		$this->send_header( 'X-Robots-Tag', 'noindex' );
 
@@ -369,12 +355,24 @@ class WP_REST_Server {
 			)
 		);
 
-		if ( $jsonp_callback ) {
+		/**
+		 * Filters whether JSONP is enabled for the REST API.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @param bool $jsonp_enabled Whether JSONP is enabled. Default true.
+		 */
+		$jsonp_enabled = apply_filters( 'rest_jsonp_enabled', true );
+
+		$jsonp_callback = null;
+
+		if ( isset( $_GET['_jsonp'] ) ) {
 			if ( ! $jsonp_enabled ) {
 				echo $this->json_error( 'rest_callback_disabled', __( 'JSONP support is disabled on this site.' ), 400 );
 				return false;
 			}
 
+			$jsonp_callback = $_GET['_jsonp'];
 			if ( ! wp_check_jsonp_callback( $jsonp_callback ) ) {
 				echo $this->json_error( 'rest_callback_invalid', __( 'Invalid JSONP callback function.' ), 400 );
 				return false;
@@ -438,8 +436,7 @@ class WP_REST_Server {
 
 		// Wrap the response in an envelope if asked for.
 		if ( isset( $_GET['_envelope'] ) ) {
-			$embed  = isset( $_GET['_embed'] ) ? rest_parse_embed_param( $_GET['_embed'] ) : false;
-			$result = $this->envelope_response( $result, $embed );
+			$result = $this->envelope_response( $result, isset( $_GET['_embed'] ) );
 		}
 
 		// Send extra data from response objects.
@@ -498,7 +495,6 @@ class WP_REST_Server {
 			$json_error_message = $this->get_json_last_error();
 
 			if ( $json_error_message ) {
-				$this->set_status( 500 );
 				$json_error_obj = new WP_Error(
 					'rest_encode_error',
 					$json_error_message,
@@ -731,10 +727,9 @@ class WP_REST_Server {
 	 * data instead.
 	 *
 	 * @since 4.4.0
-	 * @since 6.0.0 The $embed parameter can now contain a list of link relations to include
 	 *
 	 * @param WP_REST_Response $response Response object.
-	 * @param bool|string[]    $embed    Whether to embed all links, a filtered list of link relations, or no links.
+	 * @param bool             $embed    Whether links should be embedded.
 	 * @return WP_REST_Response New response with wrapped data
 	 */
 	public function envelope_response( $response, $embed ) {
@@ -851,7 +846,7 @@ class WP_REST_Server {
 		 */
 		$endpoints = apply_filters( 'rest_endpoints', $endpoints );
 
-		// Normalize the endpoints.
+		// Normalise the endpoints.
 		$defaults = array(
 			'methods'       => '',
 			'accept_json'   => false,
@@ -1080,9 +1075,10 @@ class WP_REST_Server {
 	 * @since 5.6.0
 	 *
 	 * @param WP_REST_Request $request  The request object.
-	 * @param string          $route    The matched route regex.
 	 * @param array           $handler  The matched route handler.
+	 * @param string          $route    The matched route regex.
 	 * @param WP_Error|null   $response The current error object if any.
+	 *
 	 * @return WP_REST_Response
 	 */
 	protected function respond_to_request( $request, $route, $handler, $response ) {
@@ -1228,10 +1224,8 @@ class WP_REST_Server {
 		);
 
 		$response = new WP_REST_Response( $available );
-		$response->add_link( 'help', 'https://developer.wordpress.org/rest-api/' );
+		$response->add_link( 'help', 'http://v2.wp-api.org/' );
 		$this->add_active_theme_link_to_index( $response );
-		$this->add_site_logo_to_index( $response );
-		$this->add_site_icon_to_index( $response );
 
 		/**
 		 * Filters the REST API root index data.
@@ -1241,12 +1235,10 @@ class WP_REST_Server {
 		 * available on the API, and a small amount of data about the site.
 		 *
 		 * @since 4.4.0
-		 * @since 6.0.0 Added `$request` parameter.
 		 *
 		 * @param WP_REST_Response $response Response data.
-		 * @param WP_REST_Request  $request  Request data.
 		 */
-		return apply_filters( 'rest_index', $response, $request );
+		return apply_filters( 'rest_index', $response );
 	}
 
 	/**
@@ -1275,63 +1267,6 @@ class WP_REST_Server {
 		if ( $should_add ) {
 			$theme = wp_get_theme();
 			$response->add_link( 'https://api.w.org/active-theme', rest_url( 'wp/v2/themes/' . $theme->get_stylesheet() ) );
-		}
-	}
-
-	/**
-	 * Exposes the site logo through the WordPress REST API.
-	 *
-	 * This is used for fetching this information when user has no rights
-	 * to update settings.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param WP_REST_Response $response REST API response.
-	 */
-	protected function add_site_logo_to_index( WP_REST_Response $response ) {
-		$site_logo_id = get_theme_mod( 'custom_logo', 0 );
-
-		$this->add_image_to_index( $response, $site_logo_id, 'site_logo' );
-	}
-
-	/**
-	 * Exposes the site icon through the WordPress REST API.
-	 *
-	 * This is used for fetching this information when user has no rights
-	 * to update settings.
-	 *
-	 * @since 5.9.0
-	 *
-	 * @param WP_REST_Response $response REST API response.
-	 */
-	protected function add_site_icon_to_index( WP_REST_Response $response ) {
-		$site_icon_id = get_option( 'site_icon', 0 );
-
-		$this->add_image_to_index( $response, $site_icon_id, 'site_icon' );
-	}
-
-	/**
-	 * Exposes an image through the WordPress REST API.
-	 * This is used for fetching this information when user has no rights
-	 * to update settings.
-	 *
-	 * @since 5.9.0
-	 *
-	 * @param WP_REST_Response $response REST API response.
-	 * @param int              $image_id Image attachment ID.
-	 * @param string           $type     Type of Image.
-	 */
-	protected function add_image_to_index( WP_REST_Response $response, $image_id, $type ) {
-		$response->data[ $type ] = (int) $image_id;
-		if ( $image_id ) {
-			$response->add_link(
-				'https://api.w.org/featuredmedia',
-				rest_url( rest_get_route_for_post( $image_id ) ),
-				array(
-					'embeddable' => true,
-					'type'       => $type,
-				)
-			);
 		}
 	}
 
@@ -1401,11 +1336,11 @@ class WP_REST_Server {
 			}
 
 			/**
-			 * Filters the publicly-visible data for a single REST API route.
+			 * Filters the REST API endpoint data.
 			 *
 			 * @since 4.4.0
 			 *
-			 * @param array $data Publicly-visible data for the route.
+			 * @param WP_REST_Request $request Request data. The namespace is passed as the 'namespace' parameter.
 			 */
 			$available[ $route ] = apply_filters( 'rest_endpoints_description', $data );
 		}
@@ -1442,16 +1377,12 @@ class WP_REST_Server {
 			'endpoints' => array(),
 		);
 
-		$allow_batch = false;
-
 		if ( isset( $this->route_options[ $route ] ) ) {
 			$options = $this->route_options[ $route ];
 
 			if ( isset( $options['namespace'] ) ) {
 				$data['namespace'] = $options['namespace'];
 			}
-
-			$allow_batch = isset( $options['allow_batch'] ) ? $options['allow_batch'] : false;
 
 			if ( isset( $options['schema'] ) && 'help' === $context ) {
 				$data['schema'] = call_user_func( $options['schema'] );
@@ -1472,12 +1403,6 @@ class WP_REST_Server {
 			$endpoint_data   = array(
 				'methods' => array_keys( $callback['methods'] ),
 			);
-
-			$callback_batch = isset( $callback['allow_batch'] ) ? $callback['allow_batch'] : $allow_batch;
-
-			if ( $callback_batch ) {
-				$endpoint_data['allow_batch'] = $callback_batch;
-			}
 
 			if ( isset( $callback['args'] ) ) {
 				$endpoint_data['args'] = array();

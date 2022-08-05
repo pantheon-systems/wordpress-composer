@@ -14,7 +14,7 @@
  */
 function wp_get_server_protocol() {
 	$protocol = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : '';
-	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0', 'HTTP/3' ), true ) ) {
+	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0' ), true ) ) {
 		$protocol = 'HTTP/1.0';
 	}
 	return $protocol;
@@ -76,7 +76,7 @@ function wp_fix_server_vars() {
 	}
 
 	// Fix for Dreamhost and other PHP as CGI hosts.
-	if ( isset( $_SERVER['SCRIPT_NAME'] ) && ( strpos( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) !== false ) ) {
+	if ( strpos( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) !== false ) {
 		unset( $_SERVER['PATH_INFO'] );
 	}
 
@@ -191,7 +191,7 @@ function wp_check_php_mysql_versions() {
 function wp_get_environment_type() {
 	static $current_env = '';
 
-	if ( ! defined( 'WP_RUN_CORE_TESTS' ) && $current_env ) {
+	if ( $current_env ) {
 		return $current_env;
 	}
 
@@ -334,19 +334,6 @@ function wp_is_maintenance_mode() {
 }
 
 /**
- * Get the time elapsed so far during this PHP script.
- *
- * Uses REQUEST_TIME_FLOAT that appeared in PHP 5.4.0.
- *
- * @since 5.8.0
- *
- * @return float Seconds since the PHP script started.
- */
-function timer_float() {
-	return microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'];
-}
-
-/**
  * Start the WordPress micro-timer.
  *
  * @since 0.71
@@ -415,7 +402,7 @@ function timer_stop( $display = 0, $precision = 3 ) {
  * When `WP_DEBUG_LOG` is true, errors will be logged to `wp-content/debug.log`.
  * When `WP_DEBUG_LOG` is a valid path, errors will be logged to the specified file.
  *
- * Errors are never displayed for XML-RPC, REST, `ms-files.php`, and Ajax requests.
+ * Errors are never displayed for XML-RPC, REST, and Ajax requests.
  *
  * @since 3.0.0
  * @since 5.1.0 `WP_DEBUG_LOG` can be a file path.
@@ -426,7 +413,7 @@ function wp_debug_mode() {
 	 * Filters whether to allow the debug mode check to occur.
 	 *
 	 * This filter runs before it can be used by plugins. It is designed for
-	 * non-web runtimes. Returning false causes the `WP_DEBUG` and related
+	 * non-web run-times. Returning false causes the `WP_DEBUG` and related
 	 * constants to not be checked and the default PHP values for errors
 	 * will be used unless you take care to update them yourself.
 	 *
@@ -481,10 +468,7 @@ function wp_debug_mode() {
 		error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_RECOVERABLE_ERROR );
 	}
 
-	if (
-		defined( 'XMLRPC_REQUEST' ) || defined( 'REST_REQUEST' ) || defined( 'MS_FILES_REQUEST' ) ||
-		( defined( 'WP_INSTALLING' ) && WP_INSTALLING ) ||
-		wp_doing_ajax() || wp_is_json_request() ) {
+	if ( defined( 'XMLRPC_REQUEST' ) || defined( 'REST_REQUEST' ) || ( defined( 'WP_INSTALLING' ) && WP_INSTALLING ) || wp_doing_ajax() || wp_is_json_request() ) {
 		ini_set( 'display_errors', 0 );
 	}
 }
@@ -668,19 +652,7 @@ function wp_start_object_cache() {
 	static $first_init = true;
 
 	// Only perform the following checks once.
-
-	/**
-	 * Filters whether to enable loading of the object-cache.php drop-in.
-	 *
-	 * This filter runs before it can be used by plugins. It is designed for non-web
-	 * runtimes. If false is returned, object-cache.php will never be loaded.
-	 *
-	 * @since 5.8.0
-	 *
-	 * @param bool $enable_object_cache Whether to enable loading object-cache.php (if present).
-	 *                                  Default true.
-	 */
-	if ( $first_init && apply_filters( 'enable_loading_object_cache_dropin', true ) ) {
+	if ( $first_init ) {
 		if ( ! function_exists( 'wp_cache_init' ) ) {
 			/*
 			 * This is the normal situation. First-run of this function. No
@@ -886,8 +858,6 @@ function wp_skip_paused_plugins( array $plugins ) {
  * @since 5.1.0
  * @access private
  *
- * @global string $pagenow The filename of the current screen.
- *
  * @return string[] Array of absolute paths to theme directories.
  */
 function wp_get_active_and_valid_themes() {
@@ -968,7 +938,7 @@ function wp_is_recovery_mode() {
  *
  * @since 5.2.0
  *
- * @global string $pagenow The filename of the current screen.
+ * @global string $pagenow
  *
  * @return bool True if the current endpoint should be protected.
  */
@@ -1604,7 +1574,7 @@ function wp_start_scraping_edited_file_errors() {
 		echo wp_json_encode(
 			array(
 				'code'    => 'scrape_nonce_failure',
-				'message' => __( 'Scrape key check failed. Please try again.' ),
+				'message' => __( 'Scrape nonce check failed. Please try again.' ),
 			)
 		);
 		echo "###### wp_scraping_result_end:$key ######";
@@ -1748,7 +1718,7 @@ function wp_is_xml_request() {
  *
  * @since 5.6.1
  *
- * @global string $pagenow The filename of the current screen.
+ * @global string $pagenow The current page.
  *
  * @param string $context The context to check for protection. Accepts 'login', 'admin', and 'front'.
  *                        Defaults to the current context.

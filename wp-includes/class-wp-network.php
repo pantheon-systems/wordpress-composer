@@ -353,13 +353,17 @@ class WP_Network {
 		 */
 		$using_paths = true;
 		if ( wp_using_ext_object_cache() ) {
-			$using_paths = get_networks(
-				array(
-					'number'       => 1,
-					'count'        => true,
-					'path__not_in' => '/',
-				)
-			);
+			$using_paths = wp_cache_get( 'networks_have_paths', 'site-options' );
+			if ( false === $using_paths ) {
+				$using_paths = get_networks(
+					array(
+						'number'       => 1,
+						'count'        => true,
+						'path__not_in' => '/',
+					)
+				);
+				wp_cache_add( 'networks_have_paths', $using_paths, 'site-options' );
+			}
 		}
 
 		$paths = array();

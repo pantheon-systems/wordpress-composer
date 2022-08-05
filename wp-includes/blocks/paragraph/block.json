@@ -1,12 +1,7 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "core/paragraph",
-	"title": "Paragraph",
 	"category": "text",
-	"description": "Start with the basic building block of all narrative.",
-	"keywords": [ "text" ],
-	"textdomain": "default",
 	"attributes": {
 		"align": {
 			"type": "string"
@@ -15,8 +10,7 @@
 			"type": "string",
 			"source": "html",
 			"selector": "p",
-			"default": "",
-			"__experimentalRole": "content"
+			"default": ""
 		},
 		"dropCap": {
 			"type": "boolean",
@@ -27,30 +21,20 @@
 		},
 		"direction": {
 			"type": "string",
-			"enum": [ "ltr", "rtl" ]
+			"enum": [
+				"ltr",
+				"rtl"
+			]
 		}
 	},
 	"supports": {
 		"anchor": true,
 		"className": false,
 		"color": {
-			"link": true,
-			"__experimentalDefaultControls": {
-				"background": true,
-				"text": true
-			}
+			"link": true
 		},
-		"typography": {
-			"fontSize": true,
-			"lineHeight": true,
-			"__experimentalFontStyle": true,
-			"__experimentalFontWeight": true,
-			"__experimentalLetterSpacing": true,
-			"__experimentalTextTransform": true,
-			"__experimentalDefaultControls": {
-				"fontSize": true
-			}
-		},
+		"fontSize": true,
+		"lineHeight": true,
 		"__experimentalSelector": "p",
 		"__unstablePasteTextInline": true
 	},

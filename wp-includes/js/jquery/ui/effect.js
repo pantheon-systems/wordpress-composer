@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Effects 1.13.1
+ * jQuery UI Effects 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -9,15 +9,13 @@
 
 //>>label: Effects Core
 //>>group: Effects
-/* eslint-disable max-len */
+// jscs:disable maximumLineLength
 //>>description: Extends the internal jQuery effects. Includes morphing and easing. Required by all other effects.
-/* eslint-enable max-len */
+// jscs:enable maximumLineLength
 //>>docs: http://api.jqueryui.com/category/effects-core/
 //>>demos: http://jqueryui.com/effect/
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -27,42 +25,43 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 // Include version.js
 $.ui = $.ui || {};
-$.ui.version = "1.13.1";
+$.ui.version = "1.12.1";
 
-// Source: jquery-var-for-color.js
-// Create a local jQuery because jQuery Color relies on it and the
-// global may not exist with AMD and a custom build (#10199).
-// This module is a noop if used as a regular AMD module.
-// eslint-disable-next-line no-unused-vars
-var jQuery = $;
+var dataSpace = "ui-effects-",
+	dataSpaceStyle = "ui-effects-style",
+	dataSpaceAnimated = "ui-effects-animated",
 
+	// Create a local jQuery because jQuery Color relies on it and the
+	// global may not exist with AMD and a custom build (#10199)
+	jQuery = $;
+
+$.effects = {
+	effect: {}
+};
 
 /*!
- * jQuery Color Animations v2.2.0
+ * jQuery Color Animations v2.1.2
  * https://github.com/jquery/jquery-color
  *
- * Copyright OpenJS Foundation and other contributors
+ * Copyright 2014 jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
- * Date: Sun May 10 09:02:36 2020 +0200
+ * Date: Wed Jan 16 08:47:09 2013 -0600
  */
+( function( jQuery, undefined ) {
 
 	var stepHooks = "backgroundColor borderBottomColor borderLeftColor borderRightColor " +
 		"borderTopColor color columnRuleColor outlineColor textDecorationColor textEmphasisColor",
 
-	class2type = {},
-	toString = class2type.toString,
-
-	// plusequals test for += 100 -= 100
+	// Plusequals test for += 100 -= 100
 	rplusequals = /^([\-+])=\s*(\d+\.?\d*)/,
 
-	// a set of RE's that can match strings and generate color tuples.
+	// A set of RE's that can match strings and generate color tuples.
 	stringParsers = [ {
 			re: /rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,
 			parse: function( execResult ) {
@@ -85,31 +84,24 @@ var jQuery = $;
 			}
 		}, {
 
-			// this regex ignores A-F because it's compared against an already lowercased string
-			re: /#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})?/,
+			// This regex ignores A-F because it's compared against an already lowercased string
+			re: /#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/,
 			parse: function( execResult ) {
 				return [
 					parseInt( execResult[ 1 ], 16 ),
 					parseInt( execResult[ 2 ], 16 ),
-					parseInt( execResult[ 3 ], 16 ),
-					execResult[ 4 ] ?
-						( parseInt( execResult[ 4 ], 16 ) / 255 ).toFixed( 2 ) :
-						1
+					parseInt( execResult[ 3 ], 16 )
 				];
 			}
 		}, {
 
-			// this regex ignores A-F because it's compared against an already lowercased string
-			re: /#([a-f0-9])([a-f0-9])([a-f0-9])([a-f0-9])?/,
+			// This regex ignores A-F because it's compared against an already lowercased string
+			re: /#([a-f0-9])([a-f0-9])([a-f0-9])/,
 			parse: function( execResult ) {
 				return [
 					parseInt( execResult[ 1 ] + execResult[ 1 ], 16 ),
 					parseInt( execResult[ 2 ] + execResult[ 2 ], 16 ),
-					parseInt( execResult[ 3 ] + execResult[ 3 ], 16 ),
-					execResult[ 4 ] ?
-						( parseInt( execResult[ 4 ] + execResult[ 4 ], 16 ) / 255 )
-							.toFixed( 2 ) :
-						1
+					parseInt( execResult[ 3 ] + execResult[ 3 ], 16 )
 				];
 			}
 		}, {
@@ -125,7 +117,7 @@ var jQuery = $;
 			}
 		} ],
 
-	// jQuery.Color( )
+	// JQuery.Color( )
 	color = jQuery.Color = function( color, green, blue, alpha ) {
 		return new jQuery.Color.fn.parse( color, green, blue, alpha );
 	},
@@ -179,20 +171,20 @@ var jQuery = $;
 	},
 	support = color.support = {},
 
-	// element for support tests
+	// Element for support tests
 	supportElem = jQuery( "<p>" )[ 0 ],
 
-	// colors = jQuery.Color.names
+	// Colors = jQuery.Color.names
 	colors,
 
-	// local aliases of functions called often
+	// Local aliases of functions called often
 	each = jQuery.each;
 
-// determine rgba support immediately
+// Determine rgba support immediately
 supportElem.style.cssText = "background-color:rgba(1,1,1,.5)";
 support.rgba = supportElem.style.backgroundColor.indexOf( "rgba" ) > -1;
 
-// define cache name and alpha properties
+// Define cache name and alpha properties
 // for rgba and hsla spaces
 each( spaces, function( spaceName, space ) {
 	space.cache = "_" + spaceName;
@@ -202,22 +194,6 @@ each( spaces, function( spaceName, space ) {
 		def: 1
 	};
 } );
-
-// Populate the class2type map
-jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
-	function( _i, name ) {
-		class2type[ "[object " + name + "]" ] = name.toLowerCase();
-	} );
-
-function getType( obj ) {
-	if ( obj == null ) {
-		return obj + "";
-	}
-
-	return typeof obj === "object" ?
-		class2type[ toString.call( obj ) ] || "object" :
-		typeof obj;
-}
 
 function clamp( value, prop, allowEmpty ) {
 	var type = propTypes[ prop.type ] || {};
@@ -237,13 +213,13 @@ function clamp( value, prop, allowEmpty ) {
 
 	if ( type.mod ) {
 
-		// we add mod before modding to make sure that negatives values
+		// We add mod before modding to make sure that negatives values
 		// get converted properly: -10 -> 350
 		return ( value + type.mod ) % type.mod;
 	}
 
-	// for now all property types without mod have min and max
-	return Math.min( type.max, Math.max( 0, value ) );
+	// For now all property types without mod have min and max
+	return 0 > value ? 0 : type.max < value ? type.max : value;
 }
 
 function stringParse( string ) {
@@ -252,7 +228,7 @@ function stringParse( string ) {
 
 	string = string.toLowerCase();
 
-	each( stringParsers, function( _i, parser ) {
+	each( stringParsers, function( i, parser ) {
 		var parsed,
 			match = parser.re.exec( string ),
 			values = match && parser.parse( match ),
@@ -261,12 +237,12 @@ function stringParse( string ) {
 		if ( values ) {
 			parsed = inst[ spaceName ]( values );
 
-			// if this was an rgba parse the assignment might happen twice
+			// If this was an rgba parse the assignment might happen twice
 			// oh well....
 			inst[ spaces[ spaceName ].cache ] = parsed[ spaces[ spaceName ].cache ];
 			rgba = inst._rgba = parsed._rgba;
 
-			// exit each( stringParsers ) here because we matched
+			// Exit each( stringParsers ) here because we matched
 			return false;
 		}
 	} );
@@ -274,7 +250,7 @@ function stringParse( string ) {
 	// Found a stringParser that handled it
 	if ( rgba.length ) {
 
-		// if this came from a parsed string, force "transparent" when alpha is 0
+		// If this came from a parsed string, force "transparent" when alpha is 0
 		// chrome, (and maybe others) return "transparent" as rgba(0,0,0,0)
 		if ( rgba.join() === "0,0,0,0" ) {
 			jQuery.extend( rgba, colors.transparent );
@@ -282,7 +258,7 @@ function stringParse( string ) {
 		return inst;
 	}
 
-	// named colors
+	// Named colors
 	return colors[ string ];
 }
 
@@ -298,10 +274,10 @@ color.fn = jQuery.extend( color.prototype, {
 		}
 
 		var inst = this,
-			type = getType( red ),
+			type = jQuery.type( red ),
 			rgba = this._rgba = [];
 
-		// more than 1 argument specified - assume ( red, green, blue, alpha )
+		// More than 1 argument specified - assume ( red, green, blue, alpha )
 		if ( green !== undefined ) {
 			red = [ red, green, blue, alpha ];
 			type = "array";
@@ -312,7 +288,7 @@ color.fn = jQuery.extend( color.prototype, {
 		}
 
 		if ( type === "array" ) {
-			each( spaces.rgba.props, function( _key, prop ) {
+			each( spaces.rgba.props, function( key, prop ) {
 				rgba[ prop.idx ] = clamp( red[ prop.idx ], prop );
 			} );
 			return this;
@@ -320,20 +296,20 @@ color.fn = jQuery.extend( color.prototype, {
 
 		if ( type === "object" ) {
 			if ( red instanceof color ) {
-				each( spaces, function( _spaceName, space ) {
+				each( spaces, function( spaceName, space ) {
 					if ( red[ space.cache ] ) {
 						inst[ space.cache ] = red[ space.cache ].slice();
 					}
 				} );
 			} else {
-				each( spaces, function( _spaceName, space ) {
+				each( spaces, function( spaceName, space ) {
 					var cache = space.cache;
 					each( space.props, function( key, prop ) {
 
-						// if the cache doesn't exist, and we know how to convert
+						// If the cache doesn't exist, and we know how to convert
 						if ( !inst[ cache ] && space.to ) {
 
-							// if the value was null, we don't need to copy it
+							// If the value was null, we don't need to copy it
 							// if the key was alpha, we don't need to copy it either
 							if ( key === "alpha" || red[ key ] == null ) {
 								return;
@@ -341,19 +317,17 @@ color.fn = jQuery.extend( color.prototype, {
 							inst[ cache ] = space.to( inst._rgba );
 						}
 
-						// this is the only case where we allow nulls for ALL properties.
+						// This is the only case where we allow nulls for ALL properties.
 						// call clamp with alwaysAllowEmpty
 						inst[ cache ][ prop.idx ] = clamp( red[ key ], prop, true );
 					} );
 
-					// everything defined but alpha?
-					if ( inst[ cache ] && jQuery.inArray( null, inst[ cache ].slice( 0, 3 ) ) < 0 ) {
+					// Everything defined but alpha?
+					if ( inst[ cache ] &&
+							jQuery.inArray( null, inst[ cache ].slice( 0, 3 ) ) < 0 ) {
 
-						// use the default of 1
-						if ( inst[ cache ][ 3 ] == null ) {
-							inst[ cache ][ 3 ] = 1;
-						}
-
+						// Use the default of 1
+						inst[ cache ][ 3 ] = 1;
 						if ( space.from ) {
 							inst._rgba = space.from( inst[ cache ] );
 						}
@@ -403,18 +377,18 @@ color.fn = jQuery.extend( color.prototype, {
 			result = start.slice();
 
 		end = end[ space.cache ];
-		each( space.props, function( _key, prop ) {
+		each( space.props, function( key, prop ) {
 			var index = prop.idx,
 				startValue = start[ index ],
 				endValue = end[ index ],
 				type = propTypes[ prop.type ] || {};
 
-			// if null, don't override start value
+			// If null, don't override start value
 			if ( endValue === null ) {
 				return;
 			}
 
-			// if null - use end
+			// If null - use end
 			if ( startValue === null ) {
 				result[ index ] = endValue;
 			} else {
@@ -432,7 +406,7 @@ color.fn = jQuery.extend( color.prototype, {
 	},
 	blend: function( opaque ) {
 
-		// if we are already opaque - return ourself
+		// If we are already opaque - return ourself
 		if ( this._rgba[ 3 ] === 1 ) {
 			return this;
 		}
@@ -448,10 +422,7 @@ color.fn = jQuery.extend( color.prototype, {
 	toRgbaString: function() {
 		var prefix = "rgba(",
 			rgba = jQuery.map( this._rgba, function( v, i ) {
-				if ( v != null ) {
-					return v;
-				}
-				return i > 2 ? 1 : 0;
+				return v == null ? ( i > 2 ? 1 : 0 ) : v;
 			} );
 
 		if ( rgba[ 3 ] === 1 ) {
@@ -468,7 +439,7 @@ color.fn = jQuery.extend( color.prototype, {
 					v = i > 2 ? 1 : 0;
 				}
 
-				// catch 1 and 2
+				// Catch 1 and 2
 				if ( i && i < 3 ) {
 					v = Math.round( v * 100 ) + "%";
 				}
@@ -491,7 +462,7 @@ color.fn = jQuery.extend( color.prototype, {
 
 		return "#" + jQuery.map( rgba, function( v ) {
 
-			// default to 0 when nulls exist
+			// Default to 0 when nulls exist
 			v = ( v || 0 ).toString( 16 );
 			return v.length === 1 ? "0" + v : v;
 		} ).join( "" );
@@ -502,7 +473,7 @@ color.fn = jQuery.extend( color.prototype, {
 } );
 color.fn.parse.prototype = color.fn;
 
-// hsla conversions adapted from:
+// Hsla conversions adapted from:
 // https://code.google.com/p/maashaack/source/browse/packages/graphics/trunk/src/graphics/colors/HUE2RGB.as?r=5021
 
 function hue2rgb( p, q, h ) {
@@ -544,7 +515,7 @@ spaces.hsla.to = function( rgba ) {
 		h = ( 60 * ( r - g ) / diff ) + 240;
 	}
 
-	// chroma (diff) == 0 means greyscale which, by definition, saturation = 0%
+	// Chroma (diff) == 0 means greyscale which, by definition, saturation = 0%
 	// otherwise, saturation is based on the ratio of chroma (diff) to lightness (add)
 	if ( diff === 0 ) {
 		s = 0;
@@ -575,17 +546,16 @@ spaces.hsla.from = function( hsla ) {
 	];
 };
 
-
 each( spaces, function( spaceName, space ) {
 	var props = space.props,
 		cache = space.cache,
 		to = space.to,
 		from = space.from;
 
-	// makes rgba() and hsla()
+	// Makes rgba() and hsla()
 	color.fn[ spaceName ] = function( value ) {
 
-		// generate a cache for this space if it doesn't exist
+		// Generate a cache for this space if it doesn't exist
 		if ( to && !this[ cache ] ) {
 			this[ cache ] = to( this._rgba );
 		}
@@ -594,7 +564,7 @@ each( spaces, function( spaceName, space ) {
 		}
 
 		var ret,
-			type = getType( value ),
+			type = jQuery.type( value ),
 			arr = ( type === "array" || type === "object" ) ? value : arguments,
 			local = this[ cache ].slice();
 
@@ -615,24 +585,19 @@ each( spaces, function( spaceName, space ) {
 		}
 	};
 
-	// makes red() green() blue() alpha() hue() saturation() lightness()
+	// Makes red() green() blue() alpha() hue() saturation() lightness()
 	each( props, function( key, prop ) {
 
-		// alpha is included in more than one space
+		// Alpha is included in more than one space
 		if ( color.fn[ key ] ) {
 			return;
 		}
 		color.fn[ key ] = function( value ) {
-			var local, cur, match, fn,
-				vtype = getType( value );
-
-			if ( key === "alpha" ) {
-				fn = this._hsla ? "hsla" : "rgba";
-			} else {
-				fn = spaceName;
-			}
-			local = this[ fn ]();
-			cur = local[ prop.idx ];
+			var vtype = jQuery.type( value ),
+				fn = ( key === "alpha" ? ( this._hsla ? "hsla" : "rgba" ) : spaceName ),
+				local = this[ fn ](),
+				cur = local[ prop.idx ],
+				match;
 
 			if ( vtype === "undefined" ) {
 				return cur;
@@ -640,7 +605,7 @@ each( spaces, function( spaceName, space ) {
 
 			if ( vtype === "function" ) {
 				value = value.call( this, cur );
-				vtype = getType( value );
+				vtype = jQuery.type( value );
 			}
 			if ( value == null && prop.empty ) {
 				return this;
@@ -657,17 +622,18 @@ each( spaces, function( spaceName, space ) {
 	} );
 } );
 
-// add cssHook and .fx.step function for each named hook.
+// Add cssHook and .fx.step function for each named hook.
 // accept a space separated string of properties
 color.hook = function( hook ) {
 	var hooks = hook.split( " " );
-	each( hooks, function( _i, hook ) {
+	each( hooks, function( i, hook ) {
 		jQuery.cssHooks[ hook ] = {
 			set: function( elem, value ) {
 				var parsed, curElem,
 					backgroundColor = "";
 
-				if ( value !== "transparent" && ( getType( value ) !== "string" || ( parsed = stringParse( value ) ) ) ) {
+				if ( value !== "transparent" && ( jQuery.type( value ) !== "string" ||
+						( parsed = stringParse( value ) ) ) ) {
 					value = color( parsed || value );
 					if ( !support.rgba && value._rgba[ 3 ] !== 1 ) {
 						curElem = hook === "backgroundColor" ? elem.parentNode : elem;
@@ -693,7 +659,8 @@ color.hook = function( hook ) {
 					elem.style[ hook ] = value;
 				} catch ( e ) {
 
-					// wrapped to prevent IE from throwing errors on "invalid" values like 'auto' or 'inherit'
+					// Wrapped to prevent IE from throwing errors on "invalid" values like
+					// 'auto' or 'inherit'
 				}
 			}
 		};
@@ -715,7 +682,7 @@ jQuery.cssHooks.borderColor = {
 	expand: function( value ) {
 		var expanded = {};
 
-		each( [ "Top", "Right", "Bottom", "Left" ], function( _i, part ) {
+		each( [ "Top", "Right", "Bottom", "Left" ], function( i, part ) {
 			expanded[ "border" + part + "Color" ] = value;
 		} );
 		return expanded;
@@ -751,14 +718,7 @@ colors = jQuery.Color.names = {
 	_default: "#ffffff"
 };
 
-
-var dataSpace = "ui-effects-",
-	dataSpaceStyle = "ui-effects-style",
-	dataSpaceAnimated = "ui-effects-animated";
-
-$.effects = {
-	effect: {}
-};
+} )( jQuery );
 
 /******************************************************************************/
 /****************************** CLASS ANIMATIONS ******************************/
@@ -790,12 +750,6 @@ $.each(
 	}
 );
 
-function camelCase( string ) {
-	return string.replace( /-([\da-z])/gi, function( all, letter ) {
-		return letter.toUpperCase();
-	} );
-}
-
 function getElementStyles( elem ) {
 	var key, len,
 		style = elem.ownerDocument.defaultView ?
@@ -808,11 +762,11 @@ function getElementStyles( elem ) {
 		while ( len-- ) {
 			key = style[ len ];
 			if ( typeof style[ key ] === "string" ) {
-				styles[ camelCase( key ) ] = style[ key ];
+				styles[ $.camelCase( key ) ] = style[ key ];
 			}
 		}
 
-		// Support: Opera, IE <9
+	// Support: Opera, IE <9
 	} else {
 		for ( key in style ) {
 			if ( typeof style[ key ] === "string" ) {
@@ -982,12 +936,12 @@ $.fn.extend( {
 
 ( function() {
 
-if ( $.expr && $.expr.pseudos && $.expr.pseudos.animated ) {
-	$.expr.pseudos.animated = ( function( orig ) {
+if ( $.expr && $.expr.filters && $.expr.filters.animated ) {
+	$.expr.filters.animated = ( function( orig ) {
 		return function( elem ) {
 			return !!$( elem ).data( dataSpaceAnimated ) || orig( elem );
 		};
-	} )( $.expr.pseudos.animated );
+	} )( $.expr.filters.animated );
 }
 
 if ( $.uiBackCompat !== false ) {
@@ -1056,7 +1010,6 @@ if ( $.uiBackCompat !== false ) {
 			// Firefox incorrectly exposes anonymous content
 			// https://bugzilla.mozilla.org/show_bug.cgi?id=561664
 			try {
-				// eslint-disable-next-line no-unused-expressions
 				active.id;
 			} catch ( e ) {
 				active = document.body;
@@ -1119,7 +1072,7 @@ if ( $.uiBackCompat !== false ) {
 }
 
 $.extend( $.effects, {
-	version: "1.13.1",
+	version: "1.12.1",
 
 	define: function( name, mode, effect ) {
 		if ( !effect ) {
@@ -1201,31 +1154,31 @@ $.extend( $.effects, {
 		var y, x;
 
 		switch ( origin[ 0 ] ) {
-			case "top":
-				y = 0;
-				break;
-			case "middle":
-				y = 0.5;
-				break;
-			case "bottom":
-				y = 1;
-				break;
-			default:
-				y = origin[ 0 ] / original.height;
+		case "top":
+			y = 0;
+			break;
+		case "middle":
+			y = 0.5;
+			break;
+		case "bottom":
+			y = 1;
+			break;
+		default:
+			y = origin[ 0 ] / original.height;
 		}
 
 		switch ( origin[ 1 ] ) {
-			case "left":
-				x = 0;
-				break;
-			case "center":
-				x = 0.5;
-				break;
-			case "right":
-				x = 1;
-				break;
-			default:
-				x = origin[ 1 ] / original.width;
+		case "left":
+			x = 0;
+			break;
+		case "center":
+			x = 0.5;
+			break;
+		case "right":
+			x = 1;
+			break;
+		default:
+			x = origin[ 1 ] / original.width;
 		}
 
 		return {
@@ -1250,8 +1203,8 @@ $.extend( $.effects, {
 			marginLeft: element.css( "marginLeft" ),
 			marginRight: element.css( "marginRight" )
 		} )
-			.outerWidth( element.outerWidth() )
-			.outerHeight( element.outerHeight() );
+		.outerWidth( element.outerWidth() )
+		.outerHeight( element.outerHeight() );
 
 		if ( /^(static|relative)/.test( cssPosition ) ) {
 			cssPosition = "absolute";
@@ -1272,9 +1225,9 @@ $.extend( $.effects, {
 				marginRight: element.css( "marginRight" ),
 				"float": element.css( "float" )
 			} )
-				.outerWidth( element.outerWidth() )
-				.outerHeight( element.outerHeight() )
-				.addClass( "ui-effects-placeholder" );
+			.outerWidth( element.outerWidth() )
+			.outerHeight( element.outerHeight() )
+			.addClass( "ui-effects-placeholder" );
 
 			element.data( dataSpace + "placeholder", placeholder );
 		}
@@ -1290,7 +1243,7 @@ $.extend( $.effects, {
 
 	removePlaceholder: function( element ) {
 		var dataKey = dataSpace + "placeholder",
-			placeholder = element.data( dataKey );
+				placeholder = element.data( dataKey );
 
 		if ( placeholder ) {
 			placeholder.remove();
@@ -1335,7 +1288,7 @@ function _normalizeArguments( effect, options, speed, callback ) {
 	}
 
 	// Catch (effect, callback)
-	if ( typeof options === "function" ) {
+	if ( $.isFunction( options ) ) {
 		callback = options;
 		speed = null;
 		options = {};
@@ -1349,7 +1302,7 @@ function _normalizeArguments( effect, options, speed, callback ) {
 	}
 
 	// Catch (effect, options, callback)
-	if ( typeof speed === "function" ) {
+	if ( $.isFunction( speed ) ) {
 		callback = speed;
 		speed = null;
 	}
@@ -1362,8 +1315,8 @@ function _normalizeArguments( effect, options, speed, callback ) {
 	speed = speed || options.duration;
 	effect.duration = $.fx.off ? 0 :
 		typeof speed === "number" ? speed :
-			speed in $.fx.speeds ? $.fx.speeds[ speed ] :
-				$.fx.speeds._default;
+		speed in $.fx.speeds ? $.fx.speeds[ speed ] :
+		$.fx.speeds._default;
 
 	effect.complete = callback || options.complete;
 
@@ -1383,7 +1336,7 @@ function standardAnimationOption( option ) {
 	}
 
 	// Complete callback
-	if ( typeof option === "function" ) {
+	if ( $.isFunction( option ) ) {
 		return true;
 	}
 
@@ -1410,7 +1363,7 @@ $.fn.extend( {
 				var el = $( this ),
 					normalizedMode = $.effects.mode( el, mode ) || defaultMode;
 
-				// Sentinel for duck-punching the :animated pseudo-selector
+				// Sentinel for duck-punching the :animated psuedo-selector
 				el.data( dataSpaceAnimated, true );
 
 				// Save effect mode for later use,
@@ -1418,9 +1371,9 @@ $.fn.extend( {
 				// as the .show() below destroys the initial state
 				modes.push( normalizedMode );
 
-				// See $.uiBackCompat inside of run() for removal of defaultMode in 1.14
+				// See $.uiBackCompat inside of run() for removal of defaultMode in 1.13
 				if ( defaultMode && ( normalizedMode === "show" ||
-					( normalizedMode === defaultMode && normalizedMode === "hide" ) ) ) {
+						( normalizedMode === defaultMode && normalizedMode === "hide" ) ) ) {
 					el.show();
 				}
 
@@ -1428,7 +1381,7 @@ $.fn.extend( {
 					$.effects.saveStyle( el );
 				}
 
-				if ( typeof next === "function" ) {
+				if ( $.isFunction( next ) ) {
 					next();
 				}
 			};
@@ -1463,11 +1416,11 @@ $.fn.extend( {
 			}
 
 			function done() {
-				if ( typeof complete === "function" ) {
+				if ( $.isFunction( complete ) ) {
 					complete.call( elem[ 0 ] );
 				}
 
-				if ( typeof next === "function" ) {
+				if ( $.isFunction( next ) ) {
 					next();
 				}
 			}
@@ -1576,39 +1529,37 @@ $.fn.extend( {
 				width: target.innerWidth()
 			},
 			startPosition = element.offset(),
-			transfer = $( "<div class='ui-effects-transfer'></div>" );
-
-		transfer
-			.appendTo( "body" )
-			.addClass( options.className )
-			.css( {
-				top: startPosition.top - fixTop,
-				left: startPosition.left - fixLeft,
-				height: element.innerHeight(),
-				width: element.innerWidth(),
-				position: targetFixed ? "fixed" : "absolute"
-			} )
-			.animate( animation, options.duration, options.easing, function() {
-				transfer.remove();
-				if ( typeof done === "function" ) {
-					done();
-				}
-			} );
+			transfer = $( "<div class='ui-effects-transfer'></div>" )
+				.appendTo( "body" )
+				.addClass( options.className )
+				.css( {
+					top: startPosition.top - fixTop,
+					left: startPosition.left - fixLeft,
+					height: element.innerHeight(),
+					width: element.innerWidth(),
+					position: targetFixed ? "fixed" : "absolute"
+				} )
+				.animate( animation, options.duration, options.easing, function() {
+					transfer.remove();
+					if ( $.isFunction( done ) ) {
+						done();
+					}
+				} );
 	}
 } );
 
 function parseClip( str, element ) {
-	var outerWidth = element.outerWidth(),
-		outerHeight = element.outerHeight(),
-		clipRegex = /^rect\((-?\d*\.?\d*px|-?\d+%|auto),?\s*(-?\d*\.?\d*px|-?\d+%|auto),?\s*(-?\d*\.?\d*px|-?\d+%|auto),?\s*(-?\d*\.?\d*px|-?\d+%|auto)\)$/,
-		values = clipRegex.exec( str ) || [ "", 0, outerWidth, outerHeight, 0 ];
+		var outerWidth = element.outerWidth(),
+			outerHeight = element.outerHeight(),
+			clipRegex = /^rect\((-?\d*\.?\d*px|-?\d+%|auto),?\s*(-?\d*\.?\d*px|-?\d+%|auto),?\s*(-?\d*\.?\d*px|-?\d+%|auto),?\s*(-?\d*\.?\d*px|-?\d+%|auto)\)$/,
+			values = clipRegex.exec( str ) || [ "", 0, outerWidth, outerHeight, 0 ];
 
-	return {
-		top: parseFloat( values[ 1 ] ) || 0,
-		right: values[ 2 ] === "auto" ? outerWidth : parseFloat( values[ 2 ] ),
-		bottom: values[ 3 ] === "auto" ? outerHeight : parseFloat( values[ 3 ] ),
-		left: parseFloat( values[ 4 ] ) || 0
-	};
+		return {
+			top: parseFloat( values[ 1 ] ) || 0,
+			right: values[ 2 ] === "auto" ? outerWidth : parseFloat( values[ 2 ] ),
+			bottom: values[ 3 ] === "auto" ? outerHeight : parseFloat( values[ 3 ] ),
+			left: parseFloat( values[ 4 ] ) || 0
+		};
 }
 
 $.fx.step.clip = function( fx ) {
@@ -1685,4 +1636,4 @@ $.each( baseEasings, function( name, easeIn ) {
 
 return $.effects;
 
-} );
+} ) );

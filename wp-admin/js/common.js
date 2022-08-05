@@ -483,7 +483,7 @@ window.columns = {
 	}
 };
 
-$( function() { columns.init(); } );
+$document.ready(function(){columns.init();});
 
 /**
  * Validates that the required form fields are not empty.
@@ -802,7 +802,7 @@ $availableStructureTags.on( 'click', function() {
 	}
 } );
 
-$( function() {
+$document.ready( function() {
 	var checks, first, last, checked, sliced, mobileEvent, transitionTimeout, focusedRowActions,
 		lastClicked = false,
 		pageInput = $('input.current-page'),
@@ -854,7 +854,7 @@ $( function() {
 		// Reset any compensation for submenus near the bottom of the screen.
 		$('#adminmenu div.wp-submenu').css('margin-top', '');
 
-		if ( viewportWidth <= 960 ) {
+		if ( viewportWidth < 960 ) {
 			if ( $body.hasClass('auto-fold') ) {
 				$body.removeClass('auto-fold').removeClass('folded');
 				setUserSetting('unfold', 1);
@@ -1309,7 +1309,7 @@ $( function() {
 	});
 
 	/**
-	 * Handles tab keypresses in theme and plugin file editor textareas.
+	 * Handles tab keypresses in theme and plugin editor textareas.
 	 *
 	 * @param {Event} e The event object.
 	 *
@@ -1706,9 +1706,9 @@ $( function() {
 			});
 
 			self.trigger();
-			$document.on( 'wp-window-resized.wp-responsive', this.trigger.bind( this ) );
+			$document.on( 'wp-window-resized.wp-responsive', $.proxy( this.trigger, this ) );
 
-			// This needs to run later as UI Sortable may be initialized when the document is ready.
+			// This needs to run later as UI Sortable may be initialized later on $(document).ready().
 			$window.on( 'load.wp-responsive', this.maybeDisableSortables );
 			$document.on( 'postbox-toggled', this.maybeDisableSortables );
 
@@ -1889,7 +1889,7 @@ $( function() {
 		$( '.aria-button-if-js' ).attr( 'role', 'button' );
 	}
 
-	$( document ).on( 'ajaxComplete', function() {
+	$( document ).ajaxComplete( function() {
 		aria_button_if_js();
 	});
 
@@ -2008,7 +2008,7 @@ $( function() {
  *
  * @since 5.5.0
  */
-$( function( $ ) {
+$document.ready( function( $ ) {
 	var $overwrite, $warning;
 
 	if ( ! $body.hasClass( 'update-php' ) ) {

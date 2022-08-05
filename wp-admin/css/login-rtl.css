@@ -51,7 +51,6 @@ p {
 	margin-bottom: 20px;
 	background-color: #fff;
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
-	word-wrap: break-word;
 }
 
 .login .success {
@@ -283,23 +282,22 @@ p {
 
 #login {
 	width: 320px;
-	padding: 5% 0 0;
+	padding: 8% 0 0;
 	margin: auto;
 }
 
 .login #nav,
 .login #backtoblog {
 	font-size: 13px;
-	padding: 0 24px;
+	padding: 0 24px 0;
 }
 
 .login #nav {
-	margin: 24px 0 0;
+	margin: 24px 0 0 0;
 }
 
 #backtoblog {
 	margin: 16px 0;
-	word-wrap: break-word;
 }
 
 .login #nav a,
@@ -323,7 +321,7 @@ p {
 .login .privacy-policy-page-link {
 	text-align: center;
 	width: 100%;
-	margin: 3em 0 2em;
+	margin: 5em 0 2em;
 }
 
 .login form .input,
@@ -337,10 +335,6 @@ p {
 	margin: 0 0 16px 6px;
 	min-height: 40px;
 	max-height: none;
-}
-
-.login input.password-input {
-	font-family: Consolas, Monaco, monospace;
 }
 
 .js.login input.password-input,
@@ -411,45 +405,13 @@ input::-ms-reveal {
 	display: none;
 }
 
-#language-switcher {
-	padding: 0;
-	overflow: visible;
-	background: none;
-	border: none;
-	box-shadow: none;
-}
-
-#language-switcher select {
-	margin-left: 0.25em;
-}
-
-.language-switcher {
-	margin: 0 auto;
-	padding: 0 0 24px;
-	text-align: center;
-}
-
-.language-switcher label {
-	margin-left: 0.25em;
-}
-
-.language-switcher label .dashicons {
-	width: auto;
-	height: auto;
-}
-
-.login .language-switcher .button-primary {
-	float: none;
-	margin-bottom: 0;
+@-ms-viewport {
+	width: device-width;
 }
 
 @media screen and (max-height: 550px) {
 	#login {
 		padding: 20px 0;
-	}
-
-	#language-switcher {
-		margin-top: 0;
 	}
 }
 
@@ -464,17 +426,5 @@ input::-ms-reveal {
 		width: 1.3125rem;
 		height: 1.3125rem;
 		margin: -0.1875rem -0.25rem 0 0;
-	}
-
-	#language-switcher label,
-	#language-switcher select {
-		margin-left: 0;
-	}
-}
-
-@media screen and (max-width: 400px) {
-	.login .language-switcher .button-primary {
-		display: block;
-		margin: 5px auto 0;
 	}
 }

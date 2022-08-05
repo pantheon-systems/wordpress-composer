@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Button 1.13.1
+ * jQuery UI Button 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -17,8 +17,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -37,11 +35,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.button", {
-	version: "1.13.1",
+	version: "1.12.1",
 	defaultElement: "<button>",
 	options: {
 		classes: {
@@ -240,8 +237,8 @@ $.widget( "ui.button", {
 
 		// Make sure we can't end up with a button that has neither text nor icon
 		if ( key === "showLabel" ) {
-			this._toggleClass( "ui-button-icon-only", null, !value );
-			this._updateTooltip();
+				this._toggleClass( "ui-button-icon-only", null, !value );
+				this._updateTooltip();
 		}
 
 		if ( key === "label" ) {
@@ -265,7 +262,7 @@ $.widget( "ui.button", {
 			this._toggleClass( null, "ui-state-disabled", value );
 			this.element[ 0 ].disabled = value;
 			if ( value ) {
-				this.element.trigger( "blur" );
+				this.element.blur();
 			}
 		}
 	},
@@ -306,7 +303,7 @@ if ( $.uiBackCompat !== false ) {
 				this.options.text = this.options.showLabel;
 			}
 			if ( !this.options.icon && ( this.options.icons.primary ||
-				this.options.icons.secondary ) ) {
+					this.options.icons.secondary ) ) {
 				if ( this.options.icons.primary ) {
 					this.options.icon = this.options.icons.primary;
 				} else {
@@ -344,82 +341,22 @@ if ( $.uiBackCompat !== false ) {
 	} );
 
 	$.fn.button = ( function( orig ) {
-		return function( options ) {
-			var isMethodCall = typeof options === "string";
-			var args = Array.prototype.slice.call( arguments, 1 );
-			var returnValue = this;
-
-			if ( isMethodCall ) {
-
-				// If this is an empty collection, we need to have the instance method
-				// return undefined instead of the jQuery instance
-				if ( !this.length && options === "instance" ) {
-					returnValue = undefined;
-				} else {
-					this.each( function() {
-						var methodValue;
-						var type = $( this ).attr( "type" );
-						var name = type !== "checkbox" && type !== "radio" ?
-							"button" :
-							"checkboxradio";
-						var instance = $.data( this, "ui-" + name );
-
-						if ( options === "instance" ) {
-							returnValue = instance;
-							return false;
-						}
-
-						if ( !instance ) {
-							return $.error( "cannot call methods on button" +
-								" prior to initialization; " +
-								"attempted to call method '" + options + "'" );
-						}
-
-						if ( typeof instance[ options ] !== "function" ||
-							options.charAt( 0 ) === "_" ) {
-							return $.error( "no such method '" + options + "' for button" +
-								" widget instance" );
-						}
-
-						methodValue = instance[ options ].apply( instance, args );
-
-						if ( methodValue !== instance && methodValue !== undefined ) {
-							returnValue = methodValue && methodValue.jquery ?
-								returnValue.pushStack( methodValue.get() ) :
-								methodValue;
-							return false;
-						}
-					} );
-				}
-			} else {
-
-				// Allow multiple hashes to be passed on init
-				if ( args.length ) {
-					options = $.widget.extend.apply( null, [ options ].concat( args ) );
-				}
-
-				this.each( function() {
-					var type = $( this ).attr( "type" );
-					var name = type !== "checkbox" && type !== "radio" ? "button" : "checkboxradio";
-					var instance = $.data( this, "ui-" + name );
-
-					if ( instance ) {
-						instance.option( options || {} );
-						if ( instance._init ) {
-							instance._init();
-						}
-					} else {
-						if ( name === "button" ) {
-							orig.call( $( this ), options );
-							return;
-						}
-
-						$( this ).checkboxradio( $.extend( { icon: false }, options ) );
-					}
+		return function() {
+			if ( !this.length || ( this.length && this[ 0 ].tagName !== "INPUT" ) ||
+					( this.length && this[ 0 ].tagName === "INPUT" && (
+						this.attr( "type" ) !== "checkbox" && this.attr( "type" ) !== "radio"
+					) ) ) {
+				return orig.apply( this, arguments );
+			}
+			if ( !$.ui.checkboxradio ) {
+				$.error( "Checkboxradio widget missing" );
+			}
+			if ( arguments.length === 0 ) {
+				return this.checkboxradio( {
+					"icon": false
 				} );
 			}
-
-			return returnValue;
+			return this.checkboxradio.apply( this, arguments );
 		};
 	} )( $.fn.button );
 
@@ -445,4 +382,4 @@ if ( $.uiBackCompat !== false ) {
 
 return $.ui.button;
 
-} );
+} ) );

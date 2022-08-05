@@ -1,12 +1,7 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "core/latest-posts",
-	"title": "Latest Posts",
 	"category": "widgets",
-	"description": "Display a list of your most recent posts.",
-	"keywords": [ "recent posts" ],
-	"textdomain": "default",
 	"attributes": {
 		"categories": {
 			"type": "array",
@@ -63,7 +58,11 @@
 		},
 		"featuredImageAlign": {
 			"type": "string",
-			"enum": [ "left", "center", "right" ]
+			"enum": [
+				"left",
+				"center",
+				"right"
+			]
 		},
 		"featuredImageSizeSlug": {
 			"type": "string",

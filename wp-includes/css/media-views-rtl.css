@@ -371,7 +371,7 @@
 }
 
 .media-sidebar h2,
-.image-details h2:not(.media-attachments-filter-heading) {
+.image-details h2 {
 	position: relative;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -610,6 +610,7 @@
 	border-left-style: solid;
 	border-left-color: #c3c4c7;
 	-webkit-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 
@@ -948,6 +949,7 @@
 	list-style: none;
 	text-align: center;
 	-webkit-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 	width: 25%;
 	box-sizing: border-box;
@@ -1189,8 +1191,7 @@
 	padding: 2px 8px 8px;
 }
 
-.attachments-browser:not(.has-load-more) .attachments,
-.attachments-browser.has-load-more .attachments-wrapper,
+.attachments-browser .attachments,
 .attachments-browser .uploader-inline {
 	position: absolute;
 	top: 72px;
@@ -1269,96 +1270,6 @@
 	padding: 2em 2em 0 0;
 }
 
-.more-loaded .attachment:not(.found-media) {
-	background: #dcdcde;
-}
-
-.load-more-wrapper {
-	clear: both;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: center;
-	padding: 1em 0;
-}
-
-.load-more-wrapper .load-more-count {
-	min-width: 100%;
-	margin: 0 0 1em;
-	text-align: center;
-}
-
-.load-more-wrapper .load-more {
-	margin: 0;
-}
-
-/* Needs high specificity. */
-.media-frame .load-more-wrapper .load-more + .spinner {
-	float: none;
-	margin: 0 10px 0 -30px;
-}
-
-/* Reset spinner margin when the button is hidden to avoid horizontal scrollbar. */
-.media-frame .load-more-wrapper .load-more.hidden + .spinner {
-	margin: 0;
-}
-
-/* Force a new row within the flex container. */
-.load-more-wrapper::after {
-	content: "";
-	min-width: 100%;
-	order: 1;
-}
-
-.load-more-wrapper .load-more-jump {
-	margin: 0 12px 0 0;
-}
-
-.attachment.new-media {
-	outline: 2px dotted #c3c4c7;
-}
-
-.load-more-wrapper {
-	clear: both;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: center;
-	padding: 1em 0;
-}
-
-.load-more-wrapper .load-more-count {
-	min-width: 100%;
-	margin: 0 0 1em;
-	text-align: center;
-}
-
-.load-more-wrapper .load-more {
-	margin: 0;
-}
-
-/* Needs high specificity. */
-.media-frame .load-more-wrapper .load-more + .spinner {
-	float: none;
-	margin: 0 10px 0 -30px;
-}
-
-/* Reset spinner margin when the button is hidden to avoid horizontal scrollbar. */
-.media-frame .load-more-wrapper .load-more.hidden + .spinner {
-	margin: 0;
-}
-
-/* Force a new row within the flex container. */
-.load-more-wrapper::after {
-	content: "";
-	min-width: 100%;
-	order: 1;
-}
-
-.load-more-wrapper .load-more-jump {
-	margin: 0 12px 0 0;
-}
-
 /**
  * Progress Bar
  */
@@ -1395,7 +1306,7 @@
 	top: 50%;
 	right: 15%;
 	width: 70%;
-	margin: -5px 0 0;
+	margin: -5px 0 0 0;
 }
 
 .media-uploader-status {
@@ -1438,8 +1349,34 @@
 }
 
 .media-uploader-status .upload-dismiss-errors {
+	position: absolute;
+	top: -3px;
+	left: -5px;
+	padding: 5px;
+	border-radius: 50%;
 	transition: none;
 	text-decoration: none;
+}
+
+.uploader-inline .media-uploader-status .upload-dismiss-errors {
+	top: 2px;
+	left: 2px;
+}
+
+.media-uploader-status .upload-dismiss-errors::before {
+	content: "\f153";
+	display: block;
+	font: normal 16px/1 dashicons;
+	color: #787c82;
+}
+
+.uploader-inline .errors.media-uploader-status .upload-dismiss-errors::before {
+	color: #646970;
+}
+
+.errors.media-uploader-status .upload-dismiss-errors:hover::before,
+.errors.media-uploader-status .upload-dismiss-errors:focus::before {
+	color: #d63638;
 }
 
 .upload-errors .upload-error {
@@ -1951,7 +1888,7 @@
 }
 
 .media-modal .imgedit-wrap .imgedit-panel-content {
-	padding: 16px 16px 0;
+	padding: 16px 16px 0 16px;
 	position: absolute;
 	top: 0;
 	left: 282px;
@@ -2115,16 +2052,12 @@
 .embed-link-settings,
 .embed-media-settings {
 	position: absolute;
-	top: 82px;
+	top: 70px;
 	right: 0;
 	left: 0;
 	bottom: 0;
 	padding: 0 16px;
 	overflow: auto;
-}
-
-.media-embed .embed-link-settings .link-text {
-	margin-top: 0;
 }
 
 /*
@@ -2268,7 +2201,7 @@
 
 .image-details .custom-size .sep {
 	float: right;
-	margin: 26px 6px 0;
+	margin: 26px 6px 0 6px;
 }
 
 .image-details .custom-size .description {
@@ -2407,7 +2340,7 @@
 	float: right;
 	width: 25%;
 	text-align: left;
-	margin: 8px 1% 0;
+	margin: 8px 1% 0 1%;
 	line-height: 1.1;
 }
 
@@ -2596,15 +2529,13 @@
 
 	.attachments-browser .attachments,
 	.attachments-browser .uploader-inline,
-	.attachments-browser .media-toolbar,
-	.attachments-browser .attachments-wrapper,
-	.attachments-browser.has-load-more .attachments-wrapper {
+	.attachments-browser .media-toolbar {
 		left: 262px;
 	}
 
 	.media-sidebar .setting,
 	.attachment-details .setting {
-		margin: 6px 0;
+		margin: 6px 0px;
 	}
 
 	.media-sidebar .setting input,
@@ -2865,13 +2796,8 @@
 
 	.attachments-browser .attachments,
 	.attachments-browser .uploader-inline,
-	.attachments-browser .media-toolbar,
-	.media-frame-content .attachments-browser .attachments-wrapper {
+	.attachments-browser .media-toolbar {
 		left: 0;
-	}
-
-	.attachments-browser .attachments-wrapper {
-		padding-top: 12px;
 	}
 
 	.image-details .media-frame-title {
@@ -2895,12 +2821,6 @@
 	.media-frame-content .media-toolbar .instructions {
 		display: none;
 	}
-
-	/* Change margin direction on load more button in responsive views. */
-	.load-more-wrapper .load-more-jump {
-		margin: 12px 0 0;
-	}
-
 }
 
 @media only screen and (min-width: 901px) and (max-height: 400px) {
@@ -2909,12 +2829,6 @@
 		top: 0;
 		padding-top: 44px;
 	}
-
-	/* Change margin direction on load more button in responsive views. */
-	.load-more-wrapper .load-more-jump {
-		margin: 12px 0 0;
-	}
-
 }
 
 @media only screen and (max-width: 480px) {

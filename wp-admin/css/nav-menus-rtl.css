@@ -98,105 +98,6 @@ ul.add-menu-item-tabs li {
 	margin: 1em 0 10px;
 }
 
-#nav-menu-bulk-actions-top {
-	margin: 1em 0;
-}
-
-#nav-menu-bulk-actions-bottom {
-	margin: 1em 0;
-	margin: calc( 1em + 9px ) 0 ; 
-}
-
-.bulk-actions input.button {
-	margin-left: 12px;
-}
-
-.bulk-select-button {
-	position: relative;
-	display: inline-block;
-	padding: 0 10px;
-	font-size: 13px;
-	line-height: 2.15384615;
-	height: auto;
-	min-height: 30px;
-	background: #f6f7f7;
-	vertical-align: top;
-	border: 1px solid #dcdcde;
-	margin: 0;
-	cursor: pointer;
-	border-radius: 3px;
-	white-space: nowrap;
-	box-sizing: border-box;
-}
-
-.bulk-selection .bulk-select-button {
-	color: #2271b1;
-	border-color: #2271b1;
-	background: #f6f7f7;
-	vertical-align: top;
-}
-
-#pending-menu-items-to-delete {
-	display: none;
-}
-
-.bulk-selection #pending-menu-items-to-delete {
-	display: block;
-	margin-top: 1em;
-}
-
-#pending-menu-items-to-delete p {
-	margin-bottom: 0;
-}
-
-#pending-menu-items-to-delete ul {
-	margin-top: 0;
-	list-style: none;
-}
-
-#pending-menu-items-to-delete ul li {
-	display: inline;
-}
-
-input.bulk-select-switcher + .bulk-select-button-label {
-	vertical-align: inherit;
-}
-
-label.bulk-select-button:hover,
-label.bulk-select-button:active,
-label.bulk-select-button:focus-within {
-	background: #f0f0f1;
-	border-color: #0a4b78;
-	color: #0a4b78;
-}
-
-input.bulk-select-switcher:focus + .bulk-select-button-label{
-	color: #0a4b78;
-}
-
-.bulk-actions input.menu-items-delete {
-	-webkit-appearance: none;
-	appearance: none;
-	font-size: inherit;
-	border: 0;
-	line-height: 2.1em;
-	background: none;
-	cursor: pointer;
-	text-decoration: underline;
-	color: #b32d2e;
-}
-
-.bulk-actions input.menu-items-delete:hover {
-	color: #b32d2e;
-	border: none;
-}
-
-.bulk-actions input.menu-items-delete.disabled {
-	cursor: default;
-	color: #a7aaad;
-	box-shadow: none;
-}
-
 .menu-settings {
 	border-top: 1px solid #f0f0f1;
 	margin-top: 2em;
@@ -304,7 +205,7 @@ input.bulk-select-switcher:focus + .bulk-select-button-label{
 
 #select-nav-menu-container {
 	text-align: left;
-	padding: 0 10px 3px;
+	padding: 0 10px 3px 10px;
 	margin-bottom: 5px;
 }
 
@@ -434,7 +335,7 @@ input.bulk-select-switcher:focus + .bulk-select-button-label{
 }
 
 #manage-menu .inside {
-	padding: 0;
+	padding: 0px 0px;
 }
 
 /* Custom Links */
@@ -581,15 +482,6 @@ input.bulk-select-switcher:focus + .bulk-select-button-label{
 	margin-left: 13em;
 }
 
-.menu-item-handle .menu-item-checkbox {
-	display: none;
-}
-
-.bulk-selection .menu-item-handle .menu-item-checkbox {
-	display: inline-block;
-	margin-left: 6px;
-}
-
 .menu-item-handle .menu-item-title.no-title {
 	color: #646970;
 }
@@ -615,7 +507,7 @@ li.menu-item.ui-sortable-helper .menu-item-transport .menu-item-bar {
 }
 
 /* WARNING: The factor of 30px is hardcoded into the nav-menus JavaScript. */
-.menu-item-depth-0 { margin-right: 0; }
+.menu-item-depth-0 { margin-right: 0px; }
 .menu-item-depth-1 { margin-right: 30px; }
 .menu-item-depth-2 { margin-right: 60px; }
 .menu-item-depth-3 { margin-right: 90px; }
@@ -628,7 +520,7 @@ li.menu-item.ui-sortable-helper .menu-item-transport .menu-item-bar {
 .menu-item-depth-10 { margin-right: 300px; }
 .menu-item-depth-11 { margin-right: 330px; }
 
-.menu-item-depth-0 .menu-item-transport { margin-right: 0; }
+.menu-item-depth-0 .menu-item-transport { margin-right: 0px; }
 .menu-item-depth-1 .menu-item-transport { margin-right: -30px; }
 .menu-item-depth-2 .menu-item-transport { margin-right: -60px; }
 .menu-item-depth-3 .menu-item-transport { margin-right: -90px; }
@@ -1000,13 +892,14 @@ body.menu-max-depth-11 { min-width: 1280px !important; }
 }
 
 @media only screen and (min-width: 783px) {
-    @supports (position: sticky) and (scroll-margin-bottom: 130px) {
+    @supports ((position: -webkit-sticky) or (position: sticky)) and (scroll-margin-bottom: 130px) {
 		
 		#nav-menu-footer {
+                position: -webkit-sticky;
                 position: sticky;
 				bottom: 0;
 				z-index: 10;
-				box-shadow: 0 -1px 0 0 #ddd;
+				box-shadow: 0 -1px 0 0px #ddd;
         }
 
         #save_menu_header {
@@ -1019,9 +912,5 @@ body.menu-max-depth-11 { min-width: 1280px !important; }
 	/* menu locations */
 	#menu-locations-wrap .widefat {
 		width: 100%;
-	}
-
-	.bulk-select-button {
-		padding: 5px 10px;
 	}
 }

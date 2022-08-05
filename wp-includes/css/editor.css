@@ -258,6 +258,7 @@ div.mce-inline-toolbar-grp {
 	margin-bottom: 8px;
 	position: absolute;
 	-webkit-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 	max-width: 98%;
 	z-index: 100100; /* Same as the other TinyMCE "panels" */
@@ -623,7 +624,7 @@ div.mce-path {
 div.mce-menubar {
 	border-color: #dcdcde;
 	background: #fff;
-	border-width: 0 0 1px;
+	border-width: 0px 0px 1px;
 }
 
 .mce-menubar .mce-menubtn:hover,
@@ -643,7 +644,7 @@ div.mce-menubar {
 div.mce-menu .mce-menu-item-sep,
 .mce-menu-item-sep:hover {
 	border-bottom: 1px solid #dcdcde;
-	height: 0;
+	height: 0px;
 	margin: 5px 0;
 }
 

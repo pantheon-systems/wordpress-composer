@@ -18,7 +18,7 @@ window.wpAjax = jQuery.extend( {
 		return r;
 	},
 	parseAjaxResponse: function( x, r, e ) { // 1 = good, 0 = strange (bad data?), -1 = you lack permission.
-		var parsed = {}, re = jQuery('#' + r).empty(), err = '', noticeMessage = '';
+		var parsed = {}, re = jQuery('#' + r).empty(), err = '';
 
 		if ( x && typeof x === 'object' && x.getElementsByTagName('wp_ajax') ) {
 			parsed.responses = [];
@@ -29,12 +29,6 @@ window.wpAjax = jQuery.extend( {
 				response.data = jQuery( 'response_data', child ).text();
 				response.supplemental = {};
 				if ( !jQuery( 'supplemental', child ).children().each( function() {
-
-					if ( this.nodeName === 'notice' ) {
-						noticeMessage += jQuery(this).text();
-						return;
-					}
-
 					response.supplemental[this.nodeName] = jQuery(this).text();
 				} ).length ) { response.supplemental = false; }
 				response.errors = [];
@@ -52,14 +46,7 @@ window.wpAjax = jQuery.extend( {
 				} ).length ) { response.errors = false; }
 				parsed.responses.push( response );
 			} );
-			if ( err.length ) {
-				re.html( '<div class="error">' + err + '</div>' );
-				wp.a11y.speak( err );
-			} else if ( noticeMessage.length ) {
-				re.html( '<div class="updated notice is-dismissible"><p>' + noticeMessage + '</p></div>');
-				jQuery(document).trigger( 'wp-updates-notice-added' );
-				wp.a11y.speak( noticeMessage );
-			}
+			if ( err.length ) { re.html( '<div class="error">' + err + '</div>' ); }
 			return parsed;
 		}
 		if ( isNaN(x) ) { return !re.html('<div class="error"><p>' + x + '</p></div>'); }
@@ -78,6 +65,6 @@ window.wpAjax = jQuery.extend( {
 }, wpAjax || { noPerm: 'Sorry, you are not allowed to do that.', broken: 'Something went wrong.' } );
 
 // Basic form validation.
-jQuery( function($){
+jQuery(document).ready( function($){
 	$('form.validate').on( 'submit', function() { return wpAjax.validateForm( $(this) ); } );
 });

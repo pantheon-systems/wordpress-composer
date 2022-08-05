@@ -65,7 +65,7 @@ if (isset($_SERVER['HTTP_HOST'])) {
 // Don't show deprecations; useful under PHP 5.5
 error_reporting(E_ALL ^ E_DEPRECATED);
 /** Define appropriate location for default tmp directory on Pantheon */
-define('WP_TEMP_DIR', sys_get_temp_dir());
+define('WP_TEMP_DIR', $_SERVER['HOME'] .'/tmp');
 
 // FS writes aren't permitted in test or live, so we should let WordPress know to disable relevant UI
 if (in_array($_ENV['PANTHEON_ENVIRONMENT'], array( 'test', 'live' )) && ! defined('DISALLOW_FILE_MODS')) {
@@ -87,16 +87,4 @@ if (getenv('WP_ENVIRONMENT_TYPE') === false) {
             putenv('WP_ENVIRONMENT_TYPE=development');
             break;
     }
-}
-
-/**
- * Defaults you may override
- *
- * To override, define your constant in your wp-config.php before wp-config-pantheon.php is required.
- */
-
-/** Disable wp-cron.php from running on every page load and rely on Pantheon to run cron via wp-cli */
-$network = isset($_ENV["FRAMEWORK"]) && $_ENV["FRAMEWORK"] === "wordpress_network";
-if ( ! defined( 'DISABLE_WP_CRON' ) && $network === false) {
-	define( 'DISABLE_WP_CRON', true );
 }

@@ -33,8 +33,6 @@
 	var $document = $( document ),
 		__ = wp.i18n.__,
 		_x = wp.i18n._x,
-		_n = wp.i18n._n,
-		_nx = wp.i18n._nx,
 		sprintf = wp.i18n.sprintf;
 
 	wp = wp || {};
@@ -354,14 +352,8 @@
 			$appearanceNavMenuUpdateCount = $( 'a[href="themes.php"] .update-plugins' ),
 			itemCount;
 
+		$adminBarUpdates.find( '.ab-item' ).removeAttr( 'title' );
 		$adminBarUpdates.find( '.ab-label' ).text( settings.totals.counts.total );
-		$adminBarUpdates.find( '.updates-available-text' ).text(
-			sprintf(
-				/* translators: %s: Total number of updates available. */
-				_n( '%s update available', '%s updates available', settings.totals.counts.total ),
-				settings.totals.counts.total
-			)
-		);
 
 		// Remove the update count from the toolbar if it's zero.
 		if ( 0 === settings.totals.counts.total ) {
@@ -971,8 +963,6 @@
 			var $form            = $( '#bulk-action-form' ),
 				$views           = $( '.subsubsub' ),
 				$pluginRow       = $( this ),
-				$currentView     = $views.find( '[aria-current="page"]' ),
-				$itemsCount      = $( '.displaying-num' ),
 				columnCount      = $form.find( 'thead th:not(.hidden), thead td' ).length,
 				pluginDeletedRow = wp.template( 'item-deleted-row' ),
 				/**
@@ -980,8 +970,7 @@
 				 *
 				 * @type {Object}
 				 */
-				plugins          = settings.plugins,
-				remainingCount;
+				plugins          = settings.plugins;
 
 			// Add a success message after deleting a plugin.
 			if ( ! $pluginRow.hasClass( 'plugin-update-tr' ) ) {
@@ -1060,17 +1049,6 @@
 				if ( ! $form.find( 'tr.no-items' ).length ) {
 					$form.find( '#the-list' ).append( '<tr class="no-items"><td class="colspanchange" colspan="' + columnCount + '">' + __( 'No plugins are currently available.' ) + '</td></tr>' );
 				}
-			}
-
-			if ( $itemsCount.length && $currentView.length ) {
-				remainingCount = plugins[ $currentView.parent( 'li' ).attr('class') ].length;
-				$itemsCount.text(
-					sprintf(
-						/* translators: %s: The remaining number of plugins. */
-						_nx( '%s item', '%s items', 'plugin/plugins', remainingCount ),
-						remainingCount
-					)
-				);
 			}
 		} );
 
@@ -1825,7 +1803,7 @@
 		$( 'body' ).removeClass( 'modal-open' );
 
 		if ( wp.updates.$elToReturnFocusToFromCredentialsModal ) {
-			wp.updates.$elToReturnFocusToFromCredentialsModal.trigger( 'focus' );
+			wp.updates.$elToReturnFocusToFromCredentialsModal.focus();
 		}
 	};
 

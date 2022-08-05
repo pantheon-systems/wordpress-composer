@@ -49,6 +49,7 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 	 * @since 5.5.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return true|WP_Error True if the request has permission, WP_Error object otherwise.
 	 */
 	public function get_items_permissions_check( $request ) {
@@ -69,6 +70,7 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 	 * @since 5.5.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
@@ -106,19 +108,16 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Parse block metadata for a block, and prepare it for an API response.
+	 * Parse block metadata for a block, and prepare it for an API repsonse.
 	 *
 	 * @since 5.5.0
-	 * @since 5.9.0 Renamed `$plugin` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param array           $item    The plugin metadata.
+	 * @param array           $plugin  The plugin metadata.
 	 * @param WP_REST_Request $request Request object.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
-	public function prepare_item_for_response( $item, $request ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$plugin = $item;
-
+	public function prepare_item_for_response( $plugin, $request ) {
 		// There might be multiple blocks in a plugin. Only the first block is mapped.
 		$block_data = reset( $plugin['blocks'] );
 
@@ -157,6 +156,7 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 	 * @since 5.5.0
 	 *
 	 * @param array $plugin The plugin data from WordPress.org.
+	 *
 	 * @return array
 	 */
 	protected function prepare_links( $plugin ) {
@@ -184,6 +184,7 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 	 * @since 5.5.0
 	 *
 	 * @param string $slug The WordPress.org directory slug for a plugin.
+	 *
 	 * @return string The plugin file found matching it.
 	 */
 	protected function find_plugin_for_slug( $slug ) {
@@ -239,7 +240,7 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 				),
 				'rating'              => array(
 					'description' => __( 'The star rating of the block.' ),
-					'type'        => 'number',
+					'type'        => 'integer',
 					'context'     => array( 'view' ),
 				),
 				'rating_count'        => array(
@@ -249,12 +250,12 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 				),
 				'active_installs'     => array(
 					'description' => __( 'The number sites that have activated this block.' ),
-					'type'        => 'integer',
+					'type'        => 'string',
 					'context'     => array( 'view' ),
 				),
 				'author_block_rating' => array(
 					'description' => __( 'The average rating of blocks published by the same author.' ),
-					'type'        => 'number',
+					'type'        => 'integer',
 					'context'     => array( 'view' ),
 				),
 				'author_block_count'  => array(
@@ -274,7 +275,7 @@ class WP_REST_Block_Directory_Controller extends WP_REST_Controller {
 					'context'     => array( 'view' ),
 				),
 				'last_updated'        => array(
-					'description' => __( 'The date when the block was last updated.' ),
+					'description' => __( 'The date when the block was last updated, in fuzzy human readable format.' ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view' ),

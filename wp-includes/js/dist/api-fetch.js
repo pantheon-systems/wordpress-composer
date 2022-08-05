@@ -1,63 +1,236 @@
-/******/ (function() { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	// The require scope
-/******/ 	var __webpack_require__ = {};
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
+this["wp"] = this["wp"] || {}; this["wp"]["apiFetch"] =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
 /******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
-/******/ 	
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "jqrR");
+/******/ })
 /************************************************************************/
-var __webpack_exports__ = {};
+/******/ ({
+
+/***/ "Ff2n":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 
 // EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "default": function() { return /* binding */ build_module; }
-});
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ _objectWithoutProperties; });
 
-;// CONCATENATED MODULE: external ["wp","i18n"]
-var external_wp_i18n_namespaceObject = window["wp"]["i18n"];
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/nonce.js
-/**
- * @param {string} nonce
- * @return {import('../types').APIFetchMiddleware & { nonce: string }} A middleware to enhance a request with a nonce.
- */
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+/***/ }),
+
+/***/ "HaE+":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _asyncToGenerator; });
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+/***/ }),
+
+/***/ "Mmq9":
+/***/ (function(module, exports) {
+
+(function() { module.exports = window["wp"]["url"]; }());
+
+/***/ }),
+
+/***/ "dvlR":
+/***/ (function(module, exports) {
+
+(function() { module.exports = window["regeneratorRuntime"]; }());
+
+/***/ }),
+
+/***/ "jqrR":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/defineProperty.js
+var defineProperty = __webpack_require__("rePB");
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js + 1 modules
+var objectWithoutProperties = __webpack_require__("Ff2n");
+
+// EXTERNAL MODULE: external ["wp","i18n"]
+var external_wp_i18n_ = __webpack_require__("l3Sj");
+
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/nonce.js
+
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 function createNonceMiddleware(nonce) {
-  /**
-   * @type {import('../types').APIFetchMiddleware & { nonce: string }}
-   */
-  const middleware = (options, next) => {
-    const {
-      headers = {}
-    } = options; // If an 'X-WP-Nonce' header (or any case-insensitive variation
+  function middleware(options, next) {
+    var _options$headers = options.headers,
+        headers = _options$headers === void 0 ? {} : _options$headers; // If an 'X-WP-Nonce' header (or any case-insensitive variation
     // thereof) was specified, no need to add a nonce header.
 
-    for (const headerName in headers) {
+    for (var headerName in headers) {
       if (headerName.toLowerCase() === 'x-wp-nonce' && headers[headerName] === middleware.nonce) {
         return next(options);
       }
     }
 
-    return next({ ...options,
-      headers: { ...headers,
+    return next(_objectSpread(_objectSpread({}, options), {}, {
+      headers: _objectSpread(_objectSpread({}, headers), {}, {
         'X-WP-Nonce': middleware.nonce
-      }
-    });
-  };
+      })
+    }));
+  }
 
   middleware.nonce = nonce;
   return middleware;
@@ -65,13 +238,16 @@ function createNonceMiddleware(nonce) {
 
 /* harmony default export */ var nonce = (createNonceMiddleware);
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/namespace-endpoint.js
-/**
- * @type {import('../types').APIFetchMiddleware}
- */
-const namespaceAndEndpointMiddleware = (options, next) => {
-  let path = options.path;
-  let namespaceTrimmed, endpointTrimmed;
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/namespace-endpoint.js
+
+
+function namespace_endpoint_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function namespace_endpoint_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { namespace_endpoint_ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { namespace_endpoint_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+var namespaceAndEndpointMiddleware = function namespaceAndEndpointMiddleware(options, next) {
+  var path = options.path;
+  var namespaceTrimmed, endpointTrimmed;
 
   if (typeof options.namespace === 'string' && typeof options.endpoint === 'string') {
     namespaceTrimmed = options.namespace.replace(/^\/|\/$/g, '');
@@ -86,132 +262,145 @@ const namespaceAndEndpointMiddleware = (options, next) => {
 
   delete options.namespace;
   delete options.endpoint;
-  return next({ ...options,
-    path
-  });
+  return next(namespace_endpoint_objectSpread(namespace_endpoint_objectSpread({}, options), {}, {
+    path: path
+  }));
 };
 
 /* harmony default export */ var namespace_endpoint = (namespaceAndEndpointMiddleware);
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/root-url.js
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/root-url.js
+
+
+function root_url_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function root_url_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { root_url_ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { root_url_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 /**
  * Internal dependencies
  */
 
-/**
- * @param {string} rootURL
- * @return {import('../types').APIFetchMiddleware} Root URL middleware.
- */
 
-const createRootURLMiddleware = rootURL => (options, next) => {
-  return namespace_endpoint(options, optionsWithPath => {
-    let url = optionsWithPath.url;
-    let path = optionsWithPath.path;
-    let apiRoot;
+var root_url_createRootURLMiddleware = function createRootURLMiddleware(rootURL) {
+  return function (options, next) {
+    return namespace_endpoint(options, function (optionsWithPath) {
+      var url = optionsWithPath.url;
+      var path = optionsWithPath.path;
+      var apiRoot;
 
-    if (typeof path === 'string') {
-      apiRoot = rootURL;
+      if (typeof path === 'string') {
+        apiRoot = rootURL;
 
-      if (-1 !== rootURL.indexOf('?')) {
-        path = path.replace('?', '&');
+        if (-1 !== rootURL.indexOf('?')) {
+          path = path.replace('?', '&');
+        }
+
+        path = path.replace(/^\//, ''); // API root may already include query parameter prefix if site is
+        // configured to use plain permalinks.
+
+        if ('string' === typeof apiRoot && -1 !== apiRoot.indexOf('?')) {
+          path = path.replace('?', '&');
+        }
+
+        url = apiRoot + path;
       }
 
-      path = path.replace(/^\//, ''); // API root may already include query parameter prefix if site is
-      // configured to use plain permalinks.
-
-      if ('string' === typeof apiRoot && -1 !== apiRoot.indexOf('?')) {
-        path = path.replace('?', '&');
-      }
-
-      url = apiRoot + path;
-    }
-
-    return next({ ...optionsWithPath,
-      url
+      return next(root_url_objectSpread(root_url_objectSpread({}, optionsWithPath), {}, {
+        url: url
+      }));
     });
-  });
+  };
 };
 
-/* harmony default export */ var root_url = (createRootURLMiddleware);
+/* harmony default export */ var root_url = (root_url_createRootURLMiddleware);
 
-;// CONCATENATED MODULE: external ["wp","url"]
-var external_wp_url_namespaceObject = window["wp"]["url"];
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/preloading.js
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/preloading.js
 /**
- * WordPress dependencies
+ * Given a path, returns a normalized path where equal query parameter values
+ * will be treated as identical, regardless of order they appear in the original
+ * text.
+ *
+ * @param {string} path Original path.
+ *
+ * @return {string} Normalized path.
  */
+function getStablePath(path) {
+  var splitted = path.split('?');
+  var query = splitted[1];
+  var base = splitted[0];
 
-/**
- * @param {Record<string, any>} preloadedData
- * @return {import('../types').APIFetchMiddleware} Preloading middleware.
- */
+  if (!query) {
+    return base;
+  } // 'b=1&c=2&a=5'
+
+
+  return base + '?' + query // [ 'b=1', 'c=2', 'a=5' ]
+  .split('&') // [ [ 'b, '1' ], [ 'c', '2' ], [ 'a', '5' ] ]
+  .map(function (entry) {
+    return entry.split('=');
+  }) // [ [ 'a', '5' ], [ 'b, '1' ], [ 'c', '2' ] ]
+  .sort(function (a, b) {
+    return a[0].localeCompare(b[0]);
+  }) // [ 'a=5', 'b=1', 'c=2' ]
+  .map(function (pair) {
+    return pair.join('=');
+  }) // 'a=5&b=1&c=2'
+  .join('&');
+}
 
 function createPreloadingMiddleware(preloadedData) {
-  const cache = Object.fromEntries(Object.entries(preloadedData).map(_ref => {
-    let [path, data] = _ref;
-    return [(0,external_wp_url_namespaceObject.normalizePath)(path), data];
-  }));
-  return (options, next) => {
-    const {
-      parse = true
-    } = options;
-    /** @type {string | void} */
+  var cache = Object.keys(preloadedData).reduce(function (result, path) {
+    result[getStablePath(path)] = preloadedData[path];
+    return result;
+  }, {});
+  return function (options, next) {
+    var _options$parse = options.parse,
+        parse = _options$parse === void 0 ? true : _options$parse;
 
-    let rawPath = options.path;
+    if (typeof options.path === 'string') {
+      var method = options.method || 'GET';
+      var path = getStablePath(options.path);
 
-    if (!rawPath && options.url) {
-      const {
-        rest_route: pathFromQuery,
-        ...queryArgs
-      } = (0,external_wp_url_namespaceObject.getQueryArgs)(options.url);
+      if ('GET' === method && cache[path]) {
+        var cacheData = cache[path]; // Unsetting the cache key ensures that the data is only preloaded a single time
 
-      if (typeof pathFromQuery === 'string') {
-        rawPath = (0,external_wp_url_namespaceObject.addQueryArgs)(pathFromQuery, queryArgs);
+        delete cache[path];
+        return Promise.resolve(parse ? cacheData.body : new window.Response(JSON.stringify(cacheData.body), {
+          status: 200,
+          statusText: 'OK',
+          headers: cacheData.headers
+        }));
+      } else if ('OPTIONS' === method && cache[method] && cache[method][path]) {
+        return Promise.resolve(cache[method][path]);
       }
-    }
-
-    if (typeof rawPath !== 'string') {
-      return next(options);
-    }
-
-    const method = options.method || 'GET';
-    const path = (0,external_wp_url_namespaceObject.normalizePath)(rawPath);
-
-    if ('GET' === method && cache[path]) {
-      const cacheData = cache[path]; // Unsetting the cache key ensures that the data is only used a single time.
-
-      delete cache[path];
-      return prepareResponse(cacheData, !!parse);
-    } else if ('OPTIONS' === method && cache[method] && cache[method][path]) {
-      const cacheData = cache[method][path]; // Unsetting the cache key ensures that the data is only used a single time.
-
-      delete cache[method][path];
-      return prepareResponse(cacheData, !!parse);
     }
 
     return next(options);
   };
-}
-/**
- * This is a helper function that sends a success response.
- *
- * @param {Record<string, any>} responseData
- * @param {boolean}             parse
- * @return {Promise<any>} Promise with the response.
- */
-
-
-function prepareResponse(responseData, parse) {
-  return Promise.resolve(parse ? responseData.body : new window.Response(JSON.stringify(responseData.body), {
-    status: 200,
-    statusText: 'OK',
-    headers: responseData.headers
-  }));
 }
 
 /* harmony default export */ var preloading = (createPreloadingMiddleware);
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/fetch-all-middleware.js
+// EXTERNAL MODULE: external "regeneratorRuntime"
+var external_regeneratorRuntime_ = __webpack_require__("dvlR");
+var external_regeneratorRuntime_default = /*#__PURE__*/__webpack_require__.n(external_regeneratorRuntime_);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
+var asyncToGenerator = __webpack_require__("HaE+");
+
+// EXTERNAL MODULE: external ["wp","url"]
+var external_wp_url_ = __webpack_require__("Mmq9");
+
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/fetch-all-middleware.js
+
+
+
+
+
+function fetch_all_middleware_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function fetch_all_middleware_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { fetch_all_middleware_ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { fetch_all_middleware_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 /**
  * WordPress dependencies
  */
@@ -220,145 +409,169 @@ function prepareResponse(responseData, parse) {
  * Internal dependencies
  */
 
+ // Apply query arguments to both URL and Path, whichever is present.
 
-/**
- * Apply query arguments to both URL and Path, whichever is present.
- *
- * @param {import('../types').APIFetchOptions} props
- * @param {Record<string, string | number>}    queryArgs
- * @return {import('../types').APIFetchOptions} The request with the modified query args
- */
+var fetch_all_middleware_modifyQuery = function modifyQuery(_ref, queryArgs) {
+  var path = _ref.path,
+      url = _ref.url,
+      options = Object(objectWithoutProperties["a" /* default */])(_ref, ["path", "url"]);
 
-const modifyQuery = (_ref, queryArgs) => {
-  let {
-    path,
-    url,
-    ...options
-  } = _ref;
-  return { ...options,
-    url: url && (0,external_wp_url_namespaceObject.addQueryArgs)(url, queryArgs),
-    path: path && (0,external_wp_url_namespaceObject.addQueryArgs)(path, queryArgs)
-  };
+  return fetch_all_middleware_objectSpread(fetch_all_middleware_objectSpread({}, options), {}, {
+    url: url && Object(external_wp_url_["addQueryArgs"])(url, queryArgs),
+    path: path && Object(external_wp_url_["addQueryArgs"])(path, queryArgs)
+  });
+}; // Duplicates parsing functionality from apiFetch.
+
+
+var parseResponse = function parseResponse(response) {
+  return response.json ? response.json() : Promise.reject(response);
 };
-/**
- * Duplicates parsing functionality from apiFetch.
- *
- * @param {Response} response
- * @return {Promise<any>} Parsed response json.
- */
 
-
-const parseResponse = response => response.json ? response.json() : Promise.reject(response);
-/**
- * @param {string | null} linkHeader
- * @return {{ next?: string }} The parsed link header.
- */
-
-
-const parseLinkHeader = linkHeader => {
+var parseLinkHeader = function parseLinkHeader(linkHeader) {
   if (!linkHeader) {
     return {};
   }
 
-  const match = linkHeader.match(/<([^>]+)>; rel="next"/);
+  var match = linkHeader.match(/<([^>]+)>; rel="next"/);
   return match ? {
     next: match[1]
   } : {};
 };
-/**
- * @param {Response} response
- * @return {string | undefined} The next page URL.
- */
 
+var getNextPageUrl = function getNextPageUrl(response) {
+  var _parseLinkHeader = parseLinkHeader(response.headers.get('link')),
+      next = _parseLinkHeader.next;
 
-const getNextPageUrl = response => {
-  const {
-    next
-  } = parseLinkHeader(response.headers.get('link'));
   return next;
 };
-/**
- * @param {import('../types').APIFetchOptions} options
- * @return {boolean} True if the request contains an unbounded query.
- */
 
-
-const requestContainsUnboundedQuery = options => {
-  const pathIsUnbounded = !!options.path && options.path.indexOf('per_page=-1') !== -1;
-  const urlIsUnbounded = !!options.url && options.url.indexOf('per_page=-1') !== -1;
+var requestContainsUnboundedQuery = function requestContainsUnboundedQuery(options) {
+  var pathIsUnbounded = options.path && options.path.indexOf('per_page=-1') !== -1;
+  var urlIsUnbounded = options.url && options.url.indexOf('per_page=-1') !== -1;
   return pathIsUnbounded || urlIsUnbounded;
-};
-/**
- * The REST API enforces an upper limit on the per_page option. To handle large
- * collections, apiFetch consumers can pass `per_page=-1`; this middleware will
- * then recursively assemble a full response array from all available pages.
- *
- * @type {import('../types').APIFetchMiddleware}
- */
+}; // The REST API enforces an upper limit on the per_page option. To handle large
+// collections, apiFetch consumers can pass `per_page=-1`; this middleware will
+// then recursively assemble a full response array from all available pages.
 
 
-const fetchAllMiddleware = async (options, next) => {
-  if (options.parse === false) {
-    // If a consumer has opted out of parsing, do not apply middleware.
-    return next(options);
-  }
+var fetchAllMiddleware = /*#__PURE__*/function () {
+  var _ref2 = Object(asyncToGenerator["a" /* default */])( /*#__PURE__*/external_regeneratorRuntime_default.a.mark(function _callee(options, next) {
+    var response, results, nextPage, mergedResults, nextResponse, nextResults;
+    return external_regeneratorRuntime_default.a.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            if (!(options.parse === false)) {
+              _context.next = 2;
+              break;
+            }
 
-  if (!requestContainsUnboundedQuery(options)) {
-    // If neither url nor path is requesting all items, do not apply middleware.
-    return next(options);
-  } // Retrieve requested page of results.
+            return _context.abrupt("return", next(options));
 
+          case 2:
+            if (requestContainsUnboundedQuery(options)) {
+              _context.next = 4;
+              break;
+            }
 
-  const response = await build_module({ ...modifyQuery(options, {
-      per_page: 100
-    }),
-    // Ensure headers are returned for page 1.
-    parse: false
-  });
-  const results = await parseResponse(response);
+            return _context.abrupt("return", next(options));
 
-  if (!Array.isArray(results)) {
-    // We have no reliable way of merging non-array results.
-    return results;
-  }
+          case 4:
+            _context.next = 6;
+            return build_module(fetch_all_middleware_objectSpread(fetch_all_middleware_objectSpread({}, fetch_all_middleware_modifyQuery(options, {
+              per_page: 100
+            })), {}, {
+              // Ensure headers are returned for page 1.
+              parse: false
+            }));
 
-  let nextPage = getNextPageUrl(response);
+          case 6:
+            response = _context.sent;
+            _context.next = 9;
+            return parseResponse(response);
 
-  if (!nextPage) {
-    // There are no further pages to request.
-    return results;
-  } // Iteratively fetch all remaining pages until no "next" header is found.
+          case 9:
+            results = _context.sent;
 
+            if (Array.isArray(results)) {
+              _context.next = 12;
+              break;
+            }
 
-  let mergedResults =
-  /** @type {any[]} */
-  [].concat(results);
+            return _context.abrupt("return", results);
 
-  while (nextPage) {
-    const nextResponse = await build_module({ ...options,
-      // Ensure the URL for the next page is used instead of any provided path.
-      path: undefined,
-      url: nextPage,
-      // Ensure we still get headers so we can identify the next page.
-      parse: false
-    });
-    const nextResults = await parseResponse(nextResponse);
-    mergedResults = mergedResults.concat(nextResults);
-    nextPage = getNextPageUrl(nextResponse);
-  }
+          case 12:
+            nextPage = getNextPageUrl(response);
 
-  return mergedResults;
-};
+            if (nextPage) {
+              _context.next = 15;
+              break;
+            }
+
+            return _context.abrupt("return", results);
+
+          case 15:
+            // Iteratively fetch all remaining pages until no "next" header is found.
+            mergedResults = [].concat(results);
+
+          case 16:
+            if (!nextPage) {
+              _context.next = 27;
+              break;
+            }
+
+            _context.next = 19;
+            return build_module(fetch_all_middleware_objectSpread(fetch_all_middleware_objectSpread({}, options), {}, {
+              // Ensure the URL for the next page is used instead of any provided path.
+              path: undefined,
+              url: nextPage,
+              // Ensure we still get headers so we can identify the next page.
+              parse: false
+            }));
+
+          case 19:
+            nextResponse = _context.sent;
+            _context.next = 22;
+            return parseResponse(nextResponse);
+
+          case 22:
+            nextResults = _context.sent;
+            mergedResults = mergedResults.concat(nextResults);
+            nextPage = getNextPageUrl(nextResponse);
+            _context.next = 16;
+            break;
+
+          case 27:
+            return _context.abrupt("return", mergedResults);
+
+          case 28:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function fetchAllMiddleware(_x, _x2) {
+    return _ref2.apply(this, arguments);
+  };
+}();
 
 /* harmony default export */ var fetch_all_middleware = (fetchAllMiddleware);
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/http-v1.js
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/http-v1.js
+
+
+function http_v1_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function http_v1_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { http_v1_ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { http_v1_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 /**
  * Set of HTTP methods which are eligible to be overridden.
  *
- * @type {Set<string>}
+ * @type {Set}
  */
-const OVERRIDE_METHODS = new Set(['PATCH', 'PUT', 'DELETE']);
+var OVERRIDE_METHODS = new Set(['PATCH', 'PUT', 'DELETE']);
 /**
  * Default request method.
  *
@@ -370,62 +583,62 @@ const OVERRIDE_METHODS = new Set(['PATCH', 'PUT', 'DELETE']);
  * @type {string}
  */
 
-const DEFAULT_METHOD = 'GET';
+var DEFAULT_METHOD = 'GET';
 /**
  * API Fetch middleware which overrides the request method for HTTP v1
  * compatibility leveraging the REST API X-HTTP-Method-Override header.
  *
- * @type {import('../types').APIFetchMiddleware}
+ * @param {Object}   options Fetch options.
+ * @param {Function} next    [description]
+ *
+ * @return {*} The evaluated result of the remaining middleware chain.
  */
 
-const httpV1Middleware = (options, next) => {
-  const {
-    method = DEFAULT_METHOD
-  } = options;
+function httpV1Middleware(options, next) {
+  var _options = options,
+      _options$method = _options.method,
+      method = _options$method === void 0 ? DEFAULT_METHOD : _options$method;
 
   if (OVERRIDE_METHODS.has(method.toUpperCase())) {
-    options = { ...options,
-      headers: { ...options.headers,
+    options = http_v1_objectSpread(http_v1_objectSpread({}, options), {}, {
+      headers: http_v1_objectSpread(http_v1_objectSpread({}, options.headers), {}, {
         'X-HTTP-Method-Override': method,
         'Content-Type': 'application/json'
-      },
+      }),
       method: 'POST'
-    };
+    });
   }
 
   return next(options);
-};
+}
 
 /* harmony default export */ var http_v1 = (httpV1Middleware);
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/user-locale.js
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/user-locale.js
 /**
  * WordPress dependencies
  */
 
-/**
- * @type {import('../types').APIFetchMiddleware}
- */
 
-const userLocaleMiddleware = (options, next) => {
-  if (typeof options.url === 'string' && !(0,external_wp_url_namespaceObject.hasQueryArg)(options.url, '_locale')) {
-    options.url = (0,external_wp_url_namespaceObject.addQueryArgs)(options.url, {
+function userLocaleMiddleware(options, next) {
+  if (typeof options.url === 'string' && !Object(external_wp_url_["hasQueryArg"])(options.url, '_locale')) {
+    options.url = Object(external_wp_url_["addQueryArgs"])(options.url, {
       _locale: 'user'
     });
   }
 
-  if (typeof options.path === 'string' && !(0,external_wp_url_namespaceObject.hasQueryArg)(options.path, '_locale')) {
-    options.path = (0,external_wp_url_namespaceObject.addQueryArgs)(options.path, {
+  if (typeof options.path === 'string' && !Object(external_wp_url_["hasQueryArg"])(options.path, '_locale')) {
+    options.path = Object(external_wp_url_["addQueryArgs"])(options.path, {
       _locale: 'user'
     });
   }
 
   return next(options);
-};
+}
 
 /* harmony default export */ var user_locale = (userLocaleMiddleware);
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/utils/response.js
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/utils/response.js
 /**
  * WordPress dependencies
  */
@@ -436,11 +649,11 @@ const userLocaleMiddleware = (options, next) => {
  * @param {Response} response
  * @param {boolean}  shouldParseResponse
  *
- * @return {Promise<any> | null | Response} Parsed response.
+ * @return {Promise} Parsed response
  */
 
-const response_parseResponse = function (response) {
-  let shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+var response_parseResponse = function parseResponse(response) {
+  var shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
   if (shouldParseResponse) {
     if (response.status === 204) {
@@ -452,26 +665,18 @@ const response_parseResponse = function (response) {
 
   return response;
 };
-/**
- * Calls the `json` function on the Response, throwing an error if the response
- * doesn't have a json function or if parsing the json itself fails.
- *
- * @param {Response} response
- * @return {Promise<any>} Parsed response.
- */
 
-
-const parseJsonAndNormalizeError = response => {
-  const invalidJsonError = {
+var response_parseJsonAndNormalizeError = function parseJsonAndNormalizeError(response) {
+  var invalidJsonError = {
     code: 'invalid_json',
-    message: (0,external_wp_i18n_namespaceObject.__)('The response is not a valid JSON response.')
+    message: Object(external_wp_i18n_["__"])('The response is not a valid JSON response.')
   };
 
   if (!response || !response.json) {
     throw invalidJsonError;
   }
 
-  return response.json().catch(() => {
+  return response.json().catch(function () {
     throw invalidJsonError;
   });
 };
@@ -481,39 +686,39 @@ const parseJsonAndNormalizeError = response => {
  * @param {Response} response
  * @param {boolean}  shouldParseResponse
  *
- * @return {Promise<any>} Parsed response.
+ * @return {Promise} Parsed response.
  */
 
 
-const parseResponseAndNormalizeError = function (response) {
-  let shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  return Promise.resolve(response_parseResponse(response, shouldParseResponse)).catch(res => parseAndThrowError(res, shouldParseResponse));
+var parseResponseAndNormalizeError = function parseResponseAndNormalizeError(response) {
+  var shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  return Promise.resolve(response_parseResponse(response, shouldParseResponse)).catch(function (res) {
+    return parseAndThrowError(res, shouldParseResponse);
+  });
 };
-/**
- * Parses a response, throwing an error if parsing the response fails.
- *
- * @param {Response} response
- * @param {boolean}  shouldParseResponse
- * @return {Promise<any>} Parsed response.
- */
-
 function parseAndThrowError(response) {
-  let shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  var shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
   if (!shouldParseResponse) {
     throw response;
   }
 
-  return parseJsonAndNormalizeError(response).then(error => {
-    const unknownError = {
+  return response_parseJsonAndNormalizeError(response).then(function (error) {
+    var unknownError = {
       code: 'unknown_error',
-      message: (0,external_wp_i18n_namespaceObject.__)('An unknown error occurred.')
+      message: Object(external_wp_i18n_["__"])('An unknown error occurred.')
     };
     throw error || unknownError;
   });
 }
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/media-upload.js
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/media-upload.js
+
+
+function media_upload_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function media_upload_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { media_upload_ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { media_upload_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 /**
  * WordPress dependencies
  */
@@ -524,67 +729,57 @@ function parseAndThrowError(response) {
 
 
 /**
- * @param {import('../types').APIFetchOptions} options
- * @return {boolean} True if the request is for media upload.
- */
-
-function isMediaUploadRequest(options) {
-  const isCreateMethod = !!options.method && options.method === 'POST';
-  const isMediaEndpoint = !!options.path && options.path.indexOf('/wp/v2/media') !== -1 || !!options.url && options.url.indexOf('/wp/v2/media') !== -1;
-  return isMediaEndpoint && isCreateMethod;
-}
-/**
  * Middleware handling media upload failures and retries.
  *
- * @type {import('../types').APIFetchMiddleware}
+ * @param {Object}   options Fetch options.
+ * @param {Function} next    [description]
+ *
+ * @return {*} The evaluated result of the remaining middleware chain.
  */
 
+function mediaUploadMiddleware(options, next) {
+  var isMediaUploadRequest = options.path && options.path.indexOf('/wp/v2/media') !== -1 || options.url && options.url.indexOf('/wp/v2/media') !== -1;
 
-const mediaUploadMiddleware = (options, next) => {
-  if (!isMediaUploadRequest(options)) {
-    return next(options);
+  if (!isMediaUploadRequest) {
+    return next(options, next);
   }
 
-  let retries = 0;
-  const maxRetries = 5;
-  /**
-   * @param {string} attachmentId
-   * @return {Promise<any>} Processed post response.
-   */
+  var retries = 0;
+  var maxRetries = 5;
 
-  const postProcess = attachmentId => {
+  var postProcess = function postProcess(attachmentId) {
     retries++;
     return next({
-      path: `/wp/v2/media/${attachmentId}/post-process`,
+      path: "/wp/v2/media/".concat(attachmentId, "/post-process"),
       method: 'POST',
       data: {
         action: 'create-image-subsizes'
       },
       parse: false
-    }).catch(() => {
+    }).catch(function () {
       if (retries < maxRetries) {
         return postProcess(attachmentId);
       }
 
       next({
-        path: `/wp/v2/media/${attachmentId}?force=true`,
+        path: "/wp/v2/media/".concat(attachmentId, "?force=true"),
         method: 'DELETE'
       });
       return Promise.reject();
     });
   };
 
-  return next({ ...options,
+  return next(media_upload_objectSpread(media_upload_objectSpread({}, options), {}, {
     parse: false
-  }).catch(response => {
-    const attachmentId = response.headers.get('x-wp-upload-attachment-id');
+  })).catch(function (response) {
+    var attachmentId = response.headers.get('x-wp-upload-attachment-id');
 
     if (response.status >= 500 && response.status < 600 && attachmentId) {
-      return postProcess(attachmentId).catch(() => {
+      return postProcess(attachmentId).catch(function () {
         if (options.parse !== false) {
           return Promise.reject({
             code: 'post_process',
-            message: (0,external_wp_i18n_namespaceObject.__)('Media upload failed. If this is a photo or a large image, please scale it down and try again.')
+            message: Object(external_wp_i18n_["__"])('Media upload failed. If this is a photo or a large image, please scale it down and try again.')
           });
         }
 
@@ -593,12 +788,21 @@ const mediaUploadMiddleware = (options, next) => {
     }
 
     return parseAndThrowError(response, options.parse);
-  }).then(response => parseResponseAndNormalizeError(response, options.parse));
-};
+  }).then(function (response) {
+    return parseResponseAndNormalizeError(response, options.parse);
+  });
+}
 
 /* harmony default export */ var media_upload = (mediaUploadMiddleware);
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/index.js
+// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/index.js
+
+
+
+function build_module_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function build_module_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { build_module_ownKeys(Object(source), true).forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { build_module_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 /**
  * WordPress dependencies
  */
@@ -620,10 +824,10 @@ const mediaUploadMiddleware = (options, next) => {
  * Default set of header values which should be sent with every request unless
  * explicitly provided through apiFetch options.
  *
- * @type {Record<string, string>}
+ * @type {Object}
  */
 
-const DEFAULT_HEADERS = {
+var DEFAULT_HEADERS = {
   // The backend uses the Accept header as a condition for considering an
   // incoming request as a REST request.
   //
@@ -637,112 +841,73 @@ const DEFAULT_HEADERS = {
  * @type {Object}
  */
 
-const DEFAULT_OPTIONS = {
+var DEFAULT_OPTIONS = {
   credentials: 'include'
 };
-/** @typedef {import('./types').APIFetchMiddleware} APIFetchMiddleware */
-
-/** @typedef {import('./types').APIFetchOptions} APIFetchOptions */
-
-/**
- * @type {import('./types').APIFetchMiddleware[]}
- */
-
-const middlewares = [user_locale, namespace_endpoint, http_v1, fetch_all_middleware];
-/**
- * Register a middleware
- *
- * @param {import('./types').APIFetchMiddleware} middleware
- */
+var middlewares = [user_locale, namespace_endpoint, http_v1, fetch_all_middleware];
 
 function registerMiddleware(middleware) {
   middlewares.unshift(middleware);
 }
-/**
- * Checks the status of a response, throwing the Response as an error if
- * it is outside the 200 range.
- *
- * @param {Response} response
- * @return {Response} The response if the status is in the 200 range.
- */
 
-
-const checkStatus = response => {
+var checkStatus = function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
 
   throw response;
 };
-/** @typedef {(options: import('./types').APIFetchOptions) => Promise<any>} FetchHandler*/
 
-/**
- * @type {FetchHandler}
- */
+var build_module_defaultFetchHandler = function defaultFetchHandler(nextOptions) {
+  var url = nextOptions.url,
+      path = nextOptions.path,
+      data = nextOptions.data,
+      _nextOptions$parse = nextOptions.parse,
+      parse = _nextOptions$parse === void 0 ? true : _nextOptions$parse,
+      remainingOptions = Object(objectWithoutProperties["a" /* default */])(nextOptions, ["url", "path", "data", "parse"]);
 
+  var body = nextOptions.body,
+      headers = nextOptions.headers; // Merge explicitly-provided headers with default values.
 
-const defaultFetchHandler = nextOptions => {
-  const {
-    url,
-    path,
-    data,
-    parse = true,
-    ...remainingOptions
-  } = nextOptions;
-  let {
-    body,
-    headers
-  } = nextOptions; // Merge explicitly-provided headers with default values.
-
-  headers = { ...DEFAULT_HEADERS,
-    ...headers
-  }; // The `data` property is a shorthand for sending a JSON body.
+  headers = build_module_objectSpread(build_module_objectSpread({}, DEFAULT_HEADERS), headers); // The `data` property is a shorthand for sending a JSON body.
 
   if (data) {
     body = JSON.stringify(data);
     headers['Content-Type'] = 'application/json';
   }
 
-  const responsePromise = window.fetch( // Fall back to explicitly passing `window.location` which is the behavior if `undefined` is passed.
-  url || path || window.location.href, { ...DEFAULT_OPTIONS,
-    ...remainingOptions,
-    body,
-    headers
-  });
-  return responsePromise.then(value => Promise.resolve(value).then(checkStatus).catch(response => parseAndThrowError(response, parse)).then(response => parseResponseAndNormalizeError(response, parse)), err => {
-    // Re-throw AbortError for the users to handle it themselves.
-    if (err && err.name === 'AbortError') {
-      throw err;
-    } // Otherwise, there is most likely no network connection.
-    // Unfortunately the message might depend on the browser.
-
-
+  var responsePromise = window.fetch(url || path, build_module_objectSpread(build_module_objectSpread(build_module_objectSpread({}, DEFAULT_OPTIONS), remainingOptions), {}, {
+    body: body,
+    headers: headers
+  }));
+  return responsePromise // Return early if fetch errors. If fetch error, there is most likely no
+  // network connection. Unfortunately fetch just throws a TypeError and
+  // the message might depend on the browser.
+  .then(function (value) {
+    return Promise.resolve(value).then(checkStatus).catch(function (response) {
+      return parseAndThrowError(response, parse);
+    }).then(function (response) {
+      return parseResponseAndNormalizeError(response, parse);
+    });
+  }, function () {
     throw {
       code: 'fetch_error',
-      message: (0,external_wp_i18n_namespaceObject.__)('You are probably offline.')
+      message: Object(external_wp_i18n_["__"])('You are probably offline.')
     };
   });
 };
-/** @type {FetchHandler} */
 
-
-let fetchHandler = defaultFetchHandler;
+var fetchHandler = build_module_defaultFetchHandler;
 /**
  * Defines a custom fetch handler for making the requests that will override
  * the default one using window.fetch
  *
- * @param {FetchHandler} newFetchHandler The new fetch handler
+ * @param {Function} newFetchHandler The new fetch handler
  */
 
 function setFetchHandler(newFetchHandler) {
   fetchHandler = newFetchHandler;
 }
-/**
- * @template T
- * @param {import('./types').APIFetchOptions} options
- * @return {Promise<T>} A promise representing the request processed via the registered middlewares.
- */
-
 
 function apiFetch(options) {
   // creates a nested function chain that calls all middlewares and finally the `fetchHandler`,
@@ -750,20 +915,20 @@ function apiFetch(options) {
   // ```
   // opts1 => m1( opts1, opts2 => m2( opts2, opts3 => m3( opts3, fetchHandler ) ) );
   // ```
-  const enhancedHandler = middlewares.reduceRight((
-  /** @type {FetchHandler} */
-  next, middleware) => {
-    return workingOptions => middleware(workingOptions, next);
+  var enhancedHandler = middlewares.reduceRight(function (next, middleware) {
+    return function (workingOptions) {
+      return middleware(workingOptions, next);
+    };
   }, fetchHandler);
-  return enhancedHandler(options).catch(error => {
+  return enhancedHandler(options).catch(function (error) {
     if (error.code !== 'rest_cookie_invalid_nonce') {
       return Promise.reject(error);
     } // If the nonce is invalid, refresh it and try again.
 
 
-    return window // @ts-ignore
-    .fetch(apiFetch.nonceEndpoint).then(checkStatus).then(data => data.text()).then(text => {
-      // @ts-ignore
+    return window.fetch(apiFetch.nonceEndpoint).then(checkStatus).then(function (data) {
+      return data.text();
+    }).then(function (text) {
       apiFetch.nonceMiddleware.nonce = text;
       return apiFetch(options);
     });
@@ -777,8 +942,38 @@ apiFetch.createPreloadingMiddleware = preloading;
 apiFetch.createRootURLMiddleware = root_url;
 apiFetch.fetchAllMiddleware = fetch_all_middleware;
 apiFetch.mediaUploadMiddleware = media_upload;
-/* harmony default export */ var build_module = (apiFetch);
+/* harmony default export */ var build_module = __webpack_exports__["default"] = (apiFetch);
 
-(window.wp = window.wp || {}).apiFetch = __webpack_exports__["default"];
-/******/ })()
-;
+
+/***/ }),
+
+/***/ "l3Sj":
+/***/ (function(module, exports) {
+
+(function() { module.exports = window["wp"]["i18n"]; }());
+
+/***/ }),
+
+/***/ "rePB":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _defineProperty; });
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+/***/ })
+
+/******/ })["default"];

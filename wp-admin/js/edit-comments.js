@@ -1019,8 +1019,7 @@ window.commentReply = {
 		}
 
 		setTimeout(function() {
-			var rtop, rbottom, scrollTop, vp, scrollBottom,
-				isComposing = false;
+			var rtop, rbottom, scrollTop, vp, scrollBottom;
 
 			rtop = $('#replyrow').offset().top;
 			rbottom = rtop + $('#replyrow').height();
@@ -1033,17 +1032,10 @@ window.commentReply = {
 			else if ( rtop - 20 < scrollTop )
 				window.scroll(0, rtop - 35);
 
-			$( '#replycontent' )
-				.trigger( 'focus' )
-				.on( 'keyup', function( e ) {
-					// Close on Escape except when Input Method Editors (IMEs) are in use.
-					if ( e.which === 27 && ! isComposing ) {
-						commentReply.revert();
-					}
-				} )
-				.on( 'compositionstart', function() {
-					isComposing = true;
-				} );
+			$('#replycontent').trigger( 'focus' ).on( 'keyup', function(e){
+				if ( e.which == 27 )
+					commentReply.revert(); // Close on Escape.
+			});
 		}, 600);
 
 		return false;
@@ -1233,7 +1225,7 @@ window.commentReply = {
 	}
 };
 
-$( function(){
+$(document).ready(function(){
 	var make_hotkeys_redirect, edit_comment, toggle_all, make_bulk;
 
 	setCommentsList();

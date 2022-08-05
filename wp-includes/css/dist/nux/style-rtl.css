@@ -41,12 +41,6 @@
  * These variables do not appear to be used anywhere else.
  */
 /**
-*  Converts a hex value into the rgb equivalent.
-*
-* @param {string} hex - the hexadecimal value to convert
-* @return {string} comma separated rgb values
-*/
-/**
  * Breakpoint mixins
  */
 /**
@@ -74,13 +68,13 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
+/**
+ * These are default block editor widths in case the theme doesn't provide them.
+ */
 :root {
   --wp-admin-theme-color: #007cba;
-  --wp-admin-theme-color--rgb: 0, 124, 186;
   --wp-admin-theme-color-darker-10: #006ba1;
-  --wp-admin-theme-color-darker-10--rgb: 0, 107, 161;
   --wp-admin-theme-color-darker-20: #005a87;
-  --wp-admin-theme-color-darker-20--rgb: 0, 90, 135;
   --wp-admin-border-width-focus: 2px;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
@@ -163,7 +157,8 @@
 }
 @media (max-width: 600px) {
   .nux-dot-tip[data-y-axis=left] .components-popover__content, .nux-dot-tip[data-y-axis=center] .components-popover__content, .nux-dot-tip[data-y-axis=right] .components-popover__content {
-    align-self: end;
+    -ms-grid-row-align: end;
+        align-self: end;
     right: 5px;
     margin: 20px 0 0 0;
     max-width: none !important;
@@ -178,9 +173,9 @@
 .nux-dot-tip.components-popover:not([data-y-axis=middle])[data-y-axis=left] .components-popover__content {
   margin-right: 0;
 }
-.nux-dot-tip.components-popover.interface-more-menu-dropdown__content:not([data-y-axis=middle])[data-y-axis=right] .components-popover__content {
+.nux-dot-tip.components-popover.edit-post-more-menu__content:not([data-y-axis=middle])[data-y-axis=right] .components-popover__content {
   margin-left: -12px;
 }
-.nux-dot-tip.components-popover.interface-more-menu-dropdown__content:not([data-y-axis=middle])[data-y-axis=left] .components-popover__content {
+.nux-dot-tip.components-popover.edit-post-more-menu__content:not([data-y-axis=middle])[data-y-axis=left] .components-popover__content {
   margin-right: -12px;
 }

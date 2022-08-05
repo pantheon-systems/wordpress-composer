@@ -679,7 +679,6 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
  * @since 2.0.0
  * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
  *              by adding it to the function signature.
- * @since 5.8.0 Converted to wrapper for the user_can() function.
  *
  * @see WP_User::has_cap()
  * @see map_meta_cap()
@@ -690,7 +689,13 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
  *              passed, whether the current user has the given meta capability for the given object.
  */
 function current_user_can( $capability, ...$args ) {
-	return user_can( wp_get_current_user(), $capability, ...$args );
+	$current_user = wp_get_current_user();
+
+	if ( empty( $current_user ) ) {
+		return false;
+	}
+
+	return $current_user->has_cap( $capability, ...$args );
 }
 
 /**
@@ -709,7 +714,6 @@ function current_user_can( $capability, ...$args ) {
  * @since 3.0.0
  * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
  *              by adding it to the function signature.
- * @since 5.8.0 Wraps current_user_can() after switching to blog.
  *
  * @param int    $blog_id    Site ID.
  * @param string $capability Capability name.
@@ -719,7 +723,16 @@ function current_user_can( $capability, ...$args ) {
 function current_user_can_for_blog( $blog_id, $capability, ...$args ) {
 	$switched = is_multisite() ? switch_to_blog( $blog_id ) : false;
 
-	$can = current_user_can( $capability, ...$args );
+	$current_user = wp_get_current_user();
+
+	if ( empty( $current_user ) ) {
+		if ( $switched ) {
+			restore_current_blog();
+		}
+		return false;
+	}
+
+	$can = $current_user->has_cap( $capability, ...$args );
 
 	if ( $switched ) {
 		restore_current_blog();
@@ -792,10 +805,8 @@ function user_can( $user, $capability, ...$args ) {
 		$user = get_userdata( $user );
 	}
 
-	if ( empty( $user ) ) {
-		// User is logged out, create anonymous user object.
-		$user = new WP_User( 0 );
-		$user->init( new stdClass );
+	if ( ! $user || ! $user->exists() ) {
+		return false;
 	}
 
 	return $user->has_cap( $capability, ...$args );
@@ -820,7 +831,7 @@ function wp_roles() {
 }
 
 /**
- * Retrieves role object.
+ * Retrieve role object.
  *
  * @since 2.0.0
  *
@@ -832,7 +843,7 @@ function get_role( $role ) {
 }
 
 /**
- * Adds a role, if it does not exist.
+ * Add role, if it does not exist.
  *
  * @since 2.0.0
  *
@@ -850,7 +861,7 @@ function add_role( $role, $display_name, $capabilities = array() ) {
 }
 
 /**
- * Removes a role, if it exists.
+ * Remove role, if it exists.
  *
  * @since 2.0.0
  *
@@ -861,7 +872,7 @@ function remove_role( $role ) {
 }
 
 /**
- * Retrieves a list of super admins.
+ * Retrieve a list of super admins.
  *
  * @since 3.0.0
  *
@@ -880,7 +891,7 @@ function get_super_admins() {
 }
 
 /**
- * Determines whether user is a site admin.
+ * Determine if user is a site admin.
  *
  * @since 3.0.0
  *
@@ -888,7 +899,7 @@ function get_super_admins() {
  * @return bool Whether the user is a site admin.
  */
 function is_super_admin( $user_id = false ) {
-	if ( ! $user_id ) {
+	if ( ! $user_id || get_current_user_id() == $user_id ) {
 		$user = wp_get_current_user();
 	} else {
 		$user = get_userdata( $user_id );

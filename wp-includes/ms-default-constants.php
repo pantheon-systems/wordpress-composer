@@ -68,8 +68,7 @@ function ms_cookie_constants() {
 	 * @since 2.6.0
 	 */
 	if ( ! defined( 'ADMIN_COOKIE_PATH' ) ) {
-		$site_path = parse_url( get_option( 'siteurl' ), PHP_URL_PATH );
-		if ( ! is_subdomain_install() || is_string( $site_path ) && trim( $site_path, '/' ) ) {
+		if ( ! is_subdomain_install() || trim( parse_url( get_option( 'siteurl' ), PHP_URL_PATH ), '/' ) ) {
 			define( 'ADMIN_COOKIE_PATH', SITECOOKIEPATH );
 		} else {
 			define( 'ADMIN_COOKIE_PATH', SITECOOKIEPATH . 'wp-admin' );

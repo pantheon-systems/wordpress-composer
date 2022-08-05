@@ -144,7 +144,7 @@ function add_rewrite_rule( $regex, $query, $after = 'bottom' ) {
 }
 
 /**
- * Adds a new rewrite tag (like %postname%).
+ * Add a new rewrite tag (like %postname%).
  *
  * The `$query` parameter is optional. If it is omitted you must ensure that you call
  * this on, or before, the {@see 'init'} hook. This is because `$query` defaults to
@@ -191,7 +191,7 @@ function remove_rewrite_tag( $tag ) {
 }
 
 /**
- * Adds a permalink structure.
+ * Add permalink structure.
  *
  * @since 3.0.0
  *
@@ -237,7 +237,7 @@ function remove_permastruct( $name ) {
 }
 
 /**
- * Adds a new feed type like /atom1/.
+ * Add a new feed type like /atom1/.
  *
  * @since 2.1.0
  *
@@ -265,7 +265,7 @@ function add_feed( $feedname, $function ) {
 }
 
 /**
- * Removes rewrite rules and then recreate rewrite rules.
+ * Remove rewrite rules and then recreate rewrite rules.
  *
  * @since 3.0.0
  *
@@ -283,7 +283,7 @@ function flush_rewrite_rules( $hard = true ) {
 }
 
 /**
- * Adds an endpoint, like /trackback/.
+ * Add an endpoint, like /trackback/.
  *
  * Adding an endpoint creates extra rewrite rules for each of the matching
  * places specified by the provided bitmask. For example:
@@ -357,7 +357,7 @@ function _wp_filter_taxonomy_base( $base ) {
 
 
 /**
- * Resolves numeric slugs that collide with date permalinks.
+ * Resolve numeric slugs that collide with date permalinks.
  *
  * Permalinks of posts with numeric slugs can sometimes look to WP_Query::parse_query()
  * like a date archive, as when your permalink structure is `/%year%/%postname%/` and
@@ -473,7 +473,7 @@ function wp_resolve_numeric_slug_conflicts( $query_vars = array() ) {
 }
 
 /**
- * Examines a URL and try to determine the post ID it represents.
+ * Examine a URL and try to determine the post ID it represents.
  *
  * Checks are supposedly from the hosted site blog.
  *

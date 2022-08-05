@@ -24,7 +24,6 @@ class WP_Http_Cookie {
 	 * Cookie name.
 	 *
 	 * @since 2.8.0
-	 *
 	 * @var string
 	 */
 	public $name;
@@ -33,7 +32,6 @@ class WP_Http_Cookie {
 	 * Cookie value.
 	 *
 	 * @since 2.8.0
-	 *
 	 * @var string
 	 */
 	public $value;
@@ -42,7 +40,6 @@ class WP_Http_Cookie {
 	 * When the cookie expires. Unix timestamp or formatted date.
 	 *
 	 * @since 2.8.0
-	 *
 	 * @var string|int|null
 	 */
 	public $expires;
@@ -51,7 +48,6 @@ class WP_Http_Cookie {
 	 * Cookie URL path.
 	 *
 	 * @since 2.8.0
-	 *
 	 * @var string
 	 */
 	public $path;
@@ -60,25 +56,14 @@ class WP_Http_Cookie {
 	 * Cookie Domain.
 	 *
 	 * @since 2.8.0
-	 *
 	 * @var string
 	 */
 	public $domain;
 
 	/**
-	 * Cookie port or comma-separated list of ports.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @var int|string
-	 */
-	public $port;
-
-	/**
 	 * host-only flag.
 	 *
 	 * @since 5.2.0
-	 *
 	 * @var bool
 	 */
 	public $host_only;
@@ -100,7 +85,7 @@ class WP_Http_Cookie {
 	 *     @type string|int|null $expires   Optional. Unix timestamp or formatted date. Default null.
 	 *     @type string          $path      Optional. Path. Default '/'.
 	 *     @type string          $domain    Optional. Domain. Default host of parsed $requested_url.
-	 *     @type int|string      $port      Optional. Port or comma-separated list of ports. Default null.
+	 *     @type int             $port      Optional. Port. Default null.
 	 *     @type bool            $host_only Optional. host-only storage flag. Default true.
 	 * }
 	 * @param string       $requested_url The URL which the cookie was set on, used for default $domain
@@ -108,12 +93,12 @@ class WP_Http_Cookie {
 	 */
 	public function __construct( $data, $requested_url = '' ) {
 		if ( $requested_url ) {
-			$parsed_url = parse_url( $requested_url );
+			$arrURL = parse_url( $requested_url );
 		}
-		if ( isset( $parsed_url['host'] ) ) {
-			$this->domain = $parsed_url['host'];
+		if ( isset( $arrURL['host'] ) ) {
+			$this->domain = $arrURL['host'];
 		}
-		$this->path = isset( $parsed_url['path'] ) ? $parsed_url['path'] : '/';
+		$this->path = isset( $arrURL['path'] ) ? $arrURL['path'] : '/';
 		if ( '/' !== substr( $this->path, -1 ) ) {
 			$this->path = dirname( $this->path ) . '/';
 		}
@@ -202,7 +187,7 @@ class WP_Http_Cookie {
 
 		// Host - very basic check that the request URL ends with the domain restriction (minus leading dot).
 		$domain = ( '.' === substr( $domain, 0, 1 ) ) ? substr( $domain, 1 ) : $domain;
-		if ( substr( $url['host'], -strlen( $domain ) ) !== $domain ) {
+		if ( substr( $url['host'], -strlen( $domain ) ) != $domain ) {
 			return false;
 		}
 
@@ -212,7 +197,7 @@ class WP_Http_Cookie {
 		}
 
 		// Path - request path must start with path restriction.
-		if ( substr( $url['path'], 0, strlen( $path ) ) !== $path ) {
+		if ( substr( $url['path'], 0, strlen( $path ) ) != $path ) {
 			return false;
 		}
 

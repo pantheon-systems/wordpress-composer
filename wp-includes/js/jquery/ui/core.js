@@ -1,10 +1,8 @@
-/*! jQuery UI - v1.13.1 - 2022-01-20
+/*! jQuery UI - v1.12.1 - 2020-09-25
 * http://jqueryui.com
 * Includes: data.js, disable-selection.js, escape-selector.js, focusable.js, form-reset-mixin.js, form.js, ie.js, jquery-1-7.js, keycode.js, labels.js, plugin.js, position.js, safe-active-element.js, safe-blur.js, scroll-parent.js, tabbable.js, unique-id.js, version.js, widget.js
 * Copyright jQuery Foundation and other contributors; Licensed  */
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -15,16 +13,15 @@
 		factory( jQuery );
 	}
 } ( function( $ ) {
-"use strict";
 
 // Source: version.js
 $.ui = $.ui || {};
 
-$.ui.version = "1.13.1";
+$.ui.version = "1.12.1";
 
 // Source: data.js
 /*!
- * jQuery UI :data 1.13.1
+ * jQuery UI :data 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -37,7 +34,7 @@ $.ui.version = "1.13.1";
 //>>description: Selects elements which have data stored under the specified key.
 //>>docs: http://api.jqueryui.com/data-selector/
 
-$.extend( $.expr.pseudos, {
+$.extend( $.expr[ ":" ], {
 	data: $.expr.createPseudo ?
 		$.expr.createPseudo( function( dataName ) {
 			return function( elem ) {
@@ -51,9 +48,10 @@ $.extend( $.expr.pseudos, {
 		}
 } );
 
+
 // Source: disable-selection.js
 /*!
- * jQuery UI Disable Selection 1.13.1
+ * jQuery UI Disable Selection 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -85,9 +83,18 @@ $.fn.extend( {
 	}
 } );
 
+// Source: escape-selector.js
+// Internal use only
+$.ui.escapeSelector = ( function() {
+	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g;
+	return function( selector ) {
+		return selector.replace( selectorEscape, "\\$1" );
+	};
+} )();
+
 // Source: focusable.js
 /*!
- * jQuery UI Focusable 1.13.1
+ * jQuery UI Focusable 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -146,25 +153,26 @@ function visible( element ) {
 		element = element.parent();
 		visibility = element.css( "visibility" );
 	}
-	return visibility === "visible";
+	return visibility !== "hidden";
 }
 
-$.extend( $.expr.pseudos, {
+$.extend( $.expr[ ":" ], {
 	focusable: function( element ) {
 		return $.ui.focusable( element, $.attr( element, "tabindex" ) != null );
 	}
 } );
 
+// Source: form.js
 // Support: IE8 Only
 // IE8 does not support the form attribute and when it is supplied. It overwrites the form prop
 // with a string, so we need to find the proper form.
-$.fn._form = function() {
+$.fn.form = function() {
 	return typeof this[ 0 ].form === "string" ? this.closest( "form" ) : $( this[ 0 ].form );
 };
 
 // Source: form-reset-mixin.js
 /*!
- * jQuery UI Form Reset Mixin 1.13.1
+ * jQuery UI Form Reset Mixin 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -191,7 +199,7 @@ $.ui.formResetMixin = {
 	},
 
 	_bindFormResetHandler: function() {
-		this.form = this.element._form();
+		this.form = this.element.form();
 		if ( !this.form.length ) {
 			return;
 		}
@@ -227,9 +235,9 @@ $.ui.formResetMixin = {
 // This file is deprecated
 $.ui.ie = !!/msie [\w.]+/.exec( navigator.userAgent.toLowerCase() );
 
-// Source: jquery-patch.js
+// Source: jquery-1-7.js
 /*!
- * jQuery UI Support for jQuery core 1.8.x and newer 1.13.0
+ * jQuery UI Support for jQuery core 1.7.x 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -238,72 +246,75 @@ $.ui.ie = !!/msie [\w.]+/.exec( navigator.userAgent.toLowerCase() );
  *
  */
 
-//>>label: jQuery 1.8+ Support
+//>>label: jQuery 1.7 Support
 //>>group: Core
-//>>description: Support version 1.8.x and newer of jQuery core
+//>>description: Support version 1.7.x of jQuery core
 
-// Support: jQuery 1.9.x or older
-// $.expr[ ":" ] is deprecated.
-if ( !$.expr.pseudos ) {
-	$.expr.pseudos = $.expr[ ":" ];
-}
+// Support: jQuery 1.7 only
+// Not a great way to check versions, but since we only support 1.7+ and only
+// need to detect <1.8, this is a simple check that should suffice. Checking
+// for "1.7." would be a bit safer, but the version string is 1.7, not 1.7.0
+// and we'll never reach 1.70.0 (if we do, we certainly won't be supporting
+// 1.7 anymore). See #11197 for why we're not using feature detection.
+if ( $.fn.jquery.substring( 0, 3 ) === "1.7" ) {
 
-// Support: jQuery 1.11.x or older
-// $.unique has been renamed to $.uniqueSort
-if ( !$.uniqueSort ) {
-	$.uniqueSort = $.unique;
-}
+	// Setters for .innerWidth(), .innerHeight(), .outerWidth(), .outerHeight()
+	// Unlike jQuery Core 1.8+, these only support numeric values to set the
+	// dimensions in pixels
+	$.each( [ "Width", "Height" ], function( i, name ) {
+		var side = name === "Width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ],
+			type = name.toLowerCase(),
+			orig = {
+				innerWidth: $.fn.innerWidth,
+				innerHeight: $.fn.innerHeight,
+				outerWidth: $.fn.outerWidth,
+				outerHeight: $.fn.outerHeight
+			};
 
-// Support: jQuery 2.2.x or older.
-// This method has been defined in jQuery 3.0.0.
-// Code from https://github.com/jquery/jquery/blob/e539bac79e666bba95bba86d690b4e609dca2286/src/selector/escapeSelector.js
-if ( !$.escapeSelector ) {
+		function reduce( elem, size, border, margin ) {
+			$.each( side, function() {
+				size -= parseFloat( $.css( elem, "padding" + this ) ) || 0;
+				if ( border ) {
+					size -= parseFloat( $.css( elem, "border" + this + "Width" ) ) || 0;
+				}
+				if ( margin ) {
+					size -= parseFloat( $.css( elem, "margin" + this ) ) || 0;
+				}
+			} );
+			return size;
+		}
 
-	// CSS string/identifier serialization
-	// https://drafts.csswg.org/cssom/#common-serializing-idioms
-	var rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g;
-
-	var fcssescape = function( ch, asCodePoint ) {
-		if ( asCodePoint ) {
-
-			// U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
-			if ( ch === "\0" ) {
-				return "\uFFFD";
+		$.fn[ "inner" + name ] = function( size ) {
+			if ( size === undefined ) {
+				return orig[ "inner" + name ].call( this );
 			}
 
-			// Control characters and (dependent upon position) numbers get escaped as code points
-			return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
-		}
-
-		// Other potentially-special ASCII characters get backslash-escaped
-		return "\\" + ch;
-	};
-
-	$.escapeSelector = function( sel ) {
-		return ( sel + "" ).replace( rcssescape, fcssescape );
-	};
-}
-
-// Support: jQuery 3.4.x or older
-// These methods have been defined in jQuery 3.5.0.
-if ( !$.fn.even || !$.fn.odd ) {
-	$.fn.extend( {
-		even: function() {
-			return this.filter( function( i ) {
-				return i % 2 === 0;
+			return this.each( function() {
+				$( this ).css( type, reduce( this, size ) + "px" );
 			} );
-		},
-		odd: function() {
-			return this.filter( function( i ) {
-				return i % 2 === 1;
+		};
+
+		$.fn[ "outer" + name ] = function( size, margin ) {
+			if ( typeof size !== "number" ) {
+				return orig[ "outer" + name ].call( this, size );
+			}
+
+			return this.each( function() {
+				$( this ).css( type, reduce( this, size, true, margin ) + "px" );
 			} );
-		}
+		};
 	} );
+
+	$.fn.addBack = function( selector ) {
+		return this.add( selector == null ?
+			this.prevObject : this.prevObject.filter( selector )
+		);
+	};
 }
 
 // Source: keycode.js
 /*!
- * jQuery UI Keycode 1.13.1
+ * jQuery UI Keycode 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -337,7 +348,7 @@ $.ui.keyCode = {
 
 // Source: labels.js
 /*!
- * jQuery UI Labels 1.13.1
+ * jQuery UI Labels 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -352,10 +363,6 @@ $.ui.keyCode = {
 
 $.fn.labels = function() {
 	var ancestor, selector, id, labels, ancestors;
-
-	if ( !this.length ) {
-		return this.pushStack( [] );
-	}
 
 	// Check control.labels first
 	if ( this[ 0 ].labels && this[ 0 ].labels.length ) {
@@ -379,7 +386,7 @@ $.fn.labels = function() {
 		ancestors = ancestor.add( ancestor.length ? ancestor.siblings() : this.siblings() );
 
 		// Create a selector for the label based on the id
-		selector = "label[for='" + $.escapeSelector( id ) + "']";
+		selector = "label[for='" + $.ui.escapeSelector( id ) + "']";
 
 		labels = labels.add( ancestors.find( selector ).addBack( selector ) );
 
@@ -409,7 +416,7 @@ $.ui.plugin = {
 		}
 
 		if ( !allowDisconnected && ( !instance.element[ 0 ].parentNode ||
-			instance.element[ 0 ].parentNode.nodeType === 11 ) ) {
+				instance.element[ 0 ].parentNode.nodeType === 11 ) ) {
 			return;
 		}
 
@@ -423,7 +430,7 @@ $.ui.plugin = {
 
 // Source: position.js
 /*!
- * jQuery UI Position 1.13.1
+ * jQuery UI Position 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -461,10 +468,6 @@ function parseCss( element, property ) {
 	return parseInt( $.css( element, property ), 10 ) || 0;
 }
 
-function isWindow( obj ) {
-	return obj != null && obj === obj.window;
-}
-
 function getDimensions( elem ) {
 	var raw = elem[ 0 ];
 	if ( raw.nodeType === 9 ) {
@@ -474,7 +477,7 @@ function getDimensions( elem ) {
 			offset: { top: 0, left: 0 }
 		};
 	}
-	if ( isWindow( raw ) ) {
+	if ( $.isWindow( raw ) ) {
 		return {
 			width: elem.width(),
 			height: elem.height(),
@@ -501,9 +504,9 @@ $.position = {
 			return cachedScrollbarWidth;
 		}
 		var w1, w2,
-			div = $( "<div style=" +
-				"'display:block;position:absolute;width:200px;height:200px;overflow:hidden;'>" +
-				"<div style='height:300px;width:auto;'></div></div>" ),
+			div = $( "<div " +
+				"style='display:block;position:absolute;width:50px;height:50px;overflow:hidden;'>" +
+				"<div style='height:100px;width:auto;'></div></div>" ),
 			innerDiv = div.children()[ 0 ];
 
 		$( "body" ).append( div );
@@ -536,12 +539,12 @@ $.position = {
 	},
 	getWithinInfo: function( element ) {
 		var withinElement = $( element || window ),
-			isElemWindow = isWindow( withinElement[ 0 ] ),
+			isWindow = $.isWindow( withinElement[ 0 ] ),
 			isDocument = !!withinElement[ 0 ] && withinElement[ 0 ].nodeType === 9,
-			hasOffset = !isElemWindow && !isDocument;
+			hasOffset = !isWindow && !isDocument;
 		return {
 			element: withinElement,
-			isWindow: isElemWindow,
+			isWindow: isWindow,
 			isDocument: isDocument,
 			offset: hasOffset ? $( element ).offset() : { left: 0, top: 0 },
 			scrollLeft: withinElement.scrollLeft(),
@@ -561,12 +564,7 @@ $.fn.position = function( options ) {
 	options = $.extend( {}, options );
 
 	var atOffset, targetWidth, targetHeight, targetOffset, basePosition, dimensions,
-
-		// Make sure string options are treated as CSS selectors
-		target = typeof options.of === "string" ?
-			$( document ).find( options.of ) :
-			$( options.of ),
-
+		target = $( options.of ),
 		within = $.position.getWithinInfo( options.within ),
 		scrollInfo = $.position.getScrollInfo( within ),
 		collision = ( options.collision || "flip" ).split( " " ),
@@ -956,7 +954,7 @@ $.ui.safeBlur = function( element ) {
 
 // Source: scroll-parent.js
 /*!
- * jQuery UI Scroll Parent 1.13.1
+ * jQuery UI Scroll Parent 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -989,7 +987,7 @@ $.fn.scrollParent = function( includeHidden ) {
 
 // Source: tabbable.js
 /*!
- * jQuery UI Tabbable 1.13.1
+ * jQuery UI Tabbable 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -1002,7 +1000,7 @@ $.fn.scrollParent = function( includeHidden ) {
 //>>description: Selects elements which can be tabbed to.
 //>>docs: http://api.jqueryui.com/tabbable-selector/
 
-$.extend( $.expr.pseudos, {
+$.extend( $.expr[ ":" ], {
 	tabbable: function( element ) {
 		var tabIndex = $.attr( element, "tabindex" ),
 			hasTabindex = tabIndex != null;
@@ -1012,7 +1010,7 @@ $.extend( $.expr.pseudos, {
 
 // Source: unique-id.js
 /*!
- * jQuery UI Unique ID 1.13.1
+ * jQuery UI Unique ID 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -1049,7 +1047,7 @@ $.fn.extend( {
 
 // Source: widget.js
 /*!
- * jQuery UI Widget 1.13.1
+ * jQuery UI Widget 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -1064,19 +1062,22 @@ $.fn.extend( {
 //>>demos: http://jqueryui.com/widget/
 
 var widgetUuid = 0;
-var widgetHasOwnProperty = Array.prototype.hasOwnProperty;
 var widgetSlice = Array.prototype.slice;
 
 $.cleanData = ( function( orig ) {
 	return function( elems ) {
 		var events, elem, i;
 		for ( i = 0; ( elem = elems[ i ] ) != null; i++ ) {
+			try {
 
-			// Only trigger remove when necessary to save time
-			events = $._data( elem, "events" );
-			if ( events && events.remove ) {
-				$( elem ).triggerHandler( "remove" );
-			}
+				// Only trigger remove when necessary to save time
+				events = $._data( elem, "events" );
+				if ( events && events.remove ) {
+					$( elem ).triggerHandler( "remove" );
+				}
+
+			// Http://bugs.jquery.com/ticket/8235
+			} catch ( e ) {}
 		}
 		orig( elems );
 	};
@@ -1098,12 +1099,12 @@ $.widget = function( name, base, prototype ) {
 		base = $.Widget;
 	}
 
-	if ( Array.isArray( prototype ) ) {
+	if ( $.isArray( prototype ) ) {
 		prototype = $.extend.apply( null, [ {} ].concat( prototype ) );
 	}
 
 	// Create selector for plugin
-	$.expr.pseudos[ fullName.toLowerCase() ] = function( elem ) {
+	$.expr[ ":" ][ fullName.toLowerCase() ] = function( elem ) {
 		return !!$.data( elem, fullName );
 	};
 
@@ -1112,7 +1113,7 @@ $.widget = function( name, base, prototype ) {
 	constructor = $[ namespace ][ name ] = function( options, element ) {
 
 		// Allow instantiation without "new" keyword
-		if ( !this || !this._createWidget ) {
+		if ( !this._createWidget ) {
 			return new constructor( options, element );
 		}
 
@@ -1143,7 +1144,7 @@ $.widget = function( name, base, prototype ) {
 	// inheriting from
 	basePrototype.options = $.widget.extend( {}, basePrototype.options );
 	$.each( prototype, function( prop, value ) {
-		if ( typeof value !== "function" ) {
+		if ( !$.isFunction( value ) ) {
 			proxiedPrototype[ prop ] = value;
 			return;
 		}
@@ -1222,7 +1223,7 @@ $.widget.extend = function( target ) {
 	for ( ; inputIndex < inputLength; inputIndex++ ) {
 		for ( key in input[ inputIndex ] ) {
 			value = input[ inputIndex ][ key ];
-			if ( widgetHasOwnProperty.call( input[ inputIndex ], key ) && value !== undefined ) {
+			if ( input[ inputIndex ].hasOwnProperty( key ) && value !== undefined ) {
 
 				// Clone objects
 				if ( $.isPlainObject( value ) ) {
@@ -1232,7 +1233,7 @@ $.widget.extend = function( target ) {
 						// Don't extend strings, arrays, etc. with objects
 						$.widget.extend( {}, value );
 
-					// Copy everything else by reference
+				// Copy everything else by reference
 				} else {
 					target[ key ] = value;
 				}
@@ -1271,8 +1272,7 @@ $.widget.bridge = function( name, object ) {
 							"attempted to call method '" + options + "'" );
 					}
 
-					if ( typeof instance[ options ] !== "function" ||
-						options.charAt( 0 ) === "_" ) {
+					if ( !$.isFunction( instance[ options ] ) || options.charAt( 0 ) === "_" ) {
 						return $.error( "no such method '" + options + "' for " + name +
 							" widget instance" );
 					}
@@ -1481,8 +1481,8 @@ $.Widget.prototype = {
 		for ( classKey in value ) {
 			currentElements = this.classesElementLookup[ classKey ];
 			if ( value[ classKey ] === this.options.classes[ classKey ] ||
-				!currentElements ||
-				!currentElements.length ) {
+					!currentElements ||
+					!currentElements.length ) {
 				continue;
 			}
 
@@ -1533,34 +1533,12 @@ $.Widget.prototype = {
 			classes: this.options.classes || {}
 		}, options );
 
-		function bindRemoveEvent() {
-			var nodesToBind = [];
-
-			options.element.each( function( _, element ) {
-				var isTracked = $.map( that.classesElementLookup, function( elements ) {
-					return elements;
-				} )
-					.some( function( elements ) {
-						return elements.is( element );
-					} );
-
-				if ( !isTracked ) {
-					nodesToBind.push( element );
-				}
-			} );
-
-			that._on( $( nodesToBind ), {
-				remove: "_untrackClassesElement"
-			} );
-		}
-
 		function processClassString( classes, checkOption ) {
 			var current, i;
 			for ( i = 0; i < classes.length; i++ ) {
 				current = that.classesElementLookup[ classes[ i ] ] || $();
 				if ( options.add ) {
-					bindRemoveEvent();
-					current = $( $.uniqueSort( current.get().concat( options.element.get() ) ) );
+					current = $( $.unique( current.get().concat( options.element.get() ) ) );
 				} else {
 					current = $( current.not( options.element ).get() );
 				}
@@ -1571,6 +1549,10 @@ $.Widget.prototype = {
 				}
 			}
 		}
+
+		this._on( options.element, {
+			"remove": "_untrackClassesElement"
+		} );
 
 		if ( options.keys ) {
 			processClassString( options.keys.match( /\S+/g ) || [], true );
@@ -1589,8 +1571,6 @@ $.Widget.prototype = {
 				that.classesElementLookup[ key ] = $( value.not( event.target ).get() );
 			}
 		} );
-
-		this._off( $( event.target ) );
 	},
 
 	_removeClass: function( element, keys, extra ) {
@@ -1642,7 +1622,7 @@ $.Widget.prototype = {
 				// - disabled as an array instead of boolean
 				// - disabled class as method for disabling individual parts
 				if ( !suppressDisabledCheck &&
-					( instance.options.disabled === true ||
+						( instance.options.disabled === true ||
 						$( this ).hasClass( "ui-state-disabled" ) ) ) {
 					return;
 				}
@@ -1671,7 +1651,7 @@ $.Widget.prototype = {
 	_off: function( element, eventName ) {
 		eventName = ( eventName || "" ).split( " " ).join( this.eventNamespace + " " ) +
 			this.eventNamespace;
-		element.off( eventName );
+		element.off( eventName ).off( eventName );
 
 		// Clear the stack to avoid memory leaks (#10056)
 		this.bindings = $( this.bindings.not( element ).get() );
@@ -1737,7 +1717,7 @@ $.Widget.prototype = {
 		}
 
 		this.element.trigger( event, data );
-		return !( typeof callback === "function" &&
+		return !( $.isFunction( callback ) &&
 			callback.apply( this.element[ 0 ], [ event ].concat( data ) ) === false ||
 			event.isDefaultPrevented() );
 	}
@@ -1759,8 +1739,6 @@ $.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
 		options = options || {};
 		if ( typeof options === "number" ) {
 			options = { duration: options };
-		} else if ( options === true ) {
-			options = {};
 		}
 
 		hasOptions = !$.isEmptyObject( options );

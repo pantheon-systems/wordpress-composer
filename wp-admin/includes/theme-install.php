@@ -51,7 +51,7 @@ $theme_field_defaults = array(
 );
 
 /**
- * Retrieves the list of WordPress theme features (aka theme tags).
+ * Retrieve list of WordPress theme features (aka theme tags).
  *
  * @since 2.8.0
  *
@@ -82,7 +82,7 @@ function install_themes_feature_list() {
 }
 
 /**
- * Displays search form for searching themes.
+ * Display search form for searching themes.
  *
  * @since 2.8.0
  *
@@ -129,7 +129,7 @@ function install_theme_search_form( $type_selector = true ) {
 }
 
 /**
- * Displays tags filter for themes.
+ * Display tags filter for themes.
  *
  * @since 2.8.0
  */
@@ -183,7 +183,7 @@ function install_themes_upload() {
 <form method="post" enctype="multipart/form-data" class="wp-upload-form" action="<?php echo self_admin_url( 'update.php?action=upload-theme' ); ?>">
 	<?php wp_nonce_field( 'theme-upload' ); ?>
 	<label class="screen-reader-text" for="themezip"><?php _e( 'Theme zip file' ); ?></label>
-	<input type="file" id="themezip" name="themezip" accept=".zip" />
+	<input type="file" id="themezip" name="themezip" accept=".zip"/>
 	<?php submit_button( __( 'Install Now' ), '', 'install-theme-submit', false ); ?>
 </form>
 	<?php
@@ -209,7 +209,7 @@ function display_theme( $theme ) {
 }
 
 /**
- * Displays theme content based on theme list.
+ * Display theme content based on theme list.
  *
  * @since 2.8.0
  *
@@ -227,7 +227,7 @@ function display_themes() {
 }
 
 /**
- * Displays theme information in dialog box form.
+ * Display theme information in dialog box form.
  *
  * @since 2.8.0
  *

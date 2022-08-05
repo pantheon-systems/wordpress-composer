@@ -37,12 +37,13 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	-webkit-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 
 .widgets-holder-wrap .widget-inside {
 	border-top: none;
-	padding: 1px 15px 15px;
+	padding: 1px 15px 15px 15px;
 	line-height: 1.23076923;
 }
 
@@ -346,8 +347,7 @@
 	margin: 0;
 	padding: 8px 10px;
 	overflow: hidden;
-	white-space: normal;
-	line-height: 1.5;
+	white-space: nowrap;
 }
 
 .widgets-holder-wrap .description {
@@ -423,6 +423,7 @@ div#widgets-left .widget-holder {
 	word-wrap: break-word;
 	-ms-word-break: break-all;
 	word-break: break-word;
+	-ms-hyphens: auto;
 	-webkit-hyphens: auto;
 	hyphens: auto;
 }
@@ -437,7 +438,7 @@ div#widgets-left .widget-holder {
 	width: 100%;
 	background: transparent;
 	padding: 0;
-	margin: 0 0 20px;
+	margin: 0 0 20px 0;
 	border: none;
 	box-shadow: none;
 }
@@ -472,7 +473,7 @@ div#widgets-right .sidebars-column-2 {
 }
 
 div#widgets-right .widgets-holder-wrap {
-	margin: 10px 0 0;
+	margin: 10px 0 0 0;
 }
 
 div#widgets-right .sidebar-description {
@@ -482,7 +483,7 @@ div#widgets-right .sidebar-description {
 
 div#widgets-right .sidebar-name h2,
 div#widgets-right .sidebar-name h3 {
-	padding: 15px 15px 15px 7px;
+	padding: 15px 7px;
 }
 
 div#widgets-right .widget-top {
@@ -507,12 +508,6 @@ div#widgets-right .closed .widgets-sortables {
 	position: relative;
 	top: -2px;
 	margin: -5px 5px;
-}
-
-.sidebar-name .spinner {
-	position: absolute;
-	top: 18px;
-	right: 30px;
 }
 
 /* Dragging a widget over a closed sidebar */
@@ -571,6 +566,7 @@ div#widgets-right .closed .widgets-sortables {
 .widgets-holder-wrap .sidebar-name,
 .widgets-holder-wrap .sidebar-description {
 	-webkit-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 
@@ -741,7 +737,7 @@ div#widgets-right .widget-top:hover,
 }
 
 .widgets-chooser .widgets-chooser-actions {
-	padding: 10px 0 12px;
+	padding: 10px 0 12px 0;
 	text-align: center;
 }
 
@@ -833,7 +829,7 @@ ul.CodeMirror-hints {
 
 	.widget-access-link {
 		float: none;
-		margin: 15px 0 0;
+		margin: 15px 0 0 0;
 	}
 }
 

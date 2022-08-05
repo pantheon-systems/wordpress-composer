@@ -15,7 +15,7 @@ if ( is_array( get_site_option( 'illegal_names' ) ) && isset( $_GET['new'] ) && 
 }
 
 /**
- * Prints signup_header via wp_head.
+ * Prints signup_header via wp_head
  *
  * @since MU (3.0.0)
  */
@@ -43,14 +43,14 @@ if ( ! is_main_site() ) {
 $wp_query->is_404 = false;
 
 /**
- * Fires before the Site Sign-up page is loaded.
+ * Fires before the Site Signup page is loaded.
  *
  * @since 4.4.0
  */
 do_action( 'before_signup_header' );
 
 /**
- * Prints styles for front-end Multisite Sign-up pages.
+ * Prints styles for front-end Multisite signup pages
  *
  * @since MU (3.0.0)
  */
@@ -79,7 +79,7 @@ add_action( 'wp_head', 'wpmu_signup_stylesheet' );
 get_header( 'wp-signup' );
 
 /**
- * Fires before the site Sign-up form.
+ * Fires before the site sign-up form.
  *
  * @since 3.0.0
  */
@@ -89,7 +89,7 @@ do_action( 'before_signup_form' );
 <div class="mu_register wp-signup-container" role="main">
 <?php
 /**
- * Generates and displays the Sign-up and Create Site forms.
+ * Generates and displays the Signup and Create Site forms
  *
  * @since MU (3.0.0)
  *
@@ -118,10 +118,10 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 	}
 
 	if ( ! is_subdomain_install() ) {
-		echo '<span class="prefix_address">' . $current_network->domain . $current_network->path . '</span><input name="blogname" type="text" id="blogname" value="' . esc_attr( $blogname ) . '" maxlength="60" autocomplete="off" /><br />';
+		echo '<span class="prefix_address">' . $current_network->domain . $current_network->path . '</span><input name="blogname" type="text" id="blogname" value="' . esc_attr( $blogname ) . '" maxlength="60" /><br />';
 	} else {
 		$site_domain = preg_replace( '|^www\.|', '', $current_network->domain );
-		echo '<input name="blogname" type="text" id="blogname" value="' . esc_attr( $blogname ) . '" maxlength="60" autocomplete="off" /><span class="suffix_address">.' . esc_html( $site_domain ) . '</span><br />';
+		echo '<input name="blogname" type="text" id="blogname" value="' . esc_attr( $blogname ) . '" maxlength="60" /><span class="suffix_address">.' . esc_html( $site_domain ) . '</span><br />';
 	}
 
 	if ( ! is_user_logged_in() ) {
@@ -149,7 +149,7 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 		<p class="error"><?php echo $errmsg; ?></p>
 		<?php
 	}
-	echo '<input name="blog_title" type="text" id="blog_title" value="' . esc_attr( $blog_title ) . '" autocomplete="off" />';
+	echo '<input name="blog_title" type="text" id="blog_title" value="' . esc_attr( $blog_title ) . '" />';
 	?>
 
 	<?php
@@ -224,12 +224,11 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 }
 
 /**
- * Validates the new site sign-up.
+ * Validate the new site signup
  *
  * @since MU (3.0.0)
  *
  * @return array Contains the new site data and error messages.
- *               See wpmu_validate_blog_signup() for details.
  */
 function validate_blog_form() {
 	$user = '';
@@ -260,7 +259,7 @@ function show_user_form( $user_name = '', $user_email = '', $errors = '' ) {
 	if ( $errmsg ) {
 		echo '<p class="error">' . $errmsg . '</p>';
 	}
-	echo '<input name="user_name" type="text" id="user_name" value="' . esc_attr( $user_name ) . '" autocapitalize="none" autocorrect="off" maxlength="60" autocomplete="username" /><br />';
+	echo '<input name="user_name" type="text" id="user_name" value="' . esc_attr( $user_name ) . '" autocapitalize="none" autocorrect="off" maxlength="60" /><br />';
 	_e( '(Must be at least 4 characters, letters and numbers only.)' );
 	?>
 
@@ -271,7 +270,7 @@ function show_user_form( $user_name = '', $user_email = '', $errors = '' ) {
 		?>
 		<p class="error"><?php echo $errmsg; ?></p>
 	<?php } ?>
-	<input name="user_email" type="email" id="user_email" value="<?php echo esc_attr( $user_email ); ?>" maxlength="200" autocomplete="email" /><br /><?php _e( 'Your registration email is sent to this address. (Double-check your email address before continuing.)' ); ?>
+	<input name="user_email" type="email" id="user_email" value="<?php echo esc_attr( $user_email ); ?>" maxlength="200" /><br /><?php _e( 'We send your registration email to this address. (Double-check your email address before continuing.)' ); ?>
 	<?php
 	$errmsg = $errors->get_error_message( 'generic' );
 	if ( $errmsg ) {
@@ -288,19 +287,18 @@ function show_user_form( $user_name = '', $user_email = '', $errors = '' ) {
 }
 
 /**
- * Validates user sign-up name and email.
+ * Validate user signup name and email
  *
  * @since MU (3.0.0)
  *
  * @return array Contains username, email, and error messages.
- *               See wpmu_validate_user_signup() for details.
  */
 function validate_user_form() {
 	return wpmu_validate_user_signup( $_POST['user_name'], $_POST['user_email'] );
 }
 
 /**
- * Shows a form for returning users to sign up for another site.
+ * Allow returning users to sign up for another site
  *
  * @since MU (3.0.0)
  *
@@ -373,7 +371,7 @@ function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
 			</ul>
 	<?php } ?>
 
-	<p><?php _e( 'If you are not going to use a great site domain, leave it for a new user. Now have at it!' ); ?></p>
+	<p><?php _e( 'If you&#8217;re not going to use a great site domain, leave it for a new user. Now have at it!' ); ?></p>
 	<form id="setupform" method="post" action="wp-signup.php">
 		<input type="hidden" name="stage" value="gimmeanotherblog" />
 		<?php
@@ -394,17 +392,17 @@ function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
 }
 
 /**
- * Validates a new site sign-up for an existing user.
+ * Validate a new site signup for an existing user.
+ *
+ * @global string          $blogname   The new site's subdomain or directory name.
+ * @global string          $blog_title The new site's title.
+ * @global WP_Error        $errors     Existing errors in the global scope.
+ * @global string          $domain     The new site's domain.
+ * @global string          $path       The new site's path.
  *
  * @since MU (3.0.0)
  *
- * @global string   $blogname   The new site's subdomain or directory name.
- * @global string   $blog_title The new site's title.
- * @global WP_Error $errors     Existing errors in the global scope.
- * @global string   $domain     The new site's domain.
- * @global string   $path       The new site's path.
- *
- * @return null|bool True if site signup was validated, false on error.
+ * @return null|bool True if site signup was validated, false if error.
  *                   The function halts all execution if the user is not logged in.
  */
 function validate_another_blog_signup() {
@@ -486,7 +484,7 @@ function validate_another_blog_signup() {
 }
 
 /**
- * Shows a message confirming that the new site has been created.
+ * Confirm a new site signup.
  *
  * @since MU (3.0.0)
  * @since 4.4.0 Added the `$blog_id` parameter.
@@ -552,9 +550,6 @@ function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $
  * Shows a form for a visitor to sign up for a new user account.
  *
  * @since MU (3.0.0)
- *
- * @global string $active_signup String that returns registration type. The value can be
- *                               'all', 'none', 'blog', or 'user'.
  *
  * @param string          $user_name  The username.
  * @param string          $user_email The user's email.
@@ -629,11 +624,11 @@ function signup_user( $user_name = '', $user_email = '', $errors = '' ) {
 }
 
 /**
- * Validates the new user sign-up.
+ * Validate the new user signup
  *
  * @since MU (3.0.0)
  *
- * @return bool True if new user sign-up was validated, false on error.
+ * @return bool True if new user signup was validated, false if error
  */
 function validate_user_signup() {
 	$result     = validate_user_form();
@@ -659,12 +654,12 @@ function validate_user_signup() {
 }
 
 /**
- * Shows a message confirming that the new user has been registered and is awaiting activation.
+ * New user signup confirmation
  *
  * @since MU (3.0.0)
  *
- * @param string $user_name  The username.
- * @param string $user_email The user's email address.
+ * @param string $user_name The username
+ * @param string $user_email The user's email address
  */
 function confirm_user_signup( $user_name, $user_email ) {
 	?>
@@ -747,17 +742,17 @@ function signup_blog( $user_name = '', $user_email = '', $blogname = '', $blog_t
 		do_action( 'signup_hidden_fields', 'validate-site' );
 		?>
 		<?php show_blog_form( $blogname, $blog_title, $errors ); ?>
-		<p class="submit"><input type="submit" name="submit" class="submit" value="<?php esc_attr_e( 'Sign up' ); ?>" /></p>
+		<p class="submit"><input type="submit" name="submit" class="submit" value="<?php esc_attr_e( 'Signup' ); ?>" /></p>
 	</form>
 	<?php
 }
 
 /**
- * Validates new site signup.
+ * Validate new site signup
  *
  * @since MU (3.0.0)
  *
- * @return bool True if the site sign-up was validated, false on error.
+ * @return bool True if the site signup was validated, false if error
  */
 function validate_blog_signup() {
 	// Re-validate user info.
@@ -842,7 +837,7 @@ function confirm_blog_signup( $domain, $path, $blog_title, $user_name = '', $use
 	<p><?php _e( 'If you do not activate your site within two days, you will have to sign up again.' ); ?></p>
 	<h2><?php _e( 'Still waiting for your email?' ); ?></h2>
 	<p>
-		<?php _e( 'If you have not received your email yet, there are a number of things you can do:' ); ?>
+		<?php _e( 'If you haven&#8217;t received your email yet, there are a number of things you can do:' ); ?>
 		<ul id="noemail-tips">
 			<li><p><strong><?php _e( 'Wait a little longer. Sometimes delivery of email can be delayed by processes outside of our control.' ); ?></strong></p></li>
 			<li><p><?php _e( 'Check the junk or spam folder of your email client. Sometime emails wind up there by mistake.' ); ?></p></li>
@@ -860,28 +855,26 @@ function confirm_blog_signup( $domain, $path, $blog_title, $user_name = '', $use
 }
 
 /**
- * Retrieves languages available during the site/user sign-up process.
+ * Retrieves languages available during the site/user signup process.
  *
  * @since 4.4.0
  *
  * @see get_available_languages()
  *
- * @return string[] Array of available language codes. Language codes are formed by
- *                  stripping the .mo extension from the language file names.
+ * @return array List of available languages.
  */
 function signup_get_available_languages() {
 	/**
-	 * Filters the list of available languages for front-end site sign-ups.
+	 * Filters the list of available languages for front-end site signups.
 	 *
 	 * Passing an empty array to this hook will disable output of the setting on the
-	 * sign-up form, and the default language will be used when creating the site.
+	 * signup form, and the default language will be used when creating the site.
 	 *
 	 * Languages not already installed will be stripped.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string[] $languages Array of available language codes. Language codes are formed by
-	 *                            stripping the .mo extension from the language file names.
+	 * @param array $available_languages Available languages.
 	 */
 	$languages = (array) apply_filters( 'signup_get_available_languages', get_available_languages() );
 

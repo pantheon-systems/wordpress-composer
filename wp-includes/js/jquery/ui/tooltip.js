@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Tooltip 1.13.1
+ * jQuery UI Tooltip 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -17,8 +17,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -31,17 +29,19 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.tooltip", {
-	version: "1.13.1",
+	version: "1.12.1",
 	options: {
 		classes: {
 			"ui-tooltip": "ui-corner-all ui-widget-shadow"
 		},
 		content: function() {
-			var title = $( this ).attr( "title" );
+
+			// support: IE<9, Opera in jQuery <1.7
+			// .text() can't accept undefined, so coerce to a string
+			var title = $( this ).attr( "title" ) || "";
 
 			// Escape title, since we're going from an attribute to raw HTML
 			return $( "<a>" ).text( title ).html();
@@ -68,7 +68,7 @@ $.widget( "ui.tooltip", {
 		describedby.push( id );
 		elem
 			.data( "ui-tooltip-id", id )
-			.attr( "aria-describedby", String.prototype.trim.call( describedby.join( " " ) ) );
+			.attr( "aria-describedby", $.trim( describedby.join( " " ) ) );
 	},
 
 	_removeDescribedBy: function( elem ) {
@@ -81,7 +81,7 @@ $.widget( "ui.tooltip", {
 		}
 
 		elem.removeData( "ui-tooltip-id" );
-		describedby = String.prototype.trim.call( describedby.join( " " ) );
+		describedby = $.trim( describedby.join( " " ) );
 		if ( describedby ) {
 			elem.attr( "aria-describedby", describedby );
 		} else {
@@ -217,7 +217,7 @@ $.widget( "ui.tooltip", {
 			eventType = event ? event.type : null;
 
 		if ( typeof contentOption === "string" || contentOption.nodeType ||
-			contentOption.jquery ) {
+				contentOption.jquery ) {
 			return this._open( event, target, contentOption );
 		}
 
@@ -327,7 +327,7 @@ $.widget( "ui.tooltip", {
 					position( positionOption.of );
 					clearInterval( delayedShow );
 				}
-			}, 13 );
+			}, $.fx.interval );
 		}
 
 		this._trigger( "open", event, { tooltip: tooltip } );
@@ -348,10 +348,7 @@ $.widget( "ui.tooltip", {
 		// tooltips will handle this in destroy.
 		if ( target[ 0 ] !== this.element[ 0 ] ) {
 			events.remove = function() {
-				var targetElement = this._find( target );
-				if ( targetElement ) {
-					this._removeTooltip( targetElement.tooltip );
-				}
+				this._removeTooltip( this._find( target ).tooltip );
 			};
 		}
 
@@ -451,10 +448,6 @@ $.widget( "ui.tooltip", {
 	},
 
 	_removeTooltip: function( tooltip ) {
-
-		// Clear the interval for delayed tracking tooltips
-		clearInterval( this.delayedShow );
-
 		tooltip.remove();
 		delete this.tooltips[ tooltip.attr( "id" ) ];
 	},
@@ -520,4 +513,4 @@ if ( $.uiBackCompat !== false ) {
 
 return $.ui.tooltip;
 
-} );
+} ) );

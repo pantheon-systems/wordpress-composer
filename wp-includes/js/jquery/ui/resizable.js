@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Resizable 1.13.1
+ * jQuery UI Resizable 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -17,8 +17,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -32,11 +30,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.resizable", $.ui.mouse, {
-	version: "1.13.1",
+	version: "1.12.1",
 	widgetEventPrefix: "resize",
 	options: {
 		alsoResize: false,
@@ -91,15 +88,9 @@ $.widget( "ui.resizable", $.ui.mouse, {
 		// TODO: determine which cases actually cause this to happen
 		// if the element doesn't have the scroll set, see if it's possible to
 		// set the scroll
-		try {
-			el[ scroll ] = 1;
-			has = ( el[ scroll ] > 0 );
-			el[ scroll ] = 0;
-		} catch ( e ) {
-
-			// `el` might be a string, then setting `scroll` will throw
-			// an error in strict mode; ignore it.
-		}
+		el[ scroll ] = 1;
+		has = ( el[ scroll ] > 0 );
+		el[ scroll ] = 0;
 		return has;
 	},
 
@@ -122,8 +113,7 @@ $.widget( "ui.resizable", $.ui.mouse, {
 		if ( this.element[ 0 ].nodeName.match( /^(canvas|textarea|input|select|button|img)$/i ) ) {
 
 			this.element.wrap(
-				$( "<div class='ui-wrapper'></div>" ).css( {
-					overflow: "hidden",
+				$( "<div class='ui-wrapper' style='overflow: hidden;'></div>" ).css( {
 					position: this.element.css( "position" ),
 					width: this.element.outerWidth(),
 					height: this.element.outerHeight(),
@@ -194,14 +184,15 @@ $.widget( "ui.resizable", $.ui.mouse, {
 	_destroy: function() {
 
 		this._mouseDestroy();
-		this._addedHandles.remove();
 
 		var wrapper,
 			_destroy = function( exp ) {
 				$( exp )
 					.removeData( "resizable" )
 					.removeData( "ui-resizable" )
-					.off( ".resizable" );
+					.off( ".resizable" )
+					.find( ".ui-resizable-handle" )
+						.remove();
 			};
 
 		// TODO: Unwrap at same DOM position
@@ -228,15 +219,12 @@ $.widget( "ui.resizable", $.ui.mouse, {
 		this._super( key, value );
 
 		switch ( key ) {
-			case "handles":
-				this._removeHandles();
-				this._setupHandles();
-				break;
-			case "aspectRatio":
-				this._aspectRatio = !!value;
-				break;
-			default:
-				break;
+		case "handles":
+			this._removeHandles();
+			this._setupHandles();
+			break;
+		default:
+			break;
 		}
 	},
 
@@ -256,7 +244,6 @@ $.widget( "ui.resizable", $.ui.mouse, {
 				} );
 
 		this._handles = $();
-		this._addedHandles = $();
 		if ( this.handles.constructor === String ) {
 
 			if ( this.handles === "all" ) {
@@ -268,7 +255,7 @@ $.widget( "ui.resizable", $.ui.mouse, {
 
 			for ( i = 0; i < n.length; i++ ) {
 
-				handle = String.prototype.trim.call( n[ i ] );
+				handle = $.trim( n[ i ] );
 				hname = "ui-resizable-" + handle;
 				axis = $( "<div>" );
 				this._addClass( axis, "ui-resizable-handle " + hname );
@@ -276,10 +263,7 @@ $.widget( "ui.resizable", $.ui.mouse, {
 				axis.css( { zIndex: o.zIndex } );
 
 				this.handles[ handle ] = ".ui-resizable-" + handle;
-				if ( !this.element.children( this.handles[ handle ] ).length ) {
-					this.element.append( axis );
-					this._addedHandles = this._addedHandles.add( axis );
-				}
+				this.element.append( axis );
 			}
 
 		}
@@ -300,9 +284,9 @@ $.widget( "ui.resizable", $.ui.mouse, {
 				}
 
 				if ( this.elementIsWrapper &&
-					this.originalElement[ 0 ]
-						.nodeName
-						.match( /^(textarea|input|select|button)$/i ) ) {
+						this.originalElement[ 0 ]
+							.nodeName
+							.match( /^(textarea|input|select|button)$/i ) ) {
 					axis = $( this.handles[ i ], this.element );
 
 					padWrapper = /sw|ne|nw|se|n|s/.test( i ) ?
@@ -311,8 +295,8 @@ $.widget( "ui.resizable", $.ui.mouse, {
 
 					padPos = [ "padding",
 						/ne|nw|n/.test( i ) ? "Top" :
-							/se|sw|s/.test( i ) ? "Bottom" :
-								/^e$/.test( i ) ? "Right" : "Left" ].join( "" );
+						/se|sw|s/.test( i ) ? "Bottom" :
+						/^e$/.test( i ) ? "Right" : "Left" ].join( "" );
 
 					target.css( padPos, padWrapper );
 
@@ -345,7 +329,7 @@ $.widget( "ui.resizable", $.ui.mouse, {
 	},
 
 	_removeHandles: function() {
-		this._addedHandles.remove();
+		this._handles.remove();
 	},
 
 	_mouseCapture: function( event ) {
@@ -384,20 +368,20 @@ $.widget( "ui.resizable", $.ui.mouse, {
 		this.position = { left: curleft, top: curtop };
 
 		this.size = this._helper ? {
-			width: this.helper.width(),
-			height: this.helper.height()
-		} : {
-			width: el.width(),
-			height: el.height()
-		};
+				width: this.helper.width(),
+				height: this.helper.height()
+			} : {
+				width: el.width(),
+				height: el.height()
+			};
 
 		this.originalSize = this._helper ? {
-			width: el.outerWidth(),
-			height: el.outerHeight()
-		} : {
-			width: el.width(),
-			height: el.height()
-		};
+				width: el.outerWidth(),
+				height: el.outerHeight()
+			} : {
+				width: el.width(),
+				height: el.height()
+			};
 
 		this.sizeDiff = {
 			width: el.outerWidth() - el.width(),
@@ -725,7 +709,7 @@ $.widget( "ui.resizable", $.ui.mouse, {
 
 		if ( this._helper ) {
 
-			this.helper = this.helper || $( "<div></div>" ).css( { overflow: "hidden" } );
+			this.helper = this.helper || $( "<div style='overflow:hidden;'></div>" );
 
 			this._addClass( this.helper, this._helper );
 			this.helper.css( {
@@ -782,9 +766,7 @@ $.widget( "ui.resizable", $.ui.mouse, {
 
 	_propagate: function( n, event ) {
 		$.ui.plugin.call( this, n, [ event, this.ui() ] );
-		if ( n !== "resize" ) {
-			this._trigger( n, event, this.ui() );
-		}
+		( n !== "resize" && this._trigger( n, event, this.ui() ) );
 	},
 
 	plugins: {},
@@ -905,8 +887,8 @@ $.ui.plugin.add( "resizable", "containment", {
 			co = that.containerOffset;
 			ch = that.containerSize.height;
 			cw = that.containerSize.width;
-			width = ( that._hasScroll( ce, "left" ) ? ce.scrollWidth : cw );
-			height = ( that._hasScroll( ce ) ? ce.scrollHeight : ch );
+			width = ( that._hasScroll ( ce, "left" ) ? ce.scrollWidth : cw );
+			height = ( that._hasScroll ( ce ) ? ce.scrollHeight : ch ) ;
 
 			that.parentData = {
 				element: ce,
@@ -1063,21 +1045,21 @@ $.ui.plugin.add( "resizable", "alsoResize", {
 				left: ( that.position.left - op.left ) || 0
 			};
 
-		$( o.alsoResize ).each( function() {
-			var el = $( this ), start = $( this ).data( "ui-resizable-alsoresize" ), style = {},
-				css = el.parents( ui.originalElement[ 0 ] ).length ?
-					[ "width", "height" ] :
-					[ "width", "height", "top", "left" ];
+			$( o.alsoResize ).each( function() {
+				var el = $( this ), start = $( this ).data( "ui-resizable-alsoresize" ), style = {},
+					css = el.parents( ui.originalElement[ 0 ] ).length ?
+							[ "width", "height" ] :
+							[ "width", "height", "top", "left" ];
 
-			$.each( css, function( i, prop ) {
-				var sum = ( start[ prop ] || 0 ) + ( delta[ prop ] || 0 );
-				if ( sum && sum >= 0 ) {
-					style[ prop ] = sum || null;
-				}
+				$.each( css, function( i, prop ) {
+					var sum = ( start[ prop ] || 0 ) + ( delta[ prop ] || 0 );
+					if ( sum && sum >= 0 ) {
+						style[ prop ] = sum || null;
+					}
+				} );
+
+				el.css( style );
 			} );
-
-			el.css( style );
-		} );
 	},
 
 	stop: function() {
@@ -1213,4 +1195,4 @@ $.ui.plugin.add( "resizable", "grid", {
 
 return $.ui.resizable;
 
-} );
+} ) );

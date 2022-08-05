@@ -89,6 +89,9 @@ $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : -1;
  * @ignore
  * @since 2.3.0
  *
+ * @global string    $wp_local_package Locale code of the package.
+ * @global WP_Locale $wp_locale        WordPress date and time locale object.
+ *
  * @param string|string[] $body_classes Class attribute values for the body tag.
  */
 function setup_config_display_header( $body_classes = array() ) {
@@ -158,7 +161,7 @@ switch ( $step ) {
 		}
 		?>
 <h1 class="screen-reader-text"><?php _e( 'Before getting started' ); ?></h1>
-<p><?php _e( 'Welcome to WordPress. Before getting started, you will need to know the following items.' ); ?></p>
+<p><?php _e( 'Welcome to WordPress. Before getting started, we need some information on the database. You will need to know the following items before proceeding.' ); ?></p>
 <ol>
 	<li><?php _e( 'Database name' ); ?></li>
 	<li><?php _e( 'Database username' ); ?></li>
@@ -170,7 +173,7 @@ switch ( $step ) {
 		<?php
 		printf(
 			/* translators: %s: wp-config.php */
-			__( 'This information is being used to create a %s file.' ),
+			__( 'We&#8217;re going to use this information to create a %s file.' ),
 			'<code>wp-config.php</code>'
 		);
 		?>
@@ -178,7 +181,7 @@ switch ( $step ) {
 		<?php
 		printf(
 			/* translators: 1: wp-config-sample.php, 2: wp-config.php */
-			__( 'If for any reason this automatic file creation does not work, do not worry. All this does is fill in the database information to a configuration file. You may also simply open %1$s in a text editor, fill in your information, and save it as %2$s.' ),
+			__( 'If for any reason this automatic file creation doesn&#8217;t work, don&#8217;t worry. All this does is fill in the database information to a configuration file. You may also simply open %1$s in a text editor, fill in your information, and save it as %2$s.' ),
 			'<code>wp-config-sample.php</code>',
 			'<code>wp-config.php</code>'
 		);
@@ -186,14 +189,13 @@ switch ( $step ) {
 	</strong>
 		<?php
 		printf(
-			/* translators: 1: Documentation URL, 2: wp-config.php */
-			__( 'Need more help? <a href="%1$s">Read the support article on %2$s</a>.' ),
-			__( 'https://wordpress.org/support/article/editing-wp-config-php/' ),
-			'<code>wp-config.php</code>'
+			/* translators: %s: Documentation URL. */
+			__( 'Need more help? <a href="%s">We got it</a>.' ),
+			__( 'https://wordpress.org/support/article/editing-wp-config-php/' )
 		);
 		?>
 </p>
-<p><?php _e( 'In all likelihood, these items were supplied to you by your web host. If you do not have this information, then you will need to contact them before you can continue. If you are ready&hellip;' ); ?></p>
+<p><?php _e( 'In all likelihood, these items were supplied to you by your Web Host. If you don&#8217;t have this information, then you will need to contact them before you can continue. If you&#8217;re all ready&hellip;' ); ?></p>
 
 <p class="step"><a href="<?php echo $step_1; ?>" class="button button-large"><?php _e( 'Let&#8217;s go!' ); ?></a></p>
 		<?php
@@ -209,7 +211,7 @@ switch ( $step ) {
 		?>
 <h1 class="screen-reader-text"><?php _e( 'Set up your database connection' ); ?></h1>
 <form method="post" action="setup-config.php?step=2">
-	<p><?php _e( 'Below you should enter your database connection details. If you are not sure about these, contact your host.' ); ?></p>
+	<p><?php _e( 'Below you should enter your database connection details. If you&#8217;re not sure about these, contact your host.' ); ?></p>
 	<table class="form-table" role="presentation">
 		<tr>
 			<th scope="row"><label for="dbname"><?php _e( 'Database Name' ); ?></label></th>
@@ -232,7 +234,7 @@ switch ( $step ) {
 			<td id="dbhost-desc">
 			<?php
 				/* translators: %s: localhost */
-				printf( __( 'You should be able to get this info from your web host, if %s does not work.' ), '<code>localhost</code>' );
+				printf( __( 'You should be able to get this info from your web host, if %s doesn&#8217;t work.' ), '<code>localhost</code>' );
 			?>
 			</td>
 		</tr>
@@ -424,63 +426,33 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 })();
 </script>
 			<?php
-		else :
-			/*
-			 * If this file doesn't exist, then we are using the wp-config-sample.php
-			 * file one level up, which is for the develop repo.
-			 */
-			if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
-				$path_to_wp_config = ABSPATH . 'wp-config.php';
-			} else {
-				$path_to_wp_config = dirname( ABSPATH ) . '/wp-config.php';
-			}
+	else :
+		/*
+		 * If this file doesn't exist, then we are using the wp-config-sample.php
+		 * file one level up, which is for the develop repo.
+		 */
+		if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
+			$path_to_wp_config = ABSPATH . 'wp-config.php';
+		} else {
+			$path_to_wp_config = dirname( ABSPATH ) . '/wp-config.php';
+		}
 
-			$error_message = '';
-			$handle        = fopen( $path_to_wp_config, 'w' );
-			/*
-			 * Why check for the absence of false instead of checking for resource with is_resource()?
-			 * To future-proof the check for when fopen returns object instead of resource, i.e. a known
-			 * change coming in PHP.
-			 */
-			if ( false !== $handle ) {
-				foreach ( $config_file as $line ) {
-					fwrite( $handle, $line );
-				}
-				fclose( $handle );
-			} else {
-				$wp_config_perms = fileperms( $path_to_wp_config );
-				if ( ! empty( $wp_config_perms ) && ! is_writable( $path_to_wp_config ) ) {
-					$error_message = sprintf(
-						/* translators: 1: wp-config.php, 2: Documentation URL. */
-						__( 'You need to make the file %1$s writable before you can save your changes. See <a href="%2$s">Changing File Permissions</a> for more information.' ),
-						'<code>wp-config.php</code>',
-						__( 'https://wordpress.org/support/article/changing-file-permissions/' )
-					);
-				} else {
-					$error_message = sprintf(
-						/* translators: %s: wp-config.php */
-						__( 'Unable to write to %s file.' ),
-						'<code>wp-config.php</code>'
-					);
-				}
-			}
-
-			chmod( $path_to_wp_config, 0666 );
-			setup_config_display_header();
-
-			if ( false !== $handle ) :
-				?>
+		$handle = fopen( $path_to_wp_config, 'w' );
+		foreach ( $config_file as $line ) {
+			fwrite( $handle, $line );
+		}
+		fclose( $handle );
+		chmod( $path_to_wp_config, 0666 );
+		setup_config_display_header();
+		?>
 <h1 class="screen-reader-text"><?php _e( 'Successful database connection' ); ?></h1>
 <p><?php _e( 'All right, sparky! You&#8217;ve made it through this part of the installation. WordPress can now communicate with your database. If you are ready, time now to&hellip;' ); ?></p>
 
 <p class="step"><a href="<?php echo $install; ?>" class="button button-large"><?php _e( 'Run the installation' ); ?></a></p>
-				<?php
-			else :
-				printf( '<p>%s</p>', $error_message );
-			endif;
-		endif;
+		<?php
+	endif;
 		break;
-} // End of the steps switch.
+}
 ?>
 <?php wp_print_scripts( 'language-chooser' ); ?>
 </body>

@@ -135,26 +135,21 @@ window.wp = window.wp || {};
 	 * @global
 	 */
 	window.WPRemoveThumbnail = function(nonce){
-		$.post(
-			ajaxurl, {
-				action: 'set-post-thumbnail',
-				post_id: $( '#post_ID' ).val(),
-				thumbnail_id: -1,
-				_ajax_nonce: nonce,
-				cookie: encodeURIComponent( document.cookie )
-			},
+		$.post(ajaxurl, {
+			action: 'set-post-thumbnail', post_id: $( '#post_ID' ).val(), thumbnail_id: -1, _ajax_nonce: nonce, cookie: encodeURIComponent( document.cookie )
+		},
 			/**
 			 * Handle server response
 			 *
 			 * @param {string} str Response, will be '0' when an error occurred otherwise contains link to add Featured Image.
 			 */
 			function(str){
-				if ( str == '0' ) {
-					alert( __( 'Could not set that as the thumbnail image. Try a different attachment.' ) );
-				} else {
-					WPSetThumbnailHTML(str);
-				}
+			if ( str == '0' ) {
+				alert( __( 'Could not set that as the thumbnail image. Try a different attachment.' ) );
+			} else {
+				WPSetThumbnailHTML(str);
 			}
+		}
 		);
 	};
 
@@ -212,9 +207,7 @@ window.wp = window.wp || {};
 							height: 64,
 							alt: '',
 							src: received.lock_error.avatar_src,
-							srcset: received.lock_error.avatar_src_2x ?
-								received.lock_error.avatar_src_2x + ' 2x' :
-								undefined
+							srcset: received.lock_error.avatar_src_2x ? received.lock_error.avatar_src_2x + ' 2x' : undefined
 						} );
 						wrap.find('div.post-locked-avatar').empty().append( avatar );
 					}
@@ -267,9 +260,7 @@ window.wp = window.wp || {};
 		timeout = window.setTimeout( function(){ check = true; }, 300000 );
 	}
 
-	$( function() {
-		schedule();
-	}).on( 'heartbeat-send.wp-refresh-nonces', function( e, data ) {
+	$(document).on( 'heartbeat-send.wp-refresh-nonces', function( e, data ) {
 		var post_id,
 			$authCheck = $('#wp-auth-check-wrap');
 
@@ -295,13 +286,15 @@ window.wp = window.wp || {};
 			if ( nonces.heartbeatNonce )
 				window.heartbeatSettings.nonce = nonces.heartbeatNonce;
 		}
+	}).ready( function() {
+		schedule();
 	});
 }(jQuery));
 
 /**
  * All post and postbox controls and functionality.
  */
-jQuery( function($) {
+jQuery(document).ready( function($) {
 	var stamp, visibility, $submitButtons, updateVisibility, updateText,
 		$textarea = $('#content'),
 		$document = $(document),
@@ -668,20 +661,16 @@ jQuery( function($) {
 		$('#' + taxonomy + '-add-toggle').on( 'click', function( e ) {
 			e.preventDefault();
 			$('#' + taxonomy + '-adder').toggleClass( 'wp-hidden-children' );
-			$('a[href="#' + taxonomy + '-all"]', '#' + taxonomy + '-tabs').trigger( 'click' );
+			$('a[href="#' + taxonomy + '-all"]', '#' + taxonomy + '-tabs').click();
 			$('#new'+taxonomy).trigger( 'focus' );
 		});
 
 		// Sync checked items between "All {taxonomy}" and "Most used" lists.
-		$('#' + taxonomy + 'checklist, #' + taxonomy + 'checklist-pop').on(
-			'click',
-			'li.popular-category > label input[type="checkbox"]',
-			function() {
-				var t = $(this), c = t.is(':checked'), id = t.val();
-				if ( id && t.parents('#taxonomy-'+taxonomy).length )
-					$('#in-' + taxonomy + '-' + id + ', #in-popular-' + taxonomy + '-' + id).prop( 'checked', c );
-			}
-		);
+		$('#' + taxonomy + 'checklist, #' + taxonomy + 'checklist-pop').on( 'click', 'li.popular-category > label input[type="checkbox"]', function() {
+			var t = $(this), c = t.is(':checked'), id = t.val();
+			if ( id && t.parents('#taxonomy-'+taxonomy).length )
+				$('#in-' + taxonomy + '-' + id + ', #in-popular-' + taxonomy + '-' + id).prop( 'checked', c );
+		});
 
 	}); // End cats.
 
@@ -760,28 +749,11 @@ jQuery( function($) {
 				mm = $('#mm').val(), jj = $('#jj').val(), hh = $('#hh').val(), mn = $('#mn').val();
 
 			attemptedDate = new Date( aa, mm - 1, jj, hh, mn );
-			originalDate = new Date(
-				$('#hidden_aa').val(),
-				$('#hidden_mm').val() -1,
-				$('#hidden_jj').val(),
-				$('#hidden_hh').val(),
-				$('#hidden_mn').val()
-			);
-			currentDate = new Date(
-				$('#cur_aa').val(),
-				$('#cur_mm').val() -1,
-				$('#cur_jj').val(),
-				$('#cur_hh').val(),
-				$('#cur_mn').val()
-			);
+			originalDate = new Date( $('#hidden_aa').val(), $('#hidden_mm').val() -1, $('#hidden_jj').val(), $('#hidden_hh').val(), $('#hidden_mn').val() );
+			currentDate = new Date( $('#cur_aa').val(), $('#cur_mm').val() -1, $('#cur_jj').val(), $('#cur_hh').val(), $('#cur_mn').val() );
 
 			// Catch unexpected date problems.
-			if (
-				attemptedDate.getFullYear() != aa ||
-				(1 + attemptedDate.getMonth()) != mm ||
-				attemptedDate.getDate() != jj ||
-				attemptedDate.getMinutes() != mn
-			) {
+			if ( attemptedDate.getFullYear() != aa || (1 + attemptedDate.getMonth()) != mm || attemptedDate.getDate() != jj || attemptedDate.getMinutes() != mn ) {
 				$timestampdiv.find('.timestamp-wrap').addClass('form-invalid');
 				return false;
 			} else {
@@ -848,10 +820,7 @@ jQuery( function($) {
 			);
 
 			// Show or hide the "Save Draft" button.
-			if (
-				$('option:selected', postStatus).val() == 'private' ||
-				$('option:selected', postStatus).val() == 'publish'
-			) {
+			if ( $('option:selected', postStatus).val() == 'private' || $('option:selected', postStatus).val() == 'publish' ) {
 				$('#save-post').hide();
 			} else {
 				$('#save-post').show();
@@ -1003,7 +972,7 @@ jQuery( function($) {
 	 * @return {void}
 	 */
 	function editPermalink() {
-		var i, slug_value, slug_label,
+		var i, slug_value,
 			$el, revert_e,
 			c = 0,
 			real_slug = $('#post_name'),
@@ -1025,10 +994,7 @@ jQuery( function($) {
 		$el = $( '#editable-post-name' );
 		revert_e = $el.html();
 
-		buttons.html(
-			'<button type="button" class="save button button-small">' + __( 'OK' ) + '</button> ' +
-			'<button type="button" class="cancel button-link">' + __( 'Cancel' ) + '</button>'
-		);
+		buttons.html( '<button type="button" class="save button button-small">' + __( 'OK' ) + '</button> <button type="button" class="cancel button-link">' + __( 'Cancel' ) + '</button>' );
 
 		// Save permalink changes.
 		buttons.children( '.save' ).on( 'click', function() {
@@ -1082,12 +1048,8 @@ jQuery( function($) {
 				c++;
 		}
 		slug_value = ( c > full.length / 4 ) ? '' : full;
-		slug_label = __( 'URL Slug' );
 
-		$el.html(
-			'<label for="new-post-slug" class="screen-reader-text">' + slug_label + '</label>' +
-			'<input type="text" id="new-post-slug" value="' + slug_value + '" autocomplete="off" spellcheck="false" />'
-		).children( 'input' ).on( 'keydown', function( e ) {
+		$el.html( '<input type="text" id="new-post-slug" value="' + slug_value + '" autocomplete="off" />' ).children( 'input' ).on( 'keydown', function( e ) {
 			var key = e.which;
 			// On [Enter], just save the new slug, don't save the post.
 			if ( 13 === key ) {
@@ -1261,12 +1223,7 @@ jQuery( function($) {
 	$textarea.on( 'keydown.wp-autosave', function( event ) {
 		// Key [S] has code 83.
 		if ( event.which === 83 ) {
-			if (
-				event.shiftKey ||
-				event.altKey ||
-				( isMac && ( ! event.metaKey || event.ctrlKey ) ) ||
-				( ! isMac && ! event.ctrlKey )
-			) {
+			if ( event.shiftKey || event.altKey || ( isMac && ( ! event.metaKey || event.ctrlKey ) ) || ( ! isMac && ! event.ctrlKey ) ) {
 				return;
 			}
 
