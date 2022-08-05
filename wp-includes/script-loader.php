@@ -229,7 +229,7 @@ function wp_default_packages_scripts( &$scripts ) {
 		'annotations'                        => '1.0.8',
 		'autop'                              => '2.0.2',
 		'blob'                               => '2.1.0',
-		'block-library'                      => '2.2.16',
+		'block-library'                      => '2.2.18',
 		'block-serialization-default-parser' => '2.0.5',
 		'blocks'                             => '6.0.6',
 		'components'                         => '7.0.8',
@@ -1416,7 +1416,7 @@ function wp_default_scripts( &$scripts ) {
 			'themePreviewUnavailable' => __( 'Sorry, you can&#8217;t preview new themes when you have changes scheduled or saved as a draft. Please publish your changes, or wait until they publish to preview new themes.' ),
 			'themeInstallUnavailable' => sprintf(
 				/* translators: %s: URL to Add Themes admin screen */
-				   __( 'You won&#8217;t be able to install new themes from here yet since your install requires SFTP credentials. For now, please <a href="%s">add themes in the admin</a>.' ),
+				__( 'You won&#8217;t be able to install new themes from here yet since your install requires SFTP credentials. For now, please <a href="%s">add themes in the admin</a>.' ),
 				esc_url( admin_url( 'theme-install.php' ) )
 			),
 			'publishSettings'         => __( 'Publish Settings' ),
