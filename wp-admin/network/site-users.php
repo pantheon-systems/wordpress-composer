@@ -140,7 +140,12 @@ if ( $action ) {
 		case 'promote':
 			check_admin_referer( 'bulk-users' );
 			$editable_roles = get_editable_roles();
-			$role           = $_REQUEST['new_role'];
+			$role           = false;
+			if ( ! empty( $_REQUEST['new_role2'] ) ) {
+				$role = $_REQUEST['new_role2'];
+			} elseif ( ! empty( $_REQUEST['new_role'] ) ) {
+				$role = $_REQUEST['new_role'];
+			}
 
 			if ( empty( $editable_roles[ $role ] ) ) {
 				wp_die( __( 'Sorry, you are not allowed to give users that role.' ), 403 );
@@ -195,7 +200,6 @@ if ( isset( $_GET['action'] ) && 'update-site' === $_GET['action'] ) {
 
 add_screen_option( 'per_page' );
 
-// Used in the HTML title tag.
 /* translators: %s: Site title. */
 $title = sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) );
 
@@ -331,7 +335,7 @@ if ( current_user_can( 'promote_users' ) && apply_filters( 'show_network_site_us
 if ( current_user_can( 'create_users' ) && apply_filters( 'show_network_site_users_add_new_form', true ) ) :
 	?>
 <h2 id="add-new-user"><?php _e( 'Add New User' ); ?></h2>
-<form action="<?php echo esc_url( network_admin_url( 'site-users.php?action=newuser' ) ); ?>" id="newuser" method="post">
+<form action="<?php echo network_admin_url( 'site-users.php?action=newuser' ); ?>" id="newuser" method="post">
 	<input type="hidden" name="id" value="<?php echo esc_attr( $id ); ?>" />
 	<table class="form-table" role="presentation">
 		<tr>

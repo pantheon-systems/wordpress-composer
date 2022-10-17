@@ -402,15 +402,14 @@ final class WP_Screen {
 	 * @since 3.3.0
 	 *
 	 * @global WP_Screen $current_screen WordPress current screen object.
-	 * @global string    $typenow        The post type of the current screen.
-	 * @global string    $taxnow         The taxonomy of the current screen.
+	 * @global string    $taxnow
+	 * @global string    $typenow
 	 */
 	public function set_current_screen() {
 		global $current_screen, $taxnow, $typenow;
-
 		$current_screen = $this;
-		$typenow        = $this->post_type;
 		$taxnow         = $this->taxonomy;
+		$typenow        = $this->post_type;
 
 		/**
 		 * Fires after the current screen has been set.
@@ -540,9 +539,9 @@ final class WP_Screen {
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string       $option Option name.
-	 * @param string|false $key    Optional. Specific array key for when the option is an array.
-	 *                             Default false.
+	 * @param string $option Option name.
+	 * @param string $key    Optional. Specific array key for when the option is an array.
+	 *                       Default false.
 	 * @return string The option value if set, null otherwise.
 	 */
 	public function get_option( $option, $key = false ) {
@@ -795,7 +794,7 @@ final class WP_Screen {
 		 *                   {@see get_current_screen()->remove_help_tab()} instead.
 		 *
 		 * @param array     $old_compat_help Old contextual help.
-		 * @param WP_Screen $screen          Current WP_Screen instance.
+		 * @param WP_Screen $this            Current WP_Screen instance.
 		 */
 		self::$_old_compat_help = apply_filters_deprecated(
 			'contextual_help_list',
@@ -815,7 +814,7 @@ final class WP_Screen {
 		 *
 		 * @param string    $old_help  Help text that appears on the screen.
 		 * @param string    $screen_id Screen ID.
-		 * @param WP_Screen $screen    Current WP_Screen instance.
+		 * @param WP_Screen $this      Current WP_Screen instance.
 		 */
 		$old_help = apply_filters_deprecated(
 			'contextual_help',
@@ -936,7 +935,7 @@ final class WP_Screen {
 		 *
 		 * @param array     $empty_columns Empty array.
 		 * @param string    $screen_id     Screen ID.
-		 * @param WP_Screen $screen        Current WP_Screen instance.
+		 * @param WP_Screen $this          Current WP_Screen instance.
 		 */
 		$columns = apply_filters( 'screen_layout_columns', array(), $this->id, $this );
 
@@ -1009,10 +1008,13 @@ final class WP_Screen {
 		/**
 		 * Filters the screen settings text displayed in the Screen Options tab.
 		 *
+		 * This filter is currently only used on the Widgets screen to enable
+		 * accessibility mode.
+		 *
 		 * @since 3.0.0
 		 *
 		 * @param string    $screen_settings Screen settings.
-		 * @param WP_Screen $screen          WP_Screen object.
+		 * @param WP_Screen $this            WP_Screen object.
 		 */
 		$this->_screen_settings = apply_filters( 'screen_settings', $this->_screen_settings, $this );
 
@@ -1027,7 +1029,7 @@ final class WP_Screen {
 		 *
 		 * @param bool      $show_screen Whether to show Screen Options tab.
 		 *                               Default true.
-		 * @param WP_Screen $screen      Current WP_Screen instance.
+		 * @param WP_Screen $this        Current WP_Screen instance.
 		 */
 		$this->_show_screen_options = apply_filters( 'screen_options_show_screen', $show_screen, $this );
 		return $this->_show_screen_options;
@@ -1085,7 +1087,7 @@ final class WP_Screen {
 		 *
 		 * @param bool      $show_button Whether to show Screen Options submit button.
 		 *                               Default false.
-		 * @param WP_Screen $screen      Current WP_Screen instance.
+		 * @param WP_Screen $this        Current WP_Screen instance.
 		 */
 		$show_button = apply_filters( 'screen_options_show_submit', false, $this );
 

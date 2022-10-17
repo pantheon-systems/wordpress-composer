@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Checkboxradio 1.13.1
+ * jQuery UI Checkboxradio 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -18,8 +18,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -32,11 +30,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
-	version: "1.13.1",
+	version: "1.12.1",
 	options: {
 		disabled: null,
 		label: null,
@@ -115,6 +112,9 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 
 		if ( checked ) {
 			this._addClass( this.label, "ui-checkboxradio-checked", "ui-state-active" );
+			if ( this.icon ) {
+				this._addClass( this.icon, null, "ui-state-hover" );
+			}
 		}
 
 		this._on( {
@@ -149,7 +149,7 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 	_getRadioGroup: function() {
 		var group;
 		var name = this.element[ 0 ].name;
-		var nameSelector = "input[name='" + $.escapeSelector( name ) + "']";
+		var nameSelector = "input[name='" + $.ui.escapeSelector( name ) + "']";
 
 		if ( !name ) {
 			return $( [] );
@@ -161,7 +161,7 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 
 			// Not inside a form, check all inputs that also are not inside a form
 			group = $( nameSelector ).filter( function() {
-				return $( this )._form().length === 0;
+				return $( this ).form().length === 0;
 			} );
 		}
 
@@ -280,4 +280,4 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 
 return $.ui.checkboxradio;
 
-} );
+} ) );

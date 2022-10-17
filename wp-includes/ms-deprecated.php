@@ -464,7 +464,7 @@ function get_admin_users_for_domain( $domain = '', $path = '' ) {
  * @param array $args {
  *     Array of default arguments. Optional.
  *
- *     @type int|int[] $network_id A network ID or array of network IDs. Set to null to retrieve sites
+ *     @type int|array $network_id A network ID or array of network IDs. Set to null to retrieve sites
  *                                 from all networks. Defaults to current network ID.
  *     @type int       $public     Retrieve public or non-public sites. Default null, for any.
  *     @type int       $archived   Retrieve archived or non-archived sites. Default null, for any.
@@ -559,7 +559,7 @@ function is_user_option_local( $key, $user_id = 0, $blog_id = 0 ) {
  * the new blog's ID. It is the first step in creating a new blog.
  *
  * @since MU (3.0.0)
- * @deprecated 5.1.0 Use wp_insert_site()
+ * @deprecated 5.1.0 Use `wp_insert_site()`
  * @see wp_insert_site()
  *
  * @param string $domain  The domain of the new site.

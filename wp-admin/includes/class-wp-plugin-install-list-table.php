@@ -47,19 +47,15 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		$plugin_info = get_site_transient( 'update_plugins' );
 		if ( isset( $plugin_info->no_update ) ) {
 			foreach ( $plugin_info->no_update as $plugin ) {
-				if ( isset( $plugin->slug ) ) {
-					$plugin->upgrade          = false;
-					$plugins[ $plugin->slug ] = $plugin;
-				}
+				$plugin->upgrade          = false;
+				$plugins[ $plugin->slug ] = $plugin;
 			}
 		}
 
 		if ( isset( $plugin_info->response ) ) {
 			foreach ( $plugin_info->response as $plugin ) {
-				if ( isset( $plugin->slug ) ) {
-					$plugin->upgrade          = true;
-					$plugins[ $plugin->slug ] = $plugin;
-				}
+				$plugin->upgrade          = true;
+				$plugins[ $plugin->slug ] = $plugin;
 			}
 		}
 
@@ -217,16 +213,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		 * Filters API request arguments for each Add Plugins screen tab.
 		 *
 		 * The dynamic portion of the hook name, `$tab`, refers to the plugin install tabs.
-		 *
-		 * Possible hook names include:
-		 *
-		 *  - `install_plugins_table_api_args_favorites`
-		 *  - `install_plugins_table_api_args_featured`
-		 *  - `install_plugins_table_api_args_popular`
-		 *  - `install_plugins_table_api_args_recommended`
-		 *  - `install_plugins_table_api_args_upload`
-		 *  - `install_plugins_table_api_args_search`
-		 *  - `install_plugins_table_api_args_beta`
+		 * Default tabs include 'featured', 'popular', 'recommended', 'favorites', and 'upload'.
 		 *
 		 * @since 3.7.0
 		 *
@@ -514,19 +501,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 
 			// Remove any HTML from the description.
 			$description = strip_tags( $plugin['short_description'] );
-
-			/**
-			 * Filters the plugin card description on the Add Plugins screen.
-			 *
-			 * @since 6.0.0
-			 *
-			 * @param string $description Plugin card description.
-			 * @param array  $plugin      An array of plugin data. See {@see plugins_api()}
-			 *                            for the list of possible values.
-			 */
-			$description = apply_filters( 'plugin_install_description', $description, $plugin );
-
-			$version = wp_kses( $plugin['version'], $plugins_allowedtags );
+			$version     = wp_kses( $plugin['version'], $plugins_allowedtags );
 
 			$name = strip_tags( $title . ' ' . $version );
 
@@ -600,38 +575,31 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 								_x( 'Active', 'plugin' )
 							);
 						} elseif ( current_user_can( 'activate_plugin', $status['file'] ) ) {
-							if ( $compatible_php && $compatible_wp ) {
-								$button_text = __( 'Activate' );
+							$button_text = __( 'Activate' );
+							/* translators: %s: Plugin name. */
+							$button_label = _x( 'Activate %s', 'plugin' );
+							$activate_url = add_query_arg(
+								array(
+									'_wpnonce' => wp_create_nonce( 'activate-plugin_' . $status['file'] ),
+									'action'   => 'activate',
+									'plugin'   => $status['file'],
+								),
+								network_admin_url( 'plugins.php' )
+							);
+
+							if ( is_network_admin() ) {
+								$button_text = __( 'Network Activate' );
 								/* translators: %s: Plugin name. */
-								$button_label = _x( 'Activate %s', 'plugin' );
-								$activate_url = add_query_arg(
-									array(
-										'_wpnonce' => wp_create_nonce( 'activate-plugin_' . $status['file'] ),
-										'action'   => 'activate',
-										'plugin'   => $status['file'],
-									),
-									network_admin_url( 'plugins.php' )
-								);
-
-								if ( is_network_admin() ) {
-									$button_text = __( 'Network Activate' );
-									/* translators: %s: Plugin name. */
-									$button_label = _x( 'Network Activate %s', 'plugin' );
-									$activate_url = add_query_arg( array( 'networkwide' => 1 ), $activate_url );
-								}
-
-								$action_links[] = sprintf(
-									'<a href="%1$s" class="button activate-now" aria-label="%2$s">%3$s</a>',
-									esc_url( $activate_url ),
-									esc_attr( sprintf( $button_label, $plugin['name'] ) ),
-									$button_text
-								);
-							} else {
-								$action_links[] = sprintf(
-									'<button type="button" class="button button-disabled" disabled="disabled">%s</button>',
-									_x( 'Cannot Activate', 'plugin' )
-								);
+								$button_label = _x( 'Network Activate %s', 'plugin' );
+								$activate_url = add_query_arg( array( 'networkwide' => 1 ), $activate_url );
 							}
+
+							$action_links[] = sprintf(
+								'<a href="%1$s" class="button activate-now" aria-label="%2$s">%3$s</a>',
+								esc_url( $activate_url ),
+								esc_attr( sprintf( $button_label, $plugin['name'] ) ),
+								$button_text
+							);
 						} else {
 							$action_links[] = sprintf(
 								'<button type="button" class="button button-disabled" disabled="disabled">%s</button>',
@@ -671,10 +639,8 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 			 *
 			 * @since 2.7.0
 			 *
-			 * @param string[] $action_links An array of plugin action links.
-			 *                               Defaults are links to Details and Install Now.
-			 * @param array    $plugin       An array of plugin data. See {@see plugins_api()}
-			 *                               for the list of possible values.
+			 * @param string[] $action_links An array of plugin action links. Defaults are links to Details and Install Now.
+			 * @param array    $plugin       The plugin currently being listed.
 			 */
 			$action_links = apply_filters( 'plugin_install_action_links', $action_links, $plugin );
 
@@ -685,7 +651,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 			if ( ! $compatible_php || ! $compatible_wp ) {
 				echo '<div class="notice inline notice-error notice-alt"><p>';
 				if ( ! $compatible_php && ! $compatible_wp ) {
-					_e( 'This plugin does not work with your versions of WordPress and PHP.' );
+					_e( 'This plugin doesn&#8217;t work with your versions of WordPress and PHP.' );
 					if ( current_user_can( 'update_core' ) && current_user_can( 'update_php' ) ) {
 						printf(
 							/* translators: 1: URL to WordPress Updates screen, 2: URL to Update PHP page. */
@@ -709,7 +675,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 						wp_update_php_annotation( '</p><p><em>', '</em>' );
 					}
 				} elseif ( ! $compatible_wp ) {
-					_e( 'This plugin does not work with your version of WordPress.' );
+					_e( 'This plugin doesn&#8217;t work with your version of WordPress.' );
 					if ( current_user_can( 'update_core' ) ) {
 						printf(
 							/* translators: %s: URL to WordPress Updates screen. */
@@ -718,7 +684,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 						);
 					}
 				} elseif ( ! $compatible_php ) {
-					_e( 'This plugin does not work with your version of PHP.' );
+					_e( 'This plugin doesn&#8217;t work with your version of PHP.' );
 					if ( current_user_can( 'update_php' ) ) {
 						printf(
 							/* translators: %s: URL to Update PHP page. */
@@ -736,7 +702,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 					<h3>
 						<a href="<?php echo esc_url( $details_link ); ?>" class="thickbox open-plugin-details-modal">
 						<?php echo $title; ?>
-						<img src="<?php echo esc_url( $plugin_icon_url ); ?>" class="plugin-icon" alt="" />
+						<img src="<?php echo esc_attr( $plugin_icon_url ); ?>" class="plugin-icon" alt="" />
 						</a>
 					</h3>
 				</div>

@@ -287,22 +287,6 @@ abstract class ParagonIE_Sodium_Core_Util
     }
 
     /**
-     * Catch hash_update() failures and throw instead of silently proceeding
-     *
-     * @param HashContext|resource &$hs
-     * @param string $data
-     * @return void
-     * @throws SodiumException
-     * @psalm-suppress PossiblyInvalidArgument
-     */
-    protected static function hash_update(&$hs, $data)
-    {
-        if (!hash_update($hs, $data)) {
-            throw new SodiumException('hash_update() failed');
-        }
-    }
-
-    /**
      * Convert a hexadecimal string into a binary string without cache-timing
      * leaks
      *
@@ -458,7 +442,7 @@ abstract class ParagonIE_Sodium_Core_Util
         }
         /** @var array<int, int> $unpacked */
         $unpacked = unpack('V', $string);
-        return (int) $unpacked[1];
+        return (int) ($unpacked[1] & 0xffffffff);
     }
 
     /**
@@ -586,7 +570,6 @@ abstract class ParagonIE_Sodium_Core_Util
             $a <<= 1;
             $b >>= 1;
         }
-        $c = (int) @($c & -1);
 
         /**
          * If $b was negative, we then apply the same value to $c here.
@@ -613,11 +596,7 @@ abstract class ParagonIE_Sodium_Core_Util
     {
         $high = 0;
         /** @var int $low */
-        if (PHP_INT_SIZE === 4) {
-            $low = (int) $num;
-        } else {
-            $low = $num & 0xffffffff;
-        }
+        $low = $num & 0xffffffff;
 
         if ((+(abs($num))) >= 1) {
             if ($num > 0) {
@@ -934,10 +913,6 @@ abstract class ParagonIE_Sodium_Core_Util
         static $mbstring = null;
 
         if ($mbstring === null) {
-            if (!defined('MB_OVERLOAD_STRING')) {
-                $mbstring = false;
-                return $mbstring;
-            }
             $mbstring = extension_loaded('mbstring')
                 && defined('MB_OVERLOAD_STRING')
                 &&

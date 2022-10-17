@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Spinner 1.13.1
+ * jQuery UI Spinner 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -17,8 +17,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -32,10 +30,9 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
-function spinnerModifier( fn ) {
+function spinnerModifer( fn ) {
 	return function() {
 		var previous = this.element.val();
 		fn.apply( this, arguments );
@@ -47,7 +44,7 @@ function spinnerModifier( fn ) {
 }
 
 $.widget( "ui.spinner", {
-	version: "1.13.1",
+	version: "1.12.1",
 	defaultElement: "<input>",
 	widgetEventPrefix: "spin",
 	options: {
@@ -140,13 +137,9 @@ $.widget( "ui.spinner", {
 			}
 		},
 		mousewheel: function( event, delta ) {
-			var activeElement = $.ui.safeActiveElement( this.document[ 0 ] );
-			var isActive = this.element[ 0 ] === activeElement;
-
-			if ( !isActive || !delta ) {
+			if ( !delta ) {
 				return;
 			}
-
 			if ( !this.spinning && !this._start( event ) ) {
 				return false;
 			}
@@ -234,10 +227,10 @@ $.widget( "ui.spinner", {
 			.wrap( "<span>" )
 			.parent()
 
-			// Add buttons
-			.append(
-				"<a></a><a></a>"
-			);
+				// Add buttons
+				.append(
+					"<a></a><a></a>"
+				);
 	},
 
 	_draw: function() {
@@ -275,7 +268,7 @@ $.widget( "ui.spinner", {
 		// IE 6 doesn't understand height: 50% for the buttons
 		// unless the wrapper has an explicit height
 		if ( this.buttons.height() > Math.ceil( this.uiSpinner.height() * 0.5 ) &&
-			this.uiSpinner.height() > 0 ) {
+				this.uiSpinner.height() > 0 ) {
 			this.uiSpinner.height( this.uiSpinner.height() );
 		}
 	},
@@ -285,18 +278,18 @@ $.widget( "ui.spinner", {
 			keyCode = $.ui.keyCode;
 
 		switch ( event.keyCode ) {
-			case keyCode.UP:
-				this._repeat( null, 1, event );
-				return true;
-			case keyCode.DOWN:
-				this._repeat( null, -1, event );
-				return true;
-			case keyCode.PAGE_UP:
-				this._repeat( null, options.page, event );
-				return true;
-			case keyCode.PAGE_DOWN:
-				this._repeat( null, -options.page, event );
-				return true;
+		case keyCode.UP:
+			this._repeat( null, 1, event );
+			return true;
+		case keyCode.DOWN:
+			this._repeat( null, -1, event );
+			return true;
+		case keyCode.PAGE_UP:
+			this._repeat( null, options.page, event );
+			return true;
+		case keyCode.PAGE_DOWN:
+			this._repeat( null, -options.page, event );
+			return true;
 		}
 
 		return false;
@@ -344,7 +337,7 @@ $.widget( "ui.spinner", {
 		var incremental = this.options.incremental;
 
 		if ( incremental ) {
-			return typeof incremental === "function" ?
+			return $.isFunction( incremental ) ?
 				incremental( i ) :
 				Math.floor( i * i * i / 50000 - i * i / 500 + 17 * i / 200 + 1 );
 		}
@@ -442,7 +435,7 @@ $.widget( "ui.spinner", {
 		this.buttons.button( value ? "disable" : "enable" );
 	},
 
-	_setOptions: spinnerModifier( function( options ) {
+	_setOptions: spinnerModifer( function( options ) {
 		this._super( options );
 	} ),
 
@@ -509,7 +502,7 @@ $.widget( "ui.spinner", {
 		this.uiSpinner.replaceWith( this.element );
 	},
 
-	stepUp: spinnerModifier( function( steps ) {
+	stepUp: spinnerModifer( function( steps ) {
 		this._stepUp( steps );
 	} ),
 	_stepUp: function( steps ) {
@@ -519,7 +512,7 @@ $.widget( "ui.spinner", {
 		}
 	},
 
-	stepDown: spinnerModifier( function( steps ) {
+	stepDown: spinnerModifer( function( steps ) {
 		this._stepDown( steps );
 	} ),
 	_stepDown: function( steps ) {
@@ -529,11 +522,11 @@ $.widget( "ui.spinner", {
 		}
 	},
 
-	pageUp: spinnerModifier( function( pages ) {
+	pageUp: spinnerModifer( function( pages ) {
 		this._stepUp( ( pages || 1 ) * this.options.page );
 	} ),
 
-	pageDown: spinnerModifier( function( pages ) {
+	pageDown: spinnerModifer( function( pages ) {
 		this._stepDown( ( pages || 1 ) * this.options.page );
 	} ),
 
@@ -541,7 +534,7 @@ $.widget( "ui.spinner", {
 		if ( !arguments.length ) {
 			return this._parse( this.element.val() );
 		}
-		spinnerModifier( this._value ).call( this, newVal );
+		spinnerModifer( this._value ).call( this, newVal );
 	},
 
 	widget: function() {
@@ -561,8 +554,8 @@ if ( $.uiBackCompat !== false ) {
 				.wrap( this._uiSpinnerHtml() )
 				.parent()
 
-				// Add buttons
-				.append( this._buttonHtml() );
+					// Add buttons
+					.append( this._buttonHtml() );
 		},
 		_uiSpinnerHtml: function() {
 			return "<span>";
@@ -576,4 +569,4 @@ if ( $.uiBackCompat !== false ) {
 
 return $.ui.spinner;
 
-} );
+} ) );

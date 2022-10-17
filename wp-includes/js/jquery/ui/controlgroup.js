@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Controlgroup 1.13.1
+ * jQuery UI Controlgroup 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -17,8 +17,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -31,13 +29,11 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
-
+}( function( $ ) {
 var controlgroupCornerRegex = /ui-corner-([a-z]){2,6}/g;
 
 return $.widget( "ui.controlgroup", {
-	version: "1.13.1",
+	version: "1.12.1",
 	defaultElement: "<div>",
 	options: {
 		direction: "horizontal",
@@ -154,7 +150,7 @@ return $.widget( "ui.controlgroup", {
 				} );
 		} );
 
-		this.childWidgets = $( $.uniqueSort( childWidgets ) );
+		this.childWidgets = $( $.unique( childWidgets ) );
 		this._addClass( this.childWidgets, "ui-controlgroup-item" );
 	},
 
@@ -238,7 +234,7 @@ return $.widget( "ui.controlgroup", {
 		var result = {};
 		$.each( classes, function( key ) {
 			var current = instance.options.classes[ key ] || "";
-			current = String.prototype.trim.call( current.replace( controlgroupCornerRegex, "" ) );
+			current = $.trim( current.replace( controlgroupCornerRegex, "" ) );
 			result[ key ] = ( current + " " + classes[ key ] ).replace( /\s+/g, " " );
 		} );
 		return result;
@@ -299,4 +295,4 @@ return $.widget( "ui.controlgroup", {
 		}
 	}
 } );
-} );
+} ) );

@@ -73,7 +73,7 @@ themes.view.Appearance = wp.Backbone.View.extend({
 		this.SearchView = options.SearchView ? options.SearchView : themes.view.Search;
 		// Bind to the scroll event and throttle
 		// the results from this.scroller.
-		this.window.on( 'scroll', _.throttle( this.scroller, 300 ) );
+		this.window.bind( 'scroll', _.throttle( this.scroller, 300 ) );
 	},
 
 	// Main render control.
@@ -404,7 +404,11 @@ themes.view.Theme = wp.Backbone.View.extend({
 		var data = this.model.toJSON();
 
 		// Render themes using the html template.
-		this.$el.html( this.html( data ) ).attr( 'data-slug', data.id );
+		this.$el.html( this.html( data ) ).attr({
+			tabindex: 0,
+			'aria-describedby' : data.id + '-action ' + data.id + '-name',
+			'data-slug': data.id
+		});
 
 		// Renders active theme styles.
 		this.activeTheme();
@@ -546,7 +550,7 @@ themes.view.Theme = wp.Backbone.View.extend({
 			// Render and append.
 			preview.render();
 			this.setNavButtonsState();
-			$( '.next-theme' ).trigger( 'focus' );
+			$( '.next-theme' ).focus();
 		})
 		.listenTo( preview, 'theme:previous', function() {
 
@@ -576,7 +580,7 @@ themes.view.Theme = wp.Backbone.View.extend({
 			// Render and append.
 			preview.render();
 			this.setNavButtonsState();
-			$( '.previous-theme' ).trigger( 'focus' );
+			$( '.previous-theme' ).focus();
 		});
 
 		this.listenTo( preview, 'preview:close', function() {
@@ -598,7 +602,7 @@ themes.view.Theme = wp.Backbone.View.extend({
 				.addClass( 'disabled' )
 				.prop( 'disabled', true );
 
-			nextThemeButton.trigger( 'focus' );
+			nextThemeButton.focus();
 		}
 
 		// Disable next if the next model is undefined.
@@ -607,7 +611,7 @@ themes.view.Theme = wp.Backbone.View.extend({
 				.addClass( 'disabled' )
 				.prop( 'disabled', true );
 
-			previousThemeButton.trigger( 'focus' );
+			previousThemeButton.focus();
 		}
 	},
 
@@ -621,9 +625,6 @@ themes.view.Theme = wp.Backbone.View.extend({
 		$( document ).on( 'wp-theme-install-success', function( event, response ) {
 			if ( _this.model.get( 'id' ) === response.slug ) {
 				_this.model.set( { 'installed': true } );
-			}
-			if ( response.blockTheme ) {
-				_this.model.set( { 'block_theme': true } );
 			}
 		} );
 
@@ -704,7 +705,7 @@ themes.view.Details = wp.Backbone.View.extend({
 
 		// Set initial focus on the primary action control.
 		_.delay( function() {
-			$( '.theme-overlay' ).trigger( 'focus' );
+			$( '.theme-overlay' ).focus();
 		}, 100 );
 
 		// Constrain tabbing within the modal.
@@ -715,10 +716,10 @@ themes.view.Details = wp.Backbone.View.extend({
 			// Check for the Tab key.
 			if ( 9 === event.which ) {
 				if ( $firstFocusable[0] === event.target && event.shiftKey ) {
-					$lastFocusable.trigger( 'focus' );
+					$lastFocusable.focus();
 					event.preventDefault();
 				} else if ( $lastFocusable[0] === event.target && ! event.shiftKey ) {
-					$firstFocusable.trigger( 'focus' );
+					$firstFocusable.focus();
 					event.preventDefault();
 				}
 			}
@@ -763,7 +764,7 @@ themes.view.Details = wp.Backbone.View.extend({
 
 				// Return focus to the theme div.
 				if ( themes.focusedTheme ) {
-					themes.focusedTheme.find('.more-details').trigger( 'focus' );
+					themes.focusedTheme.focus();
 				}
 			});
 		}
@@ -951,7 +952,7 @@ themes.view.Preview = themes.view.Details.extend({
 
 			// Return focus to the theme div.
 			if ( themes.focusedTheme ) {
-				themes.focusedTheme.find('.more-details').trigger( 'focus' );
+				themes.focusedTheme.focus();
 			}
 		}).removeClass( 'iframe-ready' );
 
@@ -1964,7 +1965,7 @@ themes.RunInstaller = {
 		// Set up the view.
 		// Passes the default 'section' as an option.
 		this.view = new themes.view.Installer({
-			section: 'popular',
+			section: 'featured',
 			SearchView: themes.view.InstallerSearch
 		});
 
@@ -2031,12 +2032,12 @@ themes.RunInstaller = {
 		/*
 		 * Handles sorting / browsing routes.
 		 * Also handles the root URL triggering a sort request
-		 * for `popular`, the default view.
+		 * for `featured`, the default view.
 		 */
 		themes.router.on( 'route:sort', function( sort ) {
 			if ( ! sort ) {
-				sort = 'popular';
-				themes.router.navigate( themes.router.baseUrl( '?browse=popular' ), { replace: true } );
+				sort = 'featured';
+				themes.router.navigate( themes.router.baseUrl( '?browse=featured' ), { replace: true } );
 			}
 			self.view.sort( sort );
 
@@ -2048,7 +2049,7 @@ themes.RunInstaller = {
 
 		// The `search` route event. The router populates the input field.
 		themes.router.on( 'route:search', function() {
-			$( '.wp-filter-search' ).trigger( 'focus' ).trigger( 'keyup' );
+			$( '.wp-filter-search' ).focus().trigger( 'keyup' );
 		});
 
 		this.extraRoutes();
@@ -2060,7 +2061,7 @@ themes.RunInstaller = {
 };
 
 // Ready...
-$( function() {
+$( document ).ready(function() {
 	if ( themes.isInstall ) {
 		themes.RunInstaller.init();
 	} else {
@@ -2088,7 +2089,7 @@ $( function() {
 })( jQuery );
 
 // Align theme browser thickbox.
-jQuery( function($) {
+jQuery(document).ready( function($) {
 	window.tb_position = function() {
 		var tbWindow = $('#TB_window'),
 			width = $(window).width(),
@@ -2100,7 +2101,7 @@ jQuery( function($) {
 			adminbar_height = parseInt( $('#wpadminbar').css('height'), 10 );
 		}
 
-		if ( tbWindow.length >= 1 ) {
+		if ( tbWindow.size() ) {
 			tbWindow.width( W - 50 ).height( H - 45 - adminbar_height );
 			$('#TB_iframeContent').width( W - 50 ).height( H - 75 - adminbar_height );
 			tbWindow.css({'margin-left': '-' + parseInt( ( ( W - 50 ) / 2 ), 10 ) + 'px'});
@@ -2110,5 +2111,5 @@ jQuery( function($) {
 		}
 	};
 
-	$(window).on( 'resize', function(){ tb_position(); });
+	$(window).resize(function(){ tb_position(); });
 });

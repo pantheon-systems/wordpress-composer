@@ -42,11 +42,11 @@ class WP_Paused_Extensions_Storage {
 	 *
 	 * @param string $extension Plugin or theme directory name.
 	 * @param array  $error     {
-	 *     Error information returned by `error_get_last()`.
+	 *     Error that was triggered.
 	 *
-	 *     @type int    $type    The error type.
+	 *     @type string $type    The error type.
 	 *     @type string $file    The name of the file in which the error occurred.
-	 *     @type int    $line    The line number in which the error occurred.
+	 *     @type string $line    The line number in which the error occurred.
 	 *     @type string $message The error message.
 	 * }
 	 * @return bool True on success, false on failure.
@@ -141,11 +141,7 @@ class WP_Paused_Extensions_Storage {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array {
-	 *     Associative array of errors keyed by extension slug.
-	 *
-	 *     @type array ...$0 Error information returned by `error_get_last()`.
-	 * }
+	 * @return array Associative array of extension slugs to the error recorded.
 	 */
 	public function get_all() {
 		if ( ! $this->is_api_loaded() ) {

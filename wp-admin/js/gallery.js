@@ -4,7 +4,7 @@
 
 /* global unescape, getUserSetting, setUserSetting, wpgallery, tinymce */
 
-jQuery( function($) {
+jQuery(document).ready(function($) {
 	var gallerySortable, gallerySortableInit, sortIt, clearAll, w, desc = false;
 
 	gallerySortableInit = function() {
@@ -42,28 +42,28 @@ jQuery( function($) {
 		});
 	};
 
-	$('#asc').on( 'click', function( e ) {
+	$('#asc').click( function( e ) {
 		e.preventDefault();
 		desc = false;
 		sortIt();
 	});
-	$('#desc').on( 'click', function( e ) {
+	$('#desc').click( function( e ) {
 		e.preventDefault();
 		desc = true;
 		sortIt();
 	});
-	$('#clear').on( 'click', function( e ) {
+	$('#clear').click( function( e ) {
 		e.preventDefault();
 		clearAll(1);
 	});
-	$('#showall').on( 'click', function( e ) {
+	$('#showall').click( function( e ) {
 		e.preventDefault();
 		$('#sort-buttons span a').toggle();
 		$('a.describe-toggle-on').hide();
 		$('a.describe-toggle-off, table.slidetoggle').show();
 		$('img.pinkynail').toggle(false);
 	});
-	$('#hideall').on( 'click', function( e ) {
+	$('#hideall').click( function( e ) {
 		e.preventDefault();
 		$('#sort-buttons span a').toggle();
 		$('a.describe-toggle-on').show();
@@ -88,7 +88,7 @@ jQuery( function($) {
 	}
 });
 
-jQuery(window).on( 'unload', function () { window.tinymce = window.tinyMCE = window.wpgallery = null; } ); // Cleanup.
+jQuery(window).unload( function () { window.tinymce = window.tinyMCE = window.wpgallery = null; } ); // Cleanup.
 
 /* gallery settings */
 window.tinymce = null;

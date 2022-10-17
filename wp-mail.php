@@ -62,7 +62,7 @@ if ( false === $count ) {
 
 if ( 0 === $count ) {
 	$pop3->quit();
-	wp_die( __( 'There does not seem to be any new mail.' ) );
+	wp_die( __( 'There doesn&#8217;t seem to be any new mail.' ) );
 }
 
 // Always run as an unauthenticated user.
@@ -80,9 +80,6 @@ for ( $i = 1; $i <= $count; $i++ ) {
 	$content_transfer_encoding = '';
 	$post_author               = 1;
 	$author_found              = false;
-	$post_date                 = null;
-	$post_date_gmt             = null;
-
 	foreach ( $message as $line ) {
 		// Body signal.
 		if ( strlen( $line ) < 3 ) {

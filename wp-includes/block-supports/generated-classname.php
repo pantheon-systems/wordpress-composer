@@ -3,13 +3,10 @@
  * Generated classname block support flag.
  *
  * @package WordPress
- * @since 5.6.0
  */
 
 /**
  * Get the generated classname from a given block name.
- *
- * @since 5.6.0
  *
  * @access private
  *
@@ -28,8 +25,6 @@ function wp_get_block_default_classname( $block_name ) {
 	/**
 	 * Filters the default block className for server rendered blocks.
 	 *
-	 * @since 5.6.0
-	 *
 	 * @param string     $class_name The current applied classname.
 	 * @param string     $block_name The block name.
 	 */
@@ -41,17 +36,19 @@ function wp_get_block_default_classname( $block_name ) {
 /**
  * Add the generated classnames to the output.
  *
- * @since 5.6.0
- *
  * @access private
  *
  * @param  WP_Block_Type $block_type       Block Type.
+ * @param  array         $block_attributes Block attributes.
  *
  * @return array Block CSS classes and inline styles.
  */
-function wp_apply_generated_classname_support( $block_type ) {
+function wp_apply_generated_classname_support( $block_type, $block_attributes ) {
+	$has_generated_classname_support = true;
 	$attributes                      = array();
-	$has_generated_classname_support = block_has_support( $block_type, array( 'className' ), true );
+	if ( property_exists( $block_type, 'supports' ) ) {
+		$has_generated_classname_support = _wp_array_get( $block_type->supports, array( 'className' ), true );
+	}
 	if ( $has_generated_classname_support ) {
 		$block_classname = wp_get_block_default_classname( $block_type->name );
 

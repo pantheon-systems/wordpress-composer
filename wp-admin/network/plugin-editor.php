@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin file editor network administration panel.
+ * Plugin editor network administration panel.
  *
  * @package WordPress
  * @subpackage Multisite

@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Tabs 1.13.1
+ * jQuery UI Tabs 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -17,8 +17,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -31,11 +29,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.tabs", {
-	version: "1.13.1",
+	version: "1.12.1",
 	delay: 300,
 	options: {
 		active: null,
@@ -93,8 +90,8 @@ $.widget( "ui.tabs", {
 
 		// Take disabling tabs via class attribute from HTML
 		// into account and update option properly.
-		if ( Array.isArray( options.disabled ) ) {
-			options.disabled = $.uniqueSort( options.disabled.concat(
+		if ( $.isArray( options.disabled ) ) {
+			options.disabled = $.unique( options.disabled.concat(
 				$.map( this.tabs.filter( ".ui-state-disabled" ), function( li ) {
 					return that.tabs.index( li );
 				} )
@@ -176,39 +173,39 @@ $.widget( "ui.tabs", {
 		}
 
 		switch ( event.keyCode ) {
-			case $.ui.keyCode.RIGHT:
-			case $.ui.keyCode.DOWN:
-				selectedIndex++;
-				break;
-			case $.ui.keyCode.UP:
-			case $.ui.keyCode.LEFT:
-				goingForward = false;
-				selectedIndex--;
-				break;
-			case $.ui.keyCode.END:
-				selectedIndex = this.anchors.length - 1;
-				break;
-			case $.ui.keyCode.HOME:
-				selectedIndex = 0;
-				break;
-			case $.ui.keyCode.SPACE:
+		case $.ui.keyCode.RIGHT:
+		case $.ui.keyCode.DOWN:
+			selectedIndex++;
+			break;
+		case $.ui.keyCode.UP:
+		case $.ui.keyCode.LEFT:
+			goingForward = false;
+			selectedIndex--;
+			break;
+		case $.ui.keyCode.END:
+			selectedIndex = this.anchors.length - 1;
+			break;
+		case $.ui.keyCode.HOME:
+			selectedIndex = 0;
+			break;
+		case $.ui.keyCode.SPACE:
 
-				// Activate only, no collapsing
-				event.preventDefault();
-				clearTimeout( this.activating );
-				this._activate( selectedIndex );
-				return;
-			case $.ui.keyCode.ENTER:
+			// Activate only, no collapsing
+			event.preventDefault();
+			clearTimeout( this.activating );
+			this._activate( selectedIndex );
+			return;
+		case $.ui.keyCode.ENTER:
 
-				// Toggle (cancel delayed activation, allow collapsing)
-				event.preventDefault();
-				clearTimeout( this.activating );
+			// Toggle (cancel delayed activation, allow collapsing)
+			event.preventDefault();
+			clearTimeout( this.activating );
 
-				// Determine if we should collapse or activate
-				this._activate( selectedIndex === this.options.active ? false : selectedIndex );
-				return;
-			default:
-				return;
+			// Determine if we should collapse or activate
+			this._activate( selectedIndex === this.options.active ? false : selectedIndex );
+			return;
+		default:
+			return;
 		}
 
 		// Focus the appropriate tab, based on which key was pressed
@@ -330,7 +327,7 @@ $.widget( "ui.tabs", {
 			options.active = false;
 			this.active = $();
 
-			// was active, but active tab is gone
+		// was active, but active tab is gone
 		} else if ( this.active.length && !$.contains( this.tablist[ 0 ], this.active[ 0 ] ) ) {
 
 			// all remaining tabs are disabled
@@ -338,12 +335,12 @@ $.widget( "ui.tabs", {
 				options.active = false;
 				this.active = $();
 
-				// activate previous tab
+			// activate previous tab
 			} else {
 				this._activate( this._findNextTab( Math.max( 0, options.active - 1 ), false ) );
 			}
 
-			// was active, active tab still exists
+		// was active, active tab still exists
 		} else {
 
 			// make sure active index is correct
@@ -429,6 +426,7 @@ $.widget( "ui.tabs", {
 			return $( "a", this )[ 0 ];
 		} )
 			.attr( {
+				role: "presentation",
 				tabIndex: -1
 			} );
 		this._addClass( this.anchors, "ui-tabs-anchor" );
@@ -447,7 +445,7 @@ $.widget( "ui.tabs", {
 				panelId = selector.substring( 1 );
 				panel = that.element.find( that._sanitizeSelector( selector ) );
 
-				// remote tab
+			// remote tab
 			} else {
 
 				// If the tab doesn't already have aria-controls,
@@ -500,7 +498,7 @@ $.widget( "ui.tabs", {
 	_setOptionDisabled: function( disabled ) {
 		var currentItem, li, i;
 
-		if ( Array.isArray( disabled ) ) {
+		if ( $.isArray( disabled ) ) {
 			if ( !disabled.length ) {
 				disabled = false;
 			} else if ( disabled.length === this.anchors.length ) {
@@ -605,17 +603,17 @@ $.widget( "ui.tabs", {
 
 		if ( tab.hasClass( "ui-state-disabled" ) ||
 
-			// tab is already loading
-			tab.hasClass( "ui-tabs-loading" ) ||
+				// tab is already loading
+				tab.hasClass( "ui-tabs-loading" ) ||
 
-			// can't switch durning an animation
-			this.running ||
+				// can't switch durning an animation
+				this.running ||
 
-			// click on active header, but not collapsible
-			( clickedIsActive && !options.collapsible ) ||
+				// click on active header, but not collapsible
+				( clickedIsActive && !options.collapsible ) ||
 
-			// allow canceling activation
-			( this._trigger( "beforeActivate", event, eventData ) === false ) ) {
+				// allow canceling activation
+				( this._trigger( "beforeActivate", event, eventData ) === false ) ) {
 			return;
 		}
 
@@ -731,7 +729,7 @@ $.widget( "ui.tabs", {
 		// meta-function to give users option to provide a href string instead of a numerical index.
 		if ( typeof index === "string" ) {
 			index = this.anchors.index( this.anchors.filter( "[href$='" +
-				$.escapeSelector( index ) + "']" ) );
+				$.ui.escapeSelector( index ) + "']" ) );
 		}
 
 		return index;
@@ -788,7 +786,7 @@ $.widget( "ui.tabs", {
 			disabled = false;
 		} else {
 			index = this._getIndex( index );
-			if ( Array.isArray( disabled ) ) {
+			if ( $.isArray( disabled ) ) {
 				disabled = $.map( disabled, function( num ) {
 					return num !== index ? num : null;
 				} );
@@ -814,7 +812,7 @@ $.widget( "ui.tabs", {
 			if ( $.inArray( index, disabled ) !== -1 ) {
 				return;
 			}
-			if ( Array.isArray( disabled ) ) {
+			if ( $.isArray( disabled ) ) {
 				disabled = $.merge( [ index ], disabled ).sort();
 			} else {
 				disabled = [ index ];
@@ -918,4 +916,4 @@ if ( $.uiBackCompat !== false ) {
 
 return $.ui.tabs;
 
-} );
+} ) );

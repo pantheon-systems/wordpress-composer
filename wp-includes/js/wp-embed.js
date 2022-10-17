@@ -27,11 +27,6 @@
 		return;
 	}
 
-	/**
-	 * Receive embed message.
-	 *
-	 * @param {MessageEvent} e
-	 */
 	window.wp.receiveEmbedMessage = function( e ) {
 		var data = e.data;
 
@@ -107,11 +102,9 @@
 			iframeClone, i, source, secret;
 
 		for ( i = 0; i < iframes.length; i++ ) {
-			/** @var {IframeElement} */
 			source = iframes[ i ];
 
-			secret = source.getAttribute( 'data-secret' );
-			if ( ! secret ) {
+			if ( ! source.getAttribute( 'data-secret' ) ) {
 				/* Add secret to iframe */
 				secret = Math.random().toString( 36 ).substr( 2, 10 );
 				source.src += '#?secret=' + secret;
@@ -124,16 +117,6 @@
 				iframeClone.removeAttribute( 'security' );
 				source.parentNode.replaceChild( iframeClone, source );
 			}
-
-			/*
-			 * Let post embed window know that the parent is ready for receiving the height message, in case the iframe
-			 * loaded before wp-embed.js was loaded. When the ready message is received by the post embed window, the
-			 * window will then (re-)send the height message right away.
-			 */
-			source.contentWindow.postMessage( {
-				message: 'ready',
-				secret: secret
-			}, '*' );
 		}
 	}
 

@@ -23,7 +23,6 @@ define( 'WXR_VERSION', '1.2' );
  * 'auto-draft' status will be skipped.
  *
  * @since 2.1.0
- * @since 5.7.0 Added the `post_modified` and `post_modified_gmt` fields to the export file.
  *
  * @global wpdb    $wpdb WordPress database abstraction object.
  * @global WP_Post $post Global post object.
@@ -169,7 +168,7 @@ function export_wp( $args = array() ) {
 
 		// Put categories in order with no child going before its parent.
 		while ( $cat = array_shift( $categories ) ) {
-			if ( ! $cat->parent || isset( $cats[ $cat->parent ] ) ) {
+			if ( 0 == $cat->parent || isset( $cats[ $cat->parent ] ) ) {
 				$cats[ $cat->term_id ] = $cat;
 			} else {
 				$categories[] = $cat;
@@ -178,7 +177,7 @@ function export_wp( $args = array() ) {
 
 		// Put terms in order with no child going before its parent.
 		while ( $t = array_shift( $custom_terms ) ) {
-			if ( ! $t->parent || isset( $terms[ $t->parent ] ) ) {
+			if ( 0 == $t->parent || isset( $terms[ $t->parent ] ) ) {
 				$terms[ $t->term_id ] = $t;
 			} else {
 				$custom_terms[] = $t;
@@ -542,14 +541,8 @@ function export_wp( $args = array() ) {
 			foreach ( $posts as $post ) {
 				setup_postdata( $post );
 
-				/**
-				 * Filters the post title used for WXR exports.
-				 *
-				 * @since 5.7.0
-				 *
-				 * @param string $post_title Title of the current post.
-				 */
-				$title = wxr_cdata( apply_filters( 'the_title_export', $post->post_title ) );
+				/** This filter is documented in wp-includes/feed.php */
+				$title = apply_filters( 'the_title_rss', $post->post_title );
 
 				/**
 				 * Filters the post content used for WXR exports.
@@ -583,8 +576,6 @@ function export_wp( $args = array() ) {
 		<wp:post_id><?php echo (int) $post->ID; ?></wp:post_id>
 		<wp:post_date><?php echo wxr_cdata( $post->post_date ); ?></wp:post_date>
 		<wp:post_date_gmt><?php echo wxr_cdata( $post->post_date_gmt ); ?></wp:post_date_gmt>
-		<wp:post_modified><?php echo wxr_cdata( $post->post_modified ); ?></wp:post_modified>
-		<wp:post_modified_gmt><?php echo wxr_cdata( $post->post_modified_gmt ); ?></wp:post_modified_gmt>
 		<wp:comment_status><?php echo wxr_cdata( $post->comment_status ); ?></wp:comment_status>
 		<wp:ping_status><?php echo wxr_cdata( $post->ping_status ); ?></wp:ping_status>
 		<wp:post_name><?php echo wxr_cdata( $post->post_name ); ?></wp:post_name>

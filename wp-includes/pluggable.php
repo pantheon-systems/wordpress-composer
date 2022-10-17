@@ -20,9 +20,9 @@ if ( ! function_exists( 'wp_set_current_user' ) ) :
 	 *
 	 * @global WP_User $current_user The current user object which holds the user data.
 	 *
-	 * @param int|null $id   User ID.
-	 * @param string   $name User's username.
-	 * @return WP_User Current user User object.
+	 * @param int    $id   User ID
+	 * @param string $name User's username
+	 * @return WP_User Current user User object
 	 */
 	function wp_set_current_user( $id, $name = '' ) {
 		global $current_user;
@@ -92,8 +92,6 @@ if ( ! function_exists( 'get_user_by' ) ) :
 	 * @since 2.8.0
 	 * @since 4.4.0 Added 'ID' as an alias of 'id' for the `$field` parameter.
 	 *
-	 * @global WP_User $current_user The current user object which holds the user data.
-	 *
 	 * @param string     $field The field to retrieve the user with. id | ID | slug | email | login.
 	 * @param int|string $value A value for $field. A user ID, slug, email address, or login name.
 	 * @return WP_User|false WP_User object on success, false on failure.
@@ -120,7 +118,7 @@ if ( ! function_exists( 'cache_users' ) ) :
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
-	 * @param int[] $user_ids User ID numbers list
+	 * @param array $user_ids User ID numbers list
 	 */
 	function cache_users( $user_ids ) {
 		global $wpdb;
@@ -160,17 +158,15 @@ if ( ! function_exists( 'wp_mail' ) ) :
 	 * be set using the {@see 'wp_mail_charset'} filter.
 	 *
 	 * @since 1.2.1
-	 * @since 5.5.0 is_email() is used for email validation,
-	 *              instead of PHPMailer's default validator.
 	 *
 	 * @global PHPMailer\PHPMailer\PHPMailer $phpmailer
 	 *
-	 * @param string|string[] $to          Array or comma-separated list of email addresses to send message.
-	 * @param string          $subject     Email subject.
-	 * @param string          $message     Message contents.
-	 * @param string|string[] $headers     Optional. Additional headers.
-	 * @param string|string[] $attachments Optional. Paths to files to attach.
-	 * @return bool Whether the email was sent successfully.
+	 * @param string|array $to          Array or comma-separated list of email addresses to send message.
+	 * @param string       $subject     Email subject
+	 * @param string       $message     Message contents
+	 * @param string|array $headers     Optional. Additional headers.
+	 * @param string|array $attachments Optional. Files to attach.
+	 * @return bool Whether the email contents were sent successfully.
 	 */
 	function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
 		// Compact the input, apply the filters, and extract them back out.
@@ -180,43 +176,10 @@ if ( ! function_exists( 'wp_mail' ) ) :
 		 *
 		 * @since 2.2.0
 		 *
-		 * @param array $args {
-		 *     Array of the `wp_mail()` arguments.
-		 *
-		 *     @type string|string[] $to          Array or comma-separated list of email addresses to send message.
-		 *     @type string          $subject     Email subject.
-		 *     @type string          $message     Message contents.
-		 *     @type string|string[] $headers     Additional headers.
-		 *     @type string|string[] $attachments Paths to files to attach.
-		 * }
+		 * @param array $args A compacted array of wp_mail() arguments, including the "to" email,
+		 *                    subject, message, headers, and attachments values.
 		 */
 		$atts = apply_filters( 'wp_mail', compact( 'to', 'subject', 'message', 'headers', 'attachments' ) );
-
-		/**
-		 * Filters whether to preempt sending an email.
-		 *
-		 * Returning a non-null value will short-circuit {@see wp_mail()}, returning
-		 * that value instead. A boolean return value should be used to indicate whether
-		 * the email was successfully sent.
-		 *
-		 * @since 5.7.0
-		 *
-		 * @param null|bool $return Short-circuit return value.
-		 * @param array     $atts {
-		 *     Array of the `wp_mail()` arguments.
-		 *
-		 *     @type string|string[] $to          Array or comma-separated list of email addresses to send message.
-		 *     @type string          $subject     Email subject.
-		 *     @type string          $message     Message contents.
-		 *     @type string|string[] $headers     Additional headers.
-		 *     @type string|string[] $attachments Paths to files to attach.
-		 * }
-		 */
-		$pre_wp_mail = apply_filters( 'pre_wp_mail', null, $atts );
-
-		if ( null !== $pre_wp_mail ) {
-			return $pre_wp_mail;
-		}
 
 		if ( isset( $atts['to'] ) ) {
 			$to = $atts['to'];
@@ -373,16 +336,12 @@ if ( ! function_exists( 'wp_mail' ) ) :
 		 */
 		if ( ! isset( $from_email ) ) {
 			// Get the site domain and get rid of www.
-			$sitename   = wp_parse_url( network_home_url(), PHP_URL_HOST );
-			$from_email = 'wordpress@';
-
-			if ( null !== $sitename ) {
-				if ( 'www.' === substr( $sitename, 0, 4 ) ) {
-					$sitename = substr( $sitename, 4 );
-				}
-
-				$from_email .= $sitename;
+			$sitename = wp_parse_url( network_home_url(), PHP_URL_HOST );
+			if ( 'www.' === substr( $sitename, 0, 4 ) ) {
+				$sitename = substr( $sitename, 4 );
 			}
+
+			$from_email = 'wordpress@' . $sitename;
 		}
 
 		/**
@@ -536,36 +495,13 @@ if ( ! function_exists( 'wp_mail' ) ) :
 		 */
 		do_action_ref_array( 'phpmailer_init', array( &$phpmailer ) );
 
-		$mail_data = compact( 'to', 'subject', 'message', 'headers', 'attachments' );
-
 		// Send!
 		try {
-			$send = $phpmailer->send();
-
-			/**
-			 * Fires after PHPMailer has successfully sent an email.
-			 *
-			 * The firing of this action does not necessarily mean that the recipient(s) received the
-			 * email successfully. It only means that the `send` method above was able to
-			 * process the request without any errors.
-			 *
-			 * @since 5.9.0
-			 *
-			 * @param array $mail_data {
-			 *     An array containing the email recipient(s), subject, message, headers, and attachments.
-			 *
-			 *     @type string[] $to          Email addresses to send message.
-			 *     @type string   $subject     Email subject.
-			 *     @type string   $message     Message contents.
-			 *     @type string[] $headers     Additional headers.
-			 *     @type string[] $attachments Paths to files to attach.
-			 * }
-			 */
-			do_action( 'wp_mail_succeeded', $mail_data );
-
-			return $send;
+			return $phpmailer->send();
 		} catch ( PHPMailer\PHPMailer\Exception $e ) {
-			$mail_data['phpmailer_exception_code'] = $e->getCode();
+
+			$mail_error_data                             = compact( 'to', 'subject', 'message', 'headers', 'attachments' );
+			$mail_error_data['phpmailer_exception_code'] = $e->getCode();
 
 			/**
 			 * Fires after a PHPMailer\PHPMailer\Exception is caught.
@@ -575,7 +511,7 @@ if ( ! function_exists( 'wp_mail' ) ) :
 			 * @param WP_Error $error A WP_Error object with the PHPMailer\PHPMailer\Exception message, and an array
 			 *                        containing the mail recipient, subject, message, headers, and attachments.
 			 */
-			do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', $e->getMessage(), $mail_data ) );
+			do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', $e->getMessage(), $mail_error_data ) );
 
 			return false;
 		}
@@ -720,16 +656,7 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 			 *
 			 * @since 2.7.0
 			 *
-			 * @param string[] $cookie_elements {
-			 *     Authentication cookie components. None of the components should be assumed
-			 *     to be valid as they come directly from a client-provided cookie value.
-			 *
-			 *     @type string $username   User's username.
-			 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-			 *     @type string $token      User's session token used.
-			 *     @type string $hmac       The security hash for the cookie.
-			 *     @type string $scheme     The cookie scheme to use.
-			 * }
+			 * @param string[] $cookie_elements An array of data for the authentication cookie.
 			 */
 			do_action( 'auth_cookie_expired', $cookie_elements );
 			return false;
@@ -742,16 +669,7 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 			 *
 			 * @since 2.7.0
 			 *
-			 * @param string[] $cookie_elements {
-			 *     Authentication cookie components. None of the components should be assumed
-			 *     to be valid as they come directly from a client-provided cookie value.
-			 *
-			 *     @type string $username   User's username.
-			 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-			 *     @type string $token      User's session token used.
-			 *     @type string $hmac       The security hash for the cookie.
-			 *     @type string $scheme     The cookie scheme to use.
-			 * }
+			 * @param string[] $cookie_elements An array of data for the authentication cookie.
 			 */
 			do_action( 'auth_cookie_bad_username', $cookie_elements );
 			return false;
@@ -771,16 +689,7 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 			 *
 			 * @since 2.7.0
 			 *
-			 * @param string[] $cookie_elements {
-			 *     Authentication cookie components. None of the components should be assumed
-			 *     to be valid as they come directly from a client-provided cookie value.
-			 *
-			 *     @type string $username   User's username.
-			 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-			 *     @type string $token      User's session token used.
-			 *     @type string $hmac       The security hash for the cookie.
-			 *     @type string $scheme     The cookie scheme to use.
-			 * }
+			 * @param string[] $cookie_elements An array of data for the authentication cookie.
 			 */
 			do_action( 'auth_cookie_bad_hash', $cookie_elements );
 			return false;
@@ -793,16 +702,7 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param string[] $cookie_elements {
-			 *     Authentication cookie components. None of the components should be assumed
-			 *     to be valid as they come directly from a client-provided cookie value.
-			 *
-			 *     @type string $username   User's username.
-			 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-			 *     @type string $token      User's session token used.
-			 *     @type string $hmac       The security hash for the cookie.
-			 *     @type string $scheme     The cookie scheme to use.
-			 * }
+			 * @param string[] $cookie_elements An array of data for the authentication cookie.
 			 */
 			do_action( 'auth_cookie_bad_session_token', $cookie_elements );
 			return false;
@@ -818,15 +718,7 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param string[] $cookie_elements {
-		 *     Authentication cookie components.
-		 *
-		 *     @type string $username   User's username.
-		 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-		 *     @type string $token      User's session token used.
-		 *     @type string $hmac       The security hash for the cookie.
-		 *     @type string $scheme     The cookie scheme to use.
-		 * }
+		 * @param string[] $cookie_elements An array of data for the authentication cookie.
 		 * @param WP_User  $user            User object.
 		 */
 		do_action( 'auth_cookie_valid', $cookie_elements, $user );
@@ -894,17 +786,7 @@ if ( ! function_exists( 'wp_parse_auth_cookie' ) ) :
 	 *
 	 * @param string $cookie Authentication cookie.
 	 * @param string $scheme Optional. The cookie scheme to use: 'auth', 'secure_auth', or 'logged_in'.
-	 * @return string[]|false {
-	 *     Authentication cookie components. None of the components should be assumed
-	 *     to be valid as they come directly from a client-provided cookie value. If
-	 *     the cookie value is malformed, false is returned.
-	 *
-	 *     @type string $username   User's username.
-	 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-	 *     @type string $token      User's session token used.
-	 *     @type string $hmac       The security hash for the cookie.
-	 *     @type string $scheme     The cookie scheme to use.
-	 * }
+	 * @return string[]|false Authentication cookie components.
 	 */
 	function wp_parse_auth_cookie( $cookie = '', $scheme = '' ) {
 		if ( empty( $cookie ) ) {
@@ -1252,7 +1134,7 @@ if ( ! function_exists( 'check_admin_referer' ) ) :
 	 */
 	function check_admin_referer( $action = -1, $query_arg = '_wpnonce' ) {
 		if ( -1 === $action ) {
-			_doing_it_wrong( __FUNCTION__, __( 'You should specify an action to be verified by using the first parameter.' ), '3.2.0' );
+			_doing_it_wrong( __FUNCTION__, __( 'You should specify a nonce action to be verified by using the first parameter.' ), '3.2.0' );
 		}
 
 		$adminurl = strtolower( admin_url() );
@@ -1297,7 +1179,7 @@ if ( ! function_exists( 'check_ajax_referer' ) ) :
 	 */
 	function check_ajax_referer( $action = -1, $query_arg = false, $die = true ) {
 		if ( -1 == $action ) {
-			_doing_it_wrong( __FUNCTION__, __( 'You should specify an action to be verified by using the first parameter.' ), '4.7.0' );
+			_doing_it_wrong( __FUNCTION__, __( 'You should specify a nonce action to be verified by using the first parameter.' ), '4.7' );
 		}
 
 		$nonce = '';
@@ -1645,7 +1527,7 @@ if ( ! function_exists( 'wp_notify_postauthor' ) ) :
 		 * @since 3.7.0
 		 *
 		 * @param string[] $emails     An array of email addresses to receive a comment notification.
-		 * @param string   $comment_id The comment ID as a numeric string.
+		 * @param int      $comment_id The comment ID.
 		 */
 		$emails = apply_filters( 'comment_notification_recipients', $emails, $comment->comment_ID );
 		$emails = array_filter( $emails );
@@ -1666,9 +1548,9 @@ if ( ! function_exists( 'wp_notify_postauthor' ) ) :
 		 *
 		 * @since 3.8.0
 		 *
-		 * @param bool   $notify     Whether to notify the post author of their own comment.
-		 *                           Default false.
-		 * @param string $comment_id The comment ID as a numeric string.
+		 * @param bool $notify     Whether to notify the post author of their own comment.
+		 *                         Default false.
+		 * @param int  $comment_id The comment ID.
 		 */
 		$notify_author = apply_filters( 'comment_notification_notify_author', false, $comment->comment_ID );
 
@@ -1801,7 +1683,7 @@ if ( ! function_exists( 'wp_notify_postauthor' ) ) :
 		 * @since 1.5.2
 		 *
 		 * @param string $notify_message The comment notification email text.
-		 * @param string $comment_id     Comment ID as a numeric string.
+		 * @param int    $comment_id     Comment ID.
 		 */
 		$notify_message = apply_filters( 'comment_notification_text', $notify_message, $comment->comment_ID );
 
@@ -1811,7 +1693,7 @@ if ( ! function_exists( 'wp_notify_postauthor' ) ) :
 		 * @since 1.5.2
 		 *
 		 * @param string $subject    The comment notification email subject.
-		 * @param string $comment_id Comment ID as a numeric string.
+		 * @param int    $comment_id Comment ID.
 		 */
 		$subject = apply_filters( 'comment_notification_subject', $subject, $comment->comment_ID );
 
@@ -1821,7 +1703,7 @@ if ( ! function_exists( 'wp_notify_postauthor' ) ) :
 		 * @since 1.5.2
 		 *
 		 * @param string $message_headers Headers for the comment notification email.
-		 * @param string $comment_id      Comment ID as a numeric string.
+		 * @param int    $comment_id      Comment ID.
 		 */
 		$message_headers = apply_filters( 'comment_notification_headers', $message_headers, $comment->comment_ID );
 
@@ -2754,7 +2636,7 @@ if ( ! function_exists( 'get_avatar' ) ) :
 		);
 
 		if ( wp_lazy_loading_enabled( 'img', 'get_avatar' ) ) {
-			$defaults['loading'] = wp_get_loading_attr_default( 'get_avatar' );
+			$defaults['loading'] = 'lazy';
 		}
 
 		if ( empty( $args ) ) {
@@ -2781,7 +2663,7 @@ if ( ! function_exists( 'get_avatar' ) ) :
 		/**
 		 * Allows the HTML for a user's avatar to be returned early.
 		 *
-		 * Returning a non-null value will effectively short-circuit get_avatar(), passing
+		 * Passing a non-null value will effectively short-circuit get_avatar(), passing
 		 * the value through the {@see 'get_avatar'} filter and returning early.
 		 *
 		 * @since 4.2.0
@@ -2861,7 +2743,8 @@ if ( ! function_exists( 'get_avatar' ) ) :
 		 * @param int    $size        Square avatar width and height in pixels to retrieve.
 		 * @param string $default     URL for the default image or a default type. Accepts '404', 'retro', 'monsterid',
 		 *                            'wavatar', 'indenticon', 'mystery', 'mm', 'mysteryman', 'blank', or 'gravatar_default'.
-		 * @param string $alt         Alternative text to use in the avatar image tag.
+		 *                            Default is the value of the 'avatar_default' option, with a fallback of 'mystery'.
+		 * @param string $alt         Alternative text to use in the avatar image tag. Default empty.
 		 * @param array  $args        Arguments passed to get_avatar_data(), after processing.
 		 */
 		return apply_filters( 'get_avatar', $avatar, $id_or_email, $args['size'], $args['default'], $args['alt'], $args );
@@ -2924,32 +2807,27 @@ if ( ! function_exists( 'wp_text_diff' ) ) :
 			return '';
 		}
 
-		$is_split_view       = ! empty( $args['show_split_view'] );
-		$is_split_view_class = $is_split_view ? ' is-split-view' : '';
+		$r = "<table class='diff'>\n";
 
-		$r = "<table class='diff$is_split_view_class'>\n";
-
-		if ( $args['title'] ) {
-			$r .= "<caption class='diff-title'>$args[title]</caption>\n";
+		if ( ! empty( $args['show_split_view'] ) ) {
+			$r .= "<col class='content diffsplit left' /><col class='content diffsplit middle' /><col class='content diffsplit right' />";
+		} else {
+			$r .= "<col class='content' />";
 		}
 
-		if ( $args['title_left'] || $args['title_right'] ) {
+		if ( $args['title'] || $args['title_left'] || $args['title_right'] ) {
 			$r .= '<thead>';
 		}
-
+		if ( $args['title'] ) {
+			$r .= "<tr class='diff-title'><th colspan='4'>$args[title]</th></tr>\n";
+		}
 		if ( $args['title_left'] || $args['title_right'] ) {
-			$th_or_td_left  = empty( $args['title_left'] ) ? 'td' : 'th';
-			$th_or_td_right = empty( $args['title_right'] ) ? 'td' : 'th';
-
 			$r .= "<tr class='diff-sub-title'>\n";
-			$r .= "\t<$th_or_td_left>$args[title_left]</$th_or_td_left>\n";
-			if ( $is_split_view ) {
-				$r .= "\t<$th_or_td_right>$args[title_right]</$th_or_td_right>\n";
-			}
+			$r .= "\t<td></td><th>$args[title_left]</th>\n";
+			$r .= "\t<td></td><th>$args[title_right]</th>\n";
 			$r .= "</tr>\n";
 		}
-
-		if ( $args['title_left'] || $args['title_right'] ) {
+		if ( $args['title'] || $args['title_left'] || $args['title_right'] ) {
 			$r .= "</thead>\n";
 		}
 

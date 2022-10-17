@@ -13,7 +13,6 @@ if ( ! current_user_can( 'manage_options' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
 }
 
-// Used in the HTML title tag.
 $title       = __( 'Writing Settings' );
 $parent_file = 'options-general.php';
 
@@ -206,9 +205,9 @@ if ( apply_filters( 'enable_update_services_configuration', true ) ) {
 	<p><label for="ping_sites">
 		<?php
 		printf(
-			/* translators: %s: Documentation URL. */
+			/* translators: %s: Codex URL. */
 			__( 'When you publish a new post, WordPress automatically notifies the following site update services. For more about this, see <a href="%s">Update Services</a> on the Codex. Separate multiple service URLs with line breaks.' ),
-			__( 'https://wordpress.org/support/article/update-services/' )
+			__( 'https://codex.wordpress.org/Update_Services' )
 		);
 		?>
 	</label></p>
@@ -220,9 +219,9 @@ if ( apply_filters( 'enable_update_services_configuration', true ) ) {
 	<p>
 		<?php
 		printf(
-			/* translators: 1: Documentation URL, 2: URL to Reading Settings screen. */
+			/* translators: 1: Codex URL, 2: URL to Reading Settings screen. */
 			__( 'WordPress is not notifying any <a href="%1$s">Update Services</a> because of your site&#8217;s <a href="%2$s">visibility settings</a>.' ),
-			__( 'https://wordpress.org/support/article/update-services/' ),
+			__( 'https://codex.wordpress.org/Update_Services' ),
 			'options-reading.php'
 		);
 		?>

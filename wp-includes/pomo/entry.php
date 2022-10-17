@@ -9,14 +9,14 @@
 
 if ( ! class_exists( 'Translation_Entry', false ) ) :
 	/**
-	 * Translation_Entry class encapsulates a translatable string.
+	 * Translation_Entry class encapsulates a translatable string
 	 */
 	class Translation_Entry {
 
 		/**
-		 * Whether the entry contains a string and its plural form, default is false.
+		 * Whether the entry contains a string and its plural form, default is false
 		 *
-		 * @var bool
+		 * @var boolean
 		 */
 		public $is_plural = false;
 
@@ -30,25 +30,17 @@ if ( ! class_exists( 'Translation_Entry', false ) ) :
 		public $flags               = array();
 
 		/**
-		 * @param array $args {
-		 *     Arguments array, supports the following keys:
-		 *
-		 *     @type string $singular            The string to translate, if omitted an
-		 *                                       empty entry will be created.
-		 *     @type string $plural              The plural form of the string, setting
-		 *                                       this will set `$is_plural` to true.
-		 *     @type array  $translations        Translations of the string and possibly
-		 *                                       its plural forms.
-		 *     @type string $context             A string differentiating two equal strings
-		 *                                       used in different contexts.
-		 *     @type string $translator_comments Comments left by translators.
-		 *     @type string $extracted_comments  Comments left by developers.
-		 *     @type array  $references          Places in the code this string is used, in
-		 *                                       relative_to_root_path/file.php:linenum form.
-		 *     @type array  $flags               Flags like php-format.
-		 * }
+		 * @param array $args associative array, support following keys:
+		 *  - singular (string) -- the string to translate, if omitted and empty entry will be created
+		 *  - plural (string) -- the plural form of the string, setting this will set {@link $is_plural} to true
+		 *  - translations (array) -- translations of the string and possibly -- its plural forms
+		 *  - context (string) -- a string differentiating two equal strings used in different contexts
+		 *  - translator_comments (string) -- comments left by translators
+		 *  - extracted_comments (string) -- comments left by developers
+		 *  - references (array) -- places in the code this strings is used, in relative_to_root_path/file.php:linenum form
+		 *  - flags (array) -- flags like php-format
 		 */
-		public function __construct( $args = array() ) {
+		function __construct( $args = array() ) {
 			// If no singular -- empty object.
 			if ( ! isset( $args['singular'] ) ) {
 				return;
@@ -84,11 +76,11 @@ if ( ! class_exists( 'Translation_Entry', false ) ) :
 		}
 
 		/**
-		 * Generates a unique key for this entry.
+		 * Generates a unique key for this entry
 		 *
-		 * @return string|false The key or false if the entry is empty.
+		 * @return string|bool the key or false if the entry is empty
 		 */
-		public function key() {
+		function key() {
 			if ( null === $this->singular || '' === $this->singular ) {
 				return false;
 			}
@@ -104,7 +96,7 @@ if ( ! class_exists( 'Translation_Entry', false ) ) :
 		/**
 		 * @param object $other
 		 */
-		public function merge_with( &$other ) {
+		function merge_with( &$other ) {
 			$this->flags      = array_unique( array_merge( $this->flags, $other->flags ) );
 			$this->references = array_unique( array_merge( $this->references, $other->references ) );
 			if ( $this->extracted_comments != $other->extracted_comments ) {

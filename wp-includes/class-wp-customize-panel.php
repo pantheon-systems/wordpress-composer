@@ -56,7 +56,7 @@ class WP_Customize_Panel {
 	 * Priority of the panel, defining the display order of panels and sections.
 	 *
 	 * @since 4.0.0
-	 * @var int
+	 * @var integer
 	 */
 	public $priority = 160;
 
@@ -232,11 +232,10 @@ class WP_Customize_Panel {
 	 * feature support required by the panel.
 	 *
 	 * @since 4.0.0
-	 * @since 5.9.0 Method was marked non-final.
 	 *
 	 * @return bool False if theme doesn't support the panel or the user doesn't have the capability.
 	 */
-	public function check_capabilities() {
+	final public function check_capabilities() {
 		if ( $this->capability && ! current_user_can( $this->capability ) ) {
 			return false;
 		}
@@ -276,7 +275,7 @@ class WP_Customize_Panel {
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param WP_Customize_Panel $panel WP_Customize_Panel instance.
+		 * @param WP_Customize_Panel $this WP_Customize_Panel instance.
 		 */
 		do_action( 'customize_render_panel', $this );
 
