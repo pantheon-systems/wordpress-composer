@@ -90,7 +90,7 @@ if ( isset( $_REQUEST['action'] ) && 'update-site' === $_REQUEST['action'] ) {
 	$old_home_parsed = parse_url( $old_home_url );
 
 	if ( $old_home_parsed['host'] === $existing_details->domain && $old_home_parsed['path'] === $existing_details->path ) {
-		$new_home_url = untrailingslashit( esc_url_raw( $blog_data['scheme'] . '://' . $new_details->domain . $new_details->path ) );
+		$new_home_url = untrailingslashit( sanitize_url( $blog_data['scheme'] . '://' . $new_details->domain . $new_details->path ) );
 		update_option( 'home', $new_home_url );
 	}
 
@@ -98,7 +98,7 @@ if ( isset( $_REQUEST['action'] ) && 'update-site' === $_REQUEST['action'] ) {
 	$old_site_parsed = parse_url( $old_site_url );
 
 	if ( $old_site_parsed['host'] === $existing_details->domain && $old_site_parsed['path'] === $existing_details->path ) {
-		$new_site_url = untrailingslashit( esc_url_raw( $blog_data['scheme'] . '://' . $new_details->domain . $new_details->path ) );
+		$new_site_url = untrailingslashit( sanitize_url( $blog_data['scheme'] . '://' . $new_details->domain . $new_details->path ) );
 		update_option( 'siteurl', $new_site_url );
 	}
 
@@ -122,6 +122,7 @@ if ( isset( $_GET['update'] ) ) {
 	}
 }
 
+// Used in the HTML title tag.
 /* translators: %s: Site title. */
 $title = sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) );
 
@@ -181,7 +182,7 @@ if ( ! empty( $messages ) ) {
 			<td><input name="blog[last_updated]" type="text" id="blog_last_updated" value="<?php echo esc_attr( $details->last_updated ); ?>" /></td>
 		</tr>
 		<?php
-		$attribute_fields = array( 'public' => __( 'Public' ) );
+		$attribute_fields = array( 'public' => _x( 'Public', 'site' ) );
 		if ( ! $is_main_site ) {
 			$attribute_fields['archived'] = __( 'Archived' );
 			$attribute_fields['spam']     = _x( 'Spam', 'site' );
@@ -196,7 +197,7 @@ if ( ! empty( $messages ) ) {
 			<legend class="screen-reader-text"><?php _e( 'Set site attributes' ); ?></legend>
 			<?php foreach ( $attribute_fields as $field_key => $field_label ) : ?>
 				<label><input type="checkbox" name="blog[<?php echo $field_key; ?>]" value="1" <?php checked( (bool) $details->$field_key, true ); ?> <?php disabled( ! in_array( (int) $details->$field_key, array( 0, 1 ), true ) ); ?> />
-				<?php echo $field_label; ?></label><br/>
+				<?php echo $field_label; ?></label><br />
 			<?php endforeach; ?>
 			<fieldset>
 			</td>

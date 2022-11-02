@@ -129,7 +129,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 		}
 
 		if ( ! is_file( $this->file ) && ! wp_is_stream( $this->file ) ) {
-			return new WP_Error( 'error_loading_image', __( 'File doesn&#8217;t exist?' ), $this->file );
+			return new WP_Error( 'error_loading_image', __( 'File does not exist?' ), $this->file );
 		}
 
 		/*
@@ -197,18 +197,31 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 		}
 
 		try {
-			if ( 'image/jpeg' === $this->mime_type ) {
-				$this->image->setImageCompressionQuality( $quality );
-				$this->image->setImageCompression( imagick::COMPRESSION_JPEG );
-			} else {
-				$this->image->setImageCompressionQuality( $quality );
+			switch ( $this->mime_type ) {
+				case 'image/jpeg':
+					$this->image->setImageCompressionQuality( $quality );
+					$this->image->setImageCompression( imagick::COMPRESSION_JPEG );
+					break;
+				case 'image/webp':
+					$webp_info = wp_get_webp_info( $this->file );
+
+					if ( 'lossless' === $webp_info['type'] ) {
+						// Use WebP lossless settings.
+						$this->image->setImageCompressionQuality( 100 );
+						$this->image->setOption( 'webp:lossless', 'true' );
+					} else {
+						$this->image->setImageCompressionQuality( $quality );
+					}
+					break;
+				default:
+					$this->image->setImageCompressionQuality( $quality );
 			}
 		} catch ( Exception $e ) {
 			return new WP_Error( 'image_quality_error', $e->getMessage() );
 		}
-
 		return true;
 	}
+
 
 	/**
 	 * Sets or updates current image size.
@@ -252,7 +265,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @param int|null $max_w Image width.
 	 * @param int|null $max_h Image height.
 	 * @param bool     $crop
-	 * @return bool|WP_Error
+	 * @return true|WP_Error
 	 */
 	public function resize( $max_w, $max_h, $crop = false ) {
 		if ( ( $this->size['width'] == $max_w ) && ( $this->size['height'] == $max_h ) ) {
@@ -291,7 +304,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @param int    $dst_h       The destination height.
 	 * @param string $filter_name Optional. The Imagick filter to use when resizing. Default 'FILTER_TRIANGLE'.
 	 * @param bool   $strip_meta  Optional. Strip all profiles, excluding color profiles, from the image. Default true.
-	 * @return bool|WP_Error
+	 * @return void|WP_Error
 	 */
 	protected function thumbnail_image( $dst_w, $dst_h, $filter_name = 'FILTER_TRIANGLE', $strip_meta = true ) {
 		$allowed_filters = array(
@@ -431,7 +444,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 *     If one of the two is set to null, the resize will
 	 *     maintain aspect ratio according to the provided dimension.
 	 *
-	 *     @type array $size {
+	 *     @type array ...$0 {
 	 *         Array of height, width values, and whether to crop.
 	 *
 	 *         @type int  $width  Image width. Optional if `$height` is specified.
@@ -524,7 +537,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @param int  $dst_w   Optional. The destination width.
 	 * @param int  $dst_h   Optional. The destination height.
 	 * @param bool $src_abs Optional. If the source crop points are absolute.
-	 * @return bool|WP_Error
+	 * @return true|WP_Error
 	 */
 	public function crop( $src_x, $src_y, $src_w, $src_h, $dst_w = null, $dst_h = null, $src_abs = false ) {
 		if ( $src_abs ) {
@@ -576,7 +589,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 		try {
 			$this->image->rotateImage( new ImagickPixel( 'none' ), 360 - $angle );
 
-			// Normalise EXIF orientation data so that display is consistent across devices.
+			// Normalize EXIF orientation data so that display is consistent across devices.
 			if ( is_callable( array( $this->image, 'setImageOrientation' ) ) && defined( 'Imagick::ORIENTATION_TOPLEFT' ) ) {
 				$this->image->setImageOrientation( Imagick::ORIENTATION_TOPLEFT );
 			}
@@ -614,7 +627,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 				$this->image->flopImage();
 			}
 
-			// Normalise EXIF orientation data so that display is consistent across devices.
+			// Normalize EXIF orientation data so that display is consistent across devices.
 			if ( is_callable( array( $this->image, 'setImageOrientation' ) ) && defined( 'Imagick::ORIENTATION_TOPLEFT' ) ) {
 				$this->image->setImageOrientation( Imagick::ORIENTATION_TOPLEFT );
 			}
@@ -648,10 +661,20 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * Saves current image to file.
 	 *
 	 * @since 3.5.0
+	 * @since 6.0.0 The `$filesize` value was added to the returned array.
 	 *
-	 * @param string $destfilename
-	 * @param string $mime_type
-	 * @return array|WP_Error {'path'=>string, 'file'=>string, 'width'=>int, 'height'=>int, 'mime-type'=>string}
+	 * @param string $destfilename Optional. Destination filename. Default null.
+	 * @param string $mime_type    Optional. The mime-type. Default null.
+	 * @return array|WP_Error {
+	 *     Array on success or WP_Error if the file failed to save.
+	 *
+	 *     @type string $path      Path to the image file.
+	 *     @type string $file      Name of the image file.
+	 *     @type int    $width     Image width.
+	 *     @type int    $height    Image height.
+	 *     @type string $mime-type The mime type of the image.
+	 *     @type int    $filesize  File size of the image.
+	 * }
 	 */
 	public function save( $destfilename = null, $mime_type = null ) {
 		$saved = $this->_save( $this->image, $destfilename, $mime_type );
@@ -671,10 +694,22 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	}
 
 	/**
+	 * @since 3.5.0
+	 * @since 6.0.0 The `$filesize` value was added to the returned array.
+	 *
 	 * @param Imagick $image
 	 * @param string  $filename
 	 * @param string  $mime_type
-	 * @return array|WP_Error
+	 * @return array|WP_Error {
+	 *     Array on success or WP_Error if the file failed to save.
+	 *
+	 *     @type string $path      Path to the image file.
+	 *     @type string $file      Name of the image file.
+	 *     @type int    $width     Image width.
+	 *     @type int    $height    Image height.
+	 *     @type string $mime-type The mime type of the image.
+	 *     @type int    $filesize  File size of the image.
+	 * }
 	 */
 	protected function _save( $image, $filename = null, $mime_type = null ) {
 		list( $filename, $extension, $mime_type ) = $this->get_output_format( $filename, $mime_type );
@@ -716,6 +751,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 			'width'     => $this->size['width'],
 			'height'    => $this->size['height'],
 			'mime-type' => $mime_type,
+			'filesize'  => wp_filesize( $filename ),
 		);
 	}
 
@@ -775,7 +811,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 * @since 3.5.0
 	 *
 	 * @param string $mime_type The mime type of the image.
-	 * @return bool|WP_Error True on success, WP_Error object on failure.
+	 * @return true|WP_Error True on success, WP_Error object on failure.
 	 */
 	public function stream( $mime_type = null ) {
 		list( $filename, $extension, $mime_type ) = $this->get_output_format( null, $mime_type );
@@ -888,7 +924,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 *
 	 * @since 5.6.0
 	 *
-	 * @return true|WP_error
+	 * @return true|WP_Error
 	 */
 	protected function pdf_load_source() {
 		$filename = $this->pdf_setup();

@@ -14,7 +14,7 @@
  */
 function wp_get_server_protocol() {
 	$protocol = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : '';
-	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0' ), true ) ) {
+	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0', 'HTTP/3' ), true ) ) {
 		$protocol = 'HTTP/1.0';
 	}
 	return $protocol;
@@ -76,7 +76,7 @@ function wp_fix_server_vars() {
 	}
 
 	// Fix for Dreamhost and other PHP as CGI hosts.
-	if ( strpos( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) !== false ) {
+	if ( isset( $_SERVER['SCRIPT_NAME'] ) && ( strpos( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) !== false ) ) {
 		unset( $_SERVER['PATH_INFO'] );
 	}
 
@@ -143,7 +143,7 @@ function wp_populate_basic_auth_from_authorization_header() {
  */
 function wp_check_php_mysql_versions() {
 	global $required_php_version, $wp_version;
-	$php_version = phpversion();
+	$php_version = PHP_VERSION;
 
 	if ( version_compare( $required_php_version, $php_version, '>' ) ) {
 		$protocol = wp_get_server_protocol();
@@ -191,7 +191,7 @@ function wp_check_php_mysql_versions() {
 function wp_get_environment_type() {
 	static $current_env = '';
 
-	if ( $current_env ) {
+	if ( ! defined( 'WP_RUN_CORE_TESTS' ) && $current_env ) {
 		return $current_env;
 	}
 
@@ -227,7 +227,7 @@ function wp_get_environment_type() {
 	}
 
 	// Fetch the environment from a constant, this overrides the global system variable.
-	if ( defined( 'WP_ENVIRONMENT_TYPE' ) ) {
+	if ( defined( 'WP_ENVIRONMENT_TYPE' ) && WP_ENVIRONMENT_TYPE ) {
 		$current_env = WP_ENVIRONMENT_TYPE;
 	}
 
@@ -334,6 +334,19 @@ function wp_is_maintenance_mode() {
 }
 
 /**
+ * Get the time elapsed so far during this PHP script.
+ *
+ * Uses REQUEST_TIME_FLOAT that appeared in PHP 5.4.0.
+ *
+ * @since 5.8.0
+ *
+ * @return float Seconds since the PHP script started.
+ */
+function timer_float() {
+	return microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'];
+}
+
+/**
  * Start the WordPress micro-timer.
  *
  * @since 0.71
@@ -402,7 +415,7 @@ function timer_stop( $display = 0, $precision = 3 ) {
  * When `WP_DEBUG_LOG` is true, errors will be logged to `wp-content/debug.log`.
  * When `WP_DEBUG_LOG` is a valid path, errors will be logged to the specified file.
  *
- * Errors are never displayed for XML-RPC, REST, and Ajax requests.
+ * Errors are never displayed for XML-RPC, REST, `ms-files.php`, and Ajax requests.
  *
  * @since 3.0.0
  * @since 5.1.0 `WP_DEBUG_LOG` can be a file path.
@@ -413,9 +426,27 @@ function wp_debug_mode() {
 	 * Filters whether to allow the debug mode check to occur.
 	 *
 	 * This filter runs before it can be used by plugins. It is designed for
-	 * non-web run-times. Returning false causes the `WP_DEBUG` and related
+	 * non-web runtimes. Returning false causes the `WP_DEBUG` and related
 	 * constants to not be checked and the default PHP values for errors
 	 * will be used unless you take care to update them yourself.
+	 *
+	 * To use this filter you must define a `$wp_filter` global before
+	 * WordPress loads, usually in `wp-config.php`.
+	 *
+	 * Example:
+	 *
+	 *     $GLOBALS['wp_filter'] = array(
+	 *         'enable_wp_debug_mode_checks' => array(
+	 *             10 => array(
+	 *                 array(
+	 *                     'accepted_args' => 0,
+	 *                     'function'      => function() {
+	 *                         return false;
+	 *                     },
+	 *                 ),
+	 *             ),
+	 *         ),
+	 *     );
 	 *
 	 * @since 4.6.0
 	 *
@@ -450,7 +481,10 @@ function wp_debug_mode() {
 		error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_RECOVERABLE_ERROR );
 	}
 
-	if ( defined( 'XMLRPC_REQUEST' ) || defined( 'REST_REQUEST' ) || ( defined( 'WP_INSTALLING' ) && WP_INSTALLING ) || wp_doing_ajax() || wp_is_json_request() ) {
+	if (
+		defined( 'XMLRPC_REQUEST' ) || defined( 'REST_REQUEST' ) || defined( 'MS_FILES_REQUEST' ) ||
+		( defined( 'WP_INSTALLING' ) && WP_INSTALLING ) ||
+		wp_doing_ajax() || wp_is_json_request() ) {
 		ini_set( 'display_errors', 0 );
 	}
 }
@@ -510,7 +544,8 @@ function wp_set_lang_dir() {
 function require_wp_db() {
 	global $wpdb;
 
-	require_once ABSPATH . WPINC . '/wp-db.php';
+	require_once ABSPATH . WPINC . '/class-wpdb.php';
+
 	if ( file_exists( WP_CONTENT_DIR . '/db.php' ) ) {
 		require_once WP_CONTENT_DIR . '/db.php';
 	}
@@ -590,7 +625,7 @@ function wp_set_wpdb_vars() {
 		wp_die(
 			sprintf(
 				/* translators: 1: $table_prefix, 2: wp-config.php */
-				__( '<strong>Error</strong>: %1$s in %2$s can only contain numbers, letters, and underscores.' ),
+				__( '<strong>Error:</strong> %1$s in %2$s can only contain numbers, letters, and underscores.' ),
 				'<code>$table_prefix</code>',
 				'<code>wp-config.php</code>'
 			)
@@ -634,7 +669,19 @@ function wp_start_object_cache() {
 	static $first_init = true;
 
 	// Only perform the following checks once.
-	if ( $first_init ) {
+
+	/**
+	 * Filters whether to enable loading of the object-cache.php drop-in.
+	 *
+	 * This filter runs before it can be used by plugins. It is designed for non-web
+	 * runtimes. If false is returned, object-cache.php will never be loaded.
+	 *
+	 * @since 5.8.0
+	 *
+	 * @param bool $enable_object_cache Whether to enable loading object-cache.php (if present).
+	 *                                  Default true.
+	 */
+	if ( $first_init && apply_filters( 'enable_loading_object_cache_dropin', true ) ) {
 		if ( ! function_exists( 'wp_cache_init' ) ) {
 			/*
 			 * This is the normal situation. First-run of this function. No
@@ -684,7 +731,28 @@ function wp_start_object_cache() {
 	}
 
 	if ( function_exists( 'wp_cache_add_global_groups' ) ) {
-		wp_cache_add_global_groups( array( 'users', 'userlogins', 'usermeta', 'user_meta', 'useremail', 'userslugs', 'site-transient', 'site-options', 'blog-lookup', 'blog-details', 'site-details', 'rss', 'global-posts', 'blog-id-cache', 'networks', 'sites', 'blog_meta' ) );
+		wp_cache_add_global_groups(
+			array(
+				'blog-details',
+				'blog-id-cache',
+				'blog-lookup',
+				'blog_meta',
+				'global-posts',
+				'networks',
+				'sites',
+				'site-details',
+				'site-options',
+				'site-transient',
+				'rss',
+				'users',
+				'useremail',
+				'userlogins',
+				'usermeta',
+				'user_meta',
+				'userslugs',
+			)
+		);
+
 		wp_cache_add_non_persistent_groups( array( 'counts', 'plugins' ) );
 	}
 
@@ -700,23 +768,23 @@ function wp_start_object_cache() {
  * @access private
  */
 function wp_not_installed() {
-	if ( is_multisite() ) {
-		if ( ! is_blog_installed() && ! wp_installing() ) {
-			nocache_headers();
-
-			wp_die( __( 'The site you have requested is not installed properly. Please contact the system administrator.' ) );
-		}
-	} elseif ( ! is_blog_installed() && ! wp_installing() ) {
-		nocache_headers();
-
-		require ABSPATH . WPINC . '/kses.php';
-		require ABSPATH . WPINC . '/pluggable.php';
-
-		$link = wp_guess_url() . '/wp-admin/install.php';
-
-		wp_redirect( $link );
-		die();
+	if ( is_blog_installed() || wp_installing() ) {
+		return;
 	}
+
+	nocache_headers();
+
+	if ( is_multisite() ) {
+		wp_die( __( 'The site you have requested is not installed properly. Please contact the system administrator.' ) );
+	}
+
+	require ABSPATH . WPINC . '/kses.php';
+	require ABSPATH . WPINC . '/pluggable.php';
+
+	$link = wp_guess_url() . '/wp-admin/install.php';
+
+	wp_redirect( $link );
+	die();
 }
 
 /**
@@ -840,6 +908,8 @@ function wp_skip_paused_plugins( array $plugins ) {
  * @since 5.1.0
  * @access private
  *
+ * @global string $pagenow The filename of the current screen.
+ *
  * @return string[] Array of absolute paths to theme directories.
  */
 function wp_get_active_and_valid_themes() {
@@ -919,6 +989,8 @@ function wp_is_recovery_mode() {
  * Determines whether we are currently on an endpoint that should be protected against WSODs.
  *
  * @since 5.2.0
+ *
+ * @global string $pagenow The filename of the current screen.
  *
  * @return bool True if the current endpoint should be protected.
  */
@@ -1069,6 +1141,19 @@ function wp_clone( $object ) {
 }
 
 /**
+ * Determines whether the current request is for the login screen.
+ *
+ * @since 6.1.0
+ *
+ * @see wp_login_url()
+ *
+ * @return bool True if inside WordPress login screen, false otherwise.
+ */
+function is_login() {
+	return false !== stripos( wp_login_url(), $_SERVER['SCRIPT_NAME'] );
+}
+
+/**
  * Determines whether the current request is for an administrative interface page.
  *
  * Does not check if the user is an administrator; use current_user_can()
@@ -1095,7 +1180,7 @@ function is_admin() {
 }
 
 /**
- * Whether the current request is for a site's administrative interface.
+ * Determines whether the current request is for a site's administrative interface.
  *
  * e.g. `/wp-admin/`
  *
@@ -1106,7 +1191,7 @@ function is_admin() {
  *
  * @global WP_Screen $current_screen WordPress current screen object.
  *
- * @return bool True if inside WordPress blog administration pages.
+ * @return bool True if inside WordPress site administration pages.
  */
 function is_blog_admin() {
 	if ( isset( $GLOBALS['current_screen'] ) ) {
@@ -1119,7 +1204,7 @@ function is_blog_admin() {
 }
 
 /**
- * Whether the current request is for the network administrative interface.
+ * Determines whether the current request is for the network administrative interface.
  *
  * e.g. `/wp-admin/network/`
  *
@@ -1146,7 +1231,7 @@ function is_network_admin() {
 }
 
 /**
- * Whether the current request is for a user admin screen.
+ * Determines whether the current request is for a user admin screen.
  *
  * e.g. `/wp-admin/user/`
  *
@@ -1554,7 +1639,7 @@ function wp_start_scraping_edited_file_errors() {
 		echo wp_json_encode(
 			array(
 				'code'    => 'scrape_nonce_failure',
-				'message' => __( 'Scrape nonce check failed. Please try again.' ),
+				'message' => __( 'Scrape key check failed. Please try again.' ),
 			)
 		);
 		echo "###### wp_scraping_result_end:$key ######";
@@ -1698,7 +1783,7 @@ function wp_is_xml_request() {
  *
  * @since 5.6.1
  *
- * @global string $pagenow The current page.
+ * @global string $pagenow The filename of the current screen.
  *
  * @param string $context The context to check for protection. Accepts 'login', 'admin', and 'front'.
  *                        Defaults to the current context.

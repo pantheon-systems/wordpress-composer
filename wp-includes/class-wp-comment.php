@@ -12,6 +12,7 @@
  *
  * @since 4.4.0
  */
+#[AllowDynamicProperties]
 final class WP_Comment {
 
 	/**
@@ -319,7 +320,7 @@ final class WP_Comment {
 	 * @since 4.4.0
 	 *
 	 * @param int $child_id ID of the child.
-	 * @return WP_Comment|bool Returns the comment object if found, otherwise false.
+	 * @return WP_Comment|false Returns the comment object if found, otherwise false.
 	 */
 	public function get_child( $child_id ) {
 		if ( isset( $this->children[ $child_id ] ) ) {

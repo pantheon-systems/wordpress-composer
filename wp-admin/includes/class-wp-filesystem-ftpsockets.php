@@ -210,7 +210,7 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 
 		$bytes_written = fwrite( $temphandle, $contents );
 
-		if ( false === $bytes_written || strlen( $contents ) != $bytes_written ) {
+		if ( false === $bytes_written || strlen( $contents ) !== $bytes_written ) {
 			fclose( $temphandle );
 			unlink( $tempfile );
 
@@ -414,19 +414,18 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	 * Checks if a file or directory exists.
 	 *
 	 * @since 2.5.0
+	 * @since 6.1.0 Uses WP_Filesystem_ftpsockets::is_dir() to check for directory existence
+	 *              and file size to check for file existence.
 	 *
-	 * @param string $file Path to file or directory.
-	 * @return bool Whether $file exists or not.
+	 * @param string $path Path to file or directory.
+	 * @return bool Whether $path exists or not.
 	 */
-	public function exists( $file ) {
-		$list = $this->ftp->nlist( $file );
-
-		if ( empty( $list ) && $this->is_dir( $file ) ) {
-			return true; // File is an empty directory.
+	public function exists( $path ) {
+		if ( $this->is_dir( $path ) ) {
+			return true;
 		}
 
-		return ! empty( $list ); // Empty list = no file, so invert.
-		// Return $this->ftp->is_exists($file); has issues with ABOR+426 responses on the ncFTPd server.
+		return is_numeric( $this->size( $path ) );
 	}
 
 	/**
@@ -485,10 +484,10 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to file or directory.
-	 * @return bool Whether $file is writable.
+	 * @param string $path Path to file or directory.
+	 * @return bool Whether $path is writable.
 	 */
-	public function is_writable( $file ) {
+	public function is_writable( $path ) {
 		return true;
 	}
 
@@ -551,13 +550,13 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string     $path  Path for new directory.
-	 * @param int|false  $chmod Optional. The permissions as octal number (or false to skip chmod).
-	 *                          Default false.
-	 * @param string|int $chown Optional. A user name or number (or false to skip chown).
-	 *                          Default false.
-	 * @param string|int $chgrp Optional. A group name or number (or false to skip chgrp).
-	 *                          Default false.
+	 * @param string           $path  Path for new directory.
+	 * @param int|false        $chmod Optional. The permissions as octal number (or false to skip chmod).
+	 *                                Default false.
+	 * @param string|int|false $chown Optional. A user name or number (or false to skip chown).
+	 *                                Default false.
+	 * @param string|int|false $chgrp Optional. A group name or number (or false to skip chgrp).
+	 *                                Default false.
 	 * @return bool True on success, false on failure.
 	 */
 	public function mkdir( $path, $chmod = false, $chown = false, $chgrp = false ) {
@@ -609,14 +608,14 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	 *
 	 *     @type string $name        Name of the file or directory.
 	 *     @type string $perms       *nix representation of permissions.
-	 *     @type int    $permsn      Octal representation of permissions.
+	 *     @type string $permsn      Octal representation of permissions.
 	 *     @type string $owner       Owner name or ID.
 	 *     @type int    $size        Size of file in bytes.
 	 *     @type int    $lastmodunix Last modified unix timestamp.
 	 *     @type mixed  $lastmod     Last modified month (3 letter) and day (without leading 0).
 	 *     @type int    $time        Last modified time.
 	 *     @type string $type        Type of resource. 'f' for file, 'd' for directory.
-	 *     @type mixed  $files       If a directory and $recursive is true, contains another array of files.
+	 *     @type mixed  $files       If a directory and `$recursive` is true, contains another array of files.
 	 * }
 	 */
 	public function dirlist( $path = '.', $include_hidden = true, $recursive = false ) {
@@ -650,7 +649,7 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 				continue;
 			}
 
-			if ( $limit_file && $struc['name'] != $limit_file ) {
+			if ( $limit_file && $struc['name'] !== $limit_file ) {
 				continue;
 			}
 

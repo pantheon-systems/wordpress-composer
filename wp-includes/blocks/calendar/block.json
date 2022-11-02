@@ -1,7 +1,12 @@
 {
+	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "core/calendar",
+	"title": "Calendar",
 	"category": "widgets",
+	"description": "A calendar of your site’s posts.",
+	"keywords": [ "posts", "archive" ],
+	"textdomain": "default",
 	"attributes": {
 		"month": {
 			"type": "integer"
@@ -11,6 +16,19 @@
 		}
 	},
 	"supports": {
-		"align": true
-	}
+		"align": true,
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"__experimentalFontFamily": true,
+			"__experimentalFontWeight": true,
+			"__experimentalFontStyle": true,
+			"__experimentalTextTransform": true,
+			"__experimentalLetterSpacing": true,
+			"__experimentalDefaultControls": {
+				"fontSize": true
+			}
+		}
+	},
+	"style": "wp-block-calendar"
 }

@@ -6,6 +6,7 @@
  * @since 4.9.0
  */
 if ( ! class_exists( 'Plural_Forms', false ) ) :
+	#[AllowDynamicProperties]
 	class Plural_Forms {
 		/**
 		 * Operator characters.
@@ -90,6 +91,8 @@ if ( ! class_exists( 'Plural_Forms', false ) ) :
 		 * Notation tokens.
 		 *
 		 * @since 4.9.0
+		 *
+		 * @throws Exception If there is a syntax or parsing error with the string.
 		 *
 		 * @param string $str String to parse.
 		 */
@@ -249,6 +252,8 @@ if ( ! class_exists( 'Plural_Forms', false ) ) :
 		 * Execute the plural form function.
 		 *
 		 * @since 4.9.0
+		 *
+		 * @throws Exception If the plural form value cannot be calculated.
 		 *
 		 * @param int $n Variable "n" to substitute.
 		 * @return int Plural form value.
