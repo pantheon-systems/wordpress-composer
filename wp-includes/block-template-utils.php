@@ -115,67 +115,67 @@ function get_default_block_template_types() {
 	$default_template_types = array(
 		'index'          => array(
 			'title'       => _x( 'Index', 'Template name' ),
-			'description' => __( 'Used as a fallback template for all pages when a more specific template is not defined.' ),
+			'description' => __( 'Displays posts.' ),
 		),
 		'home'           => array(
 			'title'       => _x( 'Home', 'Template name' ),
-			'description' => __( 'Displays the latest posts as either the site homepage or a custom page defined under reading settings. If it exists, the Front Page template overrides this template when posts are shown on the front page.' ),
+			'description' => __( 'Displays posts on the homepage, or on the Posts page if a static homepage is set.' ),
 		),
 		'front-page'     => array(
 			'title'       => _x( 'Front Page', 'Template name' ),
-			'description' => __( 'Displays your site\'s front page, whether it is set to display latest posts or a static page. The Front Page template takes precedence over all templates.' ),
+			'description' => __( 'Displays the homepage.' ),
 		),
 		'singular'       => array(
 			'title'       => _x( 'Singular', 'Template name' ),
-			'description' => __( 'Displays any single entry, such as a post or a page. This template will serve as a fallback when a more specific template (e.g., Single Post, Page, or Attachment) cannot be found.' ),
+			'description' => __( 'Displays a single post or page.' ),
 		),
 		'single'         => array(
 			'title'       => _x( 'Single', 'Template name' ),
-			'description' => __( 'Displays single posts on your website unless a custom template has been applied to that post or a dedicated template exists.' ),
+			'description' => __( 'The default template for displaying any single post or attachment.' ),
 		),
 		'page'           => array(
 			'title'       => _x( 'Page', 'Template name' ),
-			'description' => __( 'Display all static pages unless a custom template has been applied or a dedicated template exists.' ),
+			'description' => __( 'Displays a single page.' ),
 		),
 		'archive'        => array(
 			'title'       => _x( 'Archive', 'Template name' ),
-			'description' => __( 'Displays any archive, including posts by a single author, category, tag, taxonomy, custom post type, and date. This template will serve as a fallback when more specific templates (e.g., Category or Tag) cannot be found.' ),
+			'description' => __( 'Displays post categories, tags, and other archives.' ),
 		),
 		'author'         => array(
 			'title'       => _x( 'Author', 'Template name' ),
-			'description' => __( 'Displays a single author\'s post archive. This template will serve as a fallback when a more specific template (e.g., Author: Admin) cannot be found.' ),
+			'description' => __( 'Displays latest posts written by a single author.' ),
 		),
 		'category'       => array(
 			'title'       => _x( 'Category', 'Template name' ),
-			'description' => __( 'Displays a post category archive. This template will serve as a fallback when a more specific template (e.g., Category: Recipes) cannot be found.' ),
+			'description' => __( 'Displays latest posts from a single post category.' ),
 		),
 		'taxonomy'       => array(
 			'title'       => _x( 'Taxonomy', 'Template name' ),
-			'description' => __( 'Displays a custom taxonomy archive. Like categories and tags, taxonomies have terms which you use to classify things. For example: a taxonomy named "Art" can have multiple terms, such as "Modern" and "18th Century." This template will serve as a fallback when a more specific template (e.g, Taxonomy: Art) cannot be found.' ),
+			'description' => __( 'Displays latest posts from a single post taxonomy.' ),
 		),
 		'date'           => array(
 			'title'       => _x( 'Date', 'Template name' ),
-			'description' => __( 'Displays a post archive when a specific date is visited (e.g., example.com/2023/).' ),
+			'description' => __( 'Displays posts from a specific date.' ),
 		),
 		'tag'            => array(
 			'title'       => _x( 'Tag', 'Template name' ),
-			'description' => __( 'Displays a post tag archive. This template will serve as a fallback when a more specific template (e.g., Tag: Pizza) cannot be found.' ),
+			'description' => __( 'Displays latest posts with a single post tag.' ),
 		),
 		'attachment'     => array(
 			'title'       => __( 'Media' ),
-			'description' => __( 'Displays when a visitor views the dedicated page that exists for any media attachment.' ),
+			'description' => __( 'Displays individual media items or attachments.' ),
 		),
 		'search'         => array(
 			'title'       => _x( 'Search', 'Template name' ),
-			'description' => __( 'Displays when a visitor performs a search on your website.' ),
+			'description' => __( 'Displays search results.' ),
 		),
 		'privacy-policy' => array(
 			'title'       => __( 'Privacy Policy' ),
-			'description' => __( 'Displays your site\'s Privacy Policy page.' ),
+			'description' => __( 'Displays the privacy policy page.' ),
 		),
 		'404'            => array(
 			'title'       => _x( '404', 'Template name' ),
-			'description' => __( 'Displays when a visitor views a non-existent page, such as a dead link or a mistyped URL.' ),
+			'description' => __( 'Displays when no content is found.' ),
 		),
 	);
 
@@ -347,11 +347,11 @@ function _get_block_templates_files( $template_type ) {
  * @return array Template item.
  */
 function _add_block_template_info( $template_item ) {
-	if ( ! wp_theme_has_theme_json() ) {
+	if ( ! WP_Theme_JSON_Resolver::theme_has_support() ) {
 		return $template_item;
 	}
 
-	$theme_data = WP_Theme_JSON_Resolver::get_theme_data( array(), array( 'with_supports' => false ) )->get_custom_templates();
+	$theme_data = WP_Theme_JSON_Resolver::get_theme_data()->get_custom_templates();
 	if ( isset( $theme_data[ $template_item['slug'] ] ) ) {
 		$template_item['title']     = $theme_data[ $template_item['slug'] ]['title'];
 		$template_item['postTypes'] = $theme_data[ $template_item['slug'] ]['postTypes'];
@@ -370,8 +370,8 @@ function _add_block_template_info( $template_item ) {
  * @return array Template info.
  */
 function _add_block_template_part_area_info( $template_info ) {
-	if ( wp_theme_has_theme_json() ) {
-		$theme_data = WP_Theme_JSON_Resolver::get_theme_data( array(), array( 'with_supports' => false ) )->get_template_parts();
+	if ( WP_Theme_JSON_Resolver::theme_has_support() ) {
+		$theme_data = WP_Theme_JSON_Resolver::get_theme_data()->get_template_parts();
 	}
 
 	if ( isset( $theme_data[ $template_info['slug'] ]['area'] ) ) {
@@ -556,11 +556,10 @@ function _wp_build_title_and_description_for_single_post_type_block_template( $p
 		'no_found_rows'          => true,
 	);
 
-	$args = array(
+	$args  = array(
 		'name' => $slug,
 	);
-	$args = wp_parse_args( $args, $default_args );
-
+	$args  = wp_parse_args( $args, $default_args );
 	$posts_query = new WP_Query( $args );
 
 	if ( empty( $posts_query->posts ) ) {
@@ -592,8 +591,7 @@ function _wp_build_title_and_description_for_single_post_type_block_template( $p
 	$args = array(
 		'title' => $post_title,
 	);
-	$args = wp_parse_args( $args, $default_args );
-
+	$args                        = wp_parse_args( $args, $default_args );
 	$posts_with_same_title_query = new WP_Query( $args );
 
 	if ( count( $posts_with_same_title_query->posts ) > 1 ) {
@@ -632,12 +630,11 @@ function _wp_build_title_and_description_for_taxonomy_block_template( $taxonomy,
 
 	$term_query = new WP_Term_Query();
 
-	$args = array(
+	$args  = array(
 		'number' => 1,
 		'slug'   => $slug,
 	);
-	$args = wp_parse_args( $args, $default_args );
-
+	$args        = wp_parse_args( $args, $default_args );
 	$terms_query = $term_query->query( $args );
 
 	if ( empty( $terms_query ) ) {
@@ -671,8 +668,7 @@ function _wp_build_title_and_description_for_taxonomy_block_template( $taxonomy,
 		'number' => 2,
 		'name'   => $term_title,
 	);
-	$args = wp_parse_args( $args, $default_args );
-
+	$args                        = wp_parse_args( $args, $default_args );
 	$terms_with_same_title_query = $term_query->query( $args );
 
 	if ( count( $terms_with_same_title_query ) > 1 ) {
@@ -1200,13 +1196,9 @@ function wp_is_theme_directory_ignored( $path ) {
  * @since 5.9.0
  * @since 6.0.0 Adds the whole theme to the export archive.
  *
- * @global string $wp_version The WordPress version string.
- *
  * @return WP_Error|string Path of the ZIP file or error on failure.
  */
 function wp_generate_block_templates_export_file() {
-	global $wp_version;
-
 	if ( ! class_exists( 'ZipArchive' ) ) {
 		return new WP_Error( 'missing_zip_package', __( 'Zip Export not supported.' ) );
 	}
@@ -1274,6 +1266,7 @@ function wp_generate_block_templates_export_file() {
 	$theme_json_raw = $tree->get_data();
 	// If a version is defined, add a schema.
 	if ( $theme_json_raw['version'] ) {
+		global $wp_version;
 		$theme_json_version = 'wp/' . substr( $wp_version, 0, 3 );
 		$schema             = array( '$schema' => 'https://schemas.wp.org/' . $theme_json_version . '/theme.json' );
 		$theme_json_raw     = array_merge( $schema, $theme_json_raw );
@@ -1325,46 +1318,20 @@ function get_template_hierarchy( $slug, $is_custom = false, $template_prefix = '
 		return array( 'front-page', 'home', 'index' );
 	}
 
-	$matches = array();
-
 	$template_hierarchy = array( $slug );
+
 	// Most default templates don't have `$template_prefix` assigned.
-	if ( ! empty( $template_prefix ) ) {
+	if ( $template_prefix ) {
 		list( $type ) = explode( '-', $template_prefix );
-		// We need these checks because we always add the `$slug` above.
+		// These checks are needed because the `$slug` above is always added.
 		if ( ! in_array( $template_prefix, array( $slug, $type ), true ) ) {
 			$template_hierarchy[] = $template_prefix;
 		}
 		if ( $slug !== $type ) {
 			$template_hierarchy[] = $type;
 		}
-	} else if ( preg_match( '/^(author|category|archive|tag|page)-.+$/', $slug, $matches ) ) {
-		$template_hierarchy[] = $matches[1];
-	} else if ( preg_match( '/^(taxonomy|single)-(.+)$/', $slug, $matches ) ) {
-		$type           = $matches[1];
-		$slug_remaining = $matches[2];
-
-		$items = 'single' === $type ? get_post_types() : get_taxonomies();
-		foreach ( $items as $item ) {
-			if ( ! str_starts_with( $slug_remaining, $item ) ) {
-					continue;
-			}
-
-			// If $slug_remaining is equal to $post_type or $taxonomy we have
-			// the single-$post_type template or the taxonomy-$taxonomy template.
-			if ( $slug_remaining === $item ) {
-				$template_hierarchy[] = $type;
-				break;
-			}
-
-			// If $slug_remaining is single-$post_type-$slug template.
-			if ( strlen( $slug_remaining ) > strlen( $item ) + 1 ) {
-				$template_hierarchy[] = "$type-$item";
-				$template_hierarchy[] = $type;
-				break;
-			}
-		}
 	}
+
 	// Handle `archive` template.
 	if (
 		str_starts_with( $slug, 'author' ) ||
@@ -1379,6 +1346,7 @@ function get_template_hierarchy( $slug, $is_custom = false, $template_prefix = '
 	if ( 'attachment' === $slug ) {
 		$template_hierarchy[] = 'single';
 	}
+
 	// Handle `singular` template.
 	if (
 		str_starts_with( $slug, 'single' ) ||
@@ -1387,6 +1355,8 @@ function get_template_hierarchy( $slug, $is_custom = false, $template_prefix = '
 	) {
 		$template_hierarchy[] = 'singular';
 	}
+
 	$template_hierarchy[] = 'index';
+
 	return $template_hierarchy;
-}
+};

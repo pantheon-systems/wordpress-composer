@@ -66,8 +66,7 @@ function get_bloginfo() {}
  * @ignore
  */
 function is_admin() {
-	return true;
-}
+	return true;}
 
 /**
  * @ignore

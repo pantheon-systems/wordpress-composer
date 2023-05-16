@@ -31,7 +31,7 @@ function wp_register_custom_classname_support( $block_type ) {
 }
 
 /**
- * Adds the custom classnames to the output.
+ * Add the custom classnames to the output.
  *
  * @since 5.6.0
  * @access private

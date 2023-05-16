@@ -225,7 +225,6 @@ var characterMap = {
 	"ş": "s",
 	"Š": "S",
 	"š": "s",
-	"ß": "ss",
 	"Ţ": "T",
 	"ţ": "t",
 	"ț": "t",
@@ -405,10 +404,6 @@ var characterMap = {
 	"x̧": "x",
 	"Z̧": "Z",
 	"z̧": "z",
-	"й":"и",
-	"Й":"И",
-	"ё":"е",
-	"Ё":"Е",
 };
 
 var chars = Object.keys(characterMap).join('|');
@@ -896,28 +891,10 @@ function isValidFragment(fragment) {
   return /^#[^\s#?\/]*$/.test(fragment);
 }
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/safe-decode-uri-component.js
-/**
- * Safely decodes a URI component with `decodeURIComponent`. Returns the URI component unmodified if
- * `decodeURIComponent` throws an error.
- *
- * @param {string} uriComponent URI component to decode.
- *
- * @return {string} Decoded URI component if possible.
- */
-function safeDecodeURIComponent(uriComponent) {
-  try {
-    return decodeURIComponent(uriComponent);
-  } catch (uriComponentError) {
-    return uriComponent;
-  }
-}
-
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/get-query-args.js
 /**
  * Internal dependencies
  */
-
 
 /** @typedef {import('./get-query-arg').QueryArgParsed} QueryArgParsed */
 
@@ -991,7 +968,7 @@ function getQueryArgs(url) {
   ).replace(/\+/g, '%20').split('&').reduce((accumulator, keyValue) => {
     const [key, value = ''] = keyValue.split('=') // Filtering avoids decoding as `undefined` for value, where
     // default is restored in destructuring assignment.
-    .filter(Boolean).map(safeDecodeURIComponent);
+    .filter(Boolean).map(decodeURIComponent);
 
     if (key) {
       const segments = key.replace(/\]/g, '').split('[');
@@ -1196,6 +1173,23 @@ function safeDecodeURI(uri) {
   }
 }
 
+;// CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/safe-decode-uri-component.js
+/**
+ * Safely decodes a URI component with `decodeURIComponent`. Returns the URI component unmodified if
+ * `decodeURIComponent` throws an error.
+ *
+ * @param {string} uriComponent URI component to decode.
+ *
+ * @return {string} Decoded URI component if possible.
+ */
+function safeDecodeURIComponent(uriComponent) {
+  try {
+    return decodeURIComponent(uriComponent);
+  } catch (uriComponentError) {
+    return uriComponent;
+  }
+}
+
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/filter-url-for-display.js
 /**
  * Returns a URL for display.
@@ -1275,8 +1269,7 @@ function cleanForSlug(string) {
   return remove_accents_default()(string) // Convert each group of whitespace, periods, and forward slashes to a hyphen.
   .replace(/[\s\./]+/g, '-') // Remove anything that's not a letter, number, underscore or hyphen.
   .replace(/[^\p{L}\p{N}_-]+/gu, '') // Convert to lowercase
-  .toLowerCase() // Replace multiple hyphens with a single one.
-  .replace(/-+/g, '-') // Remove any remaining leading or trailing hyphens.
+  .toLowerCase() // Remove any remaining leading or trailing hyphens.
   .replace(/(^-+)|(-+$)/g, '');
 }
 

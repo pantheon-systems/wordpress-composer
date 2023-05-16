@@ -7,16 +7,7 @@
 	"description": "Display a list of all pages.",
 	"keywords": [ "menu", "navigation" ],
 	"textdomain": "default",
-	"attributes": {
-		"parentPageID": {
-			"type": "integer",
-			"default": 0
-		},
-		"isNested": {
-			"type": "boolean",
-			"default": false
-		}
-	},
+	"attributes": {},
 	"usesContext": [
 		"textColor",
 		"customTextColor",
@@ -34,20 +25,7 @@
 	],
 	"supports": {
 		"reusable": false,
-		"html": false,
-		"typography": {
-			"fontSize": true,
-			"lineHeight": true,
-			"__experimentalFontFamily": true,
-			"__experimentalFontWeight": true,
-			"__experimentalFontStyle": true,
-			"__experimentalTextTransform": true,
-			"__experimentalTextDecoration": true,
-			"__experimentalLetterSpacing": true,
-			"__experimentalDefaultControls": {
-				"fontSize": true
-			}
-		}
+		"html": false
 	},
 	"editorStyle": "wp-block-page-list-editor",
 	"style": "wp-block-page-list"

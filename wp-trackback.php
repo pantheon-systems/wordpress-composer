@@ -25,7 +25,7 @@ wp_set_current_user( 0 );
  *
  * @param int|bool $error         Whether there was an error.
  *                                Default '0'. Accepts '0' or '1', true or false.
- * @param string   $error_message Error message if an error occurred. Default empty string.
+ * @param string   $error_message Error message if an error occurred.
  */
 function trackback_response( $error = 0, $error_message = '' ) {
 	header( 'Content-Type: text/xml; charset=' . get_option( 'blog_charset' ) );
@@ -76,7 +76,7 @@ if ( function_exists( 'mb_convert_encoding' ) ) {
 	$blog_name = mb_convert_encoding( $blog_name, get_option( 'blog_charset' ), $charset );
 }
 
-// Escape values to use in the trackback.
+// Now that mb_convert_encoding() has been given a swing, we need to escape these three.
 $title     = wp_slash( $title );
 $excerpt   = wp_slash( $excerpt );
 $blog_name = wp_slash( $blog_name );

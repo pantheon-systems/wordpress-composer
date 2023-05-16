@@ -17,12 +17,11 @@
 function render_block_core_archives( $attributes ) {
 	$show_post_count = ! empty( $attributes['showPostCounts'] );
 	$type            = isset( $attributes['type'] ) ? $attributes['type'] : 'monthly';
-
-	$class = 'wp-block-archives-list';
+	$class           = '';
 
 	if ( ! empty( $attributes['displayAsDropdown'] ) ) {
 
-		$class = 'wp-block-archives-dropdown';
+		$class .= ' wp-block-archives-dropdown';
 
 		$dropdown_id = wp_unique_id( 'wp-block-archives-' );
 		$title       = __( 'Archives' );
@@ -41,7 +40,9 @@ function render_block_core_archives( $attributes ) {
 
 		$archives = wp_get_archives( $dropdown_args );
 
-		$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $class ) );
+		$classnames = esc_attr( $class );
+
+		$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classnames ) );
 
 		switch ( $dropdown_args['type'] ) {
 			case 'yearly':
@@ -73,6 +74,8 @@ function render_block_core_archives( $attributes ) {
 			$block_content
 		);
 	}
+
+	$class .= ' wp-block-archives-list';
 
 	/** This filter is documented in wp-includes/widgets/class-wp-widget-archives.php */
 	$archives_args = apply_filters(

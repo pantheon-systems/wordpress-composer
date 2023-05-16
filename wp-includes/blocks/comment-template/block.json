@@ -9,13 +9,9 @@
 	"textdomain": "default",
 	"usesContext": [ "postId" ],
 	"supports": {
-		"align": true,
-		"html": false,
 		"reusable": false,
-		"spacing": {
-			"margin": true,
-			"padding": true
-		},
+		"html": false,
+		"align": true,
 		"typography": {
 			"fontSize": true,
 			"lineHeight": true,

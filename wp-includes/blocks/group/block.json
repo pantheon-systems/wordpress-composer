@@ -41,9 +41,6 @@
 				"blockGap": true
 			}
 		},
-		"dimensions": {
-			"minHeight": true
-		},
 		"__experimentalBorder": {
 			"color": true,
 			"radius": true,
@@ -55,9 +52,6 @@
 				"style": true,
 				"width": true
 			}
-		},
-		"position": {
-			"sticky": true
 		},
 		"typography": {
 			"fontSize": true,
@@ -72,9 +66,7 @@
 				"fontSize": true
 			}
 		},
-		"__experimentalLayout": {
-			"allowSizingOnChildren": true
-		}
+		"__experimentalLayout": true
 	},
 	"editorStyle": "wp-block-group-editor",
 	"style": "wp-block-group"

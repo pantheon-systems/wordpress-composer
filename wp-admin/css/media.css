@@ -191,7 +191,7 @@
 
 .media-item .original {
 	position: relative;
-	min-height: 34px;
+	height: 34px;
 }
 
 .media-item .progress {

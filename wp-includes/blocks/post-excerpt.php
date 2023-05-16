@@ -38,14 +38,11 @@ function render_block_core_post_excerpt( $attributes, $content, $block ) {
 	 * result in showing only one `read more` link at a time.
 	 */
 	add_filter( 'excerpt_more', $filter_excerpt_more );
-	$classes = array();
+	$classes = '';
 	if ( isset( $attributes['textAlign'] ) ) {
-		$classes[] = 'has-text-align-' . $attributes['textAlign'];
+		$classes .= "has-text-align-{$attributes['textAlign']}";
 	}
-	if ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) {
-		$classes[] = 'has-link-color';
-	}
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $classes ) ) );
+	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classes ) );
 
 	$content               = '<p class="wp-block-post-excerpt__excerpt">' . $excerpt;
 	$show_more_on_new_line = ! isset( $attributes['showMoreOnNewLine'] ) || $attributes['showMoreOnNewLine'];

@@ -107,19 +107,19 @@ function register_block_script_handle( $metadata, $field_name, $index = 0 ) {
 		return $script_handle;
 	}
 
-	$script_asset_raw_path = dirname( $metadata['file'] ) . '/' . substr_replace( $script_path, '.asset.php', - strlen( '.js' ) );
-	$script_handle         = generate_block_asset_handle( $metadata['name'], $field_name, $index );
-	$script_asset_path     = wp_normalize_path(
-		realpath( $script_asset_raw_path )
+	$script_handle     = generate_block_asset_handle( $metadata['name'], $field_name, $index );
+	$script_asset_path = wp_normalize_path(
+		realpath(
+			dirname( $metadata['file'] ) . '/' .
+			substr_replace( $script_path, '.asset.php', - strlen( '.js' ) )
+		)
 	);
-
-	if ( empty( $script_asset_path ) ) {
+	if ( ! file_exists( $script_asset_path ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,
 			sprintf(
-				/* translators: 1: Asset file location, 2: Field name, 3: Block name.  */
-				__( 'The asset file (%1$s) for the "%2$s" defined in "%3$s" block definition is missing.' ),
-				$script_asset_raw_path,
+				/* translators: 1: Field name, 2: Block name. */
+				__( 'The asset file for the "%1$s" defined in "%2$s" block definition is missing.' ),
 				$field_name,
 				$metadata['name']
 			),
@@ -794,6 +794,10 @@ function serialize_blocks( $blocks ) {
 function filter_block_content( $text, $allowed_html = 'post', $allowed_protocols = array() ) {
 	$result = '';
 
+	if ( false !== strpos( $text, '<!--' ) && false !== strpos( $text, '--->' ) ) {
+		$text = preg_replace_callback( '%<!--(.*?)--->%', '_filter_block_content_callback', $text );
+	}
+
 	$blocks = parse_blocks( $text );
 	foreach ( $blocks as $block ) {
 		$block   = filter_block_kses( $block, $allowed_html, $allowed_protocols );
@@ -801,6 +805,19 @@ function filter_block_content( $text, $allowed_html = 'post', $allowed_protocols
 	}
 
 	return $result;
+}
+
+/**
+ * Callback used for regular expression replacement in filter_block_content().
+ *
+ * @private
+ * @since 6.2.1
+ *
+ * @param array $matches Array of preg_replace_callback matches.
+ * @return string Replacement string.
+ */
+function _filter_block_content_callback( $matches ) {
+	return '<!--' . rtrim( $matches[1], '-' ) . '-->';
 }
 
 /**
@@ -1167,15 +1184,15 @@ function unregister_block_style( $block_name, $block_style_name ) {
  *
  * @since 5.8.0
  *
- * @param WP_Block_Type $block_type    Block type to check for support.
- * @param array         $feature       Path to a specific feature to check support for.
- * @param mixed         $default_value Optional. Fallback value for feature support. Default false.
+ * @param WP_Block_Type $block_type Block type to check for support.
+ * @param array         $feature    Path to a specific feature to check support for.
+ * @param mixed         $default    Optional. Fallback value for feature support. Default false.
  * @return bool Whether the feature is supported.
  */
-function block_has_support( $block_type, $feature, $default_value = false ) {
-	$block_support = $default_value;
+function block_has_support( $block_type, $feature, $default = false ) {
+	$block_support = $default;
 	if ( $block_type && property_exists( $block_type, 'supports' ) ) {
-		$block_support = _wp_array_get( $block_type->supports, $feature, $default_value );
+		$block_support = _wp_array_get( $block_type->supports, $feature, $default );
 	}
 
 	return true === $block_support || is_array( $block_support );
@@ -1265,15 +1282,7 @@ function build_query_vars_from_query_block( $block, $page ) {
 		if ( isset( $block->context['query']['sticky'] ) && ! empty( $block->context['query']['sticky'] ) ) {
 			$sticky = get_option( 'sticky_posts' );
 			if ( 'only' === $block->context['query']['sticky'] ) {
-				/*
-				 * Passing an empty array to post__in will return have_posts() as true (and all posts will be returned).
-				 * Logic should be used before hand to determine if WP_Query should be used in the event that the array
-				 * being passed to post__in is empty.
-				 *
-				 * @see https://core.trac.wordpress.org/ticket/28099
-				 */
-				$query['post__in']            = ! empty( $sticky ) ? $sticky : array( 0 );
-				$query['ignore_sticky_posts'] = 1;
+				$query['post__in'] = $sticky;
 			} else {
 				$query['post__not_in'] = array_merge( $query['post__not_in'], $sticky );
 			}

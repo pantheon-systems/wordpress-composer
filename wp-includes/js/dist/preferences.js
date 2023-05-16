@@ -360,9 +360,7 @@ function PreferenceToggleMenuItem(_ref) {
     info,
     messageActivated,
     messageDeactivated,
-    shortcut,
-    onToggle = () => null,
-    disabled = false
+    shortcut
   } = _ref;
   const isActive = (0,external_wp_data_namespaceObject.useSelect)(select => !!select(store).get(scope, name), [name]);
   const {
@@ -387,14 +385,12 @@ function PreferenceToggleMenuItem(_ref) {
     icon: isActive && library_check,
     isSelected: isActive,
     onClick: () => {
-      onToggle();
       toggle(scope, name);
       speakMessage();
     },
     role: "menuitemcheckbox",
     info: info,
-    shortcut: shortcut,
-    disabled: disabled
+    shortcut: shortcut
   }, label);
 }
 

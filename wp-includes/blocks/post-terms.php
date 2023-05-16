@@ -27,17 +27,14 @@ function render_block_core_post_terms( $attributes, $content, $block ) {
 		return '';
 	}
 
-	$classes = array( 'taxonomy-' . $attributes['term'] );
+	$classes = 'taxonomy-' . $attributes['term'];
 	if ( isset( $attributes['textAlign'] ) ) {
-		$classes[] = 'has-text-align-' . $attributes['textAlign'];
-	}
-	if ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) {
-		$classes[] = 'has-link-color';
+		$classes .= ' has-text-align-' . $attributes['textAlign'];
 	}
 
 	$separator = empty( $attributes['separator'] ) ? ' ' : $attributes['separator'];
 
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $classes ) ) );
+	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classes ) );
 
 	$prefix = "<div $wrapper_attributes>";
 	if ( isset( $attributes['prefix'] ) && $attributes['prefix'] ) {

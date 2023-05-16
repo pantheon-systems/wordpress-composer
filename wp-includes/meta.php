@@ -171,7 +171,7 @@ function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique =
  * @param mixed  $meta_value Metadata value. Must be serializable if non-scalar.
  * @param mixed  $prev_value Optional. Previous value to check before updating.
  *                           If specified, only update existing metadata entries with
- *                           this value. Otherwise, update all entries. Default empty string.
+ *                           this value. Otherwise, update all entries. Default empty.
  * @return int|bool The new meta field ID if a field with the given key didn't exist
  *                  and was therefore added, true on successful update,
  *                  false on failure or if the value passed to the function
@@ -369,7 +369,6 @@ function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_
  *                           Pass `null`, `false`, or an empty string to skip this check.
  *                           (For backward compatibility, it is not possible to pass an empty string
  *                           to delete those entries with an empty string for a value.)
- *                           Default empty string.
  * @param bool   $delete_all Optional. If true, delete matching metadata entries for all objects,
  *                           ignoring the specified object_id. Otherwise, only delete
  *                           matching metadata entries for the specified object_id. Default false.
@@ -559,7 +558,7 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
  *                          or any other object type with an associated meta table.
  * @param int    $object_id ID of the object metadata is for.
  * @param string $meta_key  Optional. Metadata key. If not specified, retrieve all metadata for
- *                          the specified object. Default empty string.
+ *                          the specified object. Default empty.
  * @param bool   $single    Optional. If true, return only the first value of the specified `$meta_key`.
  *                          This parameter has no effect if `$meta_key` is not specified. Default false.
  * @return mixed An array of values if `$single` is false.
@@ -586,7 +585,7 @@ function get_metadata( $meta_type, $object_id, $meta_key = '', $single = false )
  *                          or any other object type with an associated meta table.
  * @param int    $object_id ID of the object metadata is for.
  * @param string $meta_key  Optional. Metadata key. If not specified, retrieve all metadata for
- *                          the specified object. Default empty string.
+ *                          the specified object. Default empty.
  * @param bool   $single    Optional. If true, return only the first value of the specified `$meta_key`.
  *                          This parameter has no effect if `$meta_key` is not specified. Default false.
  * @return mixed An array of values if `$single` is false.
@@ -1231,7 +1230,7 @@ function wp_metadata_lazyloader() {
  * @param string $type              Type of meta.
  * @param string $primary_table     Primary database table name.
  * @param string $primary_id_column Primary ID column name.
- * @param object $context           Optional. The main query object. Default null.
+ * @param object $context           Optional. The main query object
  * @return string[]|false {
  *     Array containing JOIN and WHERE SQL clauses to append to the main query,
  *     or false if no table exists for the requested meta type.
@@ -1275,7 +1274,7 @@ function _get_meta_table( $type ) {
  *
  * @param string $meta_key  Metadata key.
  * @param string $meta_type Optional. Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table. Default empty string.
+ *                          or any other object type with an associated meta table. Default empty.
  * @return bool Whether the meta key is considered protected.
  */
 function is_protected_meta( $meta_key, $meta_type = '' ) {
@@ -1305,7 +1304,7 @@ function is_protected_meta( $meta_key, $meta_type = '' ) {
  * @param mixed  $meta_value     Metadata value to sanitize.
  * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
  *                               or any other object type with an associated meta table.
- * @param string $object_subtype Optional. The subtype of the object type. Default empty string.
+ * @param string $object_subtype Optional. The subtype of the object type.
  * @return mixed Sanitized $meta_value.
  */
 function sanitize_meta( $meta_key, $meta_value, $object_type, $object_subtype = '' ) {
@@ -1581,7 +1580,7 @@ function filter_default_metadata( $value, $object_id, $meta_key, $single, $meta_
  * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
  *                               or any other object type with an associated meta table.
  * @param string $meta_key       Metadata key.
- * @param string $object_subtype Optional. The subtype of the object type. Default empty string.
+ * @param string $object_subtype Optional. The subtype of the object type.
  * @return bool True if the meta key is registered to the object type and, if provided,
  *              the object subtype. False if not.
  */
@@ -1600,7 +1599,7 @@ function registered_meta_key_exists( $object_type, $meta_key, $object_subtype = 
  * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
  *                               or any other object type with an associated meta table.
  * @param string $meta_key       Metadata key.
- * @param string $object_subtype Optional. The subtype of the object type. Default empty string.
+ * @param string $object_subtype Optional. The subtype of the object type.
  * @return bool True if successful. False if the meta key was not registered.
  */
 function unregister_meta_key( $object_type, $meta_key, $object_subtype = '' ) {
@@ -1649,7 +1648,7 @@ function unregister_meta_key( $object_type, $meta_key, $object_subtype = '' ) {
  *
  * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
  *                               or any other object type with an associated meta table.
- * @param string $object_subtype Optional. The subtype of the object type. Default empty string.
+ * @param string $object_subtype Optional. The subtype of the object type.
  * @return array[] List of registered metadata args, keyed by their meta keys.
  */
 function get_registered_meta_keys( $object_type, $object_subtype = '' ) {

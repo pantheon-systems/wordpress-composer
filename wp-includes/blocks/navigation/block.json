@@ -67,10 +67,6 @@
 		"maxNestingLevel": {
 			"type": "number",
 			"default": 5
-		},
-		"templateLock": {
-			"type": [ "string", "boolean" ],
-			"enum": [ "all", "insert", "contentOnly", false ]
 		}
 	},
 	"providesContext": {
@@ -119,7 +115,6 @@
 			"allowSwitching": false,
 			"allowInheriting": false,
 			"allowVerticalAlignment": false,
-			"allowSizingOnChildren": true,
 			"default": {
 				"type": "flex"
 			}

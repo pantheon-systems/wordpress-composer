@@ -41,7 +41,7 @@ function _wp_admin_bar_init() {
 	 */
 	$admin_bar_class = apply_filters( 'wp_admin_bar_class', 'WP_Admin_Bar' );
 	if ( class_exists( $admin_bar_class ) ) {
-		$wp_admin_bar = new $admin_bar_class();
+		$wp_admin_bar = new $admin_bar_class;
 	} else {
 		return false;
 	}
@@ -131,10 +131,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 
 	$wp_logo_menu_args = array(
 		'id'    => 'wp-logo',
-		'title' => '<span class="ab-icon" aria-hidden="true"></span><span class="screen-reader-text">' .
-				/* translators: Hidden accessibility text. */
-				__( 'About WordPress' ) .
-			'</span>',
+		'title' => '<span class="ab-icon" aria-hidden="true"></span><span class="screen-reader-text">' . __( 'About WordPress' ) . '</span>',
 		'href'  => $about_url,
 	);
 
@@ -175,7 +172,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 			'parent' => 'wp-logo-external',
 			'id'     => 'documentation',
 			'title'  => __( 'Documentation' ),
-			'href'   => __( 'https://wordpress.org/documentation/' ),
+			'href'   => __( 'https://wordpress.org/support/' ),
 		)
 	);
 
@@ -212,10 +209,7 @@ function wp_admin_bar_sidebar_toggle( $wp_admin_bar ) {
 		$wp_admin_bar->add_node(
 			array(
 				'id'    => 'menu-toggle',
-				'title' => '<span class="ab-icon" aria-hidden="true"></span><span class="screen-reader-text">' .
-						/* translators: Hidden accessibility text. */
-						__( 'Menu' ) .
-					'</span>',
+				'title' => '<span class="ab-icon" aria-hidden="true"></span><span class="screen-reader-text">' . __( 'Menu' ) . '</span>',
 				'href'  => '#',
 			)
 		);
@@ -977,7 +971,7 @@ function wp_admin_bar_comments_menu( $wp_admin_bar ) {
 	$awaiting_mod  = wp_count_comments();
 	$awaiting_mod  = $awaiting_mod->moderated;
 	$awaiting_text = sprintf(
-		/* translators: Hidden accessibility text. %s: Number of comments. */
+		/* translators: %s: Number of comments. */
 		_n( '%s Comment in moderation', '%s Comments in moderation', $awaiting_mod ),
 		number_format_i18n( $awaiting_mod )
 	);
@@ -1093,7 +1087,7 @@ function wp_admin_bar_updates_menu( $wp_admin_bar ) {
 	}
 
 	$updates_text = sprintf(
-		/* translators: Hidden accessibility text. %s: Total number of updates available. */
+		/* translators: %s: Total number of updates available. */
 		_n( '%s update available', '%s updates available', $update_data['counts']['total'] ),
 		number_format_i18n( $update_data['counts']['total'] )
 	);
@@ -1125,10 +1119,7 @@ function wp_admin_bar_search_menu( $wp_admin_bar ) {
 
 	$form  = '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="adminbarsearch">';
 	$form .= '<input class="adminbar-input" name="s" id="adminbar-search" type="text" value="" maxlength="150" />';
-	$form .= '<label for="adminbar-search" class="screen-reader-text">' .
-			/* translators: Hidden accessibility text. */
-			__( 'Search' ) .
-		'</label>';
+	$form .= '<label for="adminbar-search" class="screen-reader-text">' . __( 'Search' ) . '</label>';
 	$form .= '<input type="submit" class="adminbar-button" value="' . __( 'Search' ) . '" />';
 	$form .= '</form>';
 

@@ -120,7 +120,7 @@
 	position: relative;
 	overflow: auto;
 	margin: 16px 0;
-	background-color: #1d35b4;
+	background-color: #273fcc;
 	font-size: 14px;
 	line-height: 1.3;
 	clear: both;
@@ -146,6 +146,8 @@
 }
 
 .welcome-panel-header {
+	--about-header-bg-width: 780px;
+
 	position: relative;
 	color: #fff;
 }
@@ -163,12 +165,10 @@
 .welcome-panel-header-image svg {
 	display: block;
 	margin: auto;
-	width: 100%;
-	height: 100%;
-}
-
-.rtl .welcome-panel-header-image svg {
-	transform: scaleX(-1);
+	width: var(--about-header-bg-width);
+	height: auto;
+	transform: scale(0.75);
+	transform-origin: center top;
 }
 
 .welcome-panel-header * {
