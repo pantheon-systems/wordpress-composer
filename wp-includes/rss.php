@@ -94,7 +94,6 @@ class MagpieRSS {
 		}
 
 		xml_parser_free( $this->parser );
-		unset( $this->parser );
 
 		$this->normalize();
 	}
@@ -386,6 +385,10 @@ class MagpieRSS {
 	}
 
 	function error( $errormsg, $lvl = E_USER_WARNING ) {
+		// append PHP's error message if track_errors enabled
+		if ( isset($php_errormsg) ) {
+			$errormsg .= " ($php_errormsg)";
+		}
 		if ( MAGPIE_DEBUG ) {
 			trigger_error( $errormsg, $lvl);
 		} else {
@@ -403,8 +406,8 @@ if ( !function_exists('fetch_rss') ) :
  * @package External
  * @subpackage MagpieRSS
  *
- * @param string $url URL to retrieve feed.
- * @return MagpieRSS|false MagpieRSS object on success, false on failure.
+ * @param string $url URL to retrieve feed
+ * @return bool|MagpieRSS false on failure or MagpieRSS object on success.
  */
 function fetch_rss ($url) {
 	// initialize constants
@@ -761,7 +764,7 @@ class RSSCache {
 
 		if ( ! $rss = get_transient( $cache_option ) ) {
 			$this->debug(
-				"Cache does not contain: $url (cache option: $cache_option)"
+				"Cache doesn't contain: $url (cache option: $cache_option)"
 			);
 			return 0;
 		}
@@ -818,6 +821,10 @@ class RSSCache {
 	Purpose:	register error
 \*=======================================================================*/
 	function error ($errormsg, $lvl=E_USER_WARNING) {
+		// append PHP's error message if track_errors enabled
+		if ( isset($php_errormsg) ) {
+			$errormsg .= " ($php_errormsg)";
+		}
 		$this->ERROR = $errormsg;
 		if ( MAGPIE_DEBUG ) {
 			trigger_error( $errormsg, $lvl);

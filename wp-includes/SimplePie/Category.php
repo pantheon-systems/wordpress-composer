@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2016, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,9 +33,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
+ * @version 1.3.1
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
- * @author Sam Sneddon
+ * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
@@ -56,7 +57,7 @@ class SimplePie_Category
 	/**
 	 * Category identifier
 	 *
-	 * @var string|null
+	 * @var string
 	 * @see get_term
 	 */
 	var $term;
@@ -64,7 +65,7 @@ class SimplePie_Category
 	/**
 	 * Categorization scheme identifier
 	 *
-	 * @var string|null
+	 * @var string
 	 * @see get_scheme()
 	 */
 	var $scheme;
@@ -72,36 +73,23 @@ class SimplePie_Category
 	/**
 	 * Human readable label
 	 *
-	 * @var string|null
+	 * @var string
 	 * @see get_label()
 	 */
 	var $label;
 
 	/**
-	 * Category type
-	 * 
-	 * category for <category>
-	 * subject for <dc:subject>
-	 *
-	 * @var string|null
-	 * @see get_type()
-	 */
-	var $type;
-
-	/**
 	 * Constructor, used to input the data
 	 *
-	 * @param string|null $term
-	 * @param string|null $scheme
-	 * @param string|null $label
-	 * @param string|null $type
+	 * @param string $term
+	 * @param string $scheme
+	 * @param string $label
 	 */
-	public function __construct($term = null, $scheme = null, $label = null, $type = null)
+	public function __construct($term = null, $scheme = null, $label = null)
 	{
 		$this->term = $term;
 		$this->scheme = $scheme;
 		$this->label = $label;
-		$this->type = $type;
 	}
 
 	/**
@@ -122,7 +110,14 @@ class SimplePie_Category
 	 */
 	public function get_term()
 	{
-		return $this->term;
+		if ($this->term !== null)
+		{
+			return $this->term;
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -132,32 +127,31 @@ class SimplePie_Category
 	 */
 	public function get_scheme()
 	{
-		return $this->scheme;
+		if ($this->scheme !== null)
+		{
+			return $this->scheme;
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	/**
 	 * Get the human readable label
 	 *
-	 * @param bool $strict
 	 * @return string|null
 	 */
-	public function get_label($strict = false)
+	public function get_label()
 	{
-		if ($this->label === null && $strict !== true)
+		if ($this->label !== null)
+		{
+			return $this->label;
+		}
+		else
 		{
 			return $this->get_term();
 		}
-		return $this->label;
-	}
-
-	/**
-	 * Get the category type
-	 *
-	 * @return string|null
-	 */
-	public function get_type()
-	{
-		return $this->type;
 	}
 }
 

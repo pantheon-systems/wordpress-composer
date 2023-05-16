@@ -16,25 +16,10 @@
  * @see WP_Upgrader_Skin
  */
 class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
-
-	/**
-	 * Holds the theme slug in the Theme Directory.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @var string
-	 */
 	public $theme = '';
 
 	/**
-	 * Constructor.
-	 *
-	 * Sets up the theme upgrader skin.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @param array $args Optional. The theme upgrader skin arguments to
-	 *                    override default options. Default empty array.
+	 * @param array $args
 	 */
 	public function __construct( $args = array() ) {
 		$defaults = array(
@@ -51,9 +36,6 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Action to perform following a single theme update.
-	 *
-	 * @since 2.8.0
 	 */
 	public function after() {
 		$this->decrement_update_count( 'theme' );
@@ -83,7 +65,7 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 				admin_url( 'customize.php' )
 			);
 
-			if ( get_stylesheet() === $stylesheet ) {
+			if ( get_stylesheet() == $stylesheet ) {
 				if ( current_user_can( 'edit_theme_options' ) && current_user_can( 'customize' ) ) {
 					$update_actions['preview'] = sprintf(
 						'<a href="%s" class="hide-if-no-customize load-customize">' .
@@ -112,7 +94,7 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 					esc_url( $activate_link ),
 					__( 'Activate' ),
 					/* translators: %s: Theme name. */
-					sprintf( _x( 'Activate &#8220;%s&#8221;', 'theme' ), $name )
+					sprintf( __( 'Activate &#8220;%s&#8221;' ), $name )
 				);
 			}
 
@@ -124,7 +106,7 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 		$update_actions['themes_page'] = sprintf(
 			'<a href="%s" target="_parent">%s</a>',
 			self_admin_url( 'themes.php' ),
-			__( 'Go to Themes page' )
+			__( 'Return to Themes page' )
 		);
 
 		/**

@@ -15,20 +15,19 @@ define( 'XMLRPC_REQUEST', true );
 // Some browser-embedded clients send cookies. We don't want them.
 $_COOKIE = array();
 
-// $HTTP_RAW_POST_DATA was deprecated in PHP 5.6 and removed in PHP 7.0.
-// phpcs:disable PHPCompatibility.Variables.RemovedPredefinedGlobalVariables.http_raw_post_dataDeprecatedRemoved
+// A bug in PHP < 5.2.2 makes $HTTP_RAW_POST_DATA not set by default,
+// but we can do it ourself.
 if ( ! isset( $HTTP_RAW_POST_DATA ) ) {
 	$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
 }
 
-// Fix for mozBlog and other cases where '<?xml' isn't on the very first line.
+// fix for mozBlog and other cases where '<?xml' isn't on the very first line
 if ( isset( $HTTP_RAW_POST_DATA ) ) {
 	$HTTP_RAW_POST_DATA = trim( $HTTP_RAW_POST_DATA );
 }
-// phpcs:enable
 
 /** Include the bootstrap for setting up WordPress environment */
-require_once __DIR__ . '/wp-load.php';
+include( dirname( __FILE__ ) . '/wp-load.php' );
 
 if ( isset( $_GET['rsd'] ) ) { // http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
 	header( 'Content-Type: text/xml; charset=' . get_option( 'blog_charset' ), true );
@@ -61,9 +60,9 @@ if ( isset( $_GET['rsd'] ) ) { // http://cyber.law.harvard.edu/blogs/gems/tech/r
 	exit;
 }
 
-require_once ABSPATH . 'wp-admin/includes/admin.php';
-require_once ABSPATH . WPINC . '/class-IXR.php';
-require_once ABSPATH . WPINC . '/class-wp-xmlrpc-server.php';
+include_once( ABSPATH . 'wp-admin/includes/admin.php' );
+include_once( ABSPATH . WPINC . '/class-IXR.php' );
+include_once( ABSPATH . WPINC . '/class-wp-xmlrpc-server.php' );
 
 /**
  * Posts submitted via the XML-RPC interface get that title
@@ -83,7 +82,7 @@ $post_default_title = '';
 $wp_xmlrpc_server_class = apply_filters( 'wp_xmlrpc_server_class', 'wp_xmlrpc_server' );
 $wp_xmlrpc_server       = new $wp_xmlrpc_server_class;
 
-// Fire off the request.
+// Fire off the request
 $wp_xmlrpc_server->serve_request();
 
 exit;

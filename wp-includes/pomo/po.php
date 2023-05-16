@@ -7,21 +7,13 @@
  * @subpackage po
  */
 
-require_once __DIR__ . '/translations.php';
+require_once dirname( __FILE__ ) . '/translations.php';
 
 if ( ! defined( 'PO_MAX_LINE_LEN' ) ) {
 	define( 'PO_MAX_LINE_LEN', 79 );
 }
 
-/*
- * The `auto_detect_line_endings` setting has been deprecated in PHP 8.1,
- * but will continue to work until PHP 9.0.
- * For now, we're silencing the deprecation notice as there may still be
- * translation files around which haven't been updated in a long time and
- * which still use the old MacOS standalone `\r` as a line ending.
- * This fix should be revisited when PHP 9.0 is in alpha/beta.
- */
-@ini_set( 'auto_detect_line_endings', 1 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+ini_set( 'auto_detect_line_endings', 1 );
 
 /**
  * Routines for working with PO files
@@ -29,14 +21,14 @@ if ( ! defined( 'PO_MAX_LINE_LEN' ) ) {
 if ( ! class_exists( 'PO', false ) ) :
 	class PO extends Gettext_Translations {
 
-		public $comments_before_headers = '';
+		var $comments_before_headers = '';
 
 		/**
 		 * Exports headers to a PO entry
 		 *
 		 * @return string msgid/msgstr PO entry for this PO file headers, doesn't contain newline at the end
 		 */
-		public function export_headers() {
+		function export_headers() {
 			$header_string = '';
 			foreach ( $this->headers as $header => $value ) {
 				$header_string .= "$header: $value\n";
@@ -55,8 +47,8 @@ if ( ! class_exists( 'PO', false ) ) :
 		 *
 		 * @return string sequence of mgsgid/msgstr PO strings, doesn't containt newline at the end
 		 */
-		public function export_entries() {
-			// TODO: Sorting.
+		function export_entries() {
+			//TODO sorting
 			return implode( "\n\n", array_map( array( 'PO', 'export_entry' ), $this->entries ) );
 		}
 
@@ -66,7 +58,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param bool $include_headers whether to include the headers in the export
 		 * @return string ready for inclusion in PO file string for headers and all the enrtries
 		 */
-		public function export( $include_headers = true ) {
+		function export( $include_headers = true ) {
 			$res = '';
 			if ( $include_headers ) {
 				$res .= $this->export_headers();
@@ -79,11 +71,11 @@ if ( ! class_exists( 'PO', false ) ) :
 		/**
 		 * Same as {@link export}, but writes the result to a file
 		 *
-		 * @param string $filename        Where to write the PO string.
-		 * @param bool   $include_headers Whether to include the headers in the export.
+		 * @param string $filename where to write the PO string
+		 * @param bool $include_headers whether to include tje headers in the export
 		 * @return bool true on success, false on error
 		 */
-		public function export_to_file( $filename, $include_headers = true ) {
+		function export_to_file( $filename, $include_headers = true ) {
 			$fh = fopen( $filename, 'w' );
 			if ( false === $fh ) {
 				return false;
@@ -100,10 +92,8 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * Text to include as a comment before the start of the PO contents
 		 *
 		 * Doesn't need to include # in the beginning of lines, these are added automatically
-		 *
-		 * @param string $text Text to include as a comment.
 		 */
-		public function set_comment_before_headers( $text ) {
+		function set_comment_before_headers( $text ) {
 			$this->comments_before_headers = $text;
 		}
 
@@ -126,13 +116,13 @@ if ( ! class_exists( 'PO', false ) ) :
 
 			$string = str_replace( array_keys( $replaces ), array_values( $replaces ), $string );
 
-			$po = $quote . implode( "{$slash}n{$quote}{$newline}{$quote}", explode( $newline, $string ) ) . $quote;
-			// Add empty string on first line for readbility.
+			$po = $quote . implode( "${slash}n$quote$newline$quote", explode( $newline, $string ) ) . $quote;
+			// add empty string on first line for readbility
 			if ( false !== strpos( $string, $newline ) &&
-				( substr_count( $string, $newline ) > 1 || substr( $string, -strlen( $newline ) ) !== $newline ) ) {
+				( substr_count( $string, $newline ) > 1 || ! ( $newline === substr( $string, -strlen( $newline ) ) ) ) ) {
 				$po = "$quote$quote$newline$po";
 			}
-			// Remove empty strings.
+			// remove empty strings
 			$po = str_replace( "$newline$quote$quote", '', $po );
 			return $po;
 		}
@@ -159,7 +149,7 @@ if ( ! class_exists( 'PO', false ) ) :
 				$chars = $chars[0];
 				foreach ( $chars as $char ) {
 					if ( ! $previous_is_backslash ) {
-						if ( '\\' === $char ) {
+						if ( '\\' == $char ) {
 							$previous_is_backslash = true;
 						} else {
 							$unpoified .= $char;
@@ -171,7 +161,7 @@ if ( ! class_exists( 'PO', false ) ) :
 				}
 			}
 
-			// Standardize the line endings on imported content, technically PO files shouldn't contain \r.
+			// Standardise the line endings on imported content, technically PO files shouldn't contain \r
 			$unpoified = str_replace( array( "\r\n", "\r" ), "\n", $unpoified );
 
 			return $unpoified;
@@ -188,11 +178,9 @@ if ( ! class_exists( 'PO', false ) ) :
 			$lines  = explode( "\n", $string );
 			$append = '';
 			if ( "\n" === substr( $string, -1 ) && '' === end( $lines ) ) {
-				/*
-				 * Last line might be empty because $string was terminated
-				 * with a newline, remove it from the $lines array,
-				 * we'll restore state by re-terminating the string at the end.
-				 */
+				// Last line might be empty because $string was terminated
+				// with a newline, remove it from the $lines array,
+				// we'll restore state by re-terminating the string at the end
 				array_pop( $lines );
 				$append = "\n";
 			}
@@ -220,11 +208,11 @@ if ( ! class_exists( 'PO', false ) ) :
 		/**
 		 * Builds a string from the entry for inclusion in PO file
 		 *
-		 * @param Translation_Entry $entry the entry to convert to po string.
-		 * @return string|false PO-style formatted string for the entry or
+		 * @param Translation_Entry $entry the entry to convert to po string (passed by reference).
+		 * @return false|string PO-style formatted string for the entry or
 		 *  false if the entry is empty
 		 */
-		public static function export_entry( $entry ) {
+		public static function export_entry( &$entry ) {
 			if ( null === $entry->singular || '' === $entry->singular ) {
 				return false;
 			}
@@ -291,9 +279,9 @@ if ( ! class_exists( 'PO', false ) ) :
 
 		/**
 		 * @param string $filename
-		 * @return bool
+		 * @return boolean
 		 */
-		public function import_from_file( $filename ) {
+		function import_from_file( $filename ) {
 			$f = fopen( $filename, 'r' );
 			if ( ! $f ) {
 				return false;
@@ -304,7 +292,7 @@ if ( ! class_exists( 'PO', false ) ) :
 				if ( ! $res ) {
 					break;
 				}
-				if ( '' === $res['entry']->singular ) {
+				if ( $res['entry']->singular == '' ) {
 					$this->set_headers( $this->make_headers( $res['entry']->translations[0] ) );
 				} else {
 					$this->add_entry( $res['entry'] );
@@ -327,7 +315,7 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @return bool
 		 */
 		protected static function is_final( $context ) {
-			return ( 'msgstr' === $context ) || ( 'msgstr_plural' === $context );
+			return ( $context === 'msgstr' ) || ( $context === 'msgstr_plural' );
 		}
 
 		/**
@@ -335,10 +323,10 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param int      $lineno
 		 * @return null|false|array
 		 */
-		public function read_entry( $f, $lineno = 0 ) {
+		function read_entry( $f, $lineno = 0 ) {
 			$entry = new Translation_Entry();
-			// Where were we in the last step.
-			// Can be: comment, msgctxt, msgid, msgid_plural, msgstr, msgstr_plural.
+			// where were we in the last step
+			// can be: comment, msgctxt, msgid, msgid_plural, msgstr, msgstr_plural
 			$context      = '';
 			$msgstr_index = 0;
 			while ( true ) {
@@ -348,7 +336,7 @@ if ( ! class_exists( 'PO', false ) ) :
 					if ( feof( $f ) ) {
 						if ( self::is_final( $context ) ) {
 							break;
-						} elseif ( ! $context ) { // We haven't read a line and EOF came.
+						} elseif ( ! $context ) { // we haven't read a line and eof came
 							return null;
 						} else {
 							return false;
@@ -357,22 +345,22 @@ if ( ! class_exists( 'PO', false ) ) :
 						return false;
 					}
 				}
-				if ( "\n" === $line ) {
+				if ( $line == "\n" ) {
 					continue;
 				}
 				$line = trim( $line );
 				if ( preg_match( '/^#/', $line, $m ) ) {
-					// The comment is the start of a new entry.
+					// the comment is the start of a new entry
 					if ( self::is_final( $context ) ) {
 						PO::read_line( $f, 'put-back' );
 						$lineno--;
 						break;
 					}
-					// Comments have to be at the beginning.
-					if ( $context && 'comment' !== $context ) {
+					// comments have to be at the beginning
+					if ( $context && $context != 'comment' ) {
 						return false;
 					}
-					// Add comment.
+					// add comment
 					$this->add_comment_to_entry( $entry, $line );
 				} elseif ( preg_match( '/^msgctxt\s+(".*")/', $line, $m ) ) {
 					if ( self::is_final( $context ) ) {
@@ -380,7 +368,7 @@ if ( ! class_exists( 'PO', false ) ) :
 						$lineno--;
 						break;
 					}
-					if ( $context && 'comment' !== $context ) {
+					if ( $context && $context != 'comment' ) {
 						return false;
 					}
 					$context         = 'msgctxt';
@@ -391,26 +379,26 @@ if ( ! class_exists( 'PO', false ) ) :
 						$lineno--;
 						break;
 					}
-					if ( $context && 'msgctxt' !== $context && 'comment' !== $context ) {
+					if ( $context && $context != 'msgctxt' && $context != 'comment' ) {
 						return false;
 					}
 					$context          = 'msgid';
 					$entry->singular .= PO::unpoify( $m[1] );
 				} elseif ( preg_match( '/^msgid_plural\s+(".*")/', $line, $m ) ) {
-					if ( 'msgid' !== $context ) {
+					if ( $context != 'msgid' ) {
 						return false;
 					}
 					$context          = 'msgid_plural';
 					$entry->is_plural = true;
 					$entry->plural   .= PO::unpoify( $m[1] );
 				} elseif ( preg_match( '/^msgstr\s+(".*")/', $line, $m ) ) {
-					if ( 'msgid' !== $context ) {
+					if ( $context != 'msgid' ) {
 						return false;
 					}
 					$context             = 'msgstr';
 					$entry->translations = array( PO::unpoify( $m[1] ) );
 				} elseif ( preg_match( '/^msgstr\[(\d+)\]\s+(".*")/', $line, $m ) ) {
-					if ( 'msgid_plural' !== $context && 'msgstr_plural' !== $context ) {
+					if ( $context != 'msgid_plural' && $context != 'msgstr_plural' ) {
 						return false;
 					}
 					$context                      = 'msgstr_plural';
@@ -460,23 +448,26 @@ if ( ! class_exists( 'PO', false ) ) :
 		}
 
 		/**
-		 * @param resource $f
-		 * @param string   $action
-		 * @return bool
+		 * @staticvar string   $last_line
+		 * @staticvar boolean  $use_last_line
+		 *
+		 * @param     resource $f
+		 * @param     string   $action
+		 * @return boolean
 		 */
-		public function read_line( $f, $action = 'read' ) {
+		function read_line( $f, $action = 'read' ) {
 			static $last_line     = '';
 			static $use_last_line = false;
-			if ( 'clear' === $action ) {
+			if ( 'clear' == $action ) {
 				$last_line = '';
 				return true;
 			}
-			if ( 'put-back' === $action ) {
+			if ( 'put-back' == $action ) {
 				$use_last_line = true;
 				return true;
 			}
 			$line          = $use_last_line ? $last_line : fgets( $f );
-			$line          = ( "\r\n" === substr( $line, -2 ) ) ? rtrim( $line, "\r\n" ) . "\n" : $line;
+			$line          = ( "\r\n" == substr( $line, -2 ) ) ? rtrim( $line, "\r\n" ) . "\n" : $line;
 			$last_line     = $line;
 			$use_last_line = false;
 			return $line;
@@ -486,14 +477,14 @@ if ( ! class_exists( 'PO', false ) ) :
 		 * @param Translation_Entry $entry
 		 * @param string            $po_comment_line
 		 */
-		public function add_comment_to_entry( &$entry, $po_comment_line ) {
+		function add_comment_to_entry( &$entry, $po_comment_line ) {
 			$first_two = substr( $po_comment_line, 0, 2 );
 			$comment   = trim( substr( $po_comment_line, 2 ) );
-			if ( '#:' === $first_two ) {
+			if ( '#:' == $first_two ) {
 				$entry->references = array_merge( $entry->references, preg_split( '/\s+/', $comment ) );
-			} elseif ( '#.' === $first_two ) {
+			} elseif ( '#.' == $first_two ) {
 				$entry->extracted_comments = trim( $entry->extracted_comments . "\n" . $comment );
-			} elseif ( '#,' === $first_two ) {
+			} elseif ( '#,' == $first_two ) {
 				$entry->flags = array_merge( $entry->flags, preg_split( '/,\s*/', $comment ) );
 			} else {
 				$entry->translator_comments = trim( $entry->translator_comments . "\n" . $comment );
@@ -502,13 +493,13 @@ if ( ! class_exists( 'PO', false ) ) :
 
 		/**
 		 * @param string $s
-		 * @return string
+		 * @return sring
 		 */
 		public static function trim_quotes( $s ) {
-			if ( '"' === substr( $s, 0, 1 ) ) {
+			if ( substr( $s, 0, 1 ) == '"' ) {
 				$s = substr( $s, 1 );
 			}
-			if ( '"' === substr( $s, -1, 1 ) ) {
+			if ( substr( $s, -1, 1 ) == '"' ) {
 				$s = substr( $s, 0, -1 );
 			}
 			return $s;

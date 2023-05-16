@@ -5,9 +5,9 @@
  * @package WordPress
  */
 
-if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+if ( 'POST' != $_SERVER['REQUEST_METHOD'] ) {
 	$protocol = $_SERVER['SERVER_PROTOCOL'];
-	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0', 'HTTP/3' ), true ) ) {
+	if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0' ) ) ) {
 		$protocol = 'HTTP/1.0';
 	}
 
@@ -18,13 +18,13 @@ if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 }
 
 /** Sets up the WordPress Environment. */
-require __DIR__ . '/wp-load.php';
+require( dirname( __FILE__ ) . '/wp-load.php' );
 
 nocache_headers();
 
 $comment = wp_handle_comment_submission( wp_unslash( $_POST ) );
 if ( is_wp_error( $comment ) ) {
-	$data = (int) $comment->get_error_data();
+	$data = intval( $comment->get_error_data() );
 	if ( ! empty( $data ) ) {
 		wp_die(
 			'<p>' . $comment->get_error_message() . '</p>',
@@ -50,7 +50,7 @@ $cookies_consent = ( isset( $_POST['wp-comment-cookies-consent'] ) );
  *
  * @param WP_Comment $comment         Comment object.
  * @param WP_User    $user            Comment author's user object. The user may not exist.
- * @param bool       $cookies_consent Comment author's consent to store cookies.
+ * @param boolean    $cookies_consent Comment author's consent to store cookies.
  */
 do_action( 'set_comment_cookies', $comment, $user, $cookies_consent );
 

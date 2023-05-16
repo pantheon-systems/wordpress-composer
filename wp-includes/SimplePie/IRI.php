@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2016, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,9 +33,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
+ * @version 1.3.1
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
- * @author Sam Sneddon
+ * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
@@ -46,10 +47,10 @@
  *
  * @package SimplePie
  * @subpackage HTTP
- * @author Sam Sneddon
+ * @author Geoffrey Sneddon
  * @author Steve Minutillo
  * @author Ryan McCue
- * @copyright 2007-2012 Sam Sneddon, Steve Minutillo, Ryan McCue
+ * @copyright 2007-2012 Geoffrey Sneddon, Steve Minutillo, Ryan McCue
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 class SimplePie_IRI
@@ -211,8 +212,10 @@ class SimplePie_IRI
 		{
 			return $this->normalization[$this->scheme][$name];
 		}
-
-		return $return;
+		else
+		{
+			return $return;
+		}
 	}
 
 	/**
@@ -223,7 +226,14 @@ class SimplePie_IRI
 	 */
 	public function __isset($name)
 	{
-		return method_exists($this, 'get_' . $name) || isset($this->$name);
+		if (method_exists($this, 'get_' . $name) || isset($this->$name))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -247,15 +257,6 @@ class SimplePie_IRI
 	public function __construct($iri = null)
 	{
 		$this->set_iri($iri);
-	}
-
-	/**
-	 * Clean up
-	 */
-	public function __destruct() {
-	    $this->set_iri(null, true);
-	    $this->set_path(null, true);
-	    $this->set_authority(null, true);
 	}
 
 	/**
@@ -347,8 +348,10 @@ class SimplePie_IRI
 				$target->scheme_normalization();
 				return $target;
 			}
-
-			return false;
+			else
+			{
+				return false;
+			}
 		}
 	}
 
@@ -385,9 +388,11 @@ class SimplePie_IRI
 			}
 			return $match;
 		}
-
-		// This can occur when a paragraph is accidentally parsed as a URI
-		return false;
+		else
+		{
+			// This can occur when a paragraph is accidentally parsed as a URI
+			return false;
+		}
 	}
 
 	/**
@@ -763,20 +768,24 @@ class SimplePie_IRI
 	 */
 	public function is_valid()
 	{
-		if ($this->ipath === '') return true;
-
-		$isauthority = $this->iuserinfo !== null || $this->ihost !== null ||
-			$this->port !== null;
-		if ($isauthority && $this->ipath[0] === '/') return true;
-
-		if (!$isauthority && (substr($this->ipath, 0, 2) === '//')) return false;
-
-		// Relative urls cannot have a colon in the first path segment (and the
-		// slashes themselves are not included so skip the first character).
-		if (!$this->scheme && !$isauthority &&
-		    strpos($this->ipath, ':') !== false &&
-		    strpos($this->ipath, '/', 1) !== false &&
-		    strpos($this->ipath, ':') < strpos($this->ipath, '/', 1)) return false;
+		$isauthority = $this->iuserinfo !== null || $this->ihost !== null || $this->port !== null;
+		if ($this->ipath !== '' &&
+			(
+				$isauthority && (
+					$this->ipath[0] !== '/' ||
+					substr($this->ipath, 0, 2) === '//'
+				) ||
+				(
+					$this->scheme === null &&
+					!$isauthority &&
+					strpos($this->ipath, ':') !== false &&
+					(strpos($this->ipath, '/') === false ? true : strpos($this->ipath, ':') < strpos($this->ipath, '/'))
+				)
+			)
+		)
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -788,14 +797,9 @@ class SimplePie_IRI
 	 * @param string $iri
 	 * @return bool
 	 */
-	public function set_iri($iri, $clear_cache = false)
+	public function set_iri($iri)
 	{
 		static $cache;
-		if ($clear_cache)
-		{
-			$cache = null;
-			return;
-		}
 		if (!$cache)
 		{
 			$cache = array();
@@ -817,28 +821,30 @@ class SimplePie_IRI
 				 $return) = $cache[$iri];
 			return $return;
 		}
-
-		$parsed = $this->parse_iri((string) $iri);
-		if (!$parsed)
+		else
 		{
-			return false;
+			$parsed = $this->parse_iri((string) $iri);
+			if (!$parsed)
+			{
+				return false;
+			}
+
+			$return = $this->set_scheme($parsed['scheme'])
+				&& $this->set_authority($parsed['authority'])
+				&& $this->set_path($parsed['path'])
+				&& $this->set_query($parsed['query'])
+				&& $this->set_fragment($parsed['fragment']);
+
+			$cache[$iri] = array($this->scheme,
+								 $this->iuserinfo,
+								 $this->ihost,
+								 $this->port,
+								 $this->ipath,
+								 $this->iquery,
+								 $this->ifragment,
+								 $return);
+			return $return;
 		}
-
-		$return = $this->set_scheme($parsed['scheme'])
-			&& $this->set_authority($parsed['authority'])
-			&& $this->set_path($parsed['path'])
-			&& $this->set_query($parsed['query'])
-			&& $this->set_fragment($parsed['fragment']);
-
-		$cache[$iri] = array($this->scheme,
-							 $this->iuserinfo,
-							 $this->ihost,
-							 $this->port,
-							 $this->ipath,
-							 $this->iquery,
-							 $this->ifragment,
-							 $return);
-		return $return;
 	}
 
 	/**
@@ -873,14 +879,9 @@ class SimplePie_IRI
 	 * @param string $authority
 	 * @return bool
 	 */
-	public function set_authority($authority, $clear_cache = false)
+	public function set_authority($authority)
 	{
 		static $cache;
-		if ($clear_cache)
-		{
-			$cache = null;
-			return;
-		}
 		if (!$cache)
 			$cache = array();
 
@@ -900,40 +901,42 @@ class SimplePie_IRI
 
 			return $return;
 		}
-
-		$remaining = $authority;
-		if (($iuserinfo_end = strrpos($remaining, '@')) !== false)
-		{
-			$iuserinfo = substr($remaining, 0, $iuserinfo_end);
-			$remaining = substr($remaining, $iuserinfo_end + 1);
-		}
 		else
 		{
-			$iuserinfo = null;
-		}
-		if (($port_start = strpos($remaining, ':', strpos($remaining, ']'))) !== false)
-		{
-			if (($port = substr($remaining, $port_start + 1)) === false)
+			$remaining = $authority;
+			if (($iuserinfo_end = strrpos($remaining, '@')) !== false)
+			{
+				$iuserinfo = substr($remaining, 0, $iuserinfo_end);
+				$remaining = substr($remaining, $iuserinfo_end + 1);
+			}
+			else
+			{
+				$iuserinfo = null;
+			}
+			if (($port_start = strpos($remaining, ':', strpos($remaining, ']'))) !== false)
+			{
+				if (($port = substr($remaining, $port_start + 1)) === false)
+				{
+					$port = null;
+				}
+				$remaining = substr($remaining, 0, $port_start);
+			}
+			else
 			{
 				$port = null;
 			}
-			$remaining = substr($remaining, 0, $port_start);
+
+			$return = $this->set_userinfo($iuserinfo) &&
+					  $this->set_host($remaining) &&
+					  $this->set_port($port);
+
+			$cache[$authority] = array($this->iuserinfo,
+									   $this->ihost,
+									   $this->port,
+									   $return);
+
+			return $return;
 		}
-		else
-		{
-			$port = null;
-		}
-
-		$return = $this->set_userinfo($iuserinfo) &&
-				  $this->set_host($remaining) &&
-				  $this->set_port($port);
-
-		$cache[$authority] = array($this->iuserinfo,
-								   $this->ihost,
-								   $this->port,
-								   $return);
-
-		return $return;
 	}
 
 	/**
@@ -1033,9 +1036,11 @@ class SimplePie_IRI
 			$this->scheme_normalization();
 			return true;
 		}
-
-		$this->port = null;
-		return false;
+		else
+		{
+			$this->port = null;
+			return false;
+		}
 	}
 
 	/**
@@ -1044,14 +1049,9 @@ class SimplePie_IRI
 	 * @param string $ipath
 	 * @return bool
 	 */
-	public function set_path($ipath, $clear_cache = false)
+	public function set_path($ipath)
 	{
 		static $cache;
-		if ($clear_cache)
-		{
-			$cache = null;
-			return;
-		}
 		if (!$cache)
 		{
 			$cache = array();
@@ -1166,7 +1166,7 @@ class SimplePie_IRI
 		{
 			$iri .= $this->ipath;
 		}
-        elseif (!empty($this->normalization[$this->scheme]['ipath']) && $iauthority !== null && $iauthority !== '')
+		elseif (!empty($this->normalization[$this->scheme]['ipath']) && $iauthority !== null && $iauthority !== '')
 		{
 			$iri .= $this->normalization[$this->scheme]['ipath'];
 		}
@@ -1210,14 +1210,16 @@ class SimplePie_IRI
 			{
 				$iauthority .= $this->ihost;
 			}
-            if ($this->port !== null && $this->port !== 0)
+			if ($this->port !== null)
 			{
 				$iauthority .= ':' . $this->port;
 			}
 			return $iauthority;
 		}
-
-		return null;
+		else
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -1230,7 +1232,7 @@ class SimplePie_IRI
 		$iauthority = $this->get_iauthority();
 		if (is_string($iauthority))
 			return $this->to_uri($iauthority);
-
-		return $iauthority;
+		else
+			return $iauthority;
 	}
 }

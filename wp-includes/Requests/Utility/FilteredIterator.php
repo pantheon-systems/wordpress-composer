@@ -39,27 +39,20 @@ class Requests_Utility_FilteredIterator extends ArrayIterator {
 	 */
 	public function current() {
 		$value = parent::current();
-
-		if (is_callable($this->callback)) {
-			$value = call_user_func($this->callback, $value);
-		}
-
+		$value = call_user_func($this->callback, $value);
 		return $value;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function unserialize($serialized) {}
+	public function unserialize( $serialized ) {
+	}
 
 	/**
 	 * @inheritdoc
-	 *
-	 * @phpcs:disable PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.MethodDoubleUnderscore,PHPCompatibility.FunctionNameRestrictions.NewMagicMethods.__unserializeFound
 	 */
-	public function __unserialize($serialized) {}
-
-	public function __wakeup() {
-		unset($this->callback);
+	public function __unserialize( $serialized ) { // phpcs:ignore PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.MethodDoubleUnderscore,PHPCompatibility.FunctionNameRestrictions.NewMagicMethods.__unserializeFound
+		$this->unserialize( $serialized );
 	}
 }

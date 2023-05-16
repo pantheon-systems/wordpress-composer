@@ -20,7 +20,7 @@ function is_subdomain_install() {
 		return SUBDOMAIN_INSTALL;
 	}
 
-	return ( defined( 'VHOST' ) && 'yes' === VHOST );
+	return ( defined( 'VHOST' ) && VHOST == 'yes' );
 }
 
 /**
@@ -32,7 +32,7 @@ function is_subdomain_install() {
  * @access private
  * @since 3.1.0
  *
- * @return string[] Array of absolute paths to files to include.
+ * @return array Files to include.
  */
 function wp_get_active_network_plugins() {
 	$active_plugins = (array) get_site_option( 'active_sitewide_plugins', array() );
@@ -45,9 +45,9 @@ function wp_get_active_network_plugins() {
 	sort( $active_plugins );
 
 	foreach ( $active_plugins as $plugin ) {
-		if ( ! validate_file( $plugin )                     // $plugin must validate as file.
-			&& '.php' === substr( $plugin, -4 )             // $plugin must end with '.php'.
-			&& file_exists( WP_PLUGIN_DIR . '/' . $plugin ) // $plugin must exist.
+		if ( ! validate_file( $plugin ) // $plugin must validate as file
+			&& '.php' == substr( $plugin, -4 ) // $plugin must end with '.php'
+			&& file_exists( WP_PLUGIN_DIR . '/' . $plugin ) // $plugin must exist
 			) {
 			$plugins[] = WP_PLUGIN_DIR . '/' . $plugin;
 		}
@@ -78,14 +78,14 @@ function ms_site_check() {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param bool|null $check Whether to skip the blog status check. Default null.
+	 * @param bool null Whether to skip the blog status check. Default null.
 	 */
 	$check = apply_filters( 'ms_site_check', null );
 	if ( null !== $check ) {
 		return true;
 	}
 
-	// Allow super admins to see blocked sites.
+	// Allow super admins to see blocked sites
 	if ( is_super_admin() ) {
 		return true;
 	}
@@ -115,7 +115,7 @@ function ms_site_check() {
 		}
 	}
 
-	if ( '1' == $blog->archived || '1' == $blog->spam ) {
+	if ( $blog->archived == '1' || $blog->spam == '1' ) {
 		if ( file_exists( WP_CONTENT_DIR . '/blog-suspended.php' ) ) {
 			return WP_CONTENT_DIR . '/blog-suspended.php';
 		} else {
@@ -127,7 +127,7 @@ function ms_site_check() {
 }
 
 /**
- * Retrieves the closest matching network for a domain and path.
+ * Retrieve the closest matching network for a domain and path.
  *
  * @since 3.9.0
  *
@@ -154,6 +154,8 @@ function get_network_by_path( $domain, $path, $segments = null ) {
  *
  * @since 3.9.0
  * @since 4.7.0 Updated to always return a `WP_Site` object.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string   $domain   Domain to check.
  * @param string   $path     Path to check.
@@ -190,7 +192,7 @@ function get_site_by_path( $domain, $path, $segments = null ) {
 	$paths[] = '/';
 
 	/**
-	 * Determines a site by its domain and path.
+	 * Determine a site by its domain and path.
 	 *
 	 * This allows one to short-circuit the default logic, perhaps by
 	 * replacing it with a routine that is more optimal for your setup.
@@ -201,13 +203,12 @@ function get_site_by_path( $domain, $path, $segments = null ) {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param null|false|WP_Site $site     Site value to return by path. Default null
-	 *                                     to continue retrieving the site.
+	 * @param null|false|WP_Site $site     Site value to return by path.
 	 * @param string             $domain   The requested domain.
 	 * @param string             $path     The requested path, in full.
 	 * @param int|null           $segments The suggested number of paths to consult.
 	 *                                     Default null, meaning the entire path was to be consulted.
-	 * @param string[]           $paths    The paths to search for, based on $path and $segments.
+	 * @param array              $paths    The paths to search for, based on $path and $segments.
 	 */
 	$pre = apply_filters( 'pre_get_site_by_path', null, $domain, $path, $segments, $paths );
 	if ( null !== $pre ) {
@@ -219,7 +220,7 @@ function get_site_by_path( $domain, $path, $segments = null ) {
 
 	/*
 	 * @todo
-	 * Caching, etc. Consider alternative optimization routes,
+	 * caching, etc. Consider alternative optimization routes,
 	 * perhaps as an opt-in for plugins, rather than using the pre_* filter.
 	 * For example: The segments filter can expand or ignore paths.
 	 * If persistent caching is enabled, we could query the DB for a path <> '/'
@@ -303,7 +304,7 @@ function ms_load_current_site_and_network( $domain, $path, $subdomain = false ) 
 		$current_site->path   = PATH_CURRENT_SITE;
 		if ( defined( 'BLOG_ID_CURRENT_SITE' ) ) {
 			$current_site->blog_id = BLOG_ID_CURRENT_SITE;
-		} elseif ( defined( 'BLOGID_CURRENT_SITE' ) ) { // Deprecated.
+		} elseif ( defined( 'BLOGID_CURRENT_SITE' ) ) { // deprecated.
 			$current_site->blog_id = BLOGID_CURRENT_SITE;
 		}
 
@@ -407,9 +408,9 @@ function ms_load_current_site_and_network( $domain, $path, $subdomain = false ) 
 		 *
 		 * @since 3.9.0
 		 *
-		 * @param WP_Network $current_site The network that had been determined.
-		 * @param string     $domain       The domain used to search for a site.
-		 * @param string     $path         The path used to search for a site.
+		 * @param object $current_site The network that had been determined.
+		 * @param string $domain       The domain used to search for a site.
+		 * @param string $path         The path used to search for a site.
 		 */
 		do_action( 'ms_site_not_found', $current_site, $domain, $path );
 
@@ -417,11 +418,9 @@ function ms_load_current_site_and_network( $domain, $path, $subdomain = false ) 
 			// For a "subdomain" installation, redirect to the signup form specifically.
 			$destination .= 'wp-signup.php?new=' . str_replace( '.' . $current_site->domain, '', $domain );
 		} elseif ( $subdomain ) {
-			/*
-			 * For a "subdomain" installation, the NOBLOGREDIRECT constant
-			 * can be used to avoid a redirect to the signup form.
-			 * Using the ms_site_not_found action is preferred to the constant.
-			 */
+			// For a "subdomain" installation, the NOBLOGREDIRECT constant
+			// can be used to avoid a redirect to the signup form.
+			// Using the ms_site_not_found action is preferred to the constant.
 			if ( '%siteurl%' !== NOBLOGREDIRECT ) {
 				$destination = NOBLOGREDIRECT;
 			}
@@ -472,12 +471,12 @@ function ms_not_installed( $domain, $path ) {
 
 	$msg   = '<h1>' . $title . '</h1>';
 	$msg  .= '<p>' . __( 'If your site does not display, please contact the owner of this network.' ) . '';
-	$msg  .= ' ' . __( 'If you are the owner of this network please check that your host&#8217;s database server is running properly and all tables are error free.' ) . '</p>';
+	$msg  .= ' ' . __( 'If you are the owner of this network please check that MySQL is running properly and all tables are error free.' ) . '</p>';
 	$query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $wpdb->site ) );
 	if ( ! $wpdb->get_var( $query ) ) {
 		$msg .= '<p>' . sprintf(
 			/* translators: %s: Table name. */
-			__( '<strong>Database tables are missing.</strong> This means that your host&#8217;s database server is not running, WordPress was not installed properly, or someone deleted %s. You really should look at your database now.' ),
+			__( '<strong>Database tables are missing.</strong> This means that MySQL is not running, WordPress was not installed properly, or someone deleted %s. You really should look at your database now.' ),
 			'<code>' . $wpdb->site . '</code>'
 		) . '</p>';
 	} else {
@@ -492,12 +491,12 @@ function ms_not_installed( $domain, $path ) {
 	$msg .= '<p><strong>' . __( 'What do I do now?' ) . '</strong> ';
 	$msg .= sprintf(
 		/* translators: %s: Documentation URL. */
-		__( 'Read the <a href="%s" target="_blank">Debugging a WordPress Network</a> article. Some of the suggestions there may help you figure out what went wrong.' ),
+		__( 'Read the <a href="%s" target="_blank">bug report</a> page. Some of the guidelines there may help you figure out what went wrong.' ),
 		__( 'https://wordpress.org/support/article/debugging-a-wordpress-network/' )
 	);
-	$msg .= ' ' . __( 'If you are still stuck with this message, then check that your database contains the following tables:' ) . '</p><ul>';
+	$msg .= ' ' . __( 'If you&#8217;re still stuck with this message, then check that your database contains the following tables:' ) . '</p><ul>';
 	foreach ( $wpdb->tables( 'global' ) as $t => $table ) {
-		if ( 'sitecategories' === $t ) {
+		if ( 'sitecategories' == $t ) {
 			continue;
 		}
 		$msg .= '<li>' . $table . '</li>';
@@ -517,8 +516,8 @@ function ms_not_installed( $domain, $path ) {
  * @since 3.0.0
  * @deprecated 3.9.0 Use get_current_site() instead.
  *
- * @param WP_Network $current_site
- * @return WP_Network
+ * @param object $current_site
+ * @return object
  */
 function get_current_site_name( $current_site ) {
 	_deprecated_function( __FUNCTION__, '3.9.0', 'get_current_site()' );
@@ -535,9 +534,9 @@ function get_current_site_name( $current_site ) {
  * @since 3.0.0
  * @deprecated 3.9.0
  *
- * @global WP_Network $current_site
+ * @global object $current_site
  *
- * @return WP_Network
+ * @return object
  */
 function wpmu_current_site() {
 	global $current_site;
@@ -546,10 +545,10 @@ function wpmu_current_site() {
 }
 
 /**
- * Retrieves an object containing information about the requested network.
+ * Retrieve an object containing information about the requested network.
  *
  * @since 3.9.0
- * @deprecated 4.7.0 Use get_network()
+ * @deprecated 4.7.0 Use `get_network()`
  * @see get_network()
  *
  * @internal In 4.6.0, converted to use get_network()

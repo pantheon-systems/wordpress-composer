@@ -13,18 +13,20 @@
  * @return string Returns the tag cloud for selected taxonomy.
  */
 function render_block_core_tag_cloud( $attributes ) {
-	$smallest_font_size = $attributes['smallestFontSize'];
-	$unit               = ( preg_match( '/^[0-9.]+(?P<unit>[a-z%]+)$/i', $smallest_font_size, $m ) ? $m['unit'] : 'pt' );
+	$class = isset( $attributes['align'] ) ?
+		"wp-block-tag-cloud align{$attributes['align']}" :
+		'wp-block-tag-cloud';
 
-	$args      = array(
+	if ( isset( $attributes['className'] ) ) {
+		$class .= ' ' . $attributes['className'];
+	}
+
+	$args = array(
 		'echo'       => false,
-		'unit'       => $unit,
 		'taxonomy'   => $attributes['taxonomy'],
 		'show_count' => $attributes['showTagCounts'],
-		'number'     => $attributes['numberOfTags'],
-		'smallest'   => floatVal( $attributes['smallestFontSize'] ),
-		'largest'    => floatVal( $attributes['largestFontSize'] ),
 	);
+
 	$tag_cloud = wp_tag_cloud( $args );
 
 	if ( ! $tag_cloud ) {
@@ -38,11 +40,9 @@ function render_block_core_tag_cloud( $attributes ) {
 		);
 	}
 
-	$wrapper_attributes = get_block_wrapper_attributes();
-
 	return sprintf(
-		'<p %1$s>%2$s</p>',
-		$wrapper_attributes,
+		'<p class="%1$s">%2$s</p>',
+		esc_attr( $class ),
 		$tag_cloud
 	);
 }
@@ -51,9 +51,26 @@ function render_block_core_tag_cloud( $attributes ) {
  * Registers the `core/tag-cloud` block on server.
  */
 function register_block_core_tag_cloud() {
-	register_block_type_from_metadata(
-		__DIR__ . '/tag-cloud',
+	register_block_type(
+		'core/tag-cloud',
 		array(
+			'attributes'      => array(
+				'align'         => array(
+					'type' => 'string',
+					'enum' => array( 'left', 'center', 'right', 'wide', 'full' ),
+				),
+				'className'     => array(
+					'type' => 'string',
+				),
+				'taxonomy'      => array(
+					'type'    => 'string',
+					'default' => 'post_tag',
+				),
+				'showTagCounts' => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
+			),
 			'render_callback' => 'render_block_core_tag_cloud',
 		)
 	);

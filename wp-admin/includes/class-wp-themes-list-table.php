@@ -11,6 +11,7 @@
  * Core class used to implement displaying installed themes in a list table.
  *
  * @since 3.1.0
+ * @access private
  *
  * @see WP_List_Table
  */
@@ -128,7 +129,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 		// Fallthrough.
 		printf(
 			/* translators: %s: Network title. */
-			__( 'Only the active theme is available to you. Contact the %s administrator for information about accessing additional themes.' ),
+			__( 'Only the current theme is available to you. Contact the %s administrator for information about accessing additional themes.' ),
 			get_site_option( 'site_name' )
 		);
 	}
@@ -211,7 +212,7 @@ class WP_Themes_List_Table extends WP_List_Table {
 				'<a href="%s" class="activatelink" title="%s">%s</a>',
 				$activate_link,
 				/* translators: %s: Theme name. */
-				esc_attr( sprintf( _x( 'Activate &#8220;%s&#8221;', 'theme' ), $title ) ),
+				esc_attr( sprintf( __( 'Activate &#8220;%s&#8221;' ), $title ) ),
 				__( 'Activate' )
 			);
 
@@ -246,12 +247,12 @@ class WP_Themes_List_Table extends WP_List_Table {
 
 			<span class="screenshot hide-if-customize">
 				<?php if ( $screenshot ) : ?>
-					<img src="<?php echo esc_url( $screenshot . '?ver=' . $theme->version ); ?>" alt="" />
+					<img src="<?php echo esc_url( $screenshot ); ?>" alt="" />
 				<?php endif; ?>
 			</span>
 			<a href="<?php echo wp_customize_url( $stylesheet ); ?>" class="screenshot load-customize hide-if-no-customize">
 				<?php if ( $screenshot ) : ?>
-					<img src="<?php echo esc_url( $screenshot . '?ver=' . $theme->version ); ?>" alt="" />
+					<img src="<?php echo esc_url( $screenshot ); ?>" alt="" />
 				<?php endif; ?>
 			</a>
 
@@ -299,16 +300,16 @@ class WP_Themes_List_Table extends WP_List_Table {
 	 * @return bool
 	 */
 	public function search_theme( $theme ) {
-		// Search the features.
+		// Search the features
 		foreach ( $this->features as $word ) {
-			if ( ! in_array( $word, $theme->get( 'Tags' ), true ) ) {
+			if ( ! in_array( $word, $theme->get( 'Tags' ) ) ) {
 				return false;
 			}
 		}
 
-		// Match all phrases.
+		// Match all phrases
 		foreach ( $this->search_terms as $word ) {
-			if ( in_array( $word, $theme->get( 'Tags' ), true ) ) {
+			if ( in_array( $word, $theme->get( 'Tags' ) ) ) {
 				continue;
 			}
 

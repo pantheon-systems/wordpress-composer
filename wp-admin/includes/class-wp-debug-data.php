@@ -7,14 +7,13 @@
  * @since 5.2.0
  */
 
-#[AllowDynamicProperties]
 class WP_Debug_Data {
 	/**
 	 * Calls all core functions to check for updates.
 	 *
 	 * @since 5.2.0
 	 */
-	public static function check_for_updates() {
+	static function check_for_updates() {
 		wp_version_check();
 		wp_update_plugins();
 		wp_update_themes();
@@ -24,39 +23,32 @@ class WP_Debug_Data {
 	 * Static function for generating site debug data when required.
 	 *
 	 * @since 5.2.0
-	 * @since 5.3.0 Added database charset, database collation,
-	 *              and timezone information.
-	 * @since 5.5.0 Added pretty permalinks support information.
 	 *
 	 * @throws ImagickException
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
 	 * @return array The debug data for the site.
 	 */
-	public static function debug_data() {
+	static function debug_data() {
 		global $wpdb;
 
 		// Save few function calls.
 		$upload_dir             = wp_upload_dir();
 		$permalink_structure    = get_option( 'permalink_structure' );
 		$is_ssl                 = is_ssl();
-		$is_multisite           = is_multisite();
 		$users_can_register     = get_option( 'users_can_register' );
-		$blog_public            = get_option( 'blog_public' );
 		$default_comment_status = get_option( 'default_comment_status' );
-		$environment_type       = wp_get_environment_type();
+		$is_multisite           = is_multisite();
 		$core_version           = get_bloginfo( 'version' );
 		$core_updates           = get_core_updates();
 		$core_update_needed     = '';
 
-		if ( is_array( $core_updates ) ) {
-			foreach ( $core_updates as $core => $update ) {
-				if ( 'upgrade' === $update->response ) {
-					/* translators: %s: Latest WordPress version number. */
-					$core_update_needed = ' ' . sprintf( __( '(Latest version: %s)' ), $update->version );
-				} else {
-					$core_update_needed = '';
-				}
+		foreach ( $core_updates as $core => $update ) {
+			if ( 'upgrade' === $update->response ) {
+				/* translators: %s: Latest WordPress version number. */
+				$core_update_needed = ' ' . sprintf( __( '(Latest version: %s)' ), $update->version );
+			} else {
+				$core_update_needed = '';
 			}
 		}
 
@@ -95,7 +87,7 @@ class WP_Debug_Data {
 				),
 				'permalink'              => array(
 					'label' => __( 'Permalink structure' ),
-					'value' => $permalink_structure ? $permalink_structure : __( 'No permalink structure set' ),
+					'value' => $permalink_structure ?: __( 'No permalink structure set' ),
 					'debug' => $permalink_structure,
 				),
 				'https_status'           => array(
@@ -103,30 +95,20 @@ class WP_Debug_Data {
 					'value' => $is_ssl ? __( 'Yes' ) : __( 'No' ),
 					'debug' => $is_ssl,
 				),
-				'multisite'              => array(
-					'label' => __( 'Is this a multisite?' ),
-					'value' => $is_multisite ? __( 'Yes' ) : __( 'No' ),
-					'debug' => $is_multisite,
-				),
 				'user_registration'      => array(
 					'label' => __( 'Can anyone register on this site?' ),
 					'value' => $users_can_register ? __( 'Yes' ) : __( 'No' ),
 					'debug' => $users_can_register,
-				),
-				'blog_public'            => array(
-					'label' => __( 'Is this site discouraging search engines?' ),
-					'value' => $blog_public ? __( 'No' ) : __( 'Yes' ),
-					'debug' => $blog_public,
 				),
 				'default_comment_status' => array(
 					'label' => __( 'Default comment status' ),
 					'value' => 'open' === $default_comment_status ? _x( 'Open', 'comment status' ) : _x( 'Closed', 'comment status' ),
 					'debug' => $default_comment_status,
 				),
-				'environment_type'       => array(
-					'label' => __( 'Environment type' ),
-					'value' => $environment_type,
-					'debug' => $environment_type,
+				'multisite'              => array(
+					'label' => __( 'Is this a multisite?' ),
+					'value' => $is_multisite ? __( 'Yes' ) : __( 'No' ),
+					'debug' => $is_multisite,
 				),
 			),
 		);
@@ -235,11 +217,13 @@ class WP_Debug_Data {
 			$compress_css_debug = 'undefined';
 		}
 
-		// Check WP_ENVIRONMENT_TYPE.
-		if ( defined( 'WP_ENVIRONMENT_TYPE' ) && WP_ENVIRONMENT_TYPE ) {
-			$wp_environment_type = WP_ENVIRONMENT_TYPE;
+		// Check WP_LOCAL_DEV.
+		if ( defined( 'WP_LOCAL_DEV' ) ) {
+			$wp_local_dev       = WP_LOCAL_DEV ? __( 'Enabled' ) : __( 'Disabled' );
+			$wp_local_dev_debug = WP_LOCAL_DEV ? 'true' : 'false';
 		} else {
-			$wp_environment_type = __( 'Undefined' );
+			$wp_local_dev       = __( 'Undefined' );
+			$wp_local_dev_debug = 'undefined';
 		}
 
 		$info['wp-constants'] = array(
@@ -268,10 +252,6 @@ class WP_Debug_Data {
 				'WP_PLUGIN_DIR'       => array(
 					'label' => 'WP_PLUGIN_DIR',
 					'value' => WP_PLUGIN_DIR,
-				),
-				'WP_MEMORY_LIMIT'     => array(
-					'label' => 'WP_MEMORY_LIMIT',
-					'value' => WP_MEMORY_LIMIT,
 				),
 				'WP_MAX_MEMORY_LIMIT' => array(
 					'label' => 'WP_MAX_MEMORY_LIMIT',
@@ -317,10 +297,10 @@ class WP_Debug_Data {
 					'value' => $compress_css,
 					'debug' => $compress_css_debug,
 				),
-				'WP_ENVIRONMENT_TYPE' => array(
-					'label' => 'WP_ENVIRONMENT_TYPE',
-					'value' => $wp_environment_type,
-					'debug' => $wp_environment_type,
+				'WP_LOCAL_DEV'        => array(
+					'label' => 'WP_LOCAL_DEV',
+					'value' => $wp_local_dev,
+					'debug' => $wp_local_dev_debug,
 				),
 				'DB_CHARSET'          => array(
 					'label' => 'DB_CHARSET',
@@ -339,7 +319,7 @@ class WP_Debug_Data {
 		$is_writable_wp_content_dir     = wp_is_writable( WP_CONTENT_DIR );
 		$is_writable_upload_dir         = wp_is_writable( $upload_dir['basedir'] );
 		$is_writable_wp_plugin_dir      = wp_is_writable( WP_PLUGIN_DIR );
-		$is_writable_template_directory = wp_is_writable( get_theme_root( get_template() ) );
+		$is_writable_template_directory = wp_is_writable( get_template_directory() . '/..' );
 
 		$info['wp-filesystem'] = array(
 			'label'       => __( 'Filesystem Permissions' ),
@@ -389,6 +369,11 @@ class WP_Debug_Data {
 				$site_count += get_blog_count( $network_id );
 			}
 
+			$info['wp-core']['fields']['user_count'] = array(
+				'label' => __( 'User count' ),
+				'value' => get_user_count(),
+			);
+
 			$info['wp-core']['fields']['site_count'] = array(
 				'label' => __( 'Site count' ),
 				'value' => $site_count,
@@ -398,12 +383,14 @@ class WP_Debug_Data {
 				'label' => __( 'Network count' ),
 				'value' => $network_query->found_networks,
 			);
-		}
+		} else {
+			$user_count = count_users();
 
-		$info['wp-core']['fields']['user_count'] = array(
-			'label' => __( 'User count' ),
-			'value' => get_user_count(),
-		);
+			$info['wp-core']['fields']['user_count'] = array(
+				'label' => __( 'User count' ),
+				'value' => $user_count['total_users'],
+			);
+		}
 
 		// WordPress features requiring processing.
 		$wp_dotorg = wp_remote_get( 'https://wordpress.org', array( 'timeout' => 10 ) );
@@ -507,69 +494,21 @@ class WP_Debug_Data {
 		// Get ImageMagic information, if available.
 		if ( class_exists( 'Imagick' ) ) {
 			// Save the Imagick instance for later use.
-			$imagick             = new Imagick();
-			$imagemagick_version = $imagick->getVersion();
+			$imagick         = new Imagick();
+			$imagick_version = $imagick->getVersion();
 		} else {
-			$imagemagick_version = __( 'Not available' );
+			$imagick_version = __( 'Not available' );
 		}
 
 		$info['wp-media']['fields']['imagick_module_version'] = array(
 			'label' => __( 'ImageMagick version number' ),
-			'value' => ( is_array( $imagemagick_version ) ? $imagemagick_version['versionNumber'] : $imagemagick_version ),
+			'value' => ( is_array( $imagick_version ) ? $imagick_version['versionNumber'] : $imagick_version ),
 		);
 
 		$info['wp-media']['fields']['imagemagick_version'] = array(
 			'label' => __( 'ImageMagick version string' ),
-			'value' => ( is_array( $imagemagick_version ) ? $imagemagick_version['versionString'] : $imagemagick_version ),
+			'value' => ( is_array( $imagick_version ) ? $imagick_version['versionString'] : $imagick_version ),
 		);
-
-		$imagick_version = phpversion( 'imagick' );
-
-		$info['wp-media']['fields']['imagick_version'] = array(
-			'label' => __( 'Imagick version' ),
-			'value' => ( $imagick_version ) ? $imagick_version : __( 'Not available' ),
-		);
-
-		if ( ! function_exists( 'ini_get' ) ) {
-			$info['wp-media']['fields']['ini_get'] = array(
-				'label' => __( 'File upload settings' ),
-				'value' => sprintf(
-					/* translators: %s: ini_get() */
-					__( 'Unable to determine some settings, as the %s function has been disabled.' ),
-					'ini_get()'
-				),
-				'debug' => 'ini_get() is disabled',
-			);
-		} else {
-			// Get the PHP ini directive values.
-			$post_max_size       = ini_get( 'post_max_size' );
-			$upload_max_filesize = ini_get( 'upload_max_filesize' );
-			$max_file_uploads    = ini_get( 'max_file_uploads' );
-			$effective           = min( wp_convert_hr_to_bytes( $post_max_size ), wp_convert_hr_to_bytes( $upload_max_filesize ) );
-
-			// Add info in Media section.
-			$info['wp-media']['fields']['file_uploads']        = array(
-				'label' => __( 'File uploads' ),
-				'value' => empty( ini_get( 'file_uploads' ) ) ? __( 'Disabled' ) : __( 'Enabled' ),
-				'debug' => 'File uploads is turned off',
-			);
-			$info['wp-media']['fields']['post_max_size']       = array(
-				'label' => __( 'Max size of post data allowed' ),
-				'value' => $post_max_size,
-			);
-			$info['wp-media']['fields']['upload_max_filesize'] = array(
-				'label' => __( 'Max size of an uploaded file' ),
-				'value' => $upload_max_filesize,
-			);
-			$info['wp-media']['fields']['max_effective_size']  = array(
-				'label' => __( 'Max effective file size' ),
-				'value' => size_format( $effective ),
-			);
-			$info['wp-media']['fields']['max_file_uploads']    = array(
-				'label' => __( 'Max number of files allowed' ),
-				'value' => number_format( $max_file_uploads ),
-			);
-		}
 
 		// If Imagick is used as our editor, provide some more information about its limitations.
 		if ( 'WP_Image_Editor_Imagick' === _wp_image_editor_choose() && isset( $imagick ) && $imagick instanceof Imagick ) {
@@ -596,18 +535,6 @@ class WP_Debug_Data {
 				'value' => $limits,
 				'debug' => $limits_debug,
 			);
-
-			try {
-				$formats = Imagick::queryFormats( '*' );
-			} catch ( Exception $e ) {
-				$formats = array();
-			}
-
-			$info['wp-media']['fields']['imagemagick_file_formats'] = array(
-				'label' => __( 'ImageMagick supported file formats' ),
-				'value' => ( empty( $formats ) ) ? __( 'Unable to determine' ) : implode( ', ', $formats ),
-				'debug' => ( empty( $formats ) ) ? 'Unable to determine' : implode( ', ', $formats ),
-			);
 		}
 
 		// Get GD information, if available.
@@ -622,33 +549,6 @@ class WP_Debug_Data {
 			'value' => ( is_array( $gd ) ? $gd['GD Version'] : $not_available ),
 			'debug' => ( is_array( $gd ) ? $gd['GD Version'] : 'not available' ),
 		);
-
-		$gd_image_formats     = array();
-		$gd_supported_formats = array(
-			'GIF Create' => 'GIF',
-			'JPEG'       => 'JPEG',
-			'PNG'        => 'PNG',
-			'WebP'       => 'WebP',
-			'BMP'        => 'BMP',
-			'AVIF'       => 'AVIF',
-			'HEIF'       => 'HEIF',
-			'TIFF'       => 'TIFF',
-			'XPM'        => 'XPM',
-		);
-
-		foreach ( $gd_supported_formats as $format_key => $format ) {
-			$index = $format_key . ' Support';
-			if ( isset( $gd[ $index ] ) && $gd[ $index ] ) {
-				array_push( $gd_image_formats, $format );
-			}
-		}
-
-		if ( ! empty( $gd_image_formats ) ) {
-			$info['wp-media']['fields']['gd_formats'] = array(
-				'label' => __( 'GD supported file formats' ),
-				'value' => implode( ', ', $gd_image_formats ),
-			);
-		}
 
 		// Get Ghostscript information, if available.
 		if ( function_exists( 'exec' ) ) {
@@ -678,18 +578,23 @@ class WP_Debug_Data {
 			$server_architecture = 'unknown';
 		}
 
-		$php_version_debug = PHP_VERSION;
-		// Whether PHP supports 64-bit.
-		$php64bit = ( PHP_INT_SIZE * 8 === 64 );
+		if ( function_exists( 'phpversion' ) ) {
+			$php_version_debug = phpversion();
+			// Whether PHP supports 64bit
+			$php64bit = ( PHP_INT_SIZE * 8 === 64 );
 
-		$php_version = sprintf(
-			'%s %s',
-			$php_version_debug,
-			( $php64bit ? __( '(Supports 64bit values)' ) : __( '(Does not support 64bit values)' ) )
-		);
+			$php_version = sprintf(
+				'%s %s',
+				$php_version_debug,
+				( $php64bit ? __( '(Supports 64bit values)' ) : __( '(Does not support 64bit values)' ) )
+			);
 
-		if ( $php64bit ) {
-			$php_version_debug .= ' 64bit';
+			if ( $php64bit ) {
+				$php_version_debug .= ' 64bit';
+			}
+		} else {
+			$php_version       = __( 'Unable to determine PHP version' );
+			$php_version_debug = 'unknown';
 		}
 
 		if ( function_exists( 'php_sapi_name' ) ) {
@@ -739,28 +644,15 @@ class WP_Debug_Data {
 				'label' => __( 'PHP time limit' ),
 				'value' => ini_get( 'max_execution_time' ),
 			);
-
-			if ( WP_Site_Health::get_instance()->php_memory_limit !== ini_get( 'memory_limit' ) ) {
-				$info['wp-server']['fields']['memory_limit']       = array(
-					'label' => __( 'PHP memory limit' ),
-					'value' => WP_Site_Health::get_instance()->php_memory_limit,
-				);
-				$info['wp-server']['fields']['admin_memory_limit'] = array(
-					'label' => __( 'PHP memory limit (only for admin screens)' ),
-					'value' => ini_get( 'memory_limit' ),
-				);
-			} else {
-				$info['wp-server']['fields']['memory_limit'] = array(
-					'label' => __( 'PHP memory limit' ),
-					'value' => ini_get( 'memory_limit' ),
-				);
-			}
-
+			$info['wp-server']['fields']['memory_limit']        = array(
+				'label' => __( 'PHP memory limit' ),
+				'value' => ini_get( 'memory_limit' ),
+			);
 			$info['wp-server']['fields']['max_input_time']      = array(
 				'label' => __( 'Max input time' ),
 				'value' => ini_get( 'max_input_time' ),
 			);
-			$info['wp-server']['fields']['upload_max_filesize'] = array(
+			$info['wp-server']['fields']['upload_max_size']     = array(
 				'label' => __( 'Upload max filesize' ),
 				'value' => ini_get( 'upload_max_filesize' ),
 			);
@@ -785,7 +677,7 @@ class WP_Debug_Data {
 			);
 		}
 
-		// SUHOSIN.
+		// SUHOSIN
 		$suhosin_loaded = ( extension_loaded( 'suhosin' ) || ( defined( 'SUHOSIN_PATCH' ) && constant( 'SUHOSIN_PATCH' ) ) );
 
 		$info['wp-server']['fields']['suhosin'] = array(
@@ -794,22 +686,13 @@ class WP_Debug_Data {
 			'debug' => $suhosin_loaded,
 		);
 
-		// Imagick.
+		// Imagick
 		$imagick_loaded = extension_loaded( 'imagick' );
 
 		$info['wp-server']['fields']['imagick_availability'] = array(
 			'label' => __( 'Is the Imagick library available?' ),
 			'value' => ( $imagick_loaded ? __( 'Yes' ) : __( 'No' ) ),
 			'debug' => $imagick_loaded,
-		);
-
-		// Pretty permalinks.
-		$pretty_permalinks_supported = got_url_rewrite();
-
-		$info['wp-server']['fields']['pretty_permalinks'] = array(
-			'label' => __( 'Are pretty permalinks supported?' ),
-			'value' => ( $pretty_permalinks_supported ? __( 'Yes' ) : __( 'No' ) ),
-			'debug' => $pretty_permalinks_supported,
 		);
 
 		// Check if a .htaccess file exists.
@@ -821,17 +704,9 @@ class WP_Debug_Data {
 			$filtered_htaccess_content = trim( preg_replace( '/\# BEGIN WordPress[\s\S]+?# END WordPress/si', '', $htaccess_content ) );
 			$filtered_htaccess_content = ! empty( $filtered_htaccess_content );
 
-			if ( $filtered_htaccess_content ) {
-				/* translators: %s: .htaccess */
-				$htaccess_rules_string = sprintf( __( 'Custom rules have been added to your %s file.' ), '.htaccess' );
-			} else {
-				/* translators: %s: .htaccess */
-				$htaccess_rules_string = sprintf( __( 'Your %s file contains only core WordPress features.' ), '.htaccess' );
-			}
-
 			$info['wp-server']['fields']['htaccess_extra_rules'] = array(
 				'label' => __( '.htaccess rules' ),
-				'value' => $htaccess_rules_string,
+				'value' => ( $filtered_htaccess_content ? __( 'Custom rules have been added to your .htaccess file.' ) : __( 'Your .htaccess file contains only core WordPress features.' ) ),
 				'debug' => $filtered_htaccess_content,
 			);
 		}
@@ -877,7 +752,7 @@ class WP_Debug_Data {
 		);
 
 		$info['wp-database']['fields']['database_user'] = array(
-			'label'   => __( 'Database username' ),
+			'label'   => __( 'Database user' ),
 			'value'   => $wpdb->dbuser,
 			'private' => true,
 		);
@@ -895,7 +770,7 @@ class WP_Debug_Data {
 		);
 
 		$info['wp-database']['fields']['database_prefix'] = array(
-			'label'   => __( 'Table prefix' ),
+			'label'   => __( 'Database prefix' ),
 			'value'   => $wpdb->prefix,
 			'private' => true,
 		);
@@ -910,16 +785,6 @@ class WP_Debug_Data {
 			'label'   => __( 'Database collation' ),
 			'value'   => $wpdb->collate,
 			'private' => true,
-		);
-
-		$info['wp-database']['fields']['max_allowed_packet'] = array(
-			'label' => __( 'Max allowed packet size' ),
-			'value' => self::get_mysql_var( 'max_allowed_packet' ),
-		);
-
-		$info['wp-database']['fields']['max_connections'] = array(
-			'label' => __( 'Max connections number' ),
-			'value' => self::get_mysql_var( 'max_connections' ),
 		);
 
 		// List must use plugins if there are any.
@@ -960,15 +825,6 @@ class WP_Debug_Data {
 		// List all available plugins.
 		$plugins        = get_plugins();
 		$plugin_updates = get_plugin_updates();
-		$transient      = get_site_transient( 'update_plugins' );
-
-		$auto_updates = array();
-
-		$auto_updates_enabled = wp_is_auto_update_enabled_for_type( 'plugin' );
-
-		if ( $auto_updates_enabled ) {
-			$auto_updates = (array) get_site_option( 'auto_update_plugins', array() );
-		}
 
 		foreach ( $plugins as $plugin_path => $plugin ) {
 			$plugin_part = ( is_plugin_active( $plugin_path ) ) ? 'wp-plugins-active' : 'wp-plugins-inactive';
@@ -1003,59 +859,6 @@ class WP_Debug_Data {
 				$plugin_version_string_debug .= sprintf( ' (latest version: %s)', $plugin_updates[ $plugin_path ]->update->new_version );
 			}
 
-			if ( $auto_updates_enabled ) {
-				if ( isset( $transient->response[ $plugin_path ] ) ) {
-					$item = $transient->response[ $plugin_path ];
-				} elseif ( isset( $transient->no_update[ $plugin_path ] ) ) {
-					$item = $transient->no_update[ $plugin_path ];
-				} else {
-					$item = array(
-						'id'            => $plugin_path,
-						'slug'          => '',
-						'plugin'        => $plugin_path,
-						'new_version'   => '',
-						'url'           => '',
-						'package'       => '',
-						'icons'         => array(),
-						'banners'       => array(),
-						'banners_rtl'   => array(),
-						'tested'        => '',
-						'requires_php'  => '',
-						'compatibility' => new stdClass(),
-					);
-					$item = wp_parse_args( $plugin, $item );
-				}
-
-				$auto_update_forced = wp_is_auto_update_forced_for_item( 'plugin', null, (object) $item );
-
-				if ( ! is_null( $auto_update_forced ) ) {
-					$enabled = $auto_update_forced;
-				} else {
-					$enabled = in_array( $plugin_path, $auto_updates, true );
-				}
-
-				if ( $enabled ) {
-					$auto_updates_string = __( 'Auto-updates enabled' );
-				} else {
-					$auto_updates_string = __( 'Auto-updates disabled' );
-				}
-
-				/**
-				 * Filters the text string of the auto-updates setting for each plugin in the Site Health debug data.
-				 *
-				 * @since 5.5.0
-				 *
-				 * @param string $auto_updates_string The string output for the auto-updates column.
-				 * @param string $plugin_path         The path to the plugin file.
-				 * @param array  $plugin              An array of plugin data.
-				 * @param bool   $enabled             Whether auto-updates are enabled for this item.
-				 */
-				$auto_updates_string = apply_filters( 'plugin_auto_update_debug_string', $auto_updates_string, $plugin_path, $plugin, $enabled );
-
-				$plugin_version_string       .= ' | ' . $auto_updates_string;
-				$plugin_version_string_debug .= ', ' . $auto_updates_string;
-			}
-
 			$info[ $plugin_part ]['fields'][ sanitize_text_field( $plugin['Name'] ) ] = array(
 				'label' => $plugin['Name'],
 				'value' => $plugin_version_string,
@@ -1075,16 +878,10 @@ class WP_Debug_Data {
 
 		$active_theme  = wp_get_theme();
 		$theme_updates = get_theme_updates();
-		$transient     = get_site_transient( 'update_themes' );
 
-		$active_theme_version       = $active_theme->version;
+		// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		$active_theme_version       = $active_theme->Version;
 		$active_theme_version_debug = $active_theme_version;
-
-		$auto_updates         = array();
-		$auto_updates_enabled = wp_is_auto_update_enabled_for_type( 'theme' );
-		if ( $auto_updates_enabled ) {
-			$auto_updates = (array) get_site_option( 'auto_update_themes', array() );
-		}
 
 		if ( array_key_exists( $active_theme->stylesheet, $theme_updates ) ) {
 			$theme_update_new_version = $theme_updates[ $active_theme->stylesheet ]->update['new_version'];
@@ -1094,7 +891,7 @@ class WP_Debug_Data {
 			$active_theme_version_debug .= sprintf( ' (latest version: %s)', $theme_update_new_version );
 		}
 
-		$active_theme_author_uri = $active_theme->display( 'AuthorURI' );
+		$active_theme_author_uri = $active_theme->offsetGet( 'Author URI' );
 
 		if ( $active_theme->parent_theme ) {
 			$active_theme_parent_theme = sprintf(
@@ -1116,10 +913,12 @@ class WP_Debug_Data {
 		$info['wp-active-theme']['fields'] = array(
 			'name'           => array(
 				'label' => __( 'Name' ),
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				'value' => sprintf(
 					/* translators: 1: Theme name. 2: Theme slug. */
 					__( '%1$s (%2$s)' ),
-					$active_theme->name,
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$active_theme->Name,
 					$active_theme->stylesheet
 				),
 			),
@@ -1130,7 +929,8 @@ class WP_Debug_Data {
 			),
 			'author'         => array(
 				'label' => __( 'Author' ),
-				'value' => wp_kses( $active_theme->author, array() ),
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				'value' => wp_kses( $active_theme->Author, array() ),
 			),
 			'author_website' => array(
 				'label' => __( 'Author website' ),
@@ -1152,50 +952,11 @@ class WP_Debug_Data {
 			),
 		);
 
-		if ( $auto_updates_enabled ) {
-			if ( isset( $transient->response[ $active_theme->stylesheet ] ) ) {
-				$item = $transient->response[ $active_theme->stylesheet ];
-			} elseif ( isset( $transient->no_update[ $active_theme->stylesheet ] ) ) {
-				$item = $transient->no_update[ $active_theme->stylesheet ];
-			} else {
-				$item = array(
-					'theme'        => $active_theme->stylesheet,
-					'new_version'  => $active_theme->version,
-					'url'          => '',
-					'package'      => '',
-					'requires'     => '',
-					'requires_php' => '',
-				);
-			}
-
-			$auto_update_forced = wp_is_auto_update_forced_for_item( 'theme', null, (object) $item );
-
-			if ( ! is_null( $auto_update_forced ) ) {
-				$enabled = $auto_update_forced;
-			} else {
-				$enabled = in_array( $active_theme->stylesheet, $auto_updates, true );
-			}
-
-			if ( $enabled ) {
-				$auto_updates_string = __( 'Enabled' );
-			} else {
-				$auto_updates_string = __( 'Disabled' );
-			}
-
-			/** This filter is documented in wp-admin/includes/class-wp-debug-data.php */
-			$auto_updates_string = apply_filters( 'theme_auto_update_debug_string', $auto_updates_string, $active_theme, $enabled );
-
-			$info['wp-active-theme']['fields']['auto_update'] = array(
-				'label' => __( 'Auto-updates' ),
-				'value' => $auto_updates_string,
-				'debug' => $auto_updates_string,
-			);
-		}
-
 		$parent_theme = $active_theme->parent();
 
 		if ( $parent_theme ) {
-			$parent_theme_version       = $parent_theme->version;
+			// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$parent_theme_version       = $parent_theme->Version;
 			$parent_theme_version_debug = $parent_theme_version;
 
 			if ( array_key_exists( $parent_theme->stylesheet, $theme_updates ) ) {
@@ -1206,15 +967,17 @@ class WP_Debug_Data {
 				$parent_theme_version_debug .= sprintf( ' (latest version: %s)', $parent_theme_update_new_version );
 			}
 
-			$parent_theme_author_uri = $parent_theme->display( 'AuthorURI' );
+			$parent_theme_author_uri = $parent_theme->offsetGet( 'Author URI' );
 
 			$info['wp-parent-theme']['fields'] = array(
 				'name'           => array(
 					'label' => __( 'Name' ),
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 					'value' => sprintf(
 						/* translators: 1: Theme name. 2: Theme slug. */
 						__( '%1$s (%2$s)' ),
-						$parent_theme->name,
+						// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						$parent_theme->Name,
 						$parent_theme->stylesheet
 					),
 				),
@@ -1225,7 +988,8 @@ class WP_Debug_Data {
 				),
 				'author'         => array(
 					'label' => __( 'Author' ),
-					'value' => wp_kses( $parent_theme->author, array() ),
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					'value' => wp_kses( $parent_theme->Author, array() ),
 				),
 				'author_website' => array(
 					'label' => __( 'Author website' ),
@@ -1237,46 +1001,6 @@ class WP_Debug_Data {
 					'value' => get_template_directory(),
 				),
 			);
-
-			if ( $auto_updates_enabled ) {
-				if ( isset( $transient->response[ $parent_theme->stylesheet ] ) ) {
-					$item = $transient->response[ $parent_theme->stylesheet ];
-				} elseif ( isset( $transient->no_update[ $parent_theme->stylesheet ] ) ) {
-					$item = $transient->no_update[ $parent_theme->stylesheet ];
-				} else {
-					$item = array(
-						'theme'        => $parent_theme->stylesheet,
-						'new_version'  => $parent_theme->version,
-						'url'          => '',
-						'package'      => '',
-						'requires'     => '',
-						'requires_php' => '',
-					);
-				}
-
-				$auto_update_forced = wp_is_auto_update_forced_for_item( 'theme', null, (object) $item );
-
-				if ( ! is_null( $auto_update_forced ) ) {
-					$enabled = $auto_update_forced;
-				} else {
-					$enabled = in_array( $parent_theme->stylesheet, $auto_updates, true );
-				}
-
-				if ( $enabled ) {
-					$parent_theme_auto_update_string = __( 'Enabled' );
-				} else {
-					$parent_theme_auto_update_string = __( 'Disabled' );
-				}
-
-				/** This filter is documented in wp-admin/includes/class-wp-debug-data.php */
-				$parent_theme_auto_update_string = apply_filters( 'theme_auto_update_debug_string', $auto_updates_string, $parent_theme, $enabled );
-
-				$info['wp-parent-theme']['fields']['auto_update'] = array(
-					'label' => __( 'Auto-update' ),
-					'value' => $parent_theme_auto_update_string,
-					'debug' => $parent_theme_auto_update_string,
-				);
-			}
 		}
 
 		// Populate a list of all themes available in the install.
@@ -1293,10 +1017,12 @@ class WP_Debug_Data {
 				continue;
 			}
 
-			$theme_version = $theme->version;
-			$theme_author  = $theme->author;
+			// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$theme_version = $theme->Version;
+			// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$theme_author = $theme->Author;
 
-			// Sanitize.
+			// Sanitize
 			$theme_author = wp_kses( $theme_author, array() );
 
 			$theme_version_string       = __( 'No version or author information is available.' );
@@ -1326,56 +1052,13 @@ class WP_Debug_Data {
 				$theme_version_string_debug .= sprintf( ' (latest version: %s)', $theme_updates[ $theme_slug ]->update['new_version'] );
 			}
 
-			if ( $auto_updates_enabled ) {
-				if ( isset( $transient->response[ $theme_slug ] ) ) {
-					$item = $transient->response[ $theme_slug ];
-				} elseif ( isset( $transient->no_update[ $theme_slug ] ) ) {
-					$item = $transient->no_update[ $theme_slug ];
-				} else {
-					$item = array(
-						'theme'        => $theme_slug,
-						'new_version'  => $theme->version,
-						'url'          => '',
-						'package'      => '',
-						'requires'     => '',
-						'requires_php' => '',
-					);
-				}
-
-				$auto_update_forced = wp_is_auto_update_forced_for_item( 'theme', null, (object) $item );
-
-				if ( ! is_null( $auto_update_forced ) ) {
-					$enabled = $auto_update_forced;
-				} else {
-					$enabled = in_array( $theme_slug, $auto_updates, true );
-				}
-
-				if ( $enabled ) {
-					$auto_updates_string = __( 'Auto-updates enabled' );
-				} else {
-					$auto_updates_string = __( 'Auto-updates disabled' );
-				}
-
-				/**
-				 * Filters the text string of the auto-updates setting for each theme in the Site Health debug data.
-				 *
-				 * @since 5.5.0
-				 *
-				 * @param string   $auto_updates_string The string output for the auto-updates column.
-				 * @param WP_Theme $theme               An object of theme data.
-				 * @param bool     $enabled             Whether auto-updates are enabled for this item.
-				 */
-				$auto_updates_string = apply_filters( 'theme_auto_update_debug_string', $auto_updates_string, $theme, $enabled );
-
-				$theme_version_string       .= ' | ' . $auto_updates_string;
-				$theme_version_string_debug .= ', ' . $auto_updates_string;
-			}
-
-			$info['wp-themes-inactive']['fields'][ sanitize_text_field( $theme->name ) ] = array(
+			// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			$info['wp-themes-inactive']['fields'][ sanitize_text_field( $theme->Name ) ] = array(
 				'label' => sprintf(
 					/* translators: 1: Theme name. 2: Theme slug. */
 					__( '%1$s (%2$s)' ),
-					$theme->name,
+					// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+					$theme->Name,
 					$theme_slug
 				),
 				'value' => $theme_version_string,
@@ -1383,7 +1066,7 @@ class WP_Debug_Data {
 			);
 		}
 
-		// Add more filesystem checks.
+		// Add more filesystem checks
 		if ( defined( 'WPMU_PLUGIN_DIR' ) && is_dir( WPMU_PLUGIN_DIR ) ) {
 			$is_writable_wpmu_plugin_dir = wp_is_writable( WPMU_PLUGIN_DIR );
 
@@ -1395,62 +1078,44 @@ class WP_Debug_Data {
 		}
 
 		/**
-		 * Filters the debug information shown on the Tools -> Site Health -> Info screen.
+		 * Add or modify the debug information.
 		 *
-		 * Plugin or themes may wish to introduce their own debug information without creating
-		 * additional admin pages. They can utilize this filter to introduce their own sections
-		 * or add more data to existing sections.
+		 * Plugin or themes may wish to introduce their own debug information without creating additional admin pages
+		 * they can utilize this filter to introduce their own sections or add more data to existing sections.
 		 *
-		 * Array keys for sections added by core are all prefixed with `wp-`. Plugins and themes
-		 * should use their own slug as a prefix, both for consistency as well as avoiding
-		 * key collisions. Note that the array keys are used as labels for the copied data.
+		 * Array keys for sections added by core are all prefixed with `wp-`, plugins and themes should use their own slug as
+		 * a prefix, both for consistency as well as avoiding key collisions. Note that the array keys are used as labels
+		 * for the copied data.
 		 *
-		 * All strings are expected to be plain text except `$description` that can contain
-		 * inline HTML tags (see below).
+		 * All strings are expected to be plain text except $description that can contain inline HTML tags (see below).
 		 *
 		 * @since 5.2.0
 		 *
 		 * @param array $args {
 		 *     The debug information to be added to the core information page.
 		 *
-		 *     This is an associative multi-dimensional array, up to three levels deep.
-		 *     The topmost array holds the sections, keyed by section ID.
+		 *     This is an associative multi-dimensional array, up to three levels deep. The topmost array holds the sections.
+		 *     Each section has a `$fields` associative array (see below), and each `$value` in `$fields` can be
+		 *     another associative array of name/value pairs when there is more structured data to display.
 		 *
-		 *     @type array ...$0 {
-		 *         Each section has a `$fields` associative array (see below), and each `$value` in `$fields`
-		 *         can be another associative array of name/value pairs when there is more structured data
-		 *         to display.
+		 *     @type string  $label        The title for this section of the debug output.
+		 *     @type string  $description  Optional. A description for your information section which may contain basic HTML
+		 *                                 markup, inline tags only as it is outputted in a paragraph.
+		 *     @type boolean $show_count   Optional. If set to `true` the amount of fields will be included in the title for
+		 *                                 this section.
+		 *     @type boolean $private      Optional. If set to `true` the section and all associated fields will be excluded
+		 *                                 from the copied data.
+		 *     @type array   $fields {
+		 *         An associative array containing the data to be displayed.
 		 *
-		 *         @type string $label       Required. The title for this section of the debug output.
-		 *         @type string $description Optional. A description for your information section which
-		 *                                   may contain basic HTML markup, inline tags only as it is
-		 *                                   outputted in a paragraph.
-		 *         @type bool   $show_count  Optional. If set to `true`, the amount of fields will be included
-		 *                                   in the title for this section. Default false.
-		 *         @type bool   $private     Optional. If set to `true`, the section and all associated fields
-		 *                                   will be excluded from the copied data. Default false.
-		 *         @type array  $fields {
-		 *             Required. An associative array containing the fields to be displayed in the section,
-		 *             keyed by field ID.
-		 *
-		 *             @type array ...$0 {
-		 *                 An associative array containing the data to be displayed for the field.
-		 *
-		 *                 @type string $label    Required. The label for this piece of information.
-		 *                 @type mixed  $value    Required. The output that is displayed for this field.
-		 *                                        Text should be translated. Can be an associative array
-		 *                                        that is displayed as name/value pairs.
-		 *                                        Accepted types: `string|int|float|(string|int|float)[]`.
-		 *                 @type string $debug    Optional. The output that is used for this field when
-		 *                                        the user copies the data. It should be more concise and
-		 *                                        not translated. If not set, the content of `$value`
-		 *                                        is used. Note that the array keys are used as labels
-		 *                                        for the copied data.
-		 *                 @type bool   $private  Optional. If set to `true`, the field will be excluded
-		 *                                        from the copied data, allowing you to show, for example,
-		 *                                        API keys here. Default false.
-		 *             }
-		 *         }
+		 *         @type string  $label    The label for this piece of information.
+		 *         @type string  $value    The output that is displayed for this field. Text should be translated. Can be
+		 *                                 an associative array that is displayed as name/value pairs.
+		 *         @type string  $debug    Optional. The output that is used for this field when the user copies the data.
+		 *                                 It should be more concise and not translated. If not set, the content of `$value` is used.
+		 *                                 Note that the array keys are used as labels for the copied data.
+		 *         @type boolean $private  Optional. If set to `true` the field will not be included in the copied data
+		 *                                 allowing you to show, for example, API keys here.
 		 *     }
 		 * }
 		 */
@@ -1460,40 +1125,15 @@ class WP_Debug_Data {
 	}
 
 	/**
-	 * Returns the value of a MySQL system variable.
-	 *
-	 * @since 5.9.0
-	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
-	 *
-	 * @param string $mysql_var Name of the MySQL system variable.
-	 * @return string|null The variable value on success. Null if the variable does not exist.
-	 */
-	public static function get_mysql_var( $mysql_var ) {
-		global $wpdb;
-
-		$result = $wpdb->get_row(
-			$wpdb->prepare( 'SHOW VARIABLES LIKE %s', $mysql_var ),
-			ARRAY_A
-		);
-
-		if ( ! empty( $result ) && array_key_exists( 'Value', $result ) ) {
-			return $result['Value'];
-		}
-
-		return null;
-	}
-
-	/**
-	 * Formats the information gathered for debugging, in a manner suitable for copying to a forum or support ticket.
+	 * Format the information gathered for debugging, in a manner suitable for copying to a forum or support ticket.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array  $info_array Information gathered from the `WP_Debug_Data::debug_data()` function.
-	 * @param string $data_type  The data type to return, either 'info' or 'debug'.
+	 * @param array $info_array Information gathered from the `WP_Debug_Data::debug_data` function.
+	 * @param string $type      The data type to return, either 'info' or 'debug'.
 	 * @return string The formatted data.
 	 */
-	public static function format( $info_array, $data_type ) {
+	public static function format( $info_array, $type ) {
 		$return = "`\n";
 
 		foreach ( $info_array as $section => $details ) {
@@ -1502,7 +1142,7 @@ class WP_Debug_Data {
 				continue;
 			}
 
-			$section_label = 'debug' === $data_type ? $section : $details['label'];
+			$section_label = 'debug' === $type ? $section : $details['label'];
 
 			$return .= sprintf(
 				"### %s%s ###\n\n",
@@ -1515,7 +1155,7 @@ class WP_Debug_Data {
 					continue;
 				}
 
-				if ( 'debug' === $data_type && isset( $field['debug'] ) ) {
+				if ( 'debug' === $type && isset( $field['debug'] ) ) {
 					$debug_data = $field['debug'];
 				} else {
 					$debug_data = $field['value'];
@@ -1536,7 +1176,7 @@ class WP_Debug_Data {
 					$value = $debug_data;
 				}
 
-				if ( 'debug' === $data_type ) {
+				if ( 'debug' === $type ) {
 					$label = $field_name;
 				} else {
 					$label = $field['label'];
@@ -1554,7 +1194,7 @@ class WP_Debug_Data {
 	}
 
 	/**
-	 * Fetches the total size of all the database tables for the active database user.
+	 * Fetch the total size of all the database tables for the active database user.
 	 *
 	 * @since 5.2.0
 	 *
@@ -1575,7 +1215,7 @@ class WP_Debug_Data {
 	}
 
 	/**
-	 * Fetches the sizes of the WordPress directories: `wordpress` (ABSPATH), `plugins`, `themes`, and `uploads`.
+	 * Fetch the sizes of the WordPress directories: `wordpress` (ABSPATH), `plugins`, `themes`, and `uploads`.
 	 * Intended to supplement the array returned by `WP_Debug_Data::debug_data()`.
 	 *
 	 * @since 5.2.0
@@ -1598,7 +1238,7 @@ class WP_Debug_Data {
 		// The max_execution_time defaults to 0 when PHP runs from cli.
 		// We still want to limit it below.
 		if ( empty( $max_execution_time ) ) {
-			$max_execution_time = 30; // 30 seconds.
+			$max_execution_time = 30;
 		}
 
 		if ( $max_execution_time > 20 ) {

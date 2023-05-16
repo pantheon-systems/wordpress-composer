@@ -13,10 +13,6 @@
  * @return string Returns the block content with received rss items.
  */
 function render_block_core_rss( $attributes ) {
-	if ( in_array( untrailingslashit( $attributes['feedURL'] ), array( site_url(), home_url() ), true ) ) {
-		return '<div class="components-placeholder"><div class="notice notice-error">' . __( 'Adding an RSS feed to this site’s homepage is not supported, as it could lead to a loop that slows down your site. Try using another block, like the <strong>Latest Posts</strong> block, to list posts from the site.' ) . '</div></div>';
-	}
-
 	$rss = fetch_feed( $attributes['feedURL'] );
 
 	if ( is_wp_error( $rss ) ) {
@@ -24,6 +20,10 @@ function render_block_core_rss( $attributes ) {
 	}
 
 	if ( ! $rss->get_item_quantity() ) {
+		// PHP 5.2 compatibility. See: http://simplepie.org/wiki/faq/i_m_getting_memory_leaks.
+		$rss->__destruct();
+		unset( $rss );
+
 		return '<div class="components-placeholder"><div class="notice notice-error">' . __( 'An error has occurred, which probably means the feed is down. Try again later.' ) . '</div></div>';
 	}
 
@@ -59,11 +59,7 @@ function render_block_core_rss( $attributes ) {
 			$author = $item->get_author();
 			if ( is_object( $author ) ) {
 				$author = $author->get_name();
-				$author = '<span class="wp-block-rss__item-author">' . sprintf(
-					/* translators: %s: the author. */
-					__( 'by %s' ),
-					esc_html( strip_tags( $author ) )
-				) . '</span>';
+				$author = '<span class="wp-block-rss__item-author">' . __( 'by' ) . ' ' . esc_html( strip_tags( $author ) ) . '</span>';
 			}
 		}
 
@@ -83,35 +79,80 @@ function render_block_core_rss( $attributes ) {
 		$list_items .= "<li class='wp-block-rss__item'>{$title}{$date}{$author}{$excerpt}</li>";
 	}
 
-	$classnames = array();
+	$class = 'wp-block-rss';
+	if ( isset( $attributes['align'] ) ) {
+		$class .= ' align' . $attributes['align'];
+	}
+
 	if ( isset( $attributes['blockLayout'] ) && 'grid' === $attributes['blockLayout'] ) {
-		$classnames[] = 'is-grid';
+		$class .= ' is-grid';
 	}
+
 	if ( isset( $attributes['columns'] ) && 'grid' === $attributes['blockLayout'] ) {
-		$classnames[] = 'columns-' . $attributes['columns'];
-	}
-	if ( $attributes['displayDate'] ) {
-		$classnames[] = 'has-dates';
-	}
-	if ( $attributes['displayAuthor'] ) {
-		$classnames[] = 'has-authors';
-	}
-	if ( $attributes['displayExcerpt'] ) {
-		$classnames[] = 'has-excerpts';
+		$class .= ' columns-' . $attributes['columns'];
 	}
 
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $classnames ) ) );
+	if ( isset( $attributes['className'] ) ) {
+		$class .= ' ' . $attributes['className'];
+	}
 
-	return sprintf( '<ul %s>%s</ul>', $wrapper_attributes, $list_items );
+	$list_items_markup = sprintf( "<ul class='%s'>%s</ul>", esc_attr( $class ), $list_items );
+
+	// PHP 5.2 compatibility. See: http://simplepie.org/wiki/faq/i_m_getting_memory_leaks.
+	$rss->__destruct();
+	unset( $rss );
+
+	return $list_items_markup;
 }
 
 /**
  * Registers the `core/rss` block on server.
  */
 function register_block_core_rss() {
-	register_block_type_from_metadata(
-		__DIR__ . '/rss',
+	register_block_type(
+		'core/rss',
 		array(
+			'attributes'      => array(
+				'align'          => array(
+					'type' => 'string',
+					'enum' => array( 'left', 'center', 'right', 'wide', 'full' ),
+				),
+				'className'      => array(
+					'type' => 'string',
+				),
+				'columns'        => array(
+					'type'    => 'number',
+					'default' => 2,
+				),
+				'blockLayout'    => array(
+					'type'    => 'string',
+					'default' => 'list',
+				),
+				'feedURL'        => array(
+					'type'    => 'string',
+					'default' => '',
+				),
+				'itemsToShow'    => array(
+					'type'    => 'number',
+					'default' => 5,
+				),
+				'displayExcerpt' => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
+				'displayAuthor'  => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
+				'displayDate'    => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
+				'excerptLength'  => array(
+					'type'    => 'number',
+					'default' => 55,
+				),
+			),
 			'render_callback' => 'render_block_core_rss',
 		)
 	);

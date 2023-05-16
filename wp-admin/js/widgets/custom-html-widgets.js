@@ -44,7 +44,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 		 * @param {jQuery} options.el - Control field container element.
 		 * @param {jQuery} options.syncContainer - Container element where fields are synced for the server.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		initialize: function initialize( options ) {
 			var control = this;
@@ -97,7 +97,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 		 * A field will only be updated if it is not currently focused, to avoid
 		 * overwriting content that the user is entering.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		updateFields: function updateFields() {
 			var control = this, syncInput;
@@ -123,7 +123,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 		 * Show linting error notice.
 		 *
 		 * @param {Array} errorAnnotations - Error annotations.
-		 * @return {void}
+		 * @returns {void}
 		 */
 		updateErrorNotice: function( errorAnnotations ) {
 			var control = this, errorNotice, message = '', customizeSetting;
@@ -164,7 +164,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 		/**
 		 * Initialize editor.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		initializeEditor: function initializeEditor() {
 			var control = this, settings;
@@ -180,7 +180,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 				 *
 				 * @ignore
 				 *
-				 * @return {void}
+				 * @returns {void}
 				 */
 				onTabPrevious: function onTabPrevious() {
 					control.fields.title.focus();
@@ -191,7 +191,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 				 *
 				 * @ignore
 				 *
-				 * @return {void}
+				 * @returns {void}
 				 */
 				onTabNext: function onTabNext() {
 					var tabbables = control.syncContainer.add( control.syncContainer.parent().find( '.widget-position, .widget-control-actions' ) ).find( ':tabbable' );
@@ -204,7 +204,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 				 * @ignore
 				 *
 				 * @param {Array} errorAnnotations - Error notifications.
-				 * @return {void}
+				 * @returns {void}
 				 */
 				onChangeLintingErrors: function onChangeLintingErrors( errorAnnotations ) {
 					control.currentErrorAnnotations = errorAnnotations;
@@ -216,7 +216,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 				 * @ignore
 				 *
 				 * @param {Array} errorAnnotations - Error annotations.
-				 * @return {void}
+				 * @returns {void}
 				 */
 				onUpdateErrorNotice: function onUpdateErrorNotice( errorAnnotations ) {
 					control.saveButton.toggleClass( 'validation-blocked disabled', errorAnnotations.length > 0 );
@@ -288,7 +288,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 	 * @param {jQuery.Event} event - Event.
 	 * @param {jQuery}       widgetContainer - Widget container element.
 	 *
-	 * @return {void}
+	 * @returns {void}
 	 */
 	component.handleWidgetAdded = function handleWidgetAdded( event, widgetContainer ) {
 		var widgetForm, idBase, widgetControl, widgetId, animatedCheckDelay = 50, renderWhenAnimationDone, fieldContainer, syncContainer;
@@ -347,7 +347,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 	 *
 	 * @alias wp.customHtmlWidgets.setupAccessibleMode
 	 *
-	 * @return {void}
+	 * @returns {void}
 	 */
 	component.setupAccessibleMode = function setupAccessibleMode() {
 		var widgetForm, idBase, widgetControl, fieldContainer, syncContainer;
@@ -356,7 +356,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 			return;
 		}
 
-		idBase = widgetForm.find( '.id_base' ).val();
+		idBase = widgetForm.find( '> .widget-control-actions > .id_base' ).val();
 		if ( -1 === component.idBases.indexOf( idBase ) ) {
 			return;
 		}
@@ -384,7 +384,7 @@ wp.customHtmlWidgets = ( function( $ ) {
 	 *
 	 * @param {jQuery.Event} event - Event.
 	 * @param {jQuery}       widgetContainer - Widget container element.
-	 * @return {void}
+	 * @returns {void}
 	 */
 	component.handleWidgetUpdated = function handleWidgetUpdated( event, widgetContainer ) {
 		var widgetForm, widgetId, widgetControl, idBase;
@@ -413,9 +413,9 @@ wp.customHtmlWidgets = ( function( $ ) {
 	 *
 	 * @alias wp.customHtmlWidgets.init
 	 *
-	 * @param {Object} settings - Options for code editor, exported from PHP.
+	 * @param {object} settings - Options for code editor, exported from PHP.
 	 *
-	 * @return {void}
+	 * @returns {void}
 	 */
 	component.init = function init( settings ) {
 		var $document = $( document );
@@ -446,15 +446,9 @@ wp.customHtmlWidgets = ( function( $ ) {
 			});
 
 			// Accessibility mode.
-			if ( document.readyState === 'complete' ) {
-				// Page is fully loaded.
+			$( window ).on( 'load', function() {
 				component.setupAccessibleMode();
-			} else {
-				// Page is still loading.
-				$( window ).on( 'load', function() {
-					component.setupAccessibleMode();
-				});
-			}
+			});
 		});
 	};
 

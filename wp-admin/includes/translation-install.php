@@ -14,14 +14,13 @@
  *
  * @param string       $type Type of translations. Accepts 'plugins', 'themes', 'core'.
  * @param array|object $args Translation API arguments. Optional.
- * @return array|WP_Error On success an associative array of translations, WP_Error on failure.
+ * @return object|WP_Error On success an object of translations, WP_Error on failure.
  */
 function translations_api( $type, $args = null ) {
-	// Include an unmodified $wp_version.
-	require ABSPATH . WPINC . '/version.php';
+	include( ABSPATH . WPINC . '/version.php' ); // include an unmodified $wp_version
 
-	if ( ! in_array( $type, array( 'plugins', 'themes', 'core' ), true ) ) {
-		return new WP_Error( 'invalid_type', __( 'Invalid translation type.' ) );
+	if ( ! in_array( $type, array( 'plugins', 'themes', 'core' ) ) ) {
+		return  new WP_Error( 'invalid_type', __( 'Invalid translation type.' ) );
 	}
 
 	/**
@@ -29,7 +28,7 @@ function translations_api( $type, $args = null ) {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param false|array $result The result array. Default false.
+	 * @param bool|array  $result The result object. Default false.
 	 * @param string      $type   The type of translations being requested.
 	 * @param object      $args   Translation API arguments.
 	 */
@@ -48,12 +47,12 @@ function translations_api( $type, $args = null ) {
 			'body'    => array(
 				'wp_version' => $wp_version,
 				'locale'     => get_locale(),
-				'version'    => $args['version'], // Version of plugin, theme or core.
+				'version'    => $args['version'], // Version of plugin, theme or core
 			),
 		);
 
 		if ( 'core' !== $type ) {
-			$options['body']['slug'] = $args['slug']; // Plugin or theme slug.
+			$options['body']['slug'] = $args['slug']; // Plugin or theme slug
 		}
 
 		$request = wp_remote_post( $url, $options );
@@ -102,9 +101,9 @@ function translations_api( $type, $args = null ) {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param array|WP_Error $res  Response as an associative array or WP_Error.
-	 * @param string         $type The type of translations being requested.
-	 * @param object         $args Translation API arguments.
+	 * @param object|WP_Error $res  Response object or WP_Error.
+	 * @param string          $type The type of translations being requested.
+	 * @param object          $args Translation API arguments.
 	 */
 	return apply_filters( 'translations_api_result', $res, $type, $args );
 }
@@ -116,8 +115,8 @@ function translations_api( $type, $args = null ) {
  *
  * @see translations_api()
  *
- * @return array[] Array of translations, each an array of data, keyed by the language. If the API response results
- *                 in an error, an empty array will be returned.
+ * @return array Array of translations, each an array of data. If the API response results
+ *               in an error, an empty array will be returned.
  */
 function wp_get_available_translations() {
 	if ( ! wp_installing() ) {
@@ -127,8 +126,7 @@ function wp_get_available_translations() {
 		}
 	}
 
-	// Include an unmodified $wp_version.
-	require ABSPATH . WPINC . '/version.php';
+	include( ABSPATH . WPINC . '/version.php' ); // include an unmodified $wp_version
 
 	$api = translations_api( 'core', array( 'version' => $wp_version ) );
 
@@ -154,9 +152,9 @@ function wp_get_available_translations() {
  *
  * @since 4.0.0
  *
- * @global string $wp_local_package Locale code of the package.
+ * @global string $wp_local_package
  *
- * @param array[] $languages Array of available languages (populated via the Translation API).
+ * @param array $languages Array of available languages (populated via the Translation API).
  */
 function wp_install_language_form( $languages ) {
 	global $wp_local_package;
@@ -175,8 +173,8 @@ function wp_install_language_form( $languages ) {
 				'<option value="%s" lang="%s" data-continue="%s"%s>%s</option>' . "\n",
 				esc_attr( $language['language'] ),
 				esc_attr( current( $language['iso'] ) ),
-				esc_attr( $language['strings']['continue'] ? $language['strings']['continue'] : 'Continue' ),
-				in_array( $language['language'], $installed_languages, true ) ? ' data-installed="1"' : '',
+				esc_attr( $language['strings']['continue'] ),
+				in_array( $language['language'], $installed_languages ) ? ' data-installed="1"' : '',
 				esc_html( $language['native_name'] )
 			);
 
@@ -189,8 +187,8 @@ function wp_install_language_form( $languages ) {
 			'<option value="%s" lang="%s" data-continue="%s"%s>%s</option>' . "\n",
 			esc_attr( $language['language'] ),
 			esc_attr( current( $language['iso'] ) ),
-			esc_attr( $language['strings']['continue'] ? $language['strings']['continue'] : 'Continue' ),
-			in_array( $language['language'], $installed_languages, true ) ? ' data-installed="1"' : '',
+			esc_attr( $language['strings']['continue'] ),
+			in_array( $language['language'], $installed_languages ) ? ' data-installed="1"' : '',
 			esc_html( $language['native_name'] )
 		);
 	}
@@ -206,12 +204,12 @@ function wp_install_language_form( $languages ) {
  * @see wp_get_available_translations()
  *
  * @param string $download Language code to download.
- * @return string|false Returns the language code if successfully downloaded
- *                      (or already installed), or false on failure.
+ * @return string|bool Returns the language code if successfully downloaded
+ *                     (or already installed), or false on failure.
  */
 function wp_download_language_pack( $download ) {
 	// Check if the translation is already installed.
-	if ( in_array( $download, get_available_languages(), true ) ) {
+	if ( in_array( $download, get_available_languages() ) ) {
 		return $download;
 	}
 

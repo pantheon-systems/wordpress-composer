@@ -21,7 +21,7 @@
 		/**
 		 * Create the default states.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		createStates: function createStates() {
 			this.states.add([
@@ -88,7 +88,7 @@
 		 * Map model props to media frame props.
 		 *
 		 * @param {Object} modelProps - Model props.
-		 * @return {Object} Media frame props.
+		 * @returns {Object} Media frame props.
 		 */
 		mapModelToMediaFrameProps: function mapModelToMediaFrameProps( modelProps ) {
 			var control = this, mediaFrameProps;
@@ -100,7 +100,7 @@
 		/**
 		 * Fetches embed data for external videos.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		fetchEmbed: function fetchEmbed() {
 			var control = this, url;
@@ -144,7 +144,7 @@
 		 *
 		 * @deprecated since 4.9.
 		 *
-		 * @return {boolean} Whether url is a supported video host.
+		 * @returns {boolean} Whether url is a supported video host.
 		 */
 		isHostedVideo: function isHostedVideo() {
 			return true;
@@ -153,7 +153,7 @@
 		/**
 		 * Render preview.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		renderPreview: function renderPreview() {
 			var control = this, previewContainer, previewTemplate, attachmentId, attachmentUrl, poster, html = '', isOEmbed = false, mime, error, urlParser, matches;
@@ -211,7 +211,7 @@
 		/**
 		 * Open the media image-edit frame to modify the selected item.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		editMedia: function editMedia() {
 			var control = this, mediaFrame, metadata, updateCallback;

@@ -113,7 +113,7 @@ wpList = {
 		 * @param {object}      settings        Settings for the current list.
 		 * @param {string}      action          The type of action to perform: 'add', 'delete', or 'dim'.
 		 * @param {string}      backgroundColor Background color of the list's DOM element.
-		 * @return {boolean} Whether to proceed with the action or not.
+		 * @returns {boolean} Whether to proceed with the action or not.
 		 */
 		confirm: null,
 
@@ -124,7 +124,7 @@ wpList = {
 		 *
 		 * @callback wpList~addBefore
 		 * @param {object} settings Settings for the Ajax request.
-		 * @return {object|boolean} Settings for the Ajax request or false to abort.
+		 * @returns {object|boolean} Settings for the Ajax request or false to abort.
 		 */
 		addBefore: null,
 
@@ -149,7 +149,7 @@ wpList = {
 		 * @callback wpList~delBefore
 		 * @param {object}      settings Settings for the Ajax request.
 		 * @param {HTMLElement} list     The list DOM element.
-		 * @return {object|boolean} Settings for the Ajax request or false to abort.
+		 * @returns {object|boolean} Settings for the Ajax request or false to abort.
 		 */
 		delBefore: null,
 
@@ -173,7 +173,7 @@ wpList = {
 		 *
 		 * @callback wpList~dimBefore
 		 * @param {object} settings Settings for the Ajax request.
-		 * @return {object|boolean} Settings for the Ajax request or false to abort.
+		 * @returns {object|boolean} Settings for the Ajax request or false to abort.
 		 */
 		dimBefore: null,
 
@@ -202,8 +202,8 @@ wpList = {
 	 * 6. 0 if none can be found.
 	 *
 	 * @param {jQuery} element  Element that triggered the request.
-	 * @param {Object} settings Settings for the Ajax request.
-	 * @return {string|number} Nonce
+	 * @param {object} settings Settings for the Ajax request.
+	 * @returns {string|number} Nonce
 	 */
 	nonce: function( element, settings ) {
 		var url      = wpAjax.unserialize( element.attr( 'href' ) ),
@@ -218,7 +218,7 @@ wpList = {
 	 * Example 1: data-wp-lists="delete:the-comment-list:comment-{comment_ID}:66cc66:unspam=1"
 	 * Example 2: data-wp-lists="dim:the-comment-list:comment-{comment_ID}:unapproved:e7e7d3:e7e7d3:new=approved"
 	 *
-	 * Returns an unassociative array with the following data:
+	 * Returns an unassociated array with the following data:
 	 * data[0] - Data identifier: 'list', 'add', 'delete', or 'dim'.
 	 * data[1] - ID of the corresponding list. If data[0] is 'list', the type of list ('comment', 'category', etc).
 	 * data[2] - ID of the parent element of all inputs necessary for the request.
@@ -235,9 +235,9 @@ wpList = {
 	 * data[3] - 66cc66
 	 * data[4] - unspam=1
 	 *
-	 * @param {HTMLElement} element The DOM element.
-	 * @param {string}      type    The type of data to look for: 'list', 'add', 'delete', or 'dim'.
-	 * @return {Array} Extracted list item data.
+	 * @param  {HTMLElement} element The DOM element.
+	 * @param  {string}      type    The type of data to look for: 'list', 'add', 'delete', or 'dim'.
+	 * @returns {Array} Extracted list item data.
 	 */
 	parseData: function( element, type ) {
 		var data = [], wpListsData;
@@ -258,9 +258,9 @@ wpList = {
 	 * Calls a confirm callback to verify the action that is about to be performed.
 	 *
 	 * @param {HTMLElement} list     The DOM element.
-	 * @param {Object}      settings Settings for this list.
+	 * @param {object}      settings Settings for this list.
 	 * @param {string}      action   The type of action to perform: 'add', 'delete', or 'dim'.
-	 * @return {Object|boolean} Settings if confirmed, false if not.
+	 * @returns {object|boolean} Settings if confirmed, false if not.
 	 */
 	pre: function( list, settings, action ) {
 		var $element, backgroundColor, confirmed;
@@ -271,7 +271,7 @@ wpList = {
 			target:  list.get( 0 )
 		}, settings || {} );
 
-		if ( typeof settings.confirm === 'function' ) {
+		if ( $.isFunction( settings.confirm ) ) {
 			$element = $( '#' + settings.element );
 
 			if ( 'add' !== action ) {
@@ -294,11 +294,11 @@ wpList = {
 	},
 
 	/**
-	 * Adds an item to the list via Ajax.
+	 * Adds an item to the list via AJAX.
 	 *
 	 * @param {HTMLElement} element  The DOM element.
-	 * @param {Object}      settings Settings for this list.
-	 * @return {boolean} Whether the item was added.
+	 * @param {object}      settings Settings for this list.
+	 * @returns {boolean} Whether the item was added.
 	 */
 	ajaxAdd: function( element, settings ) {
 		var list     = this,
@@ -337,13 +337,13 @@ wpList = {
 		}, wpAjax.unserialize( data[4] || '' ) ) );
 
 		formValues = $( '#' + settings.element + ' :input' ).not( '[name="_ajax_nonce"], [name="_wpnonce"], [name="action"]' );
-		formData   = typeof formValues.fieldSerialize === 'function' ? formValues.fieldSerialize() : formValues.serialize();
+		formData   = $.isFunction( formValues.fieldSerialize ) ? formValues.fieldSerialize() : formValues.serialize();
 
 		if ( formData ) {
 			settings.data += '&' + formData;
 		}
 
-		if ( typeof settings.addBefore === 'function' ) {
+		if ( $.isFunction( settings.addBefore ) ) {
 			settings = settings.addBefore( settings );
 
 			if ( ! settings ) {
@@ -381,7 +381,7 @@ wpList = {
 		};
 
 		settings.complete = function( jqXHR, status ) {
-			if ( typeof settings.addAfter === 'function' ) {
+			if ( $.isFunction( settings.addAfter ) ) {
 				settings.addAfter( returnedResponse, $.extend( {
 					xml:    jqXHR,
 					status: status,
@@ -396,11 +396,11 @@ wpList = {
 	},
 
 	/**
-	 * Delete an item in the list via Ajax.
+	 * Delete an item in the list via AJAX.
 	 *
 	 * @param {HTMLElement} element  A DOM element containing item data.
-	 * @param {Object}      settings Settings for this list.
-	 * @return {boolean} Whether the item was deleted.
+	 * @param {object}      settings Settings for this list.
+	 * @returns {boolean} Whether the item was deleted.
 	 */
 	ajaxDel: function( element, settings ) {
 		var list     = this,
@@ -427,7 +427,7 @@ wpList = {
 			id:          settings.element.split( '-' ).pop()
 		}, wpAjax.unserialize( data[4] || '' ) );
 
-		if ( typeof settings.delBefore === 'function' ) {
+		if ( $.isFunction( settings.delBefore ) ) {
 			settings = settings.delBefore( settings, list );
 
 			if ( ! settings ) {
@@ -466,7 +466,7 @@ wpList = {
 		};
 
 		settings.complete = function( jqXHR, status ) {
-			if ( typeof settings.delAfter === 'function' ) {
+			if ( $.isFunction( settings.delAfter ) ) {
 				$eventTarget.queue( function() {
 					settings.delAfter( returnedResponse, $.extend( {
 						xml:    jqXHR,
@@ -483,11 +483,11 @@ wpList = {
 	},
 
 	/**
-	 * Dim an item in the list via Ajax.
+	 * Dim an item in the list via AJAX.
 	 *
 	 * @param {HTMLElement} element  A DOM element containing item data.
-	 * @param {Object}      settings Settings for this list.
-	 * @return {boolean} Whether the item was dim'ed.
+	 * @param {object}      settings Settings for this list.
+	 * @returns {boolean} Whether the item was dim'ed.
 	 */
 	ajaxDim: function( element, settings ) {
 		var list     = this,
@@ -522,7 +522,7 @@ wpList = {
 			dimClass:    settings.dimClass
 		}, wpAjax.unserialize( data[6] || '' ) );
 
-		if ( typeof settings.dimBefore === 'function' ) {
+		if ( $.isFunction( settings.dimBefore ) ) {
 			settings = settings.dimBefore( settings );
 
 			if ( ! settings ) {
@@ -591,7 +591,7 @@ wpList = {
 		};
 
 		settings.complete = function( jqXHR, status ) {
-			if ( typeof settings.dimAfter === 'function' ) {
+			if ( $.isFunction( settings.dimAfter ) ) {
 				$eventTarget.queue( function() {
 					settings.dimAfter( returnedResponse, $.extend( {
 						xml:    jqXHR,
@@ -611,7 +611,7 @@ wpList = {
 	 * Returns the background color of the passed element.
 	 *
 	 * @param {jQuery|string} element Element to check.
-	 * @return {string} Background color value in HEX. Default: '#ffffff'.
+	 * @returns {string} Background color value in HEX. Default: '#ffffff'.
 	 */
 	getColor: function( element ) {
 		return $( element ).css( 'backgroundColor' ) || '#ffffff';
@@ -621,8 +621,8 @@ wpList = {
 	 * Adds something.
 	 *
 	 * @param {HTMLElement} element  A DOM element containing item data.
-	 * @param {Object}      settings Settings for this list.
-	 * @return {boolean} Whether the item was added.
+	 * @param {object}      settings Settings for this list.
+	 * @returns {boolean} Whether the item was added.
 	 */
 	add: function( element, settings ) {
 		var $list    = $( this ),
@@ -835,7 +835,7 @@ wpList = {
  *                                                Default: null.
  * @param {wpList~dimBefore} settings.dimBefore   Callback that's run before an item gets dim'd. Default: null.
  * @param {wpList~dimAfter}  settings.dimAfter    Callback that's run after an item got dim'd. Default: null.
- * @return {$.fn} wpList API function.
+ * @returns {$.fn} wpList API function.
  */
 $.fn.wpList = function( settings ) {
 	this.each( function( index, list ) {

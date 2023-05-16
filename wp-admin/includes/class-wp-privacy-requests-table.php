@@ -35,7 +35,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	 *
 	 * @since 4.9.6
 	 *
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return array Array of columns.
 	 */
 	public function get_columns() {
 		$columns = array(
@@ -43,7 +43,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 			'email'             => __( 'Requester' ),
 			'status'            => __( 'Status' ),
 			'created_timestamp' => __( 'Requested' ),
-			'next_steps'        => __( 'Next steps' ),
+			'next_steps'        => __( 'Next Steps' ),
 		);
 		return $columns;
 	}
@@ -73,11 +73,9 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	 * @return array Default sortable columns.
 	 */
 	protected function get_sortable_columns() {
-		/*
-		 * The initial sorting is by 'Requested' (post_date) and descending.
-		 * With initial sorting, the first click on 'Requested' should be ascending.
-		 * With 'Requester' sorting active, the next click on 'Requested' should be descending.
-		 */
+		// The initial sorting is by 'Requested' (post_date) and descending.
+		// With initial sorting, the first click on 'Requested' should be ascending.
+		// With 'Requester' sorting active, the next click on 'Requested' should be descending.
 		$desc_first = isset( $_GET['orderby'] );
 
 		return array(
@@ -101,8 +99,6 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	 * Count number of requests for each status.
 	 *
 	 * @since 4.9.6
-	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
 	 * @return object Number of posts for each status.
 	 */
@@ -141,7 +137,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	 *
 	 * @since 4.9.6
 	 *
-	 * @return string[] An array of HTML links keyed by their view.
+	 * @return array Associative array of views in the format of $view_name => $view_markup.
 	 */
 	protected function get_views() {
 		$current_status = isset( $_REQUEST['filter-status'] ) ? sanitize_text_field( $_REQUEST['filter-status'] ) : '';
@@ -150,10 +146,11 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 		$counts         = $this->get_request_counts();
 		$total_requests = absint( array_sum( (array) $counts ) );
 
-		// Normalized admin URL.
+		// Normalized admin URL
 		$admin_url = $this->get_admin_url();
 
-		$status_label = sprintf(
+		$current_link_attributes = empty( $current_status ) ? ' class="current" aria-current="page"' : '';
+		$status_label            = sprintf(
 			/* translators: %s: Number of requests. */
 			_nx(
 				'All <span class="count">(%s)</span>',
@@ -164,10 +161,11 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 			number_format_i18n( $total_requests )
 		);
 
-		$views['all'] = array(
-			'url'     => esc_url( $admin_url ),
-			'label'   => $status_label,
-			'current' => empty( $current_status ),
+		$views['all'] = sprintf(
+			'<a href="%s"%s>%s</a>',
+			esc_url( $admin_url ),
+			$current_link_attributes,
+			$status_label
 		);
 
 		foreach ( $statuses as $status => $label ) {
@@ -176,11 +174,8 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 				continue;
 			}
 
-			$total_status_requests = absint( $counts->{$status} );
-
-			if ( ! $total_status_requests ) {
-				continue;
-			}
+			$current_link_attributes = $status === $current_status ? ' class="current" aria-current="page"' : '';
+			$total_status_requests   = absint( $counts->{$status} );
 
 			$status_label = sprintf(
 				translate_nooped_plural( $post_status->label_count, $total_status_requests ),
@@ -189,14 +184,15 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 
 			$status_link = add_query_arg( 'filter-status', $status, $admin_url );
 
-			$views[ $status ] = array(
-				'url'     => esc_url( $status_link ),
-				'label'   => $status_label,
-				'current' => $status === $current_status,
+			$views[ $status ] = sprintf(
+				'<a href="%s"%s>%s</a>',
+				esc_url( $status_link ),
+				$current_link_attributes,
+				$status_label
 			);
 		}
 
-		return $this->get_views_links( $views );
+		return $views;
 	}
 
 	/**
@@ -204,13 +200,12 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	 *
 	 * @since 4.9.6
 	 *
-	 * @return array Array of bulk action labels keyed by their action.
+	 * @return array List of bulk actions.
 	 */
 	protected function get_bulk_actions() {
 		return array(
-			'resend'   => __( 'Resend confirmation requests' ),
-			'complete' => __( 'Mark requests as completed' ),
-			'delete'   => __( 'Delete requests' ),
+			'delete' => __( 'Remove' ),
+			'resend' => __( 'Resend email' ),
 		);
 	}
 
@@ -218,74 +213,38 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	 * Process bulk actions.
 	 *
 	 * @since 4.9.6
-	 * @since 5.6.0 Added support for the `complete` action.
 	 */
 	public function process_bulk_action() {
 		$action      = $this->current_action();
 		$request_ids = isset( $_REQUEST['request_id'] ) ? wp_parse_id_list( wp_unslash( $_REQUEST['request_id'] ) ) : array();
 
-		if ( empty( $request_ids ) ) {
-			return;
+		$count = 0;
+
+		if ( $request_ids ) {
+			check_admin_referer( 'bulk-privacy_requests' );
 		}
 
-		$count    = 0;
-		$failures = 0;
-
-		check_admin_referer( 'bulk-privacy_requests' );
-
 		switch ( $action ) {
+			case 'delete':
+				foreach ( $request_ids as $request_id ) {
+					if ( wp_delete_post( $request_id, true ) ) {
+						$count ++;
+					}
+				}
+
+				add_settings_error(
+					'bulk_action',
+					'bulk_action',
+					/* translators: %d: Number of requests. */
+					sprintf( _n( 'Deleted %d request', 'Deleted %d requests', $count ), $count ),
+					'success'
+				);
+				break;
 			case 'resend':
 				foreach ( $request_ids as $request_id ) {
 					$resend = _wp_privacy_resend_request( $request_id );
 
 					if ( $resend && ! is_wp_error( $resend ) ) {
-						$count++;
-					} else {
-						$failures++;
-					}
-				}
-
-				if ( $failures ) {
-					add_settings_error(
-						'bulk_action',
-						'bulk_action',
-						sprintf(
-							/* translators: %d: Number of requests. */
-							_n(
-								'%d confirmation request failed to resend.',
-								'%d confirmation requests failed to resend.',
-								$failures
-							),
-							$failures
-						),
-						'error'
-					);
-				}
-
-				if ( $count ) {
-					add_settings_error(
-						'bulk_action',
-						'bulk_action',
-						sprintf(
-							/* translators: %d: Number of requests. */
-							_n(
-								'%d confirmation request re-sent successfully.',
-								'%d confirmation requests re-sent successfully.',
-								$count
-							),
-							$count
-						),
-						'success'
-					);
-				}
-
-				break;
-
-			case 'complete':
-				foreach ( $request_ids as $request_id ) {
-					$result = _wp_privacy_completed_request( $request_id );
-
-					if ( $result && ! is_wp_error( $result ) ) {
 						$count++;
 					}
 				}
@@ -293,62 +252,10 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 				add_settings_error(
 					'bulk_action',
 					'bulk_action',
-					sprintf(
-						/* translators: %d: Number of requests. */
-						_n(
-							'%d request marked as complete.',
-							'%d requests marked as complete.',
-							$count
-						),
-						$count
-					),
+					/* translators: %d: Number of requests. */
+					sprintf( _n( 'Re-sent %d request', 'Re-sent %d requests', $count ), $count ),
 					'success'
 				);
-				break;
-
-			case 'delete':
-				foreach ( $request_ids as $request_id ) {
-					if ( wp_delete_post( $request_id, true ) ) {
-						$count++;
-					} else {
-						$failures++;
-					}
-				}
-
-				if ( $failures ) {
-					add_settings_error(
-						'bulk_action',
-						'bulk_action',
-						sprintf(
-							/* translators: %d: Number of requests. */
-							_n(
-								'%d request failed to delete.',
-								'%d requests failed to delete.',
-								$failures
-							),
-							$failures
-						),
-						'error'
-					);
-				}
-
-				if ( $count ) {
-					add_settings_error(
-						'bulk_action',
-						'bulk_action',
-						sprintf(
-							/* translators: %d: Number of requests. */
-							_n(
-								'%d request deleted successfully.',
-								'%d requests deleted successfully.',
-								$count
-							),
-							$count
-						),
-						'success'
-					);
-				}
-
 				break;
 		}
 	}
@@ -393,7 +300,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 		$requests       = $requests_query->posts;
 
 		foreach ( $requests as $request ) {
-			$this->items[] = wp_get_user_request( $request->ID );
+			$this->items[] = wp_get_user_request_data( $request->ID );
 		}
 
 		$this->items = array_filter( $this->items );
@@ -482,36 +389,19 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	 * Default column handler.
 	 *
 	 * @since 4.9.6
-	 * @since 5.7.0 Added `manage_{$this->screen->id}_custom_column` action.
 	 *
 	 * @param WP_User_Request $item        Item being shown.
 	 * @param string          $column_name Name of column being shown.
+	 * @return string Default column output.
 	 */
 	public function column_default( $item, $column_name ) {
-		/**
-		 * Fires for each custom column of a specific request type in the Requests list table.
-		 *
-		 * Custom columns are registered using the {@see 'manage_export-personal-data_columns'}
-		 * and the {@see 'manage_erase-personal-data_columns'} filters.
-		 *
-		 * @since 5.7.0
-		 *
-		 * @param string          $column_name The name of the column to display.
-		 * @param WP_User_Request $item        The item being shown.
-		 */
-		do_action( "manage_{$this->screen->id}_custom_column", $column_name, $item );
-	}
+		$cell_value = $item->$column_name;
 
-	/**
-	 * Created timestamp column. Overridden by children.
-	 *
-	 * @since 5.7.0
-	 *
-	 * @param WP_User_Request $item Item being shown.
-	 * @return string Human readable date.
-	 */
-	public function column_created_timestamp( $item ) {
-		return $this->get_timestamp_as_date( $item->created_timestamp );
+		if ( in_array( $column_name, array( 'created_timestamp' ), true ) ) {
+			return $this->get_timestamp_as_date( $cell_value );
+		}
+
+		return $cell_value;
 	}
 
 	/**

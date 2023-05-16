@@ -3,7 +3,7 @@
  * Error Protection API: WP_Fatal_Error_Handler class
  *
  * @package WordPress
- * @since 5.2.0
+ * @since   5.2.0
  */
 
 /**
@@ -16,7 +16,6 @@
  *
  * @since 5.2.0
  */
-#[AllowDynamicProperties]
 class WP_Fatal_Error_Handler {
 
 	/**
@@ -28,11 +27,6 @@ class WP_Fatal_Error_Handler {
 	 */
 	public function handle() {
 		if ( defined( 'WP_SANDBOX_SCRAPING' ) && WP_SANDBOX_SCRAPING ) {
-			return;
-		}
-
-		// Do not trigger the fatal error handler while updates are being installed.
-		if ( wp_is_maintenance_mode() ) {
 			return;
 		}
 
@@ -67,8 +61,7 @@ class WP_Fatal_Error_Handler {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array|null Error information returned by `error_get_last()`, or null
-	 *                    if none was recorded or the error should not be handled.
+	 * @return array|null Error that was triggered, or null if no error received or if the error should not be handled.
 	 */
 	protected function detect_error() {
 		$error = error_get_last();
@@ -92,7 +85,7 @@ class WP_Fatal_Error_Handler {
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array $error Error information retrieved from `error_get_last()`.
+	 * @param array $error Error information retrieved from error_get_last().
 	 * @return bool Whether WordPress should handle this error.
 	 */
 	protected function should_handle_error( $error ) {
@@ -118,7 +111,7 @@ class WP_Fatal_Error_Handler {
 		 * @since 5.2.0
 		 *
 		 * @param bool  $should_handle_error Whether the error should be handled by the fatal error handler.
-		 * @param array $error               Error information retrieved from `error_get_last()`.
+		 * @param array $error               Error information retrieved from error_get_last().
 		 */
 		return (bool) apply_filters( 'wp_should_handle_php_error', false, $error );
 	}
@@ -183,23 +176,19 @@ class WP_Fatal_Error_Handler {
 		}
 
 		if ( true === $handled && wp_is_recovery_mode() ) {
-			$message = __( 'There has been a critical error on this website, putting it in recovery mode. Please check the Themes and Plugins screens for more details. If you just installed or updated a theme or plugin, check the relevant page for that first.' );
-		} elseif ( is_protected_endpoint() && wp_recovery_mode()->is_initialized() ) {
-			if ( is_multisite() ) {
-				$message = __( 'There has been a critical error on this website. Please reach out to your site administrator, and inform them of this error for further assistance.' );
-			} else {
-				$message = __( 'There has been a critical error on this website. Please check your site admin email inbox for instructions.' );
-			}
+			$message = __( 'There has been a critical error on your website, putting it in recovery mode. Please check the Themes and Plugins screens for more details. If you just installed or updated a theme or plugin, check the relevant page for that first.' );
+		} elseif ( is_protected_endpoint() ) {
+			$message = __( 'There has been a critical error on your website. Please check your site admin email inbox for instructions.' );
 		} else {
-			$message = __( 'There has been a critical error on this website.' );
+			$message = __( 'There has been a critical error on your website.' );
 		}
 
 		$message = sprintf(
 			'<p>%s</p><p><a href="%s">%s</a></p>',
 			$message,
-			/* translators: Documentation about troubleshooting. */
-			__( 'https://wordpress.org/support/article/faq-troubleshooting/' ),
-			__( 'Learn more about troubleshooting WordPress.' )
+			/* translators: Documentation explaining debugging in WordPress. */
+			esc_url( __( 'https://wordpress.org/support/article/debugging-in-wordpress/' ) ),
+			__( 'Learn more about debugging in WordPress.' )
 		);
 
 		$args = array(

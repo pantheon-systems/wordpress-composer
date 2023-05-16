@@ -51,11 +51,11 @@ $theme_field_defaults = array(
 );
 
 /**
- * Retrieves the list of WordPress theme features (aka theme tags).
+ * Retrieve list of WordPress theme features (aka theme tags).
  *
  * @since 2.8.0
  *
- * @deprecated 3.1.0 Use get_theme_feature_list() instead.
+ * @deprecated since 3.1.0 Use get_theme_feature_list() instead.
  *
  * @return array
  */
@@ -82,7 +82,7 @@ function install_themes_feature_list() {
 }
 
 /**
- * Displays search form for searching themes.
+ * Display search form for searching themes.
  *
  * @since 2.8.0
  *
@@ -129,7 +129,7 @@ function install_theme_search_form( $type_selector = true ) {
 }
 
 /**
- * Displays tags filter for themes.
+ * Display tags filter for themes.
  *
  * @since 2.8.0
  */
@@ -175,17 +175,15 @@ function install_themes_dashboard() {
 }
 
 /**
- * Displays a form to upload themes from zip files.
- *
  * @since 2.8.0
  */
 function install_themes_upload() {
 	?>
-<p class="install-help"><?php _e( 'If you have a theme in a .zip format, you may install or update it by uploading it here.' ); ?></p>
-<form method="post" enctype="multipart/form-data" class="wp-upload-form" action="<?php echo esc_url( self_admin_url( 'update.php?action=upload-theme' ) ); ?>">
+<p class="install-help"><?php _e( 'If you have a theme in a .zip format, you may install it by uploading it here.' ); ?></p>
+<form method="post" enctype="multipart/form-data" class="wp-upload-form" action="<?php echo self_admin_url( 'update.php?action=upload-theme' ); ?>">
 	<?php wp_nonce_field( 'theme-upload' ); ?>
 	<label class="screen-reader-text" for="themezip"><?php _e( 'Theme zip file' ); ?></label>
-	<input type="file" id="themezip" name="themezip" accept=".zip" />
+	<input type="file" id="themezip" name="themezip" />
 	<?php submit_button( __( 'Install Now' ), '', 'install-theme-submit', false ); ?>
 </form>
 	<?php
@@ -211,7 +209,7 @@ function display_theme( $theme ) {
 }
 
 /**
- * Displays theme content based on theme list.
+ * Display theme content based on theme list.
  *
  * @since 2.8.0
  *
@@ -229,7 +227,7 @@ function display_themes() {
 }
 
 /**
- * Displays theme information in dialog box form.
+ * Display theme information in dialog box form.
  *
  * @since 2.8.0
  *

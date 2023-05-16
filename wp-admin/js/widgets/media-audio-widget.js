@@ -19,7 +19,7 @@
 		/**
 		 * Create the default states.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		createStates: function createStates() {
 			this.states.add([
@@ -70,7 +70,7 @@
 		 * Map model props to media frame props.
 		 *
 		 * @param {Object} modelProps - Model props.
-		 * @return {Object} Media frame props.
+		 * @returns {Object} Media frame props.
 		 */
 		mapModelToMediaFrameProps: function mapModelToMediaFrameProps( modelProps ) {
 			var control = this, mediaFrameProps;
@@ -82,7 +82,7 @@
 		/**
 		 * Render preview.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		renderPreview: function renderPreview() {
 			var control = this, previewContainer, previewTemplate, attachmentId, attachmentUrl;
@@ -109,7 +109,7 @@
 		/**
 		 * Open the media audio-edit frame to modify the selected item.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		editMedia: function editMedia() {
 			var control = this, mediaFrame, metadata, updateCallback;
