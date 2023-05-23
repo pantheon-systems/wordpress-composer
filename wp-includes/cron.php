@@ -76,15 +76,15 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
 	 * @since 5.1.0
 	 * @since 5.7.0 The `$wp_error` parameter was added, and a `WP_Error` object can now be returned.
 	 *
-	 * @param null|bool|WP_Error $result   The value to return instead. Default null to continue adding the event.
-	 * @param object             $event    {
+	 * @param null|bool|WP_Error $pre      Value to return instead. Default null to continue adding the event.
+	 * @param stdClass           $event    {
 	 *     An object containing an event's data.
 	 *
 	 *     @type string       $hook      Action hook to execute when the event is run.
 	 *     @type int          $timestamp Unix timestamp (UTC) for when to next run the event.
 	 *     @type string|false $schedule  How often the event should subsequently recur.
 	 *     @type array        $args      Array containing each separate argument to pass to the hook's callback function.
-	 *     @type int          $interval  Optional. The interval time in seconds for the schedule. Only present for recurring events.
+	 *     @type int          $interval  The interval time in seconds for the schedule. Only present for recurring events.
 	 * }
 	 * @param bool               $wp_error Whether to return a WP_Error on failure.
 	 */
@@ -164,14 +164,14 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param object|false $event {
+	 * @param stdClass|false $event {
 	 *     An object containing an event's data, or boolean false to prevent the event from being scheduled.
 	 *
 	 *     @type string       $hook      Action hook to execute when the event is run.
 	 *     @type int          $timestamp Unix timestamp (UTC) for when to next run the event.
 	 *     @type string|false $schedule  How often the event should subsequently recur.
 	 *     @type array        $args      Array containing each separate argument to pass to the hook's callback function.
-	 *     @type int          $interval  Optional. The interval time in seconds for the schedule. Only present for recurring events.
+	 *     @type int          $interval  The interval time in seconds for the schedule. Only present for recurring events.
 	 * }
 	 */
 	$event = apply_filters( 'schedule_event', $event );
@@ -385,7 +385,7 @@ function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array(), $
 	 * @since 5.7.0 The `$wp_error` parameter was added, and a `WP_Error` object can now be returned.
 	 *
 	 * @param null|bool|WP_Error $pre      Value to return instead. Default null to continue adding the event.
-	 * @param object             $event    {
+	 * @param stdClass           $event    {
 	 *     An object containing an event's data.
 	 *
 	 *     @type string $hook      Action hook to execute when the event is run.
@@ -437,9 +437,9 @@ function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array(), $
 }
 
 /**
- * Unschedules a previously scheduled event.
+ * Unschedule a previously scheduled event.
  *
- * The `$timestamp` and `$hook` parameters are required so that the event can be
+ * The $timestamp and $hook parameters are required so that the event can be
  * identified.
  *
  * @since 2.1.0
@@ -708,9 +708,9 @@ function wp_unschedule_hook( $hook, $wp_error = false ) {
 }
 
 /**
- * Retrieves a scheduled event.
+ * Retrieve a scheduled event.
  *
- * Retrieves the full event object for a given event, if no timestamp is specified the next
+ * Retrieve the full event object for a given event, if no timestamp is specified the next
  * scheduled event is returned.
  *
  * @since 5.1.0
@@ -722,15 +722,7 @@ function wp_unschedule_hook( $hook, $wp_error = false ) {
  *                            Default empty array.
  * @param int|null $timestamp Optional. Unix timestamp (UTC) of the event. If not specified, the next scheduled event
  *                            is returned. Default null.
- * @return object|false {
- *     The event object. False if the event does not exist.
- *
- *     @type string       $hook      Action hook to execute when the event is run.
- *     @type int          $timestamp Unix timestamp (UTC) for when to next run the event.
- *     @type string|false $schedule  How often the event should subsequently recur.
- *     @type array        $args      Array containing each separate argument to pass to the hook's callback function.
- *     @type int          $interval  Optional. The interval time in seconds for the schedule. Only present for recurring events.
- * }
+ * @return object|false The event object. False if the event does not exist.
  */
 function wp_get_scheduled_event( $hook, $args = array(), $timestamp = null ) {
 	/**
@@ -800,7 +792,7 @@ function wp_get_scheduled_event( $hook, $args = array(), $timestamp = null ) {
 }
 
 /**
- * Retrieves the next timestamp for an event.
+ * Retrieve the next timestamp for an event.
  *
  * @since 2.1.0
  *
@@ -932,7 +924,7 @@ function spawn_cron( $gmt_time = 0 ) {
 }
 
 /**
- * Registers _wp_cron() to run on the {@see 'wp_loaded'} action.
+ * Register _wp_cron() to run on the {@see 'wp_loaded'} action.
  *
  * If the {@see 'wp_loaded'} action has already fired, this function calls
  * _wp_cron() directly.
@@ -959,7 +951,7 @@ function wp_cron() {
 }
 
 /**
- * Runs scheduled callbacks or spawns cron for all scheduled events.
+ * Run scheduled callbacks or spawn cron for all scheduled events.
  *
  * Warning: This function may return Boolean FALSE, but may also return a non-Boolean
  * value which evaluates to FALSE. For information about casting to booleans see the
@@ -1011,7 +1003,7 @@ function _wp_cron() {
 }
 
 /**
- * Retrieves supported event recurrence schedules.
+ * Retrieve supported event recurrence schedules.
  *
  * The default supported recurrences are 'hourly', 'twicedaily', 'daily', and 'weekly'.
  * A plugin may add more by hooking into the {@see 'cron_schedules'} filter.
@@ -1038,16 +1030,7 @@ function _wp_cron() {
  * @since 2.1.0
  * @since 5.4.0 The 'weekly' schedule was added.
  *
- * @return array {
- *     The array of cron schedules keyed by the schedule name.
- *
- *     @type array ...$0 {
- *         Cron schedule information.
- *
- *         @type int    $interval The schedule interval in seconds.
- *         @type string $display  The schedule display name.
- *     }
- * }
+ * @return array[]
  */
 function wp_get_schedules() {
 	$schedules = array(
@@ -1074,22 +1057,13 @@ function wp_get_schedules() {
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param array $new_schedules {
-	 *     An array of non-default cron schedules keyed by the schedule name. Default empty array.
-	 *
-	 *     @type array ...$0 {
-	 *         Cron schedule information.
-	 *
-	 *         @type int    $interval The schedule interval in seconds.
-	 *         @type string $display  The schedule display name.
-	 *     }
-	 * }
+	 * @param array[] $new_schedules An array of non-default cron schedule arrays. Default empty.
 	 */
 	return array_merge( apply_filters( 'cron_schedules', array() ), $schedules );
 }
 
 /**
- * Retrieves the name of the recurrence schedule for an event.
+ * Retrieve the recurrence schedule for an event.
  *
  * @see wp_get_schedules() for available schedules.
  *
@@ -1110,7 +1084,7 @@ function wp_get_schedule( $hook, $args = array() ) {
 	}
 
 	/**
-	 * Filters the schedule name for a hook.
+	 * Filters the schedule for a hook.
 	 *
 	 * @since 5.1.0
 	 *
@@ -1122,7 +1096,7 @@ function wp_get_schedule( $hook, $args = array() ) {
 }
 
 /**
- * Retrieves cron jobs ready to be run.
+ * Retrieve cron jobs ready to be run.
  *
  * Returns the results of _get_cron_array() limited to events ready to be run,
  * ie, with a timestamp in the past.
@@ -1169,7 +1143,7 @@ function wp_get_ready_cron_jobs() {
 //
 
 /**
- * Retrieves cron info array option.
+ * Retrieve cron info array option.
  *
  * @since 2.1.0
  * @since 6.1.0 Return type modified to consistently return an array.
@@ -1224,7 +1198,7 @@ function _set_cron_array( $cron, $wp_error = false ) {
 }
 
 /**
- * Upgrades a cron info array.
+ * Upgrade a cron info array.
  *
  * This function upgrades the cron info array to version 2.
  *

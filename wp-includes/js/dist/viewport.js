@@ -58,8 +58,8 @@ __webpack_require__.d(selectors_namespaceObject, {
   "isViewportMatch": function() { return isViewportMatch; }
 });
 
-;// CONCATENATED MODULE: external ["wp","compose"]
-var external_wp_compose_namespaceObject = window["wp"]["compose"];
+;// CONCATENATED MODULE: external "lodash"
+var external_lodash_namespaceObject = window["lodash"];
 ;// CONCATENATED MODULE: external ["wp","data"]
 var external_wp_data_namespaceObject = window["wp"]["data"];
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/viewport/build-module/store/reducer.js
@@ -175,6 +175,10 @@ const store = (0,external_wp_data_namespaceObject.createReduxStore)(STORE_NAME, 
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/viewport/build-module/listener.js
 /**
+ * External dependencies
+ */
+
+/**
  * WordPress dependencies
  */
 
@@ -190,13 +194,10 @@ const addDimensionsEventListener = (breakpoints, operators) => {
    * Callback invoked when media query state should be updated. Is invoked a
    * maximum of one time per call stack.
    */
-  const setIsMatching = (0,external_wp_compose_namespaceObject.debounce)(() => {
-    const values = Object.fromEntries(queries.map(_ref => {
-      let [key, query] = _ref;
-      return [key, query.matches];
-    }));
+  const setIsMatching = (0,external_lodash_namespaceObject.debounce)(() => {
+    const values = (0,external_lodash_namespaceObject.mapValues)(queries, query => query.matches);
     (0,external_wp_data_namespaceObject.dispatch)(store).setIsMatching(values);
-  }, 0, {
+  }, {
     leading: true
   });
   /**
@@ -209,16 +210,16 @@ const addDimensionsEventListener = (breakpoints, operators) => {
    * @type {Object<string,MediaQueryList>}
    */
 
-  const operatorEntries = Object.entries(operators);
-  const queries = Object.entries(breakpoints).flatMap(_ref2 => {
-    let [name, width] = _ref2;
-    return operatorEntries.map(_ref3 => {
-      let [operator, condition] = _ref3;
+  const queries = (0,external_lodash_namespaceObject.reduce)(breakpoints, (result, width, name) => {
+    Object.entries(operators).forEach(_ref => {
+      let [operator, condition] = _ref;
       const list = window.matchMedia(`(${condition}: ${width}px)`);
-      list.addEventListener('change', setIsMatching);
-      return [`${operator} ${name}`, list];
+      list.addListener(setIsMatching);
+      const key = [operator, name].join(' ');
+      result[key] = list;
     });
-  });
+    return result;
+  }, {});
   window.addEventListener('orientationchange', setIsMatching); // Set initial values.
 
   setIsMatching();
@@ -227,6 +228,8 @@ const addDimensionsEventListener = (breakpoints, operators) => {
 
 /* harmony default export */ var listener = (addDimensionsEventListener);
 
+;// CONCATENATED MODULE: external ["wp","compose"]
+var external_wp_compose_namespaceObject = window["wp"]["compose"];
 ;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
   _extends = Object.assign ? Object.assign.bind() : function (target) {
@@ -249,8 +252,13 @@ var external_wp_element_namespaceObject = window["wp"]["element"];
 
 
 /**
+ * External dependencies
+ */
+
+/**
  * WordPress dependencies
  */
+
 
 /**
  * Higher-order component creator, creating a new component which renders with
@@ -277,10 +285,7 @@ var external_wp_element_namespaceObject = window["wp"]["element"];
  */
 
 const withViewportMatch = queries => {
-  const queryEntries = Object.entries(queries);
-
-  const useViewPortQueriesResult = () => Object.fromEntries(queryEntries.map(_ref => {
-    let [key, query] = _ref;
+  const useViewPortQueriesResult = () => (0,external_lodash_namespaceObject.mapValues)(queries, query => {
     let [operator, breakpointName] = query.split(' ');
 
     if (breakpointName === undefined) {
@@ -292,8 +297,8 @@ const withViewportMatch = queries => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
 
 
-    return [key, (0,external_wp_compose_namespaceObject.useViewportMatch)(breakpointName, operator)];
-  }));
+    return (0,external_wp_compose_namespaceObject.useViewportMatch)(breakpointName, operator);
+  });
 
   return (0,external_wp_compose_namespaceObject.createHigherOrderComponent)(WrappedComponent => {
     return (0,external_wp_compose_namespaceObject.pure)(props => {

@@ -396,50 +396,45 @@ function createRequestIdleCallback() {
  */
 
 const createQueue = () => {
-  /** @type {Map<WPPriorityQueueContext, WPPriorityQueueCallback>} */
-  const waitingList = new Map();
+  /** @type {WPPriorityQueueContext[]} */
+  let waitingList = [];
+  /** @type {WeakMap<WPPriorityQueueContext,WPPriorityQueueCallback>} */
+
+  let elementsMap = new WeakMap();
   let isRunning = false;
   /**
    * Callback to process as much queue as time permits.
-   *
-   * Map Iteration follows the original insertion order. This means that here
-   * we can iterate the queue and know that the first contexts which were
-   * added will be run first. On the other hand, if anyone adds a new callback
-   * for an existing context it will supplant the previously-set callback for
-   * that context because we reassigned that map key's value.
-   *
-   * In the case that a callback adds a new callback to its own context then
-   * the callback it adds will appear at the end of the iteration and will be
-   * run only after all other existing contexts have finished executing.
    *
    * @param {IdleDeadline|number} deadline Idle callback deadline object, or
    *                                       animation frame timestamp.
    */
 
   const runWaitingList = deadline => {
-    for (const [nextElement, callback] of waitingList) {
-      waitingList.delete(nextElement);
-      callback();
+    const hasTimeRemaining = typeof deadline === 'number' ? () => false : () => deadline.timeRemaining() > 0;
 
-      if ('number' === typeof deadline || deadline.timeRemaining() <= 0) {
-        break;
+    do {
+      if (waitingList.length === 0) {
+        isRunning = false;
+        return;
       }
-    }
 
-    if (waitingList.size === 0) {
-      isRunning = false;
-      return;
-    }
+      const nextElement =
+      /** @type {WPPriorityQueueContext} */
+      waitingList.shift();
+      const callback =
+      /** @type {WPPriorityQueueCallback} */
+      elementsMap.get(nextElement); // If errors with undefined callbacks are encountered double check that all of your useSelect calls
+      // have all dependecies set correctly in second parameter. Missing dependencies can cause unexpected
+      // loops and race conditions in the queue.
+
+      callback();
+      elementsMap.delete(nextElement);
+    } while (hasTimeRemaining());
 
     request_idle_callback(runWaitingList);
   };
   /**
    * Add a callback to the queue for a given context.
-   *
-   * If errors with undefined callbacks are encountered double check that
-   * all of your useSelect calls have the right dependencies set correctly
-   * in their second parameter. Missing dependencies can cause unexpected
-   * loops and race conditions in the queue.
    *
    * @type {WPPriorityQueueAdd}
    *
@@ -449,7 +444,11 @@ const createQueue = () => {
 
 
   const add = (element, item) => {
-    waitingList.set(element, item);
+    if (!elementsMap.has(element)) {
+      waitingList.push(element);
+    }
+
+    elementsMap.set(element, item);
 
     if (!isRunning) {
       isRunning = true;
@@ -469,13 +468,16 @@ const createQueue = () => {
 
 
   const flush = element => {
-    const callback = waitingList.get(element);
-
-    if (undefined === callback) {
+    if (!elementsMap.has(element)) {
       return false;
     }
 
-    waitingList.delete(element);
+    const index = waitingList.indexOf(element);
+    waitingList.splice(index, 1);
+    const callback =
+    /** @type {WPPriorityQueueCallback} */
+    elementsMap.get(element);
+    elementsMap.delete(element);
     callback();
     return true;
   };
@@ -493,7 +495,14 @@ const createQueue = () => {
 
 
   const cancel = element => {
-    return waitingList.delete(element);
+    if (!elementsMap.has(element)) {
+      return false;
+    }
+
+    const index = waitingList.indexOf(element);
+    waitingList.splice(index, 1);
+    elementsMap.delete(element);
+    return true;
   };
   /**
    * Reset the queue without running the pending callbacks.
@@ -503,7 +512,8 @@ const createQueue = () => {
 
 
   const reset = () => {
-    waitingList.clear();
+    waitingList = [];
+    elementsMap = new WeakMap();
     isRunning = false;
   };
 

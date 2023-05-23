@@ -9,7 +9,7 @@
  */
 
 /**
- * Initializes $wp_styles if it has not been set.
+ * Initialize $wp_styles if it has not been set.
  *
  * @global WP_Styles $wp_styles
  *
@@ -28,7 +28,7 @@ function wp_styles() {
 }
 
 /**
- * Displays styles that are in the $handles queue.
+ * Display styles that are in the $handles queue.
  *
  * Passing an empty array to $handles prints the queue,
  * passing an array with one string prints that style,
@@ -69,7 +69,7 @@ function wp_print_styles( $handles = false ) {
 }
 
 /**
- * Adds extra CSS styles to a registered stylesheet.
+ * Add extra CSS styles to a registered stylesheet.
  *
  * Styles will only be added if the stylesheet is already in the queue.
  * Accepts a string $data containing the CSS. If two or more CSS code blocks
@@ -105,7 +105,7 @@ function wp_add_inline_style( $handle, $data ) {
 }
 
 /**
- * Registers a CSS stylesheet.
+ * Register a CSS stylesheet.
  *
  * @see WP_Dependencies::add()
  * @link https://www.w3.org/TR/CSS2/media.html#media-types List of CSS media types.
@@ -133,7 +133,7 @@ function wp_register_style( $handle, $src, $deps = array(), $ver = false, $media
 }
 
 /**
- * Removes a registered stylesheet.
+ * Remove a registered stylesheet.
  *
  * @see WP_Dependencies::remove()
  *
@@ -148,7 +148,7 @@ function wp_deregister_style( $handle ) {
 }
 
 /**
- * Enqueues a CSS stylesheet.
+ * Enqueue a CSS stylesheet.
  *
  * Registers the style if source provided (does NOT overwrite) and enqueues.
  *
@@ -184,7 +184,7 @@ function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $m
 }
 
 /**
- * Removes a previously enqueued CSS stylesheet.
+ * Remove a previously enqueued CSS stylesheet.
  *
  * @see WP_Dependencies::dequeue()
  *
@@ -199,23 +199,23 @@ function wp_dequeue_style( $handle ) {
 }
 
 /**
- * Checks whether a CSS stylesheet has been added to the queue.
+ * Check whether a CSS stylesheet has been added to the queue.
  *
  * @since 2.8.0
  *
  * @param string $handle Name of the stylesheet.
- * @param string $status Optional. Status of the stylesheet to check. Default 'enqueued'.
+ * @param string $list   Optional. Status of the stylesheet to check. Default 'enqueued'.
  *                       Accepts 'enqueued', 'registered', 'queue', 'to_do', and 'done'.
  * @return bool Whether style is queued.
  */
-function wp_style_is( $handle, $status = 'enqueued' ) {
+function wp_style_is( $handle, $list = 'enqueued' ) {
 	_wp_scripts_maybe_doing_it_wrong( __FUNCTION__, $handle );
 
-	return (bool) wp_styles()->query( $handle, $status );
+	return (bool) wp_styles()->query( $handle, $list );
 }
 
 /**
- * Adds metadata to a CSS stylesheet.
+ * Add metadata to a CSS stylesheet.
  *
  * Works only if the stylesheet has already been registered.
  *
@@ -226,7 +226,7 @@ function wp_style_is( $handle, $status = 'enqueued' ) {
  * 'alt'         bool        For rel="alternate stylesheet".
  * 'title'       string      For preferred/alternate stylesheets.
  * 'path'        string      The absolute path to a stylesheet. Stylesheet will
- *                           load inline when 'path' is set.
+ *                           load inline when 'path'' is set.
  *
  * @see WP_Dependencies::add_data()
  *

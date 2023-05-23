@@ -55,7 +55,7 @@ function render_block_core_latest_posts( $attributes ) {
 		$args['author'] = $attributes['selectedAuthor'];
 	}
 
-	$query        = new WP_Query();
+	$query        = new WP_Query;
 	$recent_posts = $query->query( $args );
 
 	if ( isset( $attributes['displayFeaturedImage'] ) && $attributes['displayFeaturedImage'] ) {
@@ -173,24 +173,25 @@ function render_block_core_latest_posts( $attributes ) {
 
 	remove_filter( 'excerpt_length', 'block_core_latest_posts_get_excerpt_length', 20 );
 
-	$classes = array( 'wp-block-latest-posts__list' );
+	$class = 'wp-block-latest-posts__list';
+
 	if ( isset( $attributes['postLayout'] ) && 'grid' === $attributes['postLayout'] ) {
-		$classes[] = 'is-grid';
-	}
-	if ( isset( $attributes['columns'] ) && 'grid' === $attributes['postLayout'] ) {
-		$classes[] = 'columns-' . $attributes['columns'];
-	}
-	if ( isset( $attributes['displayPostDate'] ) && $attributes['displayPostDate'] ) {
-		$classes[] = 'has-dates';
-	}
-	if ( isset( $attributes['displayAuthor'] ) && $attributes['displayAuthor'] ) {
-		$classes[] = 'has-author';
-	}
-	if ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) {
-		$classes[] = 'has-link-color';
+		$class .= ' is-grid';
 	}
 
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $classes ) ) );
+	if ( isset( $attributes['columns'] ) && 'grid' === $attributes['postLayout'] ) {
+		$class .= ' columns-' . $attributes['columns'];
+	}
+
+	if ( isset( $attributes['displayPostDate'] ) && $attributes['displayPostDate'] ) {
+		$class .= ' has-dates';
+	}
+
+	if ( isset( $attributes['displayAuthor'] ) && $attributes['displayAuthor'] ) {
+		$class .= ' has-author';
+	}
+
+	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $class ) );
 
 	return sprintf(
 		'<ul %1$s>%2$s</ul>',

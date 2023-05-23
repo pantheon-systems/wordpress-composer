@@ -15,18 +15,17 @@
  * Retrieves the value of a query variable in the WP_Query class.
  *
  * @since 1.5.0
- * @since 3.9.0 The `$default_value` argument was introduced.
+ * @since 3.9.0 The `$default` argument was introduced.
  *
  * @global WP_Query $wp_query WordPress Query object.
  *
- * @param string $query_var     The variable key to retrieve.
- * @param mixed  $default_value Optional. Value to return if the query variable is not set.
- *                              Default empty string.
+ * @param string $var       The variable key to retrieve.
+ * @param mixed  $default   Optional. Value to return if the query variable is not set. Default empty.
  * @return mixed Contents of the query variable.
  */
-function get_query_var( $query_var, $default_value = '' ) {
+function get_query_var( $var, $default = '' ) {
 	global $wp_query;
-	return $wp_query->get( $query_var, $default_value );
+	return $wp_query->get( $var, $default );
 }
 
 /**
@@ -68,12 +67,12 @@ function get_queried_object_id() {
  *
  * @global WP_Query $wp_query WordPress Query object.
  *
- * @param string $query_var Query variable key.
- * @param mixed  $value     Query variable value.
+ * @param string $var   Query variable key.
+ * @param mixed  $value Query variable value.
  */
-function set_query_var( $query_var, $value ) {
+function set_query_var( $var, $value ) {
 	global $wp_query;
-	$wp_query->set( $query_var, $value );
+	$wp_query->set( $var, $value );
 }
 
 /**

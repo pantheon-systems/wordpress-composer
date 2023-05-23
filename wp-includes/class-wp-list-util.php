@@ -166,14 +166,8 @@ class WP_List_Util {
 			foreach ( $this->output as $key => $value ) {
 				if ( is_object( $value ) ) {
 					$newlist[ $key ] = $value->$field;
-				} elseif ( is_array( $value ) ) {
-					$newlist[ $key ] = $value[ $field ];
 				} else {
-					_doing_it_wrong(
-						__METHOD__,
-						__( 'Values for the input array must be either objects or arrays.' ),
-						'6.2.0'
-					);
+					$newlist[ $key ] = $value[ $field ];
 				}
 			}
 
@@ -193,18 +187,12 @@ class WP_List_Util {
 				} else {
 					$newlist[] = $value->$field;
 				}
-			} elseif ( is_array( $value ) ) {
+			} else {
 				if ( isset( $value[ $index_key ] ) ) {
 					$newlist[ $value[ $index_key ] ] = $value[ $field ];
 				} else {
 					$newlist[] = $value[ $field ];
 				}
-			} else {
-				_doing_it_wrong(
-					__METHOD__,
-					__( 'Values for the input array must be either objects or arrays.' ),
-					'6.2.0'
-				);
 			}
 		}
 
@@ -219,10 +207,9 @@ class WP_List_Util {
 	 * @since 4.7.0
 	 *
 	 * @param string|array $orderby       Optional. Either the field name to order by or an array
-	 *                                    of multiple orderby fields as `$orderby => $order`.
-	 *                                    Default empty array.
-	 * @param string       $order         Optional. Either 'ASC' or 'DESC'. Only used if `$orderby`
-	 *                                    is a string. Default 'ASC'.
+	 *                                    of multiple orderby fields as $orderby => $order.
+	 * @param string       $order         Optional. Either 'ASC' or 'DESC'. Only used if $orderby
+	 *                                    is a string.
 	 * @param bool         $preserve_keys Optional. Whether to preserve keys. Default false.
 	 * @return array The sorted array.
 	 */

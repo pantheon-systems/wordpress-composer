@@ -216,6 +216,13 @@ function get_default_block_editor_settings() {
 		'allowedMimeTypes'                 => get_allowed_mime_types(),
 		'defaultEditorStyles'              => $default_editor_styles,
 		'blockCategories'                  => get_default_block_categories(),
+		'disableCustomColors'              => get_theme_support( 'disable-custom-colors' ),
+		'disableCustomFontSizes'           => get_theme_support( 'disable-custom-font-sizes' ),
+		'disableCustomGradients'           => get_theme_support( 'disable-custom-gradients' ),
+		'disableLayoutStyles'              => get_theme_support( 'disable-layout-styles' ),
+		'enableCustomLineHeight'           => get_theme_support( 'custom-line-height' ),
+		'enableCustomSpacing'              => get_theme_support( 'custom-spacing' ),
+		'enableCustomUnits'                => get_theme_support( 'custom-units' ),
 		'isRTL'                            => is_rtl(),
 		'imageDefaultSize'                 => $image_default_size,
 		'imageDimensions'                  => $image_dimensions,
@@ -226,9 +233,20 @@ function get_default_block_editor_settings() {
 		'__unstableGalleryWithImageBlocks' => true,
 	);
 
-	$theme_settings = get_classic_theme_supports_block_editor_settings();
-	foreach ( $theme_settings as $key => $value ) {
-		$editor_settings[ $key ] = $value;
+	// Theme settings.
+	$color_palette = current( (array) get_theme_support( 'editor-color-palette' ) );
+	if ( false !== $color_palette ) {
+		$editor_settings['colors'] = $color_palette;
+	}
+
+	$font_sizes = current( (array) get_theme_support( 'editor-font-sizes' ) );
+	if ( false !== $font_sizes ) {
+		$editor_settings['fontSizes'] = $font_sizes;
+	}
+
+	$gradient_presets = current( (array) get_theme_support( 'editor-gradient-presets' ) );
+	if ( false !== $gradient_presets ) {
+		$editor_settings['gradients'] = $gradient_presets;
 	}
 
 	return $editor_settings;
@@ -296,19 +314,16 @@ function get_legacy_widget_block_editor_settings() {
  * }
  */
 function _wp_get_iframed_editor_assets() {
-	global $pagenow, $editor_styles;
+	global $pagenow;
 
-	$script_handles = array(
-		'wp-polyfill',
-	);
+	$script_handles = array();
 	$style_handles  = array(
+		'wp-block-editor',
+		'wp-block-library',
 		'wp-edit-blocks',
 	);
 
-	if (
-		current_theme_supports( 'wp-block-styles' ) &&
-		( ! is_array( $editor_styles ) || count( $editor_styles ) === 0 )
-	) {
+	if ( current_theme_supports( 'wp-block-styles' ) ) {
 		$style_handles[] = 'wp-block-library-theme';
 	}
 
@@ -402,7 +417,7 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 		}
 	}
 
-	if ( wp_theme_has_theme_json() ) {
+	if ( WP_Theme_JSON_Resolver::theme_has_support() ) {
 		$block_classes = array(
 			'css'            => 'styles',
 			'__unstableType' => 'theme',
@@ -413,16 +428,6 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 			$block_classes['css'] = $actual_css;
 			$global_styles[]      = $block_classes;
 		}
-
-		/*
-		 * Add the custom CSS as a separate stylesheet so any invalid CSS
-		 * entered by users does not break other global styles.
-		 */
-		$global_styles[] = array(
-			'css'            => wp_get_global_styles_custom_css(),
-			'__unstableType' => 'user',
-			'isGlobalStyles' => true,
-		);
 	} else {
 		// If there is no `theme.json` file, ensure base layout styles are still available.
 		$block_classes = array(
@@ -508,7 +513,6 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 	}
 
 	$editor_settings['__unstableResolvedAssets']         = _wp_get_iframed_editor_assets();
-	$editor_settings['__unstableIsBlockBasedTheme']      = wp_is_block_theme();
 	$editor_settings['localAutosaveInterval']            = 15;
 	$editor_settings['disableLayoutStyles']              = current_theme_supports( 'disable-layout-styles' );
 	$editor_settings['__experimentalDiscussionSettings'] = array(
@@ -567,7 +571,7 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
  * @global WP_Scripts $wp_scripts The WP_Scripts object for printing scripts.
  * @global WP_Styles  $wp_styles  The WP_Styles object for printing styles.
  *
- * @param (string|string[])[]     $preload_paths        List of paths to preload.
+ * @param string[]                $preload_paths        List of paths to preload.
  * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
  */
 function block_editor_rest_api_preload( array $preload_paths, $block_editor_context ) {
@@ -578,7 +582,7 @@ function block_editor_rest_api_preload( array $preload_paths, $block_editor_cont
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param (string|string[])[]     $preload_paths        Array of paths to preload.
+	 * @param string[]                $preload_paths        Array of paths to preload.
 	 * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
 	 */
 	$preload_paths = apply_filters( 'block_editor_rest_api_preload_paths', $preload_paths, $block_editor_context );
@@ -594,8 +598,8 @@ function block_editor_rest_api_preload( array $preload_paths, $block_editor_cont
 		 * @since 5.0.0
 		 * @deprecated 5.8.0 Use the {@see 'block_editor_rest_api_preload_paths'} filter instead.
 		 *
-		 * @param (string|string[])[] $preload_paths Array of paths to preload.
-		 * @param WP_Post             $selected_post Post being edited.
+		 * @param string[] $preload_paths Array of paths to preload.
+		 * @param WP_Post  $selected_post Post being edited.
 		 */
 		$preload_paths = apply_filters_deprecated( 'block_editor_preload_paths', array( $preload_paths, $selected_post ), '5.8.0', 'block_editor_rest_api_preload_paths' );
 	}
@@ -689,41 +693,4 @@ function get_block_editor_theme_styles() {
 	}
 
 	return $styles;
-}
-
-/**
- * Returns the classic theme supports settings for block editor.
- *
- * @since 6.2.0
- *
- * @return array The classic theme supports settings.
- */
-function get_classic_theme_supports_block_editor_settings() {
-	$theme_settings = array(
-		'disableCustomColors'    => get_theme_support( 'disable-custom-colors' ),
-		'disableCustomFontSizes' => get_theme_support( 'disable-custom-font-sizes' ),
-		'disableCustomGradients' => get_theme_support( 'disable-custom-gradients' ),
-		'disableLayoutStyles'    => get_theme_support( 'disable-layout-styles' ),
-		'enableCustomLineHeight' => get_theme_support( 'custom-line-height' ),
-		'enableCustomSpacing'    => get_theme_support( 'custom-spacing' ),
-		'enableCustomUnits'      => get_theme_support( 'custom-units' ),
-	);
-
-	// Theme settings.
-	$color_palette = current( (array) get_theme_support( 'editor-color-palette' ) );
-	if ( false !== $color_palette ) {
-		$theme_settings['colors'] = $color_palette;
-	}
-
-	$font_sizes = current( (array) get_theme_support( 'editor-font-sizes' ) );
-	if ( false !== $font_sizes ) {
-		$theme_settings['fontSizes'] = $font_sizes;
-	}
-
-	$gradient_presets = current( (array) get_theme_support( 'editor-gradient-presets' ) );
-	if ( false !== $gradient_presets ) {
-		$theme_settings['gradients'] = $gradient_presets;
-	}
-
-	return $theme_settings;
 }

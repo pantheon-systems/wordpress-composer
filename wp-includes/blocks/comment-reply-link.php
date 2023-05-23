@@ -34,7 +34,7 @@ function render_block_core_comment_reply_link( $attributes, $content, $block ) {
 
 	// Compute comment's depth iterating over its ancestors.
 	while ( ! empty( $parent_id ) ) {
-		++$depth;
+		$depth++;
 		$parent_id = get_comment( $parent_id )->comment_parent;
 	}
 
@@ -51,15 +51,12 @@ function render_block_core_comment_reply_link( $attributes, $content, $block ) {
 		return;
 	}
 
-	$classes = array();
+	$classes = '';
 	if ( isset( $attributes['textAlign'] ) ) {
-		$classes[] = 'has-text-align-' . $attributes['textAlign'];
-	}
-	if ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) {
-		$classes[] = 'has-link-color';
+		$classes .= 'has-text-align-' . $attributes['textAlign'];
 	}
 
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $classes ) ) );
+	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classes ) );
 
 	return sprintf(
 		'<div %1$s>%2$s</div>',

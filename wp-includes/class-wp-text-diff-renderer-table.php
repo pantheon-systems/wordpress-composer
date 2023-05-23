@@ -114,10 +114,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 	 * @return string
 	 */
 	public function addedLine( $line ) {
-		return "<td class='diff-addedline'><span aria-hidden='true' class='dashicons dashicons-plus'></span><span class='screen-reader-text'>" .
-			/* translators: Hidden accessibility text. */
-			__( 'Added:' ) .
-		" </span>{$line}</td>";
+		return "<td class='diff-addedline'><span aria-hidden='true' class='dashicons dashicons-plus'></span><span class='screen-reader-text'>" . __( 'Added:' ) . " </span>{$line}</td>";
 
 	}
 
@@ -128,10 +125,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 	 * @return string
 	 */
 	public function deletedLine( $line ) {
-		return "<td class='diff-deletedline'><span aria-hidden='true' class='dashicons dashicons-minus'></span><span class='screen-reader-text'>" .
-			/* translators: Hidden accessibility text. */
-			__( 'Deleted:' ) .
-		" </span>{$line}</td>";
+		return "<td class='diff-deletedline'><span aria-hidden='true' class='dashicons dashicons-minus'></span><span class='screen-reader-text'>" . __( 'Deleted:' ) . " </span>{$line}</td>";
 	}
 
 	/**
@@ -141,10 +135,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 	 * @return string
 	 */
 	public function contextLine( $line ) {
-		return "<td class='diff-context'><span class='screen-reader-text'>" .
-			/* translators: Hidden accessibility text. */
-			__( 'Unchanged:' ) .
-		" </span>{$line}</td>";
+		return "<td class='diff-context'><span class='screen-reader-text'>" . __( 'Unchanged:' ) . " </span>{$line}</td>";
 	}
 
 	/**
@@ -256,7 +247,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 	 * @param array $final
 	 * @return string
 	 */
-	public function _changed( $orig, $final ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.finalFound
+	public function _changed( $orig, $final ) {
 		$r = '';
 
 		/*
@@ -278,7 +269,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 		foreach ( $orig_matches as $o => $f ) {
 			if ( is_numeric( $o ) && is_numeric( $f ) ) {
 				$text_diff = new Text_Diff( 'auto', array( array( $orig[ $o ] ), array( $final[ $f ] ) ) );
-				$renderer  = new $this->inline_diff_renderer();
+				$renderer  = new $this->inline_diff_renderer;
 				$diff      = $renderer->render( $text_diff );
 
 				// If they're too different, don't include any <ins> or <del>'s.
@@ -367,7 +358,7 @@ class WP_Text_Diff_Renderer_Table extends Text_Diff_Renderer {
 	 *                                Value < 0 indicates a blank row.
 	 * }
 	 */
-	public function interleave_changed_lines( $orig, $final ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.finalFound
+	public function interleave_changed_lines( $orig, $final ) {
 
 		// Contains all pairwise string comparisons. Keys are such that this need only be a one dimensional array.
 		$matches = array();

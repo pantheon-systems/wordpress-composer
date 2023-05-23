@@ -49,15 +49,12 @@ function render_block_core_comment_content( $attributes, $content, $block ) {
 		}
 	}
 
-	$classes = array();
+	$classes = '';
 	if ( isset( $attributes['textAlign'] ) ) {
-		$classes[] = 'has-text-align-' . $attributes['textAlign'];
-	}
-	if ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) {
-		$classes[] = 'has-link-color';
+		$classes .= 'has-text-align-' . $attributes['textAlign'];
 	}
 
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $classes ) ) );
+	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classes ) );
 
 	return sprintf(
 		'<div %1$s>%2$s%3$s</div>',

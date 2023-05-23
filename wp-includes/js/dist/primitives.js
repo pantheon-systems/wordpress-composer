@@ -149,7 +149,6 @@ __webpack_require__.d(__webpack_exports__, {
   "Defs": function() { return /* reexport */ Defs; },
   "G": function() { return /* reexport */ G; },
   "HorizontalRule": function() { return /* reexport */ HorizontalRule; },
-  "Line": function() { return /* reexport */ Line; },
   "LinearGradient": function() { return /* reexport */ LinearGradient; },
   "Path": function() { return /* reexport */ Path; },
   "Polygon": function() { return /* reexport */ Polygon; },
@@ -191,13 +190,6 @@ const Circle = props => (0,external_wp_element_namespaceObject.createElement)('c
  */
 
 const G = props => (0,external_wp_element_namespaceObject.createElement)('g', props);
-/**
- * @param {import('react').ComponentPropsWithoutRef<'line'>} props
- *
- * @return {JSX.Element} Path component
- */
-
-const Line = props => (0,external_wp_element_namespaceObject.createElement)('line', props);
 /**
  * @param {import('react').ComponentPropsWithoutRef<'path'>} props
  *
