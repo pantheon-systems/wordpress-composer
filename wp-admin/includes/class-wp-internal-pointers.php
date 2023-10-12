@@ -12,7 +12,6 @@
  *
  * @since 3.3.0
  */
-#[AllowDynamicProperties]
 final class WP_Internal_Pointers {
 	/**
 	 * Initializes the new feature pointers.
@@ -141,9 +140,7 @@ final class WP_Internal_Pointers {
 			if ( options.position && options.position.defer_loading )
 				$(window).bind( 'load.wp-pointers', setup );
 			else
-				$( function() {
-					setup();
-				} );
+				$(document).ready( setup );
 
 		})( jQuery );
 		</script>

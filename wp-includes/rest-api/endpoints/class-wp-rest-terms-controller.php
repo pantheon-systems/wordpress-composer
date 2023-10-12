@@ -49,14 +49,6 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	protected $total_terms;
 
 	/**
-	 * Whether the controller supports batching.
-	 *
-	 * @since 5.9.0
-	 * @var array
-	 */
-	protected $allow_batch = array( 'v1' => true );
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 4.7.0
@@ -65,9 +57,9 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 */
 	public function __construct( $taxonomy ) {
 		$this->taxonomy  = $taxonomy;
+		$this->namespace = 'wp/v2';
 		$tax_obj         = get_taxonomy( $taxonomy );
 		$this->rest_base = ! empty( $tax_obj->rest_base ) ? $tax_obj->rest_base : $tax_obj->name;
-		$this->namespace = ! empty( $tax_obj->rest_namespace ) ? $tax_obj->rest_namespace : 'wp/v2';
 
 		$this->meta = new WP_REST_Term_Meta_Fields( $taxonomy );
 	}
@@ -97,8 +89,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 					'permission_callback' => array( $this, 'create_item_permissions_check' ),
 					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
 				),
-				'allow_batch' => $this->allow_batch,
-				'schema'      => array( $this, 'get_public_item_schema' ),
+				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
 
@@ -106,7 +97,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\d]+)',
 			array(
-				'args'        => array(
+				'args'   => array(
 					'id' => array(
 						'description' => __( 'Unique identifier for the term.' ),
 						'type'        => 'integer',
@@ -138,8 +129,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 						),
 					),
 				),
-				'allow_batch' => $this->allow_batch,
-				'schema'      => array( $this, 'get_public_item_schema' ),
+				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
 	}
@@ -356,10 +346,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$response->header( 'X-WP-TotalPages', (int) $max_pages );
 
-		$request_params = $request->get_query_params();
-		$collection_url = rest_url( rest_get_route_for_taxonomy_items( $this->taxonomy ) );
-		$base           = add_query_arg( urlencode_deep( $request_params ), $collection_url );
-
+		$base = add_query_arg( urlencode_deep( $request->get_query_params() ), rest_url( $this->namespace . '/' . $this->rest_base ) );
 		if ( $page > 1 ) {
 			$prev_page = $page - 1;
 
@@ -807,7 +794,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * @return object Term object.
 	 */
 	public function prepare_item_for_database( $request ) {
-		$prepared_term = new stdClass();
+		$prepared_term = new stdClass;
 
 		$schema = $this->get_item_schema();
 		if ( isset( $request['name'] ) && ! empty( $schema['properties']['name'] ) ) {
@@ -915,9 +902,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$response = rest_ensure_response( $data );
 
-		if ( rest_is_field_included( '_links', $fields ) || rest_is_field_included( '_embedded', $fields ) ) {
-			$response->add_links( $this->prepare_links( $item ) );
-		}
+		$response->add_links( $this->prepare_links( $item ) );
 
 		/**
 		 * Filters the term data for a REST API response.
@@ -949,12 +934,13 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	 * @return array Links for the given term.
 	 */
 	protected function prepare_links( $term ) {
+		$base  = $this->namespace . '/' . $this->rest_base;
 		$links = array(
 			'self'       => array(
-				'href' => rest_url( rest_get_route_for_term( $term ) ),
+				'href' => rest_url( trailingslashit( $base ) . $term->term_id ),
 			),
 			'collection' => array(
-				'href' => rest_url( rest_get_route_for_taxonomy_items( $this->taxonomy ) ),
+				'href' => rest_url( $base ),
 			),
 			'about'      => array(
 				'href' => rest_url( sprintf( 'wp/v2/taxonomies/%s', $this->taxonomy ) ),
@@ -966,7 +952,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 			if ( $parent_term ) {
 				$links['up'] = array(
-					'href'       => rest_url( rest_get_route_for_term( $parent_term ) ),
+					'href'       => rest_url( trailingslashit( $base ) . $parent_term->term_id ),
 					'embeddable' => true,
 				);
 			}
@@ -981,14 +967,15 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		$post_type_links = array();
 
 		foreach ( $taxonomy_obj->object_type as $type ) {
-			$rest_path = rest_get_route_for_post_type_items( $type );
+			$post_type_object = get_post_type_object( $type );
 
-			if ( empty( $rest_path ) ) {
+			if ( empty( $post_type_object->show_in_rest ) ) {
 				continue;
 			}
 
+			$rest_base         = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
 			$post_type_links[] = array(
-				'href' => add_query_arg( $this->rest_base, $term->term_id, rest_url( $rest_path ) ),
+				'href' => add_query_arg( $this->rest_base, $term->term_id, rest_url( sprintf( 'wp/v2/%s', $rest_base ) ) ),
 			);
 		}
 

@@ -1018,7 +1018,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var mejs = {};
 
-mejs.version = '4.2.17';
+mejs.version = '4.2.16';
 
 mejs.html5media = {
 	properties: ['volume', 'src', 'currentTime', 'muted', 'duration', 'paused', 'ended', 'buffered', 'error', 'networkState', 'readyState', 'seeking', 'seekable', 'currentSrc', 'preload', 'bufferedBytes', 'bufferedTime', 'initialTime', 'startOffsetTime', 'defaultPlaybackRate', 'playbackRate', 'played', 'autoplay', 'loop', 'controls'],
@@ -1307,7 +1307,7 @@ Object.assign(_player2.default.prototype, {
 			return;
 		}
 
-		if (t.options.useFakeFullscreen === false && (Features.IS_IOS || Features.IS_SAFARI) && Features.HAS_IOS_FULLSCREEN && typeof t.media.originalNode.webkitEnterFullscreen === 'function' && t.media.originalNode.canPlayType((0, _media.getTypeFromFile)(t.media.getSrc()))) {
+		if (t.options.useFakeFullscreen === false && Features.IS_IOS && Features.HAS_IOS_FULLSCREEN && typeof t.media.originalNode.webkitEnterFullscreen === 'function' && t.media.originalNode.canPlayType((0, _media.getTypeFromFile)(t.media.getSrc()))) {
 			t.media.originalNode.webkitEnterFullscreen();
 			return;
 		}
@@ -2943,15 +2943,15 @@ _mejs2.default.TrackFormatParser = {
 
 	dfxp: {
 		parse: function parse(trackText) {
-			var trackElem = _document2.default.adoptNode(new DOMParser().parseFromString(trackText, 'application/xml').documentElement),
-			    container = trackElem.querySelector('div'),
+			trackText = $(trackText).filter('tt');
+			var container = trackText.firstChild,
 			    lines = container.querySelectorAll('p'),
-			    styleNode = _document2.default.getElementById(container.getAttribute('style')),
+			    styleNode = trackText.getElementById('' + container.attr('style')),
 			    entries = [];
 
 			var styles = void 0;
 
-			if (styleNode) {
+			if (styleNode.length) {
 				styleNode.removeAttribute('id');
 				var attributes = styleNode.attributes;
 				if (attributes.length) {
@@ -2971,23 +2971,23 @@ _mejs2.default.TrackFormatParser = {
 					text: null
 				};
 
-				if (lines[_i16].getAttribute('begin')) {
-					_temp.start = (0, _time.convertSMPTEtoSeconds)(lines[_i16].getAttribute('begin'));
+				if (lines.eq(_i16).attr('begin')) {
+					_temp.start = (0, _time.convertSMPTEtoSeconds)(lines.eq(_i16).attr('begin'));
 				}
-				if (!_temp.start && lines[_i16 - 1].getAttribute('end')) {
-					_temp.start = (0, _time.convertSMPTEtoSeconds)(lines[_i16 - 1].getAttribute('end'));
+				if (!_temp.start && lines.eq(_i16 - 1).attr('end')) {
+					_temp.start = (0, _time.convertSMPTEtoSeconds)(lines.eq(_i16 - 1).attr('end'));
 				}
-				if (lines[_i16].getAttribute('end')) {
-					_temp.stop = (0, _time.convertSMPTEtoSeconds)(lines[_i16].getAttribute('end'));
+				if (lines.eq(_i16).attr('end')) {
+					_temp.stop = (0, _time.convertSMPTEtoSeconds)(lines.eq(_i16).attr('end'));
 				}
-				if (!_temp.stop && lines[_i16 + 1].getAttribute('begin')) {
-					_temp.stop = (0, _time.convertSMPTEtoSeconds)(lines[_i16 + 1].getAttribute('begin'));
+				if (!_temp.stop && lines.eq(_i16 + 1).attr('begin')) {
+					_temp.stop = (0, _time.convertSMPTEtoSeconds)(lines.eq(_i16 + 1).attr('begin'));
 				}
 
 				if (styles) {
 					style = '';
 					for (var _style in styles) {
-						style += _style + ': ' + styles[_style] + ';';
+						style += _style + ':' + styles[_style] + ';';
 					}
 				}
 				if (style) {
@@ -2996,7 +2996,7 @@ _mejs2.default.TrackFormatParser = {
 				if (_temp.start === 0) {
 					_temp.start = 0.200;
 				}
-				_temp.text = lines[_i16].innerHTML.trim().replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_| !:, .; ]*[-A-Z0-9+&@#\/%=~_|])/ig, "<a href='$1' target='_blank'>$1</a>");
+				_temp.text = lines.eq(_i16).innerHTML.trim().replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig, "<a href='$1' target='_blank'>$1</a>");
 				entries.push(_temp);
 			}
 			return entries;
@@ -3224,7 +3224,6 @@ Object.assign(_player2.default.prototype, {
 				(0, _dom.removeClass)(mute, t.options.classPrefix + 'mute');
 				(0, _dom.addClass)(mute, t.options.classPrefix + 'unmute');
 			} else {
-
 				positionVolumeHandle(media.volume);
 				(0, _dom.removeClass)(mute, t.options.classPrefix + 'unmute');
 				(0, _dom.addClass)(mute, t.options.classPrefix + 'mute');
@@ -3345,6 +3344,7 @@ Object.assign(_player2.default.prototype, {
 					rendered = true;
 					if (player.options.startVolume === 0 || media.originalNode.muted) {
 						media.setMuted(true);
+						player.options.startVolume = 0;
 					}
 					media.setVolume(player.options.startVolume);
 					t.setControlsSize();
@@ -3358,9 +3358,6 @@ Object.assign(_player2.default.prototype, {
 					if (player.options.startVolume === 0 || media.originalNode.muted) {
 						media.setMuted(true);
 					}
-					if (player.options.startVolume === 0) {
-						player.options.startVolume = 0;
-					}
 					media.setVolume(player.options.startVolume);
 					t.setControlsSize();
 				}
@@ -3370,9 +3367,7 @@ Object.assign(_player2.default.prototype, {
 
 		if (player.options.startVolume === 0 || media.originalNode.muted) {
 			media.setMuted(true);
-			if (player.options.startVolume === 0) {
-				player.options.startVolume = 0;
-			}
+			player.options.startVolume = 0;
 			toggleMute();
 		}
 
@@ -3999,7 +3994,7 @@ var MediaElementPlayer = function () {
 			var t = this,
 			    autoplayAttr = domNode.getAttribute('autoplay'),
 			    autoplay = !(autoplayAttr === undefined || autoplayAttr === null || autoplayAttr === 'false'),
-			    isNative = media.rendererName !== null && /(native|html5)/i.test(media.rendererName);
+			    isNative = media.rendererName !== null && /(native|html5)/i.test(t.media.rendererName);
 
 			if (t.getElement(t.controls)) {
 				t.enableControls();
@@ -4438,9 +4433,6 @@ var MediaElementPlayer = function () {
 				}
 			}(),
 			    aspectRatio = function () {
-				if (!t.options.enableAutosize) {
-					return t.initialAspectRatio;
-				}
 				var ratio = 1;
 				if (!t.isVideo) {
 					return ratio;
@@ -5238,9 +5230,7 @@ var MediaElementPlayer = function () {
 
 			if (_typeof(t.getElement(t.container)) === 'object') {
 				var offscreen = t.getElement(t.container).parentNode.querySelector('.' + t.options.classPrefix + 'offscreen');
-				if (offscreen) {
-					offscreen.remove();
-				}
+				offscreen.remove();
 				t.getElement(t.container).remove();
 			}
 			t.globalUnbind('resize', t.globalResizeCallback);
@@ -7265,7 +7255,6 @@ var YouTubeIframeRenderer = {
 			videoId: videoId,
 			height: height,
 			width: width,
-			host: youtube.options.youtube && youtube.options.youtube.nocookie ? 'https://www.youtube-nocookie.com' : undefined,
 			playerVars: Object.assign({
 				controls: 0,
 				rel: 0,
@@ -8076,10 +8065,8 @@ function getTypeFromFile(url) {
 	var mime = 'video/mp4';
 
 	if (normalizedExt) {
-		if (~['mp4', 'm4v', 'ogg', 'ogv', 'webm', 'flv', 'mpeg'].indexOf(normalizedExt)) {
+		if (~['mp4', 'm4v', 'ogg', 'ogv', 'webm', 'flv', 'mpeg', 'mov'].indexOf(normalizedExt)) {
 			mime = 'video/' + normalizedExt;
-		} else if ('mov' === normalizedExt) {
-			mime = 'video/quicktime';
 		} else if (~['mp3', 'oga', 'wav', 'mid', 'midi'].indexOf(normalizedExt)) {
 			mime = 'audio/' + normalizedExt;
 		}

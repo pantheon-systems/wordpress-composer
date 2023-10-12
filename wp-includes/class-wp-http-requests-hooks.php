@@ -12,10 +12,9 @@
  *
  * @since 4.7.0
  *
- * @see WpOrg\Requests\Hooks
+ * @see Requests_Hooks
  */
-#[AllowDynamicProperties]
-class WP_HTTP_Requests_Hooks extends WpOrg\Requests\Hooks {
+class WP_HTTP_Requests_Hooks extends Requests_Hooks {
 	/**
 	 * Requested URL.
 	 *
@@ -64,7 +63,7 @@ class WP_HTTP_Requests_Hooks extends WpOrg\Requests\Hooks {
 		 *
 		 * This action maps Requests internal hook to a native WordPress action.
 		 *
-		 * @see https://github.com/WordPress/Requests/blob/master/docs/hooks.md
+		 * @see https://github.com/rmccue/Requests/blob/master/docs/hooks.md
 		 *
 		 * @since 4.7.0
 		 *

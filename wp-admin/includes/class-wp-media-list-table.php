@@ -11,6 +11,7 @@
  * Core class used to implement displaying media items in a list table.
  *
  * @since 3.1.0
+ * @access private
  *
  * @see WP_List_Table
  */
@@ -77,16 +78,12 @@ class WP_Media_List_Table extends WP_List_Table {
 		 */
 		$not_in = array();
 
-		$crons = _get_cron_array();
+		foreach ( _get_cron_array() as $cron ) {
+			if ( isset( $cron['upgrader_scheduled_cleanup'] ) ) {
+				$details = reset( $cron['upgrader_scheduled_cleanup'] );
 
-		if ( is_array( $crons ) ) {
-			foreach ( $crons as $cron ) {
-				if ( isset( $cron['upgrader_scheduled_cleanup'] ) ) {
-					$details = reset( $cron['upgrader_scheduled_cleanup'] );
-
-					if ( ! empty( $details['args'][0] ) ) {
-						$not_in[] = (int) $details['args'][0];
-					}
+				if ( ! empty( $details['args'][0] ) ) {
+					$not_in[] = (int) $details['args'][0];
 				}
 			}
 		}
@@ -110,10 +107,6 @@ class WP_Media_List_Table extends WP_List_Table {
 				'per_page'    => $wp_query->query_vars['posts_per_page'],
 			)
 		);
-		if ( $wp_query->posts ) {
-			update_post_thumbnail_cache( $wp_query );
-			update_post_parent_caches( $wp_query->posts );
-		}
 	}
 
 	/**
@@ -154,7 +147,7 @@ class WP_Media_List_Table extends WP_List_Table {
 			);
 		}
 
-		$type_links['detached'] = '<option value="detached"' . ( $this->detached ? ' selected="selected"' : '' ) . '>' . _x( 'Unattached', 'media items' ) . '</option>';
+		$type_links['detached'] = '<option value="detached"' . ( $this->detached ? ' selected="selected"' : '' ) . '>' . __( 'Unattached' ) . '</option>';
 
 		$type_links['mine'] = sprintf(
 			'<option value="mine"%s>%s</option>',
@@ -278,12 +271,7 @@ class WP_Media_List_Table extends WP_List_Table {
 			<div class="filter-items">
 				<?php $this->view_switcher( $mode ); ?>
 
-				<label for="attachment-filter" class="screen-reader-text">
-					<?php
-					/* translators: Hidden accessibility text. */
-					_e( 'Filter by type' );
-					?>
-				</label>
+				<label for="attachment-filter" class="screen-reader-text"><?php _e( 'Filter by type' ); ?></label>
 				<select class="attachment-filters" name="attachment-filter" id="attachment-filter">
 					<?php
 					if ( ! empty( $views ) ) {
@@ -358,14 +346,8 @@ class WP_Media_List_Table extends WP_List_Table {
 		/* translators: Column name. */
 		if ( ! $this->detached ) {
 			$posts_columns['parent'] = _x( 'Uploaded to', 'column name' );
-
 			if ( post_type_supports( 'attachment', 'comments' ) ) {
-				$posts_columns['comments'] = sprintf(
-					'<span class="vers comment-grey-bubble" title="%1$s" aria-hidden="true"></span><span class="screen-reader-text">%2$s</span>',
-					esc_attr__( 'Comments' ),
-					/* translators: Hidden accessibility text. */
-					__( 'Comments' )
-				);
+				$posts_columns['comments'] = '<span class="vers comment-grey-bubble" title="' . esc_attr__( 'Comments' ) . '"><span class="screen-reader-text">' . __( 'Comments' ) . '</span></span>';
 			}
 		}
 
@@ -401,19 +383,15 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * Handles the checkbox column output.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$post` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param WP_Post $item The current WP_Post object.
+	 * @param WP_Post $post The current WP_Post object.
 	 */
-	public function column_cb( $item ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$post = $item;
-
+	public function column_cb( $post ) {
 		if ( current_user_can( 'edit_post', $post->ID ) ) {
 			?>
 			<label class="screen-reader-text" for="cb-select-<?php echo $post->ID; ?>">
 				<?php
-				/* translators: Hidden accessibility text. %s: Attachment title. */
+				/* translators: %s: Attachment title. */
 				printf( __( 'Select %s' ), _draft_or_post_title() );
 				?>
 			</label>
@@ -432,18 +410,8 @@ class WP_Media_List_Table extends WP_List_Table {
 	public function column_title( $post ) {
 		list( $mime ) = explode( '/', $post->post_mime_type );
 
-		$attachment_id = $post->ID;
-
-		if ( has_post_thumbnail( $post ) ) {
-			$thumbnail_id = get_post_thumbnail_id( $post );
-
-			if ( ! empty( $thumbnail_id ) ) {
-				$attachment_id = $thumbnail_id;
-			}
-		}
-
 		$title      = _draft_or_post_title();
-		$thumb      = wp_get_attachment_image( $attachment_id, array( 60, 60 ), true, array( 'alt' => '' ) );
+		$thumb      = wp_get_attachment_image( $post->ID, array( 60, 60 ), true, array( 'alt' => '' ) );
 		$link_start = '';
 		$link_end   = '';
 
@@ -475,12 +443,7 @@ class WP_Media_List_Table extends WP_List_Table {
 			?>
 		</strong>
 		<p class="filename">
-			<span class="screen-reader-text">
-				<?php
-				/* translators: Hidden accessibility text. */
-				_e( 'File name:' );
-				?>
-			</span>
+			<span class="screen-reader-text"><?php _e( 'File name:' ); ?> </span>
 			<?php
 			$file = get_attached_file( $post->ID );
 			echo esc_html( wp_basename( $file ) );
@@ -508,13 +471,10 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * Handles the description column output.
 	 *
 	 * @since 4.3.0
-	 * @deprecated 6.2.0
 	 *
 	 * @param WP_Post $post The current WP_Post object.
 	 */
 	public function column_desc( $post ) {
-		_deprecated_function( __METHOD__, '6.2.0' );
-
 		echo has_excerpt() ? $post->post_excerpt : '';
 	}
 
@@ -540,16 +500,7 @@ class WP_Media_List_Table extends WP_List_Table {
 			}
 		}
 
-		/**
-		 * Filters the published time of an attachment displayed in the Media list table.
-		 *
-		 * @since 6.0.0
-		 *
-		 * @param string  $h_time      The published time.
-		 * @param WP_Post $post        Attachment object.
-		 * @param string  $column_name The column name.
-		 */
-		echo apply_filters( 'media_date_column_time', $h_time, $post, 'date' );
+		echo $h_time;
 	}
 
 	/**
@@ -639,15 +590,11 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * Handles output for the default column.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$post` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param WP_Post $item        The current WP_Post object.
+	 * @param WP_Post $post        The current WP_Post object.
 	 * @param string  $column_name Current column name.
 	 */
-	public function column_default( $item, $column_name ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$post = $item;
-
+	public function column_default( $post, $column_name ) {
 		if ( 'categories' === $column_name ) {
 			$taxonomy = 'category';
 		} elseif ( 'tags' === $column_name ) {
@@ -662,21 +609,20 @@ class WP_Media_List_Table extends WP_List_Table {
 			$terms = get_the_terms( $post->ID, $taxonomy );
 
 			if ( is_array( $terms ) ) {
-				$output = array();
-
+				$out = array();
 				foreach ( $terms as $t ) {
 					$posts_in_term_qv             = array();
 					$posts_in_term_qv['taxonomy'] = $taxonomy;
 					$posts_in_term_qv['term']     = $t->slug;
 
-					$output[] = sprintf(
+					$out[] = sprintf(
 						'<a href="%s">%s</a>',
 						esc_url( add_query_arg( $posts_in_term_qv, 'upload.php' ) ),
 						esc_html( sanitize_term_field( 'name', $t->name, $t->term_id, $taxonomy, 'display' ) )
 					);
 				}
-
-				echo implode( wp_get_list_item_separator(), $output );
+				/* translators: Used between list items, there is a space after the comma. */
+				echo implode( __( ', ' ), $out );
 			} else {
 				echo '<span aria-hidden="true">&#8212;</span><span class="screen-reader-text">' . get_taxonomy( $taxonomy )->labels->no_terms . '</span>';
 			}
@@ -698,8 +644,7 @@ class WP_Media_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global WP_Post  $post     Global post object.
-	 * @global WP_Query $wp_query WordPress Query object.
+	 * @global WP_Post $post Global post object.
 	 */
 	public function display_rows() {
 		global $post, $wp_query;
@@ -781,15 +726,13 @@ class WP_Media_List_Table extends WP_List_Table {
 				}
 			}
 
-			if ( get_permalink( $post->ID ) ) {
-				$actions['view'] = sprintf(
-					'<a href="%s" aria-label="%s" rel="bookmark">%s</a>',
-					get_permalink( $post->ID ),
-					/* translators: %s: Attachment title. */
-					esc_attr( sprintf( __( 'View &#8220;%s&#8221;' ), $att_title ) ),
-					__( 'View' )
-				);
-			}
+			$actions['view'] = sprintf(
+				'<a href="%s" aria-label="%s" rel="bookmark">%s</a>',
+				get_permalink( $post->ID ),
+				/* translators: %s: Attachment title. */
+				esc_attr( sprintf( __( 'View &#8220;%s&#8221;' ), $att_title ) ),
+				__( 'View' )
+			);
 
 			if ( current_user_can( 'edit_post', $post->ID ) ) {
 				$actions['attach'] = sprintf(
@@ -844,31 +787,12 @@ class WP_Media_List_Table extends WP_List_Table {
 			}
 
 			if ( ! $this->is_trash ) {
-				if ( get_permalink( $post->ID ) ) {
-					$actions['view'] = sprintf(
-						'<a href="%s" aria-label="%s" rel="bookmark">%s</a>',
-						get_permalink( $post->ID ),
-						/* translators: %s: Attachment title. */
-						esc_attr( sprintf( __( 'View &#8220;%s&#8221;' ), $att_title ) ),
-						__( 'View' )
-					);
-				}
-
-				$actions['copy'] = sprintf(
-					'<span class="copy-to-clipboard-container"><button type="button" class="button-link copy-attachment-url media-library" data-clipboard-text="%s" aria-label="%s">%s</button><span class="success hidden" aria-hidden="true">%s</span></span>',
-					esc_url( wp_get_attachment_url( $post->ID ) ),
+				$actions['view'] = sprintf(
+					'<a href="%s" aria-label="%s" rel="bookmark">%s</a>',
+					get_permalink( $post->ID ),
 					/* translators: %s: Attachment title. */
-					esc_attr( sprintf( __( 'Copy &#8220;%s&#8221; URL to clipboard' ), $att_title ) ),
-					__( 'Copy URL' ),
-					__( 'Copied!' )
-				);
-
-				$actions['download'] = sprintf(
-					'<a href="%s" aria-label="%s" download>%s</a>',
-					esc_url( wp_get_attachment_url( $post->ID ) ),
-					/* translators: %s: Attachment title. */
-					esc_attr( sprintf( __( 'Download &#8220;%s&#8221;' ), $att_title ) ),
-					__( 'Download file' )
+					esc_attr( sprintf( __( 'View &#8220;%s&#8221;' ), $att_title ) ),
+					__( 'View' )
 				);
 			}
 		}
@@ -891,25 +815,20 @@ class WP_Media_List_Table extends WP_List_Table {
 	 * Generates and displays row action links.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$post` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param WP_Post $item        Attachment being acted upon.
+	 * @param WP_Post $post        Attachment being acted upon.
 	 * @param string  $column_name Current column name.
 	 * @param string  $primary     Primary column name.
 	 * @return string Row actions output for media attachments, or an empty string
 	 *                if the current column is not the primary column.
 	 */
-	protected function handle_row_actions( $item, $column_name, $primary ) {
+	protected function handle_row_actions( $post, $column_name, $primary ) {
 		if ( $primary !== $column_name ) {
 			return '';
 		}
 
 		$att_title = _draft_or_post_title();
-		$actions   = $this->_get_row_actions(
-			$item, // WP_Post object for an attachment.
-			$att_title
-		);
 
-		return $this->row_actions( $actions );
+		return $this->row_actions( $this->_get_row_actions( $post, $att_title ) );
 	}
 }

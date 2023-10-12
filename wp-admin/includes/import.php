@@ -7,7 +7,7 @@
  */
 
 /**
- * Retrieves the list of importers.
+ * Retrieve list of importers.
  *
  * @since 2.0.0
  *
@@ -23,7 +23,7 @@ function get_importers() {
 }
 
 /**
- * Sorts a multidimensional array by first member of each top level member.
+ * Sorts a multidimensional array by first member of each top level member
  *
  * Used by uasort() as a callback, should not be used directly.
  *
@@ -39,7 +39,7 @@ function _usort_by_first_member( $a, $b ) {
 }
 
 /**
- * Registers importer for WordPress.
+ * Register importer for WordPress.
  *
  * @since 2.0.0
  *
@@ -73,11 +73,11 @@ function wp_import_cleanup( $id ) {
 }
 
 /**
- * Handles importer uploading and adds attachment.
+ * Handle importer uploading and add attachment.
  *
  * @since 2.0.0
  *
- * @return array Uploaded file's details on success, error message on failure.
+ * @return array Uploaded file's details on success, error message on failure
  */
 function wp_import_handle_upload() {
 	if ( ! isset( $_FILES['import'] ) ) {
@@ -103,8 +103,8 @@ function wp_import_handle_upload() {
 		return $upload;
 	}
 
-	// Construct the attachment array.
-	$attachment = array(
+	// Construct the object array.
+	$object = array(
 		'post_title'     => wp_basename( $upload['file'] ),
 		'post_content'   => $upload['url'],
 		'post_mime_type' => $upload['type'],
@@ -114,7 +114,7 @@ function wp_import_handle_upload() {
 	);
 
 	// Save the data.
-	$id = wp_insert_attachment( $attachment, $upload['file'] );
+	$id = wp_insert_attachment( $object, $upload['file'] );
 
 	/*
 	 * Schedule a cleanup for one day from now in case of failed

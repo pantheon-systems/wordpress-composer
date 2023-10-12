@@ -14,11 +14,10 @@
  *
  * @property string $page_template
  *
- * @property-read int[]    $ancestors
- * @property-read int[]    $post_category
- * @property-read string[] $tags_input
+ * @property-read int[]  $ancestors
+ * @property-read int    $post_category
+ * @property-read string $tag_input
  */
-#[AllowDynamicProperties]
 final class WP_Post {
 
 	/**
@@ -248,7 +247,7 @@ final class WP_Post {
 
 			$_post = sanitize_post( $_post, 'raw' );
 			wp_cache_add( $_post->ID, $_post, 'posts' );
-		} elseif ( empty( $_post->filter ) || 'raw' !== $_post->filter ) {
+		} elseif ( empty( $_post->filter ) ) {
 			$_post = sanitize_post( $_post, 'raw' );
 		}
 

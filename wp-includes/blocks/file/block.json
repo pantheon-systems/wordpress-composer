@@ -1,5 +1,4 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "core/file",
 	"title": "File",
@@ -13,12 +12,6 @@
 		},
 		"href": {
 			"type": "string"
-		},
-		"fileId": {
-			"type": "string",
-			"source": "attribute",
-			"selector": "a:not([download])",
-			"attribute": "id"
 		},
 		"fileName": {
 			"type": "string",

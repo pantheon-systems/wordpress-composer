@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Selectmenu 1.13.2
+ * jQuery UI Selectmenu 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -9,9 +9,9 @@
 
 //>>label: Selectmenu
 //>>group: Widgets
-/* eslint-disable max-len */
+// jscs:disable maximumLineLength
 //>>description: Duplicates and extends the functionality of a native HTML select element, allowing it to be customizable in behavior and appearance far beyond the limitations of a native select.
-/* eslint-enable max-len */
+// jscs:enable maximumLineLength
 //>>docs: http://api.jqueryui.com/selectmenu/
 //>>demos: http://jqueryui.com/selectmenu/
 //>>css.structure: ../../themes/base/core.css
@@ -19,8 +19,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -34,11 +32,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 return $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
-	version: "1.13.2",
+	version: "1.12.1",
 	defaultElement: "<select>",
 	options: {
 		appendTo: null,
@@ -93,7 +90,7 @@ return $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 		this.labels = this.element.labels().attr( "for", this.ids.button );
 		this._on( this.labels, {
 			click: function( event ) {
-				this.button.trigger( "focus" );
+				this.button.focus();
 				event.preventDefault();
 			}
 		} );
@@ -411,7 +408,7 @@ return $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 		// Support: IE
 		// Setting the text selection kills the button focus in IE, but
 		// restoring the focus doesn't kill the selection.
-		this.button.trigger( "focus" );
+		this.button.focus();
 	},
 
 	_documentClick: {
@@ -421,7 +418,7 @@ return $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 			}
 
 			if ( !$( event.target ).closest( ".ui-selectmenu-menu, #" +
-				$.escapeSelector( this.ids.button ) ).length ) {
+					$.ui.escapeSelector( this.ids.button ) ).length ) {
 				this.close( event );
 			}
 		}
@@ -652,10 +649,6 @@ return $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 		var that = this,
 			data = [];
 		options.each( function( index, item ) {
-			if ( item.hidden ) {
-				return;
-			}
-
 			data.push( that._parseOption( $( item ), index ) );
 		} );
 		this.items = data;
@@ -684,4 +677,4 @@ return $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 	}
 } ] );
 
-} );
+} ) );

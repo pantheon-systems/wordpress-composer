@@ -202,27 +202,8 @@ if ( ! is_multisite() && current_user_can( 'update_themes' ) ) {
 	/* translators: %s: Number of available theme updates. */
 	$submenu['themes.php'][5] = array( sprintf( __( 'Themes %s' ), $count ), $appearance_cap, 'themes.php' );
 
-if ( wp_is_block_theme() ) {
-	$submenu['themes.php'][6] = array( _x( 'Editor', 'site editor menu item' ), 'edit_theme_options', 'site-editor.php' );
-}
-
-if ( ! wp_is_block_theme() && current_theme_supports( 'block-template-parts' ) ) {
-	$submenu['themes.php'][6] = array(
-		__( 'Template Parts' ),
-		'edit_theme_options',
-		'site-editor.php?postType=wp_template_part&amp;path=/wp_template_part/all',
-	);
-}
-
-$customize_url = add_query_arg( 'return', urlencode( remove_query_arg( wp_removable_query_args(), wp_unslash( $_SERVER['REQUEST_URI'] ) ) ), 'customize.php' );
-
-// Hide Customize link on block themes unless a plugin or theme
-// is using 'customize_register' to add a setting.
-if ( ! wp_is_block_theme() || has_action( 'customize_register' ) ) {
-	$position = ( wp_is_block_theme() || current_theme_supports( 'block-template-parts' ) ) ? 7 : 6;
-
-	$submenu['themes.php'][ $position ] = array( __( 'Customize' ), 'customize', esc_url( $customize_url ), '', 'hide-if-no-customize' );
-}
+	$customize_url            = add_query_arg( 'return', urlencode( remove_query_arg( wp_removable_query_args(), wp_unslash( $_SERVER['REQUEST_URI'] ) ) ), 'customize.php' );
+	$submenu['themes.php'][6] = array( __( 'Customize' ), 'customize', esc_url( $customize_url ), '', 'hide-if-no-customize' );
 
 if ( current_theme_supports( 'menus' ) || current_theme_supports( 'widgets' ) ) {
 	$submenu['themes.php'][10] = array( __( 'Menus' ), 'edit_theme_options', 'nav-menus.php' );
@@ -238,52 +219,23 @@ if ( current_theme_supports( 'custom-background' ) && current_user_can( 'customi
 	$submenu['themes.php'][20] = array( __( 'Background' ), $appearance_cap, esc_url( $customize_background_url ), '', 'hide-if-no-customize' );
 }
 
-unset( $customize_url );
+	unset( $customize_url );
 
 unset( $appearance_cap );
 
-// Add 'Theme File Editor' to the bottom of the Appearance (non-block themes) or Tools (block themes) menu.
+// Add 'Theme Editor' to the bottom of the Appearance menu.
 if ( ! is_multisite() ) {
-	// Must use API on the admin_menu hook, direct modification is only possible on/before the _admin_menu hook.
 	add_action( 'admin_menu', '_add_themes_utility_last', 101 );
 }
 /**
- * Adds the 'Theme File Editor' menu item to the bottom of the Appearance (non-block themes)
- * or Tools (block themes) menu.
+ * Adds the 'Theme Editor' link to the bottom of the Appearance menu.
  *
  * @access private
  * @since 3.0.0
- * @since 5.9.0 Renamed 'Theme Editor' to 'Theme File Editor'.
- *              Relocates to Tools for block themes.
  */
 function _add_themes_utility_last() {
-	add_submenu_page(
-		wp_is_block_theme() ? 'tools.php' : 'themes.php',
-		__( 'Theme File Editor' ),
-		__( 'Theme File Editor' ),
-		'edit_themes',
-		'theme-editor.php'
-	);
-}
-
-/**
- * Adds the 'Plugin File Editor' menu item after the 'Themes File Editor' in Tools
- * for block themes.
- *
- * @access private
- * @since 5.9.0
- */
-function _add_plugin_file_editor_to_tools() {
-	if ( ! wp_is_block_theme() ) {
-		return;
-	}
-	add_submenu_page(
-		'tools.php',
-		__( 'Plugin File Editor' ),
-		__( 'Plugin File Editor' ),
-		'edit_plugins',
-		'plugin-editor.php'
-	);
+	// Must use API on the admin_menu hook, direct modification is only possible on/before the _admin_menu hook.
+	add_submenu_page( 'themes.php', __( 'Theme Editor' ), __( 'Theme Editor' ), 'edit_themes', 'theme-editor.php' );
 }
 
 $count = '';
@@ -306,12 +258,7 @@ $submenu['plugins.php'][5] = array( __( 'Installed Plugins' ), 'activate_plugins
 if ( ! is_multisite() ) {
 	/* translators: Add new plugin. */
 	$submenu['plugins.php'][10] = array( _x( 'Add New', 'plugin' ), 'install_plugins', 'plugin-install.php' );
-	if ( wp_is_block_theme() ) {
-		// Place the menu item below the Theme File Editor menu item.
-		add_action( 'admin_menu', '_add_plugin_file_editor_to_tools', 101 );
-	} else {
-		$submenu['plugins.php'][15] = array( __( 'Plugin File Editor' ), 'edit_plugins', 'plugin-editor.php' );
-	}
+	$submenu['plugins.php'][15] = array( __( 'Plugin Editor' ), 'edit_plugins', 'plugin-editor.php' );
 }
 
 unset( $update_data );
@@ -342,37 +289,11 @@ if ( current_user_can( 'list_users' ) ) {
 	}
 }
 
-$site_health_count = '';
-if ( ! is_multisite() && current_user_can( 'view_site_health_checks' ) ) {
-	$get_issues = get_transient( 'health-check-site-status-result' );
-
-	$issue_counts = array();
-
-	if ( false !== $get_issues ) {
-		$issue_counts = json_decode( $get_issues, true );
-	}
-
-	if ( ! is_array( $issue_counts ) || ! $issue_counts ) {
-		$issue_counts = array(
-			'good'        => 0,
-			'recommended' => 0,
-			'critical'    => 0,
-		);
-	}
-
-	$site_health_count = sprintf(
-		'<span class="menu-counter site-health-counter count-%s"><span class="count">%s</span></span>',
-		$issue_counts['critical'],
-		number_format_i18n( $issue_counts['critical'] )
-	);
-}
-
 $menu[75]                     = array( __( 'Tools' ), 'edit_posts', 'tools.php', '', 'menu-top menu-icon-tools', 'menu-tools', 'dashicons-admin-tools' );
 	$submenu['tools.php'][5]  = array( __( 'Available Tools' ), 'edit_posts', 'tools.php' );
 	$submenu['tools.php'][10] = array( __( 'Import' ), 'import', 'import.php' );
 	$submenu['tools.php'][15] = array( __( 'Export' ), 'export', 'export.php' );
-	/* translators: %s: Number of critical Site Health checks. */
-	$submenu['tools.php'][20] = array( sprintf( __( 'Site Health %s' ), $site_health_count ), 'view_site_health_checks', 'site-health.php' );
+	$submenu['tools.php'][20] = array( __( 'Site Health' ), 'view_site_health_checks', 'site-health.php' );
 	$submenu['tools.php'][25] = array( __( 'Export Personal Data' ), 'export_others_personal_data', 'export-personal-data.php' );
 	$submenu['tools.php'][30] = array( __( 'Erase Personal Data' ), 'erase_others_personal_data', 'erase-personal-data.php' );
 if ( is_multisite() && ! is_main_site() ) {

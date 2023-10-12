@@ -11,7 +11,6 @@
  *
  * @since 2.9.0
  */
-#[AllowDynamicProperties]
 class WP_MatchesMapRegex {
 	/**
 	 * store for matches

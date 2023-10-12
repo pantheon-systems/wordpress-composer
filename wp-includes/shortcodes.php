@@ -31,7 +31,7 @@
  */
 
 /**
- * Container for storing shortcode tags and their hook to call for the shortcode.
+ * Container for storing shortcode tags and their hook to call for the shortcode
  *
  * @since 2.5.0
  *
@@ -105,10 +105,11 @@ function remove_shortcode( $tag ) {
 }
 
 /**
- * Clears all shortcodes.
+ * Clear all shortcodes.
  *
- * This function clears all of the shortcode tags by replacing the shortcodes global with
- * an empty array. This is actually an efficient method for removing all shortcodes.
+ * This function is simple, it clears all of the shortcode tags by replacing the
+ * shortcodes global by a empty array. This is actually a very efficient method
+ * for removing all shortcodes.
  *
  * @since 2.5.0
  *
@@ -121,7 +122,7 @@ function remove_all_shortcodes() {
 }
 
 /**
- * Determines whether a registered shortcode exists named $tag.
+ * Whether a registered shortcode exists named $tag
  *
  * @since 3.6.0
  *
@@ -136,7 +137,7 @@ function shortcode_exists( $tag ) {
 }
 
 /**
- * Determines whether the passed content contains the specified shortcode.
+ * Whether the passed content contains the specified shortcode
  *
  * @since 3.6.0
  *
@@ -225,7 +226,7 @@ function apply_shortcodes( $content, $ignore_html = false ) {
 }
 
 /**
- * Searches content for shortcodes and filter shortcodes through their hooks.
+ * Search content for shortcodes and filter shortcodes through their hooks.
  *
  * If there are no shortcode tags defined, then the content will be returned
  * without any filtering. This might cause issues when plugins are disabled but
@@ -271,7 +272,7 @@ function do_shortcode( $content, $ignore_html = false ) {
 }
 
 /**
- * Retrieves the shortcode regular expression for searching.
+ * Retrieve the shortcode regular expression for searching.
  *
  * The regular expression combines the shortcode tags in the regular expression
  * in a regex class.
@@ -378,10 +379,10 @@ function do_shortcode_tag( $m ) {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param false|string $output Short-circuit return value. Either false or the value to replace the shortcode with.
-	 * @param string       $tag    Shortcode name.
-	 * @param array|string $attr   Shortcode attributes array or empty string.
-	 * @param array        $m      Regular expression match array.
+	 * @param false|string $return      Short-circuit return value. Either false or the value to replace the shortcode with.
+	 * @param string       $tag         Shortcode name.
+	 * @param array|string $attr        Shortcode attributes array or empty string.
+	 * @param array        $m           Regular expression match array.
 	 */
 	$return = apply_filters( 'pre_do_shortcode_tag', false, $tag, $attr, $m );
 	if ( false !== $return ) {
@@ -406,7 +407,7 @@ function do_shortcode_tag( $m ) {
 }
 
 /**
- * Searches only inside HTML elements for shortcodes and process them.
+ * Search only inside HTML elements for shortcodes and process them.
  *
  * Any [ or ] characters remaining inside elements will be HTML encoded
  * to prevent interference with shortcodes that are outside the elements.
@@ -520,7 +521,7 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 }
 
 /**
- * Removes placeholders added by do_shortcodes_in_html_tags().
+ * Remove placeholders added by do_shortcodes_in_html_tags().
  *
  * @since 4.2.3
  *
@@ -540,18 +541,18 @@ function unescape_invalid_shortcodes( $content ) {
 }
 
 /**
- * Retrieves the shortcode attributes regex.
+ * Retrieve the shortcode attributes regex.
  *
  * @since 4.4.0
  *
- * @return string The shortcode attribute regular expression.
+ * @return string The shortcode attribute regular expression
  */
 function get_shortcode_atts_regex() {
 	return '/([\w-]+)\s*=\s*"([^"]*)"(?:\s|$)|([\w-]+)\s*=\s*\'([^\']*)\'(?:\s|$)|([\w-]+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|\'([^\']*)\'(?:\s|$)|(\S+)(?:\s|$)/';
 }
 
 /**
- * Retrieves all attributes from the shortcodes tag.
+ * Retrieve all attributes from the shortcodes tag.
  *
  * The attributes list has the attribute name as the key and the value of the
  * attribute as the value in the key/value pair. This allows for easier
@@ -602,7 +603,7 @@ function shortcode_parse_atts( $text ) {
 }
 
 /**
- * Combines user attributes with known attributes and fill in defaults when needed.
+ * Combine user attributes with known attributes and fill in defaults when needed.
  *
  * The pairs should be considered to be all of the attributes which are
  * supported by the caller and given as a list. The returned attributes will
@@ -651,7 +652,7 @@ function shortcode_atts( $pairs, $atts, $shortcode = '' ) {
 }
 
 /**
- * Removes all shortcode tags from the given content.
+ * Remove all shortcode tags from the given content.
  *
  * @since 2.5.0
  *

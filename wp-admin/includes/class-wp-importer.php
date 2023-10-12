@@ -2,7 +2,6 @@
 /**
  * WP_Importer base class
  */
-#[AllowDynamicProperties]
 class WP_Importer {
 	/**
 	 * Class Constructor
@@ -10,7 +9,7 @@ class WP_Importer {
 	public function __construct() {}
 
 	/**
-	 * Returns array with imported permalinks from WordPress database.
+	 * Returns array with imported permalinks from WordPress database
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
@@ -47,7 +46,7 @@ class WP_Importer {
 	}
 
 	/**
-	 * Returns count of imported permalinks from WordPress database.
+	 * Return count of imported permalinks from WordPress database
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
@@ -74,7 +73,7 @@ class WP_Importer {
 	}
 
 	/**
-	 * Sets array with imported comments from WordPress database.
+	 * Set array with imported comments from WordPress database
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
@@ -176,7 +175,7 @@ class WP_Importer {
 	}
 
 	/**
-	 * Sorts by strlen, longest string first.
+	 * Sort by strlen, longest string first
 	 *
 	 * @param string $a
 	 * @param string $b
@@ -214,7 +213,7 @@ class WP_Importer {
 	}
 
 	/**
-	 * Bumps up the request timeout for http requests.
+	 * Bump up the request timeout for http requests
 	 *
 	 * @param int $val
 	 * @return int
@@ -224,7 +223,7 @@ class WP_Importer {
 	}
 
 	/**
-	 * Checks if user has exceeded disk quota.
+	 * Check if user has exceeded disk quota
 	 *
 	 * @return bool
 	 */
@@ -239,13 +238,13 @@ class WP_Importer {
 	}
 
 	/**
-	 * Replaces newlines, tabs, and multiple spaces with a single space.
+	 * Replace newlines, tabs, and multiple spaces with a single space
 	 *
-	 * @param string $text
+	 * @param string $string
 	 * @return string
 	 */
-	public function min_whitespace( $text ) {
-		return preg_replace( '|[\r\n\t ]+|', ' ', $text );
+	public function min_whitespace( $string ) {
+		return preg_replace( '|[\r\n\t ]+|', ' ', $string );
 	}
 
 	/**

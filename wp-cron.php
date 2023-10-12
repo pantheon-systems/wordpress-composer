@@ -18,16 +18,14 @@
 
 ignore_user_abort( true );
 
-if ( ! headers_sent() ) {
-	header( 'Expires: Wed, 11 Jan 1984 05:00:00 GMT' );
-	header( 'Cache-Control: no-cache, must-revalidate, max-age=0' );
-}
+/* Don't make the request block till we finish, if possible. */
+if ( function_exists( 'fastcgi_finish_request' ) && version_compare( phpversion(), '7.0.16', '>=' ) ) {
+	if ( ! headers_sent() ) {
+		header( 'Expires: Wed, 11 Jan 1984 05:00:00 GMT' );
+		header( 'Cache-Control: no-cache, must-revalidate, max-age=0' );
+	}
 
-// Don't run cron until the request finishes, if possible.
-if ( PHP_VERSION_ID >= 70016 && function_exists( 'fastcgi_finish_request' ) ) {
 	fastcgi_finish_request();
-} elseif ( function_exists( 'litespeed_finish_request' ) ) {
-	litespeed_finish_request();
 }
 
 if ( ! empty( $_POST ) || defined( 'DOING_AJAX' ) || defined( 'DOING_CRON' ) ) {
@@ -35,7 +33,7 @@ if ( ! empty( $_POST ) || defined( 'DOING_AJAX' ) || defined( 'DOING_CRON' ) ) {
 }
 
 /**
- * Tell WordPress the cron task is running.
+ * Tell WordPress we are doing the cron task.
  *
  * @var bool
  */
@@ -56,7 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @global wpdb $wpdb WordPress database abstraction object.
  *
- * @return string|int|false Value of the `doing_cron` transient, 0|false otherwise.
+ * @return string|false Value of the `doing_cron` transient, 0|false otherwise.
  */
 function _get_cron_lock() {
 	global $wpdb;
@@ -123,58 +121,10 @@ foreach ( $crons as $timestamp => $cronhooks ) {
 			$schedule = $v['schedule'];
 
 			if ( $schedule ) {
-				$result = wp_reschedule_event( $timestamp, $schedule, $hook, $v['args'], true );
-
-				if ( is_wp_error( $result ) ) {
-					error_log(
-						sprintf(
-							/* translators: 1: Hook name, 2: Error code, 3: Error message, 4: Event data. */
-							__( 'Cron reschedule event error for hook: %1$s, Error code: %2$s, Error message: %3$s, Data: %4$s' ),
-							$hook,
-							$result->get_error_code(),
-							$result->get_error_message(),
-							wp_json_encode( $v )
-						)
-					);
-
-					/**
-					 * Fires when an error happens rescheduling a cron event.
-					 *
-					 * @since 6.1.0
-					 *
-					 * @param WP_Error $result The WP_Error object.
-					 * @param string   $hook   Action hook to execute when the event is run.
-					 * @param array    $v      Event data.
-					 */
-					do_action( 'cron_reschedule_event_error', $result, $hook, $v );
-				}
+				wp_reschedule_event( $timestamp, $schedule, $hook, $v['args'] );
 			}
 
-			$result = wp_unschedule_event( $timestamp, $hook, $v['args'], true );
-
-			if ( is_wp_error( $result ) ) {
-				error_log(
-					sprintf(
-						/* translators: 1: Hook name, 2: Error code, 3: Error message, 4: Event data. */
-						__( 'Cron unschedule event error for hook: %1$s, Error code: %2$s, Error message: %3$s, Data: %4$s' ),
-						$hook,
-						$result->get_error_code(),
-						$result->get_error_message(),
-						wp_json_encode( $v )
-					)
-				);
-
-				/**
-				 * Fires when an error happens unscheduling a cron event.
-				 *
-				 * @since 6.1.0
-				 *
-				 * @param WP_Error $result The WP_Error object.
-				 * @param string   $hook   Action hook to execute when the event is run.
-				 * @param array    $v      Event data.
-				 */
-				do_action( 'cron_unschedule_event_error', $result, $hook, $v );
-			}
+			wp_unschedule_event( $timestamp, $hook, $v['args'] );
 
 			/**
 			 * Fires scheduled events.

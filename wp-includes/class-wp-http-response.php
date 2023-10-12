@@ -12,7 +12,6 @@
  *
  * @since 4.4.0
  */
-#[AllowDynamicProperties]
 class WP_HTTP_Response {
 
 	/**

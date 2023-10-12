@@ -653,16 +653,12 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 	 * we remove that in this override.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$menu_item_value` to `$value` for PHP 8 named parameter support.
 	 *
-	 * @param array $value The menu item value to sanitize.
+	 * @param array $menu_item_value The value to sanitize.
 	 * @return array|false|null|WP_Error Null or WP_Error if an input isn't valid. False if it is marked for deletion.
 	 *                                   Otherwise the sanitized value.
 	 */
-	public function sanitize( $value ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$menu_item_value = $value;
-
+	public function sanitize( $menu_item_value ) {
 		// Menu is marked for deletion.
 		if ( false === $menu_item_value ) {
 			return $menu_item_value;
@@ -726,7 +722,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 		$menu_item_value['description'] = wp_unslash( apply_filters( 'content_save_pre', wp_slash( $menu_item_value['description'] ) ) );
 
 		if ( '' !== $menu_item_value['url'] ) {
-			$menu_item_value['url'] = sanitize_url( $menu_item_value['url'] );
+			$menu_item_value['url'] = esc_url_raw( $menu_item_value['url'] );
 			if ( '' === $menu_item_value['url'] ) {
 				return new WP_Error( 'invalid_url', __( 'Invalid URL.' ) ); // Fail sanitization if URL is invalid.
 			}

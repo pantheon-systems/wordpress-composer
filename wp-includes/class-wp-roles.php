@@ -23,7 +23,6 @@
  *
  * @since 2.0.0
  */
-#[AllowDynamicProperties]
 class WP_Roles {
 	/**
 	 * List of roles and capabilities.
@@ -74,7 +73,7 @@ class WP_Roles {
 	protected $site_id = 0;
 
 	/**
-	 * Constructor.
+	 * Constructor
 	 *
 	 * @since 2.0.0
 	 * @since 4.9.0 The `$site_id` argument was added.
@@ -92,7 +91,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Makes private/protected methods readable for backward compatibility.
+	 * Make private/protected methods readable for backward compatibility.
 	 *
 	 * @since 4.0.0
 	 *
@@ -108,7 +107,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Sets up the object properties.
+	 * Set up the object properties.
 	 *
 	 * The role key is set to the current prefix for the $wpdb object with
 	 * 'user_roles' appended. If the $wp_user_roles global is set, then it will
@@ -124,7 +123,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Reinitializes the object.
+	 * Reinitialize the object
 	 *
 	 * Recreates the role objects. This is typically called only by switch_to_blog()
 	 * after switching wpdb to a new site ID.
@@ -139,21 +138,20 @@ class WP_Roles {
 	}
 
 	/**
-	 * Adds a role name with capabilities to the list.
+	 * Add role name with capabilities to list.
 	 *
 	 * Updates the list of roles, if the role doesn't already exist.
 	 *
-	 * The capabilities are defined in the following format: `array( 'read' => true )`.
-	 * To explicitly deny the role a capability, set the value for that capability to false.
+	 * The capabilities are defined in the following format `array( 'read' => true );`
+	 * To explicitly deny a role a capability you set the value for that capability to false.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @param string $role         Role name.
 	 * @param string $display_name Role display name.
-	 * @param bool[] $capabilities Optional. List of capabilities keyed by the capability name,
-	 *                             e.g. `array( 'edit_posts' => true, 'delete_posts' => false )`.
-	 *                             Default empty array.
-	 * @return WP_Role|void WP_Role object, if the role is added.
+	 * @param bool[] $capabilities List of capabilities keyed by the capability name,
+	 *                             e.g. array( 'edit_posts' => true, 'delete_posts' => false ).
+	 * @return WP_Role|void WP_Role object, if role is added.
 	 */
 	public function add_role( $role, $display_name, $capabilities = array() ) {
 		if ( empty( $role ) || isset( $this->roles[ $role ] ) ) {
@@ -173,7 +171,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Removes a role by name.
+	 * Remove role by name.
 	 *
 	 * @since 2.0.0
 	 *
@@ -198,7 +196,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Adds a capability to role.
+	 * Add capability to role.
 	 *
 	 * @since 2.0.0
 	 *
@@ -219,7 +217,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Removes a capability from role.
+	 * Remove capability from role.
 	 *
 	 * @since 2.0.0
 	 *
@@ -238,7 +236,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Retrieves a role object by name.
+	 * Retrieve role object by name.
 	 *
 	 * @since 2.0.0
 	 *
@@ -254,7 +252,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Retrieves a list of role names.
+	 * Retrieve list of role names.
 	 *
 	 * @since 2.0.0
 	 *
@@ -265,7 +263,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Determines whether a role name is currently in the list of available roles.
+	 * Whether role name is currently in the list of available roles.
 	 *
 	 * @since 2.0.0
 	 *
@@ -294,11 +292,11 @@ class WP_Roles {
 		}
 
 		/**
-		 * Fires after the roles have been initialized, allowing plugins to add their own roles.
+		 * After the roles have been initialized, allow plugins to add their own roles.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Roles $wp_roles A reference to the WP_Roles object.
+		 * @param WP_Roles $this A reference to the WP_Roles object.
 		 */
 		do_action( 'wp_roles_init', $this );
 	}

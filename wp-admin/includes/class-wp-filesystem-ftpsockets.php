@@ -368,20 +368,13 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Moves a file or directory.
-	 *
-	 * After moving files or directories, OPcache will need to be invalidated.
-	 *
-	 * If moving a directory fails, `copy_dir()` can be used for a recursive copy.
-	 *
-	 * Use `move_dir()` for moving directories with OPcache invalidation and a
-	 * fallback to `copy_dir()`.
+	 * Moves a file.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $source      Path to the source file or directory.
-	 * @param string $destination Path to the destination file or directory.
-	 * @param bool   $overwrite   Optional. Whether to overwrite the destination if it exists.
+	 * @param string $source      Path to the source file.
+	 * @param string $destination Path to the destination file.
+	 * @param bool   $overwrite   Optional. Whether to overwrite the destination file if it exists.
 	 *                            Default false.
 	 * @return bool True on success, false on failure.
 	 */
@@ -422,13 +415,13 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $path Path to file or directory.
-	 * @return bool Whether $path exists or not.
+	 * @param string $file Path to file or directory.
+	 * @return bool Whether $file exists or not.
 	 */
-	public function exists( $path ) {
-		$list = $this->ftp->nlist( $path );
+	public function exists( $file ) {
+		$list = $this->ftp->nlist( $file );
 
-		if ( empty( $list ) && $this->is_dir( $path ) ) {
+		if ( empty( $list ) && $this->is_dir( $file ) ) {
 			return true; // File is an empty directory.
 		}
 
@@ -492,10 +485,10 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $path Path to file or directory.
-	 * @return bool Whether $path is writable.
+	 * @param string $file Path to file or directory.
+	 * @return bool Whether $file is writable.
 	 */
-	public function is_writable( $path ) {
+	public function is_writable( $file ) {
 		return true;
 	}
 
@@ -616,14 +609,14 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 	 *
 	 *     @type string $name        Name of the file or directory.
 	 *     @type string $perms       *nix representation of permissions.
-	 *     @type string $permsn      Octal representation of permissions.
+	 *     @type int    $permsn      Octal representation of permissions.
 	 *     @type string $owner       Owner name or ID.
 	 *     @type int    $size        Size of file in bytes.
 	 *     @type int    $lastmodunix Last modified unix timestamp.
 	 *     @type mixed  $lastmod     Last modified month (3 letter) and day (without leading 0).
 	 *     @type int    $time        Last modified time.
 	 *     @type string $type        Type of resource. 'f' for file, 'd' for directory.
-	 *     @type mixed  $files       If a directory and `$recursive` is true, contains another array of files.
+	 *     @type mixed  $files       If a directory and $recursive is true, contains another array of files.
 	 * }
 	 */
 	public function dirlist( $path = '.', $include_hidden = true, $recursive = false ) {
@@ -645,8 +638,7 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 			return false;
 		}
 
-		$path = trailingslashit( $path );
-		$ret  = array();
+		$ret = array();
 
 		foreach ( $list as $struc ) {
 
@@ -664,7 +656,7 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base {
 
 			if ( 'd' === $struc['type'] ) {
 				if ( $recursive ) {
-					$struc['files'] = $this->dirlist( $path . $struc['name'], $include_hidden, $recursive );
+					$struc['files'] = $this->dirlist( $path . '/' . $struc['name'], $include_hidden, $recursive );
 				} else {
 					$struc['files'] = array();
 				}

@@ -10,23 +10,14 @@
 /**
  * Class used for interacting with block pattern categories.
  */
-#[AllowDynamicProperties]
 final class WP_Block_Pattern_Categories_Registry {
 	/**
 	 * Registered block pattern categories array.
 	 *
 	 * @since 5.5.0
-	 * @var array[]
+	 * @var array
 	 */
 	private $registered_categories = array();
-
-	/**
-	 * Pattern categories registered outside the `init` action.
-	 *
-	 * @since 6.0.0
-	 * @var array[]
-	 */
-	private $registered_categories_outside_init = array();
 
 	/**
 	 * Container for the main instance of the class.
@@ -42,11 +33,7 @@ final class WP_Block_Pattern_Categories_Registry {
 	 * @since 5.5.0
 	 *
 	 * @param string $category_name       Pattern category name including namespace.
-	 * @param array  $category_properties {
-	 *     List of properties for the block pattern category.
-	 *
-	 *     @type string $label Required. A human-readable label for the pattern category.
-	 * }
+	 * @param array  $category_properties Array containing the properties of the category: label.
 	 * @return bool True if the pattern was registered with success and false otherwise.
 	 */
 	public function register( $category_name, $category_properties ) {
@@ -59,19 +46,10 @@ final class WP_Block_Pattern_Categories_Registry {
 			return false;
 		}
 
-		$category = array_merge(
+		$this->registered_categories[ $category_name ] = array_merge(
 			array( 'name' => $category_name ),
 			$category_properties
 		);
-
-		$this->registered_categories[ $category_name ] = $category;
-
-		// If the category is registered inside an action other than `init`, store it
-		// also to a dedicated array. Used to detect deprecated registrations inside
-		// `admin_init` or `current_screen`.
-		if ( current_action() && 'init' !== current_action() ) {
-			$this->registered_categories_outside_init[ $category_name ] = $category;
-		}
 
 		return true;
 	}
@@ -96,7 +74,6 @@ final class WP_Block_Pattern_Categories_Registry {
 		}
 
 		unset( $this->registered_categories[ $category_name ] );
-		unset( $this->registered_categories_outside_init[ $category_name ] );
 
 		return true;
 	}
@@ -122,15 +99,10 @@ final class WP_Block_Pattern_Categories_Registry {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param bool $outside_init_only Return only categories registered outside the `init` action.
-	 * @return array[] Array of arrays containing the registered pattern categories properties.
+	 * @return array Array of arrays containing the registered pattern categories properties.
 	 */
-	public function get_all_registered( $outside_init_only = false ) {
-		return array_values(
-			$outside_init_only
-				? $this->registered_categories_outside_init
-				: $this->registered_categories
-		);
+	public function get_all_registered() {
+		return array_values( $this->registered_categories );
 	}
 
 	/**
@@ -169,9 +141,7 @@ final class WP_Block_Pattern_Categories_Registry {
  * @since 5.5.0
  *
  * @param string $category_name       Pattern category name including namespace.
- * @param array  $category_properties List of properties for the block pattern.
- *                                    See WP_Block_Pattern_Categories_Registry::register() for
- *                                    accepted arguments.
+ * @param array  $category_properties Array containing the properties of the category.
  * @return bool True if the pattern category was registered with success and false otherwise.
  */
 function register_block_pattern_category( $category_name, $category_properties ) {

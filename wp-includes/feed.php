@@ -11,7 +11,7 @@
  */
 
 /**
- * Retrieves RSS container for the bloginfo function.
+ * RSS container for the bloginfo function.
  *
  * You can retrieve anything that you can using the get_bloginfo() function.
  * Everything will be stripped of tags and characters converted, when the values
@@ -41,7 +41,7 @@ function get_bloginfo_rss( $show = '' ) {
 }
 
 /**
- * Displays RSS container for the bloginfo function.
+ * Display RSS container for the bloginfo function.
  *
  * You can retrieve anything that you can using the get_bloginfo() function.
  * Everything will be stripped of tags and characters converted, when the values
@@ -68,7 +68,7 @@ function bloginfo_rss( $show = '' ) {
 }
 
 /**
- * Retrieves the default feed.
+ * Retrieve the default feed.
  *
  * The default feed is 'rss2', unless a plugin changes it through the
  * {@see 'default_feed'} filter.
@@ -92,12 +92,12 @@ function get_default_feed() {
 }
 
 /**
- * Retrieves the blog title for the feed title.
+ * Retrieve the blog title for the feed title.
  *
  * @since 2.2.0
  * @since 4.4.0 The optional `$sep` parameter was deprecated and renamed to `$deprecated`.
  *
- * @param string $deprecated Unused.
+ * @param string $deprecated Unused..
  * @return string The document title.
  */
 function get_wp_title_rss( $deprecated = '&#8211;' ) {
@@ -119,7 +119,7 @@ function get_wp_title_rss( $deprecated = '&#8211;' ) {
 }
 
 /**
- * Displays the blog title for display of the feed title.
+ * Display the blog title for display of the feed title.
  *
  * @since 2.2.0
  * @since 4.4.0 The optional `$sep` parameter was deprecated and renamed to `$deprecated`.
@@ -147,7 +147,7 @@ function wp_title_rss( $deprecated = '&#8211;' ) {
 }
 
 /**
- * Retrieves the current post title for the feed.
+ * Retrieve the current post title for the feed.
  *
  * @since 2.0.0
  *
@@ -167,7 +167,7 @@ function get_the_title_rss() {
 }
 
 /**
- * Displays the post title in the feed.
+ * Display the post title in the feed.
  *
  * @since 0.71
  */
@@ -176,7 +176,7 @@ function the_title_rss() {
 }
 
 /**
- * Retrieves the post content for feeds.
+ * Retrieve the post content for feeds.
  *
  * @since 2.9.0
  *
@@ -207,7 +207,7 @@ function get_the_content_feed( $feed_type = null ) {
 }
 
 /**
- * Displays the post content for feeds.
+ * Display the post content for feeds.
  *
  * @since 2.9.0
  *
@@ -218,7 +218,7 @@ function the_content_feed( $feed_type = null ) {
 }
 
 /**
- * Displays the post excerpt for the feed.
+ * Display the post excerpt for the feed.
  *
  * @since 0.71
  */
@@ -235,7 +235,7 @@ function the_excerpt_rss() {
 }
 
 /**
- * Displays the permalink to the post for use in feeds.
+ * Display the permalink to the post for use in feeds.
  *
  * @since 2.3.0
  */
@@ -251,7 +251,7 @@ function the_permalink_rss() {
 }
 
 /**
- * Outputs the link to the comments for the current post in an XML safe way.
+ * Outputs the link to the comments for the current post in an xml safe way
  *
  * @since 3.0.0
  */
@@ -268,7 +268,7 @@ function comments_link_feed() {
 }
 
 /**
- * Displays the feed GUID for the current comment.
+ * Display the feed GUID for the current comment.
  *
  * @since 2.5.0
  *
@@ -279,7 +279,7 @@ function comment_guid( $comment_id = null ) {
 }
 
 /**
- * Retrieves the feed GUID for the current comment.
+ * Retrieve the feed GUID for the current comment.
  *
  * @since 2.5.0
  *
@@ -297,7 +297,7 @@ function get_comment_guid( $comment_id = null ) {
 }
 
 /**
- * Displays the link to the comments.
+ * Display the link to the comments.
  *
  * @since 1.5.0
  * @since 4.4.0 Introduced the `$comment` argument.
@@ -318,11 +318,11 @@ function comment_link( $comment = null ) {
 }
 
 /**
- * Retrieves the current comment author for use in the feeds.
+ * Retrieve the current comment author for use in the feeds.
  *
  * @since 2.0.0
  *
- * @return string Comment Author.
+ * @return string Comment Author
  */
 function get_comment_author_rss() {
 	/**
@@ -338,7 +338,7 @@ function get_comment_author_rss() {
 }
 
 /**
- * Displays the current comment author in the feed.
+ * Display the current comment author in the feed.
  *
  * @since 1.0.0
  */
@@ -347,7 +347,7 @@ function comment_author_rss() {
 }
 
 /**
- * Displays the current comment content for use in the feeds.
+ * Display the current comment content for use in the feeds.
  *
  * @since 1.0.0
  */
@@ -365,7 +365,7 @@ function comment_text_rss() {
 }
 
 /**
- * Retrieves all of the post categories, formatted for use in feeds.
+ * Retrieve all of the post categories, formatted for use in feeds.
  *
  * All of the categories for the current post in the feed loop, will be
  * retrieved and have feed markup added, so that they can easily be added to the
@@ -427,7 +427,7 @@ function get_the_category_rss( $type = null ) {
 }
 
 /**
- * Displays the post categories in the feed.
+ * Display the post categories in the feed.
  *
  * @since 0.71
  *
@@ -440,7 +440,7 @@ function the_category_rss( $type = null ) {
 }
 
 /**
- * Displays the HTML type based on the blog setting.
+ * Display the HTML type based on the blog setting.
  *
  * The two possible values are either 'xhtml' or 'html'.
  *
@@ -457,7 +457,7 @@ function html_type_rss() {
 }
 
 /**
- * Displays the rss enclosure for the current post.
+ * Display the rss enclosure for the current post.
  *
  * Uses the global $post to check whether the post requires a password and if
  * the user has the password for the post. If not then it will return before
@@ -498,7 +498,7 @@ function rss_enclosure() {
 }
 
 /**
- * Displays the atom enclosure for the current post.
+ * Display the atom enclosure for the current post.
  *
  * Uses the global $post to check whether the post requires a password and if
  * the user has the password for the post. If not then it will return before
@@ -563,7 +563,7 @@ function atom_enclosure() {
 }
 
 /**
- * Determines the type of a string of data with the data formatted.
+ * Determine the type of a string of data with the data formatted.
  *
  * Tell whether the type is text, HTML, or XHTML, per RFC 4287 section 3.1.
  *
@@ -576,7 +576,7 @@ function atom_enclosure() {
  *
  * @since 2.5.0
  *
- * @param string $data Input string.
+ * @param string $data Input string
  * @return array array(type, value)
  */
 function prep_atom_text_construct( $data ) {
@@ -663,7 +663,7 @@ function get_self_link() {
 }
 
 /**
- * Displays the link for the currently displayed feed in a XSS safe way.
+ * Display the link for the currently displayed feed in a XSS safe way.
  *
  * Generate a correct link for the atom:self element.
  *
@@ -684,7 +684,7 @@ function self_link() {
 }
 
 /**
- * Gets the UTC time of the most recently modified post from WP_Query.
+ * Get the UTC time of the most recently modified post from WP_Query.
  *
  * If viewing a comment feed, the time of the most recently modified
  * comment will be returned.
@@ -742,7 +742,7 @@ function get_feed_build_date( $format ) {
 }
 
 /**
- * Returns the content type for specified feed type.
+ * Return the content type for specified feed type.
  *
  * @since 2.8.0
  *
@@ -775,7 +775,7 @@ function feed_content_type( $type = '' ) {
 }
 
 /**
- * Builds SimplePie object based on RSS or Atom feed from URL.
+ * Build SimplePie object based on RSS or Atom feed from URL.
  *
  * @since 2.8.0
  *

@@ -28,7 +28,6 @@
  *
  * @since 4.5.0
  */
-#[AllowDynamicProperties]
 class WP_Metadata_Lazyloader {
 	/**
 	 * Pending objects queue.

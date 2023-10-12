@@ -22,7 +22,6 @@ _deprecated_file(
  *
  * @see SimplePie_Cache
  */
-#[AllowDynamicProperties]
 class WP_Feed_Cache extends SimplePie_Cache {
 
 	/**

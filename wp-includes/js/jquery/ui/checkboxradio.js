@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Checkboxradio 1.13.2
+ * jQuery UI Checkboxradio 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -18,8 +18,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -32,11 +30,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
-	version: "1.13.2",
+	version: "1.12.1",
 	options: {
 		disabled: null,
 		label: null,
@@ -48,7 +45,8 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 	},
 
 	_getCreateOptions: function() {
-		var disabled, labels, labelContents;
+		var disabled, labels;
+		var that = this;
 		var options = this._super() || {};
 
 		// We read the type here, because it makes more sense to throw a element type error first,
@@ -68,18 +66,12 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 
 		// We need to get the label text but this may also need to make sure it does not contain the
 		// input itself.
-		// The label contents could be text, html, or a mix. We wrap all elements
-		// and read the wrapper's `innerHTML` to get a string representation of
-		// the label, without the input as part of it.
-		labelContents = this.label.contents().not( this.element[ 0 ] );
+		this.label.contents().not( this.element[ 0 ] ).each( function() {
 
-		if ( labelContents.length ) {
-			this.originalLabel += labelContents
-				.clone()
-				.wrapAll( "<div></div>" )
-				.parent()
-				.html();
-		}
+			// The label contents could be text, html, or a mix. We concat each element to get a
+			// string representation of the label, without the input as part of it.
+			that.originalLabel += this.nodeType === 3 ? $( this ).text() : this.outerHTML;
+		} );
 
 		// Set the label option if we found label text
 		if ( this.originalLabel ) {
@@ -120,6 +112,9 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 
 		if ( checked ) {
 			this._addClass( this.label, "ui-checkboxradio-checked", "ui-state-active" );
+			if ( this.icon ) {
+				this._addClass( this.icon, null, "ui-state-hover" );
+			}
 		}
 
 		this._on( {
@@ -154,7 +149,7 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 	_getRadioGroup: function() {
 		var group;
 		var name = this.element[ 0 ].name;
-		var nameSelector = "input[name='" + $.escapeSelector( name ) + "']";
+		var nameSelector = "input[name='" + $.ui.escapeSelector( name ) + "']";
 
 		if ( !name ) {
 			return $( [] );
@@ -166,7 +161,7 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 
 			// Not inside a form, check all inputs that also are not inside a form
 			group = $( nameSelector ).filter( function() {
-				return $( this )._form().length === 0;
+				return $( this ).form().length === 0;
 			} );
 		}
 
@@ -285,4 +280,4 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 
 return $.ui.checkboxradio;
 
-} );
+} ) );

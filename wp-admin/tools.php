@@ -39,7 +39,6 @@ if ( isset( $_GET['wp-privacy-policy-guide'] ) ) {
 /** WordPress Administration Bootstrap */
 require_once __DIR__ . '/admin.php';
 
-// Used in the HTML title tag.
 $title = __( 'Tools' );
 
 get_current_screen()->add_help_tab(
@@ -53,8 +52,8 @@ get_current_screen()->add_help_tab(
 
 get_current_screen()->set_help_sidebar(
 	'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-	'<p>' . __( '<a href="https://wordpress.org/documentation/article/tools-screen/">Documentation on Tools</a>' ) . '</p>' .
-	'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
+	'<p>' . __( '<a href="https://wordpress.org/support/article/tools-screen/">Documentation on Tools</a>' ) . '</p>' .
+	'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
 );
 
 require_once ABSPATH . 'wp-admin/admin-header.php';

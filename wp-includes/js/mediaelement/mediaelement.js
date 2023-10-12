@@ -1018,7 +1018,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var mejs = {};
 
-mejs.version = '4.2.17';
+mejs.version = '4.2.16';
 
 mejs.html5media = {
 	properties: ['volume', 'src', 'currentTime', 'muted', 'duration', 'paused', 'ended', 'buffered', 'error', 'networkState', 'readyState', 'seeking', 'seekable', 'currentSrc', 'preload', 'bufferedBytes', 'bufferedTime', 'initialTime', 'startOffsetTime', 'defaultPlaybackRate', 'playbackRate', 'played', 'autoplay', 'loop', 'controls'],
@@ -2962,7 +2962,6 @@ var YouTubeIframeRenderer = {
 			videoId: videoId,
 			height: height,
 			width: width,
-			host: youtube.options.youtube && youtube.options.youtube.nocookie ? 'https://www.youtube-nocookie.com' : undefined,
 			playerVars: Object.assign({
 				controls: 0,
 				rel: 0,
@@ -3773,10 +3772,8 @@ function getTypeFromFile(url) {
 	var mime = 'video/mp4';
 
 	if (normalizedExt) {
-		if (~['mp4', 'm4v', 'ogg', 'ogv', 'webm', 'flv', 'mpeg'].indexOf(normalizedExt)) {
+		if (~['mp4', 'm4v', 'ogg', 'ogv', 'webm', 'flv', 'mpeg', 'mov'].indexOf(normalizedExt)) {
 			mime = 'video/' + normalizedExt;
-		} else if ('mov' === normalizedExt) {
-			mime = 'video/quicktime';
 		} else if (~['mp3', 'oga', 'wav', 'mid', 'midi'].indexOf(normalizedExt)) {
 			mime = 'audio/' + normalizedExt;
 		}

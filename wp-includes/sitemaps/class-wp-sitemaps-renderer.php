@@ -14,7 +14,6 @@
  *
  * @since 5.5.0
  */
-#[AllowDynamicProperties]
 class WP_Sitemaps_Renderer {
 	/**
 	 * XSL stylesheet for styling a sitemap for web browsers.
@@ -123,7 +122,7 @@ class WP_Sitemaps_Renderer {
 	 * @param array $sitemaps Array of sitemap URLs.
 	 */
 	public function render_index( $sitemaps ) {
-		header( 'Content-Type: application/xml; charset=UTF-8' );
+		header( 'Content-type: application/xml; charset=UTF-8' );
 
 		$this->check_for_simple_xml_availability();
 
@@ -188,7 +187,7 @@ class WP_Sitemaps_Renderer {
 	 * @param array $url_list Array of URLs for a sitemap.
 	 */
 	public function render_sitemap( $url_list ) {
-		header( 'Content-Type: application/xml; charset=UTF-8' );
+		header( 'Content-type: application/xml; charset=UTF-8' );
 
 		$this->check_for_simple_xml_availability();
 

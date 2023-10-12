@@ -7,7 +7,7 @@
  */
 
 /**
- * Retrieves bookmark data.
+ * Retrieve Bookmark data
  *
  * @since 2.1.0
  *
@@ -65,13 +65,13 @@ function get_bookmark( $bookmark, $output = OBJECT, $filter = 'raw' ) {
 }
 
 /**
- * Retrieves single bookmark data item or field.
+ * Retrieve single bookmark data item or field.
  *
  * @since 2.3.0
  *
  * @param string $field    The name of the data field to return.
  * @param int    $bookmark The bookmark ID to get field.
- * @param string $context  Optional. The context of how the field will be used. Default 'display'.
+ * @param string $context  Optional. The context of how the field will be used.
  * @return string|WP_Error
  */
 function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
@@ -94,7 +94,7 @@ function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
 }
 
 /**
- * Retrieves the list of bookmarks.
+ * Retrieves the list of bookmarks
  *
  * Attempts to retrieve from the cache first based on MD5 hash of arguments. If
  * that fails, then the query will be built from the arguments and executed. The

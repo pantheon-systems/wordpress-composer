@@ -11,6 +11,7 @@
  * Core class used to implement displaying sites in a list table for the network admin.
  *
  * @since 3.1.0
+ * @access private
  *
  * @see WP_List_Table
  */
@@ -261,19 +262,23 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		$url              = 'sites.php';
 
 		foreach ( $statuses as $status => $label_count ) {
+			$current_link_attributes = $requested_status === $status || ( '' === $requested_status && 'all' === $status )
+				? ' class="current" aria-current="page"'
+				: '';
 			if ( (int) $counts[ $status ] > 0 ) {
 				$label    = sprintf( translate_nooped_plural( $label_count, $counts[ $status ] ), number_format_i18n( $counts[ $status ] ) );
 				$full_url = 'all' === $status ? $url : add_query_arg( 'status', $status, $url );
 
-				$view_links[ $status ] = array(
-					'url'     => esc_url( $full_url ),
-					'label'   => $label,
-					'current' => $requested_status === $status || ( '' === $requested_status && 'all' === $status ),
+				$view_links[ $status ] = sprintf(
+					'<a href="%1$s"%2$s>%3$s</a>',
+					esc_url( $full_url ),
+					$current_link_attributes,
+					$label
 				);
 			}
 		}
 
-		return $this->get_views_links( $view_links );
+		return $view_links;
 	}
 
 	/**
@@ -391,14 +396,10 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * Handles the checkbox column output.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$blog` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param array $item Current site.
+	 * @param array $blog Current site.
 	 */
-	public function column_cb( $item ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$blog = $item;
-
+	public function column_cb( $blog ) {
 		if ( ! is_main_site( $blog['blog_id'] ) ) :
 			$blogname = untrailingslashit( $blog['domain'] . $blog['path'] );
 			?>
@@ -559,12 +560,11 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * Handles output for the default column.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$blog` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param array  $item        Current site.
+	 * @param array  $blog        Current site.
 	 * @param string $column_name Current column name.
 	 */
-	public function column_default( $item, $column_name ) {
+	public function column_default( $blog, $column_name ) {
 		/**
 		 * Fires for each registered custom column in the Sites list table.
 		 *
@@ -573,7 +573,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		 * @param string $column_name The name of the column to display.
 		 * @param int    $blog_id     The site ID.
 		 */
-		do_action( 'manage_sites_custom_column', $column_name, $item['blog_id'] );
+		do_action( 'manage_sites_custom_column', $column_name, $blog['blog_id'] );
 	}
 
 	/**
@@ -630,25 +630,20 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		 *
 		 * @since 5.3.0
 		 *
-		 * @param string[] $site_states An array of site states. Default 'Main',
-		 *                              'Archived', 'Mature', 'Spam', 'Deleted'.
-		 * @param WP_Site  $site        The current site object.
+		 * @param array $site_states An array of site states. Default 'Main',
+		 *                           'Archived', 'Mature', 'Spam', 'Deleted'.
+		 * @param WP_Site $site The current site object.
 		 */
 		$site_states = apply_filters( 'display_site_states', $site_states, $_site );
 
 		if ( ! empty( $site_states ) ) {
 			$state_count = count( $site_states );
-
-			$i = 0;
-
+			$i           = 0;
 			echo ' &mdash; ';
-
 			foreach ( $site_states as $state ) {
 				++$i;
-
-				$separator = ( $i < $state_count ) ? ', ' : '';
-
-				echo "<span class='post-state'>{$state}{$separator}</span>";
+				( $i == $state_count ) ? $sep = '' : $sep = ', ';
+				echo "<span class='post-state'>{$state}{$sep}</span>";
 			}
 		}
 	}
@@ -668,21 +663,18 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * Generates and displays row action links.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$blog` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param array  $item        Site being acted upon.
+	 * @param array  $blog        Site being acted upon.
 	 * @param string $column_name Current column name.
 	 * @param string $primary     Primary column name.
 	 * @return string Row actions output for sites in Multisite, or an empty string
 	 *                if the current column is not the primary column.
 	 */
-	protected function handle_row_actions( $item, $column_name, $primary ) {
+	protected function handle_row_actions( $blog, $column_name, $primary ) {
 		if ( $primary !== $column_name ) {
 			return '';
 		}
 
-		// Restores the more descriptive, specific name for use within this method.
-		$blog     = $item;
 		$blogname = untrailingslashit( $blog['domain'] . $blog['path'] );
 
 		// Preordered.

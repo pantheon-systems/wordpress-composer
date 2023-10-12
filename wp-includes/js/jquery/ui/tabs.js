@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Tabs 1.13.2
+ * jQuery UI Tabs 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -17,8 +17,6 @@
 //>>css.theme: ../../themes/base/theme.css
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -31,11 +29,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.tabs", {
-	version: "1.13.2",
+	version: "1.12.1",
 	delay: 300,
 	options: {
 		active: null,
@@ -93,8 +90,8 @@ $.widget( "ui.tabs", {
 
 		// Take disabling tabs via class attribute from HTML
 		// into account and update option properly.
-		if ( Array.isArray( options.disabled ) ) {
-			options.disabled = $.uniqueSort( options.disabled.concat(
+		if ( $.isArray( options.disabled ) ) {
+			options.disabled = $.unique( options.disabled.concat(
 				$.map( this.tabs.filter( ".ui-state-disabled" ), function( li ) {
 					return that.tabs.index( li );
 				} )
@@ -429,6 +426,7 @@ $.widget( "ui.tabs", {
 			return $( "a", this )[ 0 ];
 		} )
 			.attr( {
+				role: "presentation",
 				tabIndex: -1
 			} );
 		this._addClass( this.anchors, "ui-tabs-anchor" );
@@ -500,7 +498,7 @@ $.widget( "ui.tabs", {
 	_setOptionDisabled: function( disabled ) {
 		var currentItem, li, i;
 
-		if ( Array.isArray( disabled ) ) {
+		if ( $.isArray( disabled ) ) {
 			if ( !disabled.length ) {
 				disabled = false;
 			} else if ( disabled.length === this.anchors.length ) {
@@ -731,7 +729,7 @@ $.widget( "ui.tabs", {
 		// meta-function to give users option to provide a href string instead of a numerical index.
 		if ( typeof index === "string" ) {
 			index = this.anchors.index( this.anchors.filter( "[href$='" +
-				$.escapeSelector( index ) + "']" ) );
+				$.ui.escapeSelector( index ) + "']" ) );
 		}
 
 		return index;
@@ -788,7 +786,7 @@ $.widget( "ui.tabs", {
 			disabled = false;
 		} else {
 			index = this._getIndex( index );
-			if ( Array.isArray( disabled ) ) {
+			if ( $.isArray( disabled ) ) {
 				disabled = $.map( disabled, function( num ) {
 					return num !== index ? num : null;
 				} );
@@ -814,7 +812,7 @@ $.widget( "ui.tabs", {
 			if ( $.inArray( index, disabled ) !== -1 ) {
 				return;
 			}
-			if ( Array.isArray( disabled ) ) {
+			if ( $.isArray( disabled ) ) {
 				disabled = $.merge( [ index ], disabled ).sort();
 			} else {
 				disabled = [ index ];
@@ -918,4 +916,4 @@ if ( $.uiBackCompat !== false ) {
 
 return $.ui.tabs;
 
-} );
+} ) );

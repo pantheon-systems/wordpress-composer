@@ -1457,7 +1457,7 @@
 				self.container.addClass( 'expanding' );
 			};
 
-			if ( $toggleBtn.attr( 'aria-expanded' ) === 'false' ) {
+			if ( expanded ) {
 				if ( api.section.has( self.section() ) ) {
 					api.section( self.section() ).expand( {
 						completeCallback: expandControl

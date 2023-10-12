@@ -43,7 +43,6 @@ class WP_REST_Site_Health_Controller extends WP_REST_Controller {
 	 * Registers API routes.
 	 *
 	 * @since 5.6.0
-	 * @since 6.1.0 Adds page-cache async test.
 	 *
 	 * @see register_rest_route()
 	 */
@@ -157,24 +156,6 @@ class WP_REST_Site_Health_Controller extends WP_REST_Controller {
 				},
 			)
 		);
-
-		register_rest_route(
-			$this->namespace,
-			sprintf(
-				'/%s/%s',
-				$this->rest_base,
-				'page-cache'
-			),
-			array(
-				array(
-					'methods'             => 'GET',
-					'callback'            => array( $this, 'test_page_cache' ),
-					'permission_callback' => function () {
-						return $this->validate_request_permission( 'view_site_health_checks' );
-					},
-				),
-			)
-		);
 	}
 
 	/**
@@ -262,18 +243,6 @@ class WP_REST_Site_Health_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks that full page cache is active.
-	 *
-	 * @since 6.1.0
-	 *
-	 * @return array The test result.
-	 */
-	public function test_page_cache() {
-		$this->load_admin_textdomain();
-		return $this->site_health->get_test_page_cache();
-	}
-
-	/**
 	 * Gets the current directory sizes for this install.
 	 *
 	 * @since 5.6.0
@@ -336,7 +305,7 @@ class WP_REST_Site_Health_Controller extends WP_REST_Controller {
 		// Accounts for inner REST API requests in the admin.
 		if ( ! is_admin() ) {
 			$locale = determine_locale();
-			load_textdomain( 'default', WP_LANG_DIR . "/admin-$locale.mo", $locale );
+			load_textdomain( 'default', WP_LANG_DIR . "/admin-$locale.mo" );
 		}
 	}
 

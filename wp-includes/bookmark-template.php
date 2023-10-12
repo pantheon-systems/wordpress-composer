@@ -1,6 +1,6 @@
 <?php
 /**
- * Bookmark Template Functions for usage in Themes.
+ * Bookmark Template Functions for usage in Themes
  *
  * @package WordPress
  * @subpackage Template
@@ -102,24 +102,13 @@ function _walk_bookmarks( $bookmarks, $args = '' ) {
 			$title = ' title="' . $title . '"';
 		}
 		$rel = $bookmark->link_rel;
-
-		$target = $bookmark->link_target;
-		if ( '' !== $target ) {
-			if ( is_string( $rel ) && '' !== $rel ) {
-				if ( ! str_contains( $rel, 'noopener' ) ) {
-					$rel = trim( $rel ) . ' noopener';
-				}
-			} else {
-				$rel = 'noopener';
-			}
-
-			$target = ' target="' . $target . '"';
-		}
-
 		if ( '' !== $rel ) {
 			$rel = ' rel="' . esc_attr( $rel ) . '"';
 		}
-
+		$target = $bookmark->link_target;
+		if ( '' !== $target ) {
+			$target = ' target="' . $target . '"';
+		}
 		$output .= '<a href="' . $the_link . '"' . $rel . $title . $target . '>';
 
 		$output .= $parsed_args['link_before'];
@@ -164,7 +153,7 @@ function _walk_bookmarks( $bookmarks, $args = '' ) {
 }
 
 /**
- * Retrieves or echoes all of the bookmarks.
+ * Retrieve or echo all of the bookmarks.
  *
  * List of default arguments are as follows:
  *

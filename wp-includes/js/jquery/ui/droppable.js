@@ -1,5 +1,5 @@
 /*!
- * jQuery UI Droppable 1.13.2
+ * jQuery UI Droppable 1.12.1
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -14,8 +14,6 @@
 //>>demos: http://jqueryui.com/droppable/
 
 ( function( factory ) {
-	"use strict";
-
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -30,11 +28,10 @@
 		// Browser globals
 		factory( jQuery );
 	}
-} )( function( $ ) {
-"use strict";
+}( function( $ ) {
 
 $.widget( "ui.droppable", {
-	version: "1.13.2",
+	version: "1.12.1",
 	widgetEventPrefix: "drop",
 	options: {
 		accept: "*",
@@ -59,7 +56,7 @@ $.widget( "ui.droppable", {
 		this.isover = false;
 		this.isout = true;
 
-		this.accept = typeof accept === "function" ? accept : function( d ) {
+		this.accept = $.isFunction( accept ) ? accept : function( d ) {
 			return d.is( accept );
 		};
 
@@ -82,9 +79,7 @@ $.widget( "ui.droppable", {
 
 		this._addToManager( o.scope );
 
-		if ( o.addClasses ) {
-			this._addClass( "ui-droppable" );
-		}
+		o.addClasses && this._addClass( "ui-droppable" );
 
 	},
 
@@ -113,7 +108,7 @@ $.widget( "ui.droppable", {
 	_setOption: function( key, value ) {
 
 		if ( key === "accept" ) {
-			this.accept = typeof value === "function" ? value : function( d ) {
+			this.accept = $.isFunction( value ) ? value : function( d ) {
 				return d.is( value );
 			};
 		} else if ( key === "scope" ) {
@@ -203,15 +198,14 @@ $.widget( "ui.droppable", {
 					inst.accept.call(
 						inst.element[ 0 ], ( draggable.currentItem || draggable.element )
 					) &&
-					$.ui.intersect(
+					intersect(
 						draggable,
 						$.extend( inst, { offset: inst.element.offset() } ),
 						inst.options.tolerance, event
 					)
 				) {
 					childrenIntersection = true;
-					return false;
-				}
+					return false; }
 			} );
 		if ( childrenIntersection ) {
 			return false;
@@ -240,7 +234,7 @@ $.widget( "ui.droppable", {
 	},
 
 	// Extension points just to make backcompat sane and avoid duplicating logic
-	// TODO: Remove in 1.14 along with call to it below
+	// TODO: Remove in 1.13 along with call to it below
 	_addHoverClass: function() {
 		this._addClass( "ui-droppable-hover" );
 	},
@@ -258,7 +252,7 @@ $.widget( "ui.droppable", {
 	}
 } );
 
-$.ui.intersect = ( function() {
+var intersect = $.ui.intersect = ( function() {
 	function isOverAxis( x, reference, size ) {
 		return ( x >= reference ) && ( x < ( reference + size ) );
 	}
@@ -366,7 +360,7 @@ $.ui.ddmanager = {
 				return;
 			}
 			if ( !this.options.disabled && this.visible &&
-					$.ui.intersect( draggable, this, this.options.tolerance, event ) ) {
+					intersect( draggable, this, this.options.tolerance, event ) ) {
 				dropped = this._drop.call( this, event ) || dropped;
 			}
 
@@ -407,7 +401,7 @@ $.ui.ddmanager = {
 			}
 
 			var parentInstance, scope, parent,
-				intersects = $.ui.intersect( draggable, this, this.options.tolerance, event ),
+				intersects = intersect( draggable, this, this.options.tolerance, event ),
 				c = !intersects && this.isover ?
 					"isout" :
 					( intersects && !this.isover ? "isover" : null );
@@ -499,4 +493,4 @@ if ( $.uiBackCompat !== false ) {
 
 return $.ui.droppable;
 
-} );
+} ) );

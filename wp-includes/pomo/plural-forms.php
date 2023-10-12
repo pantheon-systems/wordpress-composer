@@ -6,7 +6,6 @@
  * @since 4.9.0
  */
 if ( ! class_exists( 'Plural_Forms', false ) ) :
-	#[AllowDynamicProperties]
 	class Plural_Forms {
 		/**
 		 * Operator characters.
