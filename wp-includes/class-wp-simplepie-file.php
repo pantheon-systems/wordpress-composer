@@ -17,7 +17,15 @@
  *
  * @see SimplePie_File
  */
+#[AllowDynamicProperties]
 class WP_SimplePie_File extends SimplePie_File {
+
+	/**
+	 * Timeout.
+	 *
+	 * @var int How long the connection should stay open in seconds.
+	 */
+	public $timeout = 10;
 
 	/**
 	 * Constructor.
@@ -56,7 +64,7 @@ class WP_SimplePie_File extends SimplePie_File {
 				$args['headers'] = $this->headers;
 			}
 
-			if ( SIMPLEPIE_USERAGENT != $this->useragent ) { // Use default WP user agent unless custom has been specified.
+			if ( SIMPLEPIE_USERAGENT !== $this->useragent ) { // Use default WP user agent unless custom has been specified.
 				$args['user-agent'] = $this->useragent;
 			}
 

@@ -10,7 +10,7 @@ body {
 	color: #3c434a;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	margin: 140px auto 25px;
-	padding: 20px 20px 10px 20px;
+	padding: 20px 20px 10px;
 	max-width: 700px;
 	-webkit-font-smoothing: subpixel-antialiased;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
@@ -79,7 +79,7 @@ label {
 
 #logo {
 	margin: -130px auto 25px;
-	padding: 0 0 25px 0;
+	padding: 0 0 25px;
 	width: 84px;
 	height: 84px;
 	overflow: hidden;
@@ -132,7 +132,7 @@ textarea {
 	font-size: 14px;
 	text-align: right;
 	padding: 10px 0 10px 20px;
-	width: 140px;
+	width: 115px;
 	vertical-align: top;
 }
 
@@ -142,14 +142,32 @@ textarea {
 }
 
 .form-table p {
-	margin: 4px 0 0 0;
+	margin: 4px 0 0;
 	font-size: 11px;
+}
+
+.form-table .setup-description {
+	margin: 4px 0 0;
+	line-height: 1.6;
 }
 
 .form-table input {
 	line-height: 1.33333333;
 	font-size: 15px;
 	padding: 3px 5px;
+}
+
+.wp-pwd {
+	margin-top: 0;
+}
+
+.form-table .wp-pwd {
+	display: flex;
+	column-gap: 4px;
+}
+
+.form-table .password-input-wrapper {
+	width: 100%;
 }
 
 input,
@@ -162,7 +180,7 @@ submit {
 .form-table input[type=url],
 .form-table input[type=password],
 #pass-strength-result {
-	width: 218px;
+	width: 100%;
 }
 
 .form-table th p {
@@ -287,6 +305,10 @@ body.rtl,
 		box-sizing: border-box;
 	}
 
+	#pwd {
+		padding-left: 2.5rem;
+	}
+
 	.wp-pwd #pass1 {
 		padding-left: 50px;
 	}
@@ -370,7 +392,6 @@ body.language-chooser {
  * HiDPI Displays
  */
 @media print,
-  (-webkit-min-device-pixel-ratio: 1.25),
   (min-resolution: 120dpi) {
 
 	.spinner {
