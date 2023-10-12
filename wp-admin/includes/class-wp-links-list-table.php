@@ -124,7 +124,7 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return array
 	 */
 	public function get_columns() {
 		return array(
@@ -143,15 +143,15 @@ class WP_Links_List_Table extends WP_List_Table {
 	 */
 	protected function get_sortable_columns() {
 		return array(
-			'name'    => array( 'name', false, _x( 'Name', 'link name' ), __( 'Table ordered by Name.' ), 'asc' ),
-			'url'     => array( 'url', false, __( 'URL' ), __( 'Table ordered by URL.' ) ),
-			'visible' => array( 'visible', false, __( 'Visible' ), __( 'Table ordered by Visibility.' ) ),
-			'rating'  => array( 'rating', false, __( 'Rating' ), __( 'Table ordered by Rating.' ) ),
+			'name'    => 'name',
+			'url'     => 'url',
+			'visible' => 'visible',
+			'rating'  => 'rating',
 		);
 	}
 
 	/**
-	 * Gets the name of the default primary column.
+	 * Get the name of the default primary column.
 	 *
 	 * @since 4.3.0
 	 *
@@ -174,13 +174,11 @@ class WP_Links_List_Table extends WP_List_Table {
 		$link = $item;
 
 		?>
-		<label class="label-covers-full-cell" for="cb-select-<?php echo $link->link_id; ?>">
-			<span class="screen-reader-text">
+		<label class="screen-reader-text" for="cb-select-<?php echo $link->link_id; ?>">
 			<?php
 			/* translators: Hidden accessibility text. %s: Link name. */
 			printf( __( 'Select %s' ), $link->link_name );
 			?>
-			</span>
 		</label>
 		<input type="checkbox" name="linkcheck[]" id="cb-select-<?php echo $link->link_id; ?>" value="<?php echo esc_attr( $link->link_id ); ?>" />
 		<?php

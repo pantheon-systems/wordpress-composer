@@ -494,7 +494,7 @@ class WP_Date_Query {
 		);
 
 		// Attempt to detect a table prefix.
-		if ( ! str_contains( $column, '.' ) ) {
+		if ( false === strpos( $column, '.' ) ) {
 			/**
 			 * Filters the list of valid date query columns.
 			 *
@@ -685,11 +685,11 @@ class WP_Date_Query {
 	 * @since 3.7.0
 	 *
 	 * @param array $query Date query arguments.
-	 * @return array {
+	 * @return string[] {
 	 *     Array containing JOIN and WHERE SQL clauses to append to the main query.
 	 *
-	 *     @type string[] $join  Array of SQL fragments to append to the main JOIN clause.
-	 *     @type string[] $where Array of SQL fragments to append to the main WHERE clause.
+	 *     @type string $join  SQL fragment to append to the main JOIN clause.
+	 *     @type string $where SQL fragment to append to the main WHERE clause.
 	 * }
 	 */
 	protected function get_sql_for_subquery( $query ) {
@@ -705,11 +705,11 @@ class WP_Date_Query {
 	 *
 	 * @param array $query        Date query clause.
 	 * @param array $parent_query Parent query of the current date query.
-	 * @return array {
+	 * @return string[] {
 	 *     Array containing JOIN and WHERE SQL clauses to append to the main query.
 	 *
-	 *     @type string[] $join  Array of SQL fragments to append to the main JOIN clause.
-	 *     @type string[] $where Array of SQL fragments to append to the main WHERE clause.
+	 *     @type string $join  SQL fragment to append to the main JOIN clause.
+	 *     @type string $where SQL fragment to append to the main WHERE clause.
 	 * }
 	 */
 	protected function get_sql_for_clause( $query, $parent_query ) {

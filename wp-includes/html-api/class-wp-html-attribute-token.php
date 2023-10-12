@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML API: WP_HTML_Attribute_Token class
+ * HTML Tag Processor: Attribute token structure class.
  *
  * @package WordPress
  * @subpackage HTML-API
@@ -8,8 +8,7 @@
  */
 
 /**
- * Core class used by the HTML tag processor as a data structure for the attribute token,
- * allowing to drastically improve performance.
+ * Data structure for the attribute token that allows to drastically improve performance.
  *
  * This class is for internal usage of the WP_HTML_Tag_Processor class.
  *

@@ -39,7 +39,6 @@ function _wp_http_get_object() {
  *
  * @param string $url  URL to retrieve.
  * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
  * @return array|WP_Error The response or WP_Error on failure.
  */
 function wp_safe_remote_request( $url, $args = array() ) {
@@ -61,7 +60,6 @@ function wp_safe_remote_request( $url, $args = array() ) {
  *
  * @param string $url  URL to retrieve.
  * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
  * @return array|WP_Error The response or WP_Error on failure.
  */
 function wp_safe_remote_get( $url, $args = array() ) {
@@ -83,7 +81,6 @@ function wp_safe_remote_get( $url, $args = array() ) {
  *
  * @param string $url  URL to retrieve.
  * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
  * @return array|WP_Error The response or WP_Error on failure.
  */
 function wp_safe_remote_post( $url, $args = array() ) {
@@ -105,7 +102,6 @@ function wp_safe_remote_post( $url, $args = array() ) {
  *
  * @param string $url  URL to retrieve.
  * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
  * @return array|WP_Error The response or WP_Error on failure.
  */
 function wp_safe_remote_head( $url, $args = array() ) {
@@ -129,7 +125,6 @@ function wp_safe_remote_head( $url, $args = array() ) {
  *
  * @param string $url  URL to retrieve.
  * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
  * @return array|WP_Error {
  *     The response array or a WP_Error on failure.
  *
@@ -160,7 +155,6 @@ function wp_remote_request( $url, $args = array() ) {
  *
  * @param string $url  URL to retrieve.
  * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
  * @return array|WP_Error The response or WP_Error on failure.
  */
 function wp_remote_get( $url, $args = array() ) {
@@ -178,7 +172,6 @@ function wp_remote_get( $url, $args = array() ) {
  *
  * @param string $url  URL to retrieve.
  * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
  * @return array|WP_Error The response or WP_Error on failure.
  */
 function wp_remote_post( $url, $args = array() ) {
@@ -196,7 +189,6 @@ function wp_remote_post( $url, $args = array() ) {
  *
  * @param string $url  URL to retrieve.
  * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
  * @return array|WP_Error The response or WP_Error on failure.
  */
 function wp_remote_head( $url, $args = array() ) {
@@ -380,7 +372,7 @@ function wp_http_supports( $capabilities = array(), $url = null ) {
 	$count = count( $capabilities );
 
 	// If we have a numeric $capabilities array, spoof a wp_remote_request() associative $args array.
-	if ( $count && count( array_filter( array_keys( $capabilities ), 'is_numeric' ) ) === $count ) {
+	if ( $count && count( array_filter( array_keys( $capabilities ), 'is_numeric' ) ) == $count ) {
 		$capabilities = array_combine( array_values( $capabilities ), array_fill( 0, $count, true ) );
 	}
 
@@ -601,7 +593,7 @@ function wp_http_validate_url( $url ) {
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param int[]  $allowed_ports Array of integers for valid ports.
+	 * @param array  $allowed_ports Array of integers for valid ports.
 	 * @param string $host          Host name of the requested URL.
 	 * @param string $url           Requested URL.
 	 */
@@ -694,10 +686,10 @@ function wp_parse_url( $url, $component = -1 ) {
 	$to_unset = array();
 	$url      = (string) $url;
 
-	if ( str_starts_with( $url, '//' ) ) {
+	if ( '//' === substr( $url, 0, 2 ) ) {
 		$to_unset[] = 'scheme';
 		$url        = 'placeholder:' . $url;
-	} elseif ( str_starts_with( $url, '/' ) ) {
+	} elseif ( '/' === substr( $url, 0, 1 ) ) {
 		$to_unset[] = 'scheme';
 		$to_unset[] = 'host';
 		$url        = 'placeholder://placeholder' . $url;

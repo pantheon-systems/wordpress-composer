@@ -95,7 +95,8 @@ const ANNOTATION_ATTRIBUTE_PREFIX = 'annotation-text-';
  * @return {Object} A record with the annotations applied.
  */
 
-function applyAnnotations(record, annotations = []) {
+function applyAnnotations(record) {
+  let annotations = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   annotations.forEach(annotation => {
     let {
       start,
@@ -175,10 +176,11 @@ function retrieveAnnotationPositions(formats) {
  */
 
 
-function updateAnnotationsWithPositions(annotations, positions, {
-  removeAnnotation,
-  updateAnnotationRange
-}) {
+function updateAnnotationsWithPositions(annotations, positions, _ref) {
+  let {
+    removeAnnotation,
+    updateAnnotationRange
+  } = _ref;
   annotations.forEach(currentAnnotation => {
     const position = positions[currentAnnotation.id]; // If we cannot find an annotation, delete it.
 
@@ -214,18 +216,20 @@ const annotation = {
     return null;
   },
 
-  __experimentalGetPropsForEditableTreePreparation(select, {
-    richTextIdentifier,
-    blockClientId
-  }) {
+  __experimentalGetPropsForEditableTreePreparation(select, _ref2) {
+    let {
+      richTextIdentifier,
+      blockClientId
+    } = _ref2;
     return {
       annotations: select(STORE_NAME).__experimentalGetAnnotationsForRichText(blockClientId, richTextIdentifier)
     };
   },
 
-  __experimentalCreatePrepareEditableTree({
-    annotations
-  }) {
+  __experimentalCreatePrepareEditableTree(_ref3) {
+    let {
+      annotations
+    } = _ref3;
     return (formats, text) => {
       if (annotations.length === 0) {
         return formats;
@@ -303,10 +307,12 @@ var external_wp_data_namespaceObject = window["wp"]["data"];
  */
 
 const addAnnotationClassName = OriginalComponent => {
-  return (0,external_wp_data_namespaceObject.withSelect)((select, {
-    clientId,
-    className
-  }) => {
+  return (0,external_wp_data_namespaceObject.withSelect)((select, _ref) => {
+    let {
+      clientId,
+      className
+    } = _ref;
+
     const annotations = select(STORE_NAME).__experimentalGetAnnotationsForBlock(clientId);
 
     return {
@@ -343,9 +349,12 @@ function filterWithReference(collection, predicate) {
  */
 
 
-const mapValues = (obj, callback) => Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc,
-  [key]: callback(value)
-}), {});
+const mapValues = (obj, callback) => Object.entries(obj).reduce((acc, _ref) => {
+  let [key, value] = _ref;
+  return { ...acc,
+    [key]: callback(value)
+  };
+}, {});
 /**
  * Verifies whether the given annotations is a valid annotation.
  *
@@ -367,8 +376,11 @@ function isValidAnnotationRange(annotation) {
  */
 
 
-function annotations(state = {}, action) {
+function annotations() {
   var _state$blockClientId;
+
+  let state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  let action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
     case 'ANNOTATION_ADD':
@@ -386,7 +398,7 @@ function annotations(state = {}, action) {
         return state;
       }
 
-      const previousAnnotationsForBlock = (_state$blockClientId = state?.[blockClientId]) !== null && _state$blockClientId !== void 0 ? _state$blockClientId : [];
+      const previousAnnotationsForBlock = (_state$blockClientId = state === null || state === void 0 ? void 0 : state[blockClientId]) !== null && _state$blockClientId !== void 0 ? _state$blockClientId : [];
       return { ...state,
         [blockClientId]: [...previousAnnotationsForBlock, newAnnotation]
       };
@@ -755,18 +767,18 @@ const EMPTY_ARRAY = [];
 const __experimentalGetAnnotationsForBlock = rememo((state, blockClientId) => {
   var _state$blockClientId;
 
-  return ((_state$blockClientId = state?.[blockClientId]) !== null && _state$blockClientId !== void 0 ? _state$blockClientId : []).filter(annotation => {
+  return ((_state$blockClientId = state === null || state === void 0 ? void 0 : state[blockClientId]) !== null && _state$blockClientId !== void 0 ? _state$blockClientId : []).filter(annotation => {
     return annotation.selector === 'block';
   });
 }, (state, blockClientId) => {
   var _state$blockClientId2;
 
-  return [(_state$blockClientId2 = state?.[blockClientId]) !== null && _state$blockClientId2 !== void 0 ? _state$blockClientId2 : EMPTY_ARRAY];
+  return [(_state$blockClientId2 = state === null || state === void 0 ? void 0 : state[blockClientId]) !== null && _state$blockClientId2 !== void 0 ? _state$blockClientId2 : EMPTY_ARRAY];
 });
 function __experimentalGetAllAnnotationsForBlock(state, blockClientId) {
   var _state$blockClientId3;
 
-  return (_state$blockClientId3 = state?.[blockClientId]) !== null && _state$blockClientId3 !== void 0 ? _state$blockClientId3 : EMPTY_ARRAY;
+  return (_state$blockClientId3 = state === null || state === void 0 ? void 0 : state[blockClientId]) !== null && _state$blockClientId3 !== void 0 ? _state$blockClientId3 : EMPTY_ARRAY;
 }
 /**
  * Returns the annotations that apply to the given RichText instance.
@@ -784,7 +796,7 @@ function __experimentalGetAllAnnotationsForBlock(state, blockClientId) {
 const __experimentalGetAnnotationsForRichText = rememo((state, blockClientId, richTextIdentifier) => {
   var _state$blockClientId4;
 
-  return ((_state$blockClientId4 = state?.[blockClientId]) !== null && _state$blockClientId4 !== void 0 ? _state$blockClientId4 : []).filter(annotation => {
+  return ((_state$blockClientId4 = state === null || state === void 0 ? void 0 : state[blockClientId]) !== null && _state$blockClientId4 !== void 0 ? _state$blockClientId4 : []).filter(annotation => {
     return annotation.selector === 'range' && richTextIdentifier === annotation.richTextIdentifier;
   }).map(annotation => {
     const {
@@ -798,7 +810,7 @@ const __experimentalGetAnnotationsForRichText = rememo((state, blockClientId, ri
 }, (state, blockClientId) => {
   var _state$blockClientId5;
 
-  return [(_state$blockClientId5 = state?.[blockClientId]) !== null && _state$blockClientId5 !== void 0 ? _state$blockClientId5 : EMPTY_ARRAY];
+  return [(_state$blockClientId5 = state === null || state === void 0 ? void 0 : state[blockClientId]) !== null && _state$blockClientId5 !== void 0 ? _state$blockClientId5 : EMPTY_ARRAY];
 });
 /**
  * Returns all annotations in the editor state.
@@ -930,14 +942,15 @@ function v4(options, buf, offset) {
  * @return {Object} Action object.
  */
 
-function __experimentalAddAnnotation({
-  blockClientId,
-  richTextIdentifier = null,
-  range = null,
-  selector = 'range',
-  source = 'default',
-  id = esm_browser_v4()
-}) {
+function __experimentalAddAnnotation(_ref) {
+  let {
+    blockClientId,
+    richTextIdentifier = null,
+    range = null,
+    selector = 'range',
+    source = 'default',
+    id = esm_browser_v4()
+  } = _ref;
   const action = {
     type: 'ANNOTATION_ADD',
     id,

@@ -46,9 +46,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	require_once __DIR__ . '/wp-load.php';
 }
 
-// Attempt to raise the PHP memory limit for cron event processing.
-wp_raise_memory_limit( 'cron' );
-
 /**
  * Retrieves the cron lock.
  *

@@ -95,7 +95,7 @@ class CaseInsensitiveDictionary implements ArrayAccess, IteratorAggregate {
 	/**
 	 * Unset the given header
 	 *
-	 * @param string $offset The key for the item to unset.
+	 * @param string $offset
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetUnset($offset) {

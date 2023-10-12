@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML API: WP_HTML_Span class
+ * HTML Span: Represents a textual span inside an HTML document.
  *
  * @package WordPress
  * @subpackage HTML-API
@@ -8,11 +8,10 @@
  */
 
 /**
- * Core class used by the HTML tag processor to represent a textual span
- * inside an HTML document.
+ * Represents a textual span inside an HTML document.
  *
- * This is a two-tuple in disguise, used to avoid the memory overhead
- * involved in using an array for the same purpose.
+ * This is a two-tuple in disguise, used to avoid the memory
+ * overhead involved in using an array for the same purpose.
  *
  * This class is for internal usage of the WP_HTML_Tag_Processor class.
  *

@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "core/group",
 	"title": "Group",
 	"category": "design",
@@ -15,9 +15,6 @@
 		"templateLock": {
 			"type": [ "string", "boolean" ],
 			"enum": [ "all", "insert", "contentOnly", false ]
-		},
-		"allowedBlocks": {
-			"type": "array"
 		}
 	},
 	"supports": {
@@ -75,7 +72,7 @@
 				"fontSize": true
 			}
 		},
-		"layout": {
+		"__experimentalLayout": {
 			"allowSizingOnChildren": true
 		}
 	},

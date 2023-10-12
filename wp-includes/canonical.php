@@ -46,10 +46,8 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		return;
 	}
 
-	/*
-	 * If we're not in wp-admin and the post has been published and preview nonce
-	 * is non-existent or invalid then no need for preview in query.
-	 */
+	// If we're not in wp-admin and the post has been published and preview nonce
+	// is non-existent or invalid then no need for preview in query.
 	if ( is_preview() && get_query_var( 'p' ) && 'publish' === get_post_status( get_query_var( 'p' ) ) ) {
 		if ( ! isset( $_GET['preview_id'] )
 			|| ! isset( $_GET['preview_nonce'] )
@@ -391,7 +389,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 					}
 				}
 			}
-		} elseif ( is_single() && str_contains( $wp_rewrite->permalink_structure, '%category%' ) ) {
+		} elseif ( is_single() && strpos( $wp_rewrite->permalink_structure, '%category%' ) !== false ) {
 			$category_name = get_query_var( 'category_name' );
 
 			if ( $category_name ) {
@@ -520,7 +518,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 
 			if ( ! empty( $addl_path )
 				&& $wp_rewrite->using_index_permalinks()
-				&& ! str_contains( $redirect['path'], '/' . $wp_rewrite->index . '/' )
+				&& strpos( $redirect['path'], '/' . $wp_rewrite->index . '/' ) === false
 			) {
 				$redirect['path'] = trailingslashit( $redirect['path'] ) . $wp_rewrite->index . '/';
 			}
@@ -679,7 +677,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 	}
 
 	// Strip multiple slashes out of the URL.
-	if ( str_contains( $redirect['path'], '//' ) ) {
+	if ( strpos( $redirect['path'], '//' ) > -1 ) {
 		$redirect['path'] = preg_replace( '|/+|', '/', $redirect['path'] );
 	}
 
@@ -691,10 +689,8 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 	$original_host_low = strtolower( $original['host'] );
 	$redirect_host_low = strtolower( $redirect['host'] );
 
-	/*
-	 * Ignore differences in host capitalization, as this can lead to infinite redirects.
-	 * Only redirect no-www <=> yes-www.
-	 */
+	// Ignore differences in host capitalization, as this can lead to infinite redirects.
+	// Only redirect no-www <=> yes-www.
 	if ( $original_host_low === $redirect_host_low
 		|| ( 'www.' . $original_host_low !== $redirect_host_low
 			&& 'www.' . $redirect_host_low !== $original_host_low )
@@ -741,7 +737,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 	}
 
 	// Hex-encoded octets are case-insensitive.
-	if ( str_contains( $requested_url, '%' ) ) {
+	if ( false !== strpos( $requested_url, '%' ) ) {
 		if ( ! function_exists( 'lowercase_octets' ) ) {
 			/**
 			 * Converts the first hex-encoded octet match to lowercase.

@@ -322,7 +322,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return array
 	 */
 	public function get_columns() {
 		$columns = array(
@@ -343,7 +343,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	 */
 	protected function get_sortable_columns() {
 		return array(
-			'name' => array( 'name', false, __( 'Theme' ), __( 'Table ordered by Theme Name.' ), 'asc' ),
+			'name' => 'name',
 		);
 	}
 
@@ -512,8 +512,8 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 		$theme       = $item;
 		$checkbox_id = 'checkbox_' . md5( $theme->get( 'Name' ) );
 		?>
-		<label class="label-covers-full-cell" for="<?php echo $checkbox_id; ?>" >
-			<span class="screen-reader-text">
+		<input type="checkbox" name="checked[]" value="<?php echo esc_attr( $theme->get_stylesheet() ); ?>" id="<?php echo $checkbox_id; ?>" />
+		<label class="screen-reader-text" for="<?php echo $checkbox_id; ?>" >
 			<?php
 			printf(
 				/* translators: Hidden accessibility text. %s: Theme name */
@@ -521,9 +521,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 				$theme->display( 'Name' )
 			);
 			?>
-			</span>
 		</label>
-		<input type="checkbox" name="checked[]" value="<?php echo esc_attr( $theme->get_stylesheet() ); ?>" id="<?php echo $checkbox_id; ?>" />
 		<?php
 	}
 

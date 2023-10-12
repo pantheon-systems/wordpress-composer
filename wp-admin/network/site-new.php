@@ -83,10 +83,6 @@ if ( isset( $_REQUEST['action'] ) && 'add-site' === $_REQUEST['action'] ) {
 		}
 	}
 
-	if ( empty( $title ) ) {
-		wp_die( __( 'Missing site title.' ) );
-	}
-
 	if ( empty( $domain ) ) {
 		wp_die( __( 'Missing or invalid site address.' ) );
 	}

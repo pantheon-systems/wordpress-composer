@@ -49,8 +49,7 @@ class Jar implements ArrayAccess, IteratorAggregate {
 	/**
 	 * Normalise cookie data into a \WpOrg\Requests\Cookie
 	 *
-	 * @param string|\WpOrg\Requests\Cookie $cookie Cookie header value, possibly pre-parsed (object).
-	 * @param string                        $key    Optional. The name for this cookie.
+	 * @param string|\WpOrg\Requests\Cookie $cookie
 	 * @return \WpOrg\Requests\Cookie
 	 */
 	public function normalize_cookie($cookie, $key = '') {
@@ -107,7 +106,7 @@ class Jar implements ArrayAccess, IteratorAggregate {
 	/**
 	 * Unset the given header
 	 *
-	 * @param string $offset The key for the item to unset.
+	 * @param string $offset
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetUnset($offset) {
@@ -172,7 +171,7 @@ class Jar implements ArrayAccess, IteratorAggregate {
 	/**
 	 * Parse all cookies from a response and attach them to the response
 	 *
-	 * @param \WpOrg\Requests\Response $response Response as received.
+	 * @param \WpOrg\Requests\Response $response
 	 */
 	public function before_redirect_check(Response $response) {
 		$url = $response->url;

@@ -136,10 +136,8 @@ function wptexturize( $text, $reset = false ) {
 		$static_characters   = array_merge( array( '...', '``', '\'\'', ' (tm)' ), $cockney );
 		$static_replacements = array_merge( array( '&#8230;', $opening_quote, $closing_quote, ' &#8482;' ), $cockneyreplace );
 
-		/*
-		 * Pattern-based replacements of characters.
-		 * Sort the remaining patterns into several arrays for performance tuning.
-		 */
+		// Pattern-based replacements of characters.
+		// Sort the remaining patterns into several arrays for performance tuning.
 		$dynamic_characters   = array(
 			'apos'  => array(),
 			'quote' => array(),
@@ -244,7 +242,7 @@ function wptexturize( $text, $reset = false ) {
 		// Only call _wptexturize_pushpop_element if $curl is a delimiter.
 		$first = $curl[0];
 		if ( '<' === $first ) {
-			if ( str_starts_with( $curl, '<!--' ) ) {
+			if ( '<!--' === substr( $curl, 0, 4 ) ) {
 				// This is an HTML comment delimiter.
 				continue;
 			} else {
@@ -262,7 +260,7 @@ function wptexturize( $text, $reset = false ) {
 		} elseif ( '[' === $first && $found_shortcodes && 1 === preg_match( '/^' . $shortcode_regex . '$/', $curl ) ) {
 			// This is a shortcode delimiter.
 
-			if ( ! str_starts_with( $curl, '[[' ) && ! str_ends_with( $curl, ']]' ) ) {
+			if ( '[[' !== substr( $curl, 0, 2 ) && ']]' !== substr( $curl, -2 ) ) {
 				// Looks like a normal shortcode.
 				_wptexturize_pushpop_element( $curl, $no_texturize_shortcodes_stack, $no_texturize_shortcodes );
 			} else {
@@ -274,18 +272,18 @@ function wptexturize( $text, $reset = false ) {
 
 			$curl = str_replace( $static_characters, $static_replacements, $curl );
 
-			if ( str_contains( $curl, "'" ) ) {
+			if ( false !== strpos( $curl, "'" ) ) {
 				$curl = preg_replace( $dynamic_characters['apos'], $dynamic_replacements['apos'], $curl );
 				$curl = wptexturize_primes( $curl, "'", $prime, $open_sq_flag, $closing_single_quote );
 				$curl = str_replace( $apos_flag, $apos, $curl );
 				$curl = str_replace( $open_sq_flag, $opening_single_quote, $curl );
 			}
-			if ( str_contains( $curl, '"' ) ) {
+			if ( false !== strpos( $curl, '"' ) ) {
 				$curl = preg_replace( $dynamic_characters['quote'], $dynamic_replacements['quote'], $curl );
 				$curl = wptexturize_primes( $curl, '"', $double_prime, $open_q_flag, $closing_quote );
 				$curl = str_replace( $open_q_flag, $opening_quote, $curl );
 			}
-			if ( str_contains( $curl, '-' ) ) {
+			if ( false !== strpos( $curl, '-' ) ) {
 				$curl = preg_replace( $dynamic_characters['dash'], $dynamic_replacements['dash'], $curl );
 			}
 
@@ -328,7 +326,7 @@ function wptexturize_primes( $haystack, $needle, $prime, $open_quote, $close_quo
 	$sentences = explode( $open_quote, $haystack );
 
 	foreach ( $sentences as $key => &$sentence ) {
-		if ( ! str_contains( $sentence, $needle ) ) {
+		if ( false === strpos( $sentence, $needle ) ) {
 			continue;
 		} elseif ( 0 !== $key && 0 === substr_count( $sentence, $close_quote ) ) {
 			$sentence = preg_replace( $quote_pattern, $flag, $sentence, -1, $count );
@@ -342,10 +340,8 @@ function wptexturize_primes( $haystack, $needle, $prime, $open_quote, $close_quo
 						// Assume the rightmost quote-period match is the end of quotation.
 						$pos = strrpos( $sentence, "$flag." );
 					} else {
-						/*
-						 * When all else fails, make the rightmost candidate a closing quote.
-						 * This is most likely to be problematic in the context of bug #18549.
-						 */
+						// When all else fails, make the rightmost candidate a closing quote.
+						// This is most likely to be problematic in the context of bug #18549.
 						$pos = strrpos( $sentence, $flag );
 					}
 					$sentence = substr_replace( $sentence, $close_quote, $pos, strlen( $flag ) );
@@ -366,7 +362,7 @@ function wptexturize_primes( $haystack, $needle, $prime, $open_quote, $close_quo
 			$sentence = preg_replace( $prime_pattern, $prime, $sentence );
 			$sentence = preg_replace( $quote_pattern, $close_quote, $sentence );
 		}
-		if ( '"' === $needle && str_contains( $sentence, '"' ) ) {
+		if ( '"' === $needle && false !== strpos( $sentence, '"' ) ) {
 			$sentence = str_replace( '"', $close_quote, $sentence );
 		}
 	}
@@ -457,7 +453,7 @@ function wpautop( $text, $br = true ) {
 	 * Pre tags shouldn't be touched by autop.
 	 * Replace pre tags with placeholders and bring them back after autop.
 	 */
-	if ( str_contains( $text, '<pre' ) ) {
+	if ( strpos( $text, '<pre' ) !== false ) {
 		$text_parts = explode( '</pre>', $text );
 		$last_part  = array_pop( $text_parts );
 		$text       = '';
@@ -502,7 +498,7 @@ function wpautop( $text, $br = true ) {
 	$text = wp_replace_in_html_tags( $text, array( "\n" => ' <!-- wpnl --> ' ) );
 
 	// Collapse line breaks before and after <option> elements so they don't get autop'd.
-	if ( str_contains( $text, '<option' ) ) {
+	if ( strpos( $text, '<option' ) !== false ) {
 		$text = preg_replace( '|\s*<option|', '<option', $text );
 		$text = preg_replace( '|</option>\s*|', '</option>', $text );
 	}
@@ -511,7 +507,7 @@ function wpautop( $text, $br = true ) {
 	 * Collapse line breaks inside <object> elements, before <param> and <embed> elements
 	 * so they don't get autop'd.
 	 */
-	if ( str_contains( $text, '</object>' ) ) {
+	if ( strpos( $text, '</object>' ) !== false ) {
 		$text = preg_replace( '|(<object[^>]*>)\s*|', '$1', $text );
 		$text = preg_replace( '|\s*</object>|', '</object>', $text );
 		$text = preg_replace( '%\s*(</?(?:param|embed)[^>]*>)\s*%', '$1', $text );
@@ -521,14 +517,14 @@ function wpautop( $text, $br = true ) {
 	 * Collapse line breaks inside <audio> and <video> elements,
 	 * before and after <source> and <track> elements.
 	 */
-	if ( str_contains( $text, '<source' ) || str_contains( $text, '<track' ) ) {
+	if ( strpos( $text, '<source' ) !== false || strpos( $text, '<track' ) !== false ) {
 		$text = preg_replace( '%([<\[](?:audio|video)[^>\]]*[>\]])\s*%', '$1', $text );
 		$text = preg_replace( '%\s*([<\[]/(?:audio|video)[>\]])%', '$1', $text );
 		$text = preg_replace( '%\s*(<(?:source|track)[^>]*>)\s*%', '$1', $text );
 	}
 
 	// Collapse line breaks before and after <figcaption> elements.
-	if ( str_contains( $text, '<figcaption' ) ) {
+	if ( strpos( $text, '<figcaption' ) !== false ) {
 		$text = preg_replace( '|\s*(<figcaption[^>]*>)|', '$1', $text );
 		$text = preg_replace( '|</figcaption>\s*|', '</figcaption>', $text );
 	}
@@ -597,7 +593,7 @@ function wpautop( $text, $br = true ) {
 	}
 
 	// Restore newlines in all elements.
-	if ( str_contains( $text, '<!-- wpnl -->' ) ) {
+	if ( false !== strpos( $text, '<!-- wpnl -->' ) ) {
 		$text = str_replace( array( ' <!-- wpnl --> ', '<!-- wpnl -->' ), "\n", $text );
 	}
 
@@ -767,7 +763,7 @@ function wp_replace_in_html_tags( $haystack, $replace_pairs ) {
 
 		// Loop through delimiters (elements) only.
 		for ( $i = 1, $c = count( $textarr ); $i < $c; $i += 2 ) {
-			if ( str_contains( $textarr[ $i ], $needle ) ) {
+			if ( false !== strpos( $textarr[ $i ], $needle ) ) {
 				$textarr[ $i ] = str_replace( $needle, $replace, $textarr[ $i ] );
 				$changed       = true;
 			}
@@ -779,7 +775,7 @@ function wp_replace_in_html_tags( $haystack, $replace_pairs ) {
 		// Loop through delimiters (elements) only.
 		for ( $i = 1, $c = count( $textarr ); $i < $c; $i += 2 ) {
 			foreach ( $needles as $needle ) {
-				if ( str_contains( $textarr[ $i ], $needle ) ) {
+				if ( false !== strpos( $textarr[ $i ], $needle ) ) {
 					$textarr[ $i ] = strtr( $textarr[ $i ], $replace_pairs );
 					$changed       = true;
 					// After one strtr() break out of the foreach loop and look at next element.
@@ -902,7 +898,7 @@ function seems_utf8( $str ) {
 			return false; // Does not match any model.
 		}
 		for ( $j = 0; $j < $n; $j++ ) { // n bytes matching 10bbbbbb follow ?
-			if ( ( ++$i === $length ) || ( ( ord( $str[ $i ] ) & 0xC0 ) != 0x80 ) ) {
+			if ( ( ++$i == $length ) || ( ( ord( $str[ $i ] ) & 0xC0 ) != 0x80 ) ) {
 				return false;
 			}
 		}
@@ -980,10 +976,8 @@ function _wp_specialchars( $text, $quote_style = ENT_NOQUOTES, $charset = false,
 	}
 
 	if ( ! $double_encode ) {
-		/*
-		 * Guarantee every &entity; is valid, convert &garbage; into &amp;garbage;
-		 * This is required for PHP < 5.4.0 because ENT_HTML401 flag is unavailable.
-		 */
+		// Guarantee every &entity; is valid, convert &garbage; into &amp;garbage;
+		// This is required for PHP < 5.4.0 because ENT_HTML401 flag is unavailable.
 		$text = wp_kses_normalize_entities( $text, ( $quote_style & ENT_XML1 ) ? 'xml' : 'html' );
 	}
 
@@ -1025,7 +1019,7 @@ function wp_specialchars_decode( $text, $quote_style = ENT_NOQUOTES ) {
 	}
 
 	// Don't bother if there are no entities - saves a lot of processing.
-	if ( ! str_contains( $text, '&' ) ) {
+	if ( strpos( $text, '&' ) === false ) {
 		return $text;
 	}
 
@@ -1175,7 +1169,7 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
 			$unicode        .= $encoded_char;
 			$unicode_length += $encoded_char_length;
 		} else {
-			if ( count( $values ) === 0 ) {
+			if ( count( $values ) == 0 ) {
 				if ( $value < 224 ) {
 					$num_octets = 2;
 				} elseif ( $value < 240 ) {
@@ -1190,7 +1184,7 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
 			if ( $length && ( $unicode_length + ( $num_octets * 3 ) ) > $length ) {
 				break;
 			}
-			if ( count( $values ) === $num_octets ) {
+			if ( count( $values ) == $num_octets ) {
 				for ( $j = 0; $j < $num_octets; $j++ ) {
 					$unicode .= '%' . dechex( $values[ $j ] );
 				}
@@ -1446,8 +1440,6 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  *
  * |   Code   | Glyph | Replacement |                Description                |
  * | -------- | ----- | ----------- | ----------------------------------------- |
- * | U+018F   | Ə     | E           | Latin capital letter Ə                    |
- * | U+0259   | ǝ     | e           | Latin small letter ǝ                      |
  * | U+0218   | Ș     | S           | Latin capital letter S with comma below   |
  * | U+0219   | ș     | s           | Latin small letter s with comma below     |
  * | U+021A   | Ț     | T           | Latin capital letter T with comma below   |
@@ -1607,10 +1599,8 @@ function remove_accents( $text, $locale = '' ) {
 
 	if ( seems_utf8( $text ) ) {
 
-		/*
-		 * Unicode sequence normalization from NFD (Normalization Form Decomposed)
-		 * to NFC (Normalization Form [Pre]Composed), the encoding used in this function.
-		 */
+		// Unicode sequence normalization from NFD (Normalization Form Decomposed)
+		// to NFC (Normalization Form [Pre]Composed), the encoding used in this function.
 		if ( function_exists( 'normalizer_is_normalized' )
 			&& function_exists( 'normalizer_normalize' )
 		) {
@@ -1815,8 +1805,6 @@ function remove_accents( $text, $locale = '' ) {
 			'ž' => 'z',
 			'ſ' => 's',
 			// Decompositions for Latin Extended-B.
-			'Ə' => 'E',
-			'ǝ' => 'e',
 			'Ș' => 'S',
 			'ș' => 's',
 			'Ț' => 'T',
@@ -1825,7 +1813,8 @@ function remove_accents( $text, $locale = '' ) {
 			'€' => 'E',
 			// GBP (Pound) sign.
 			'£' => '',
-			// Vowels with diacritic (Vietnamese). Unmarked.
+			// Vowels with diacritic (Vietnamese).
+			// Unmarked.
 			'Ơ' => 'O',
 			'ơ' => 'o',
 			'Ư' => 'U',
@@ -2062,7 +2051,7 @@ function sanitize_file_name( $filename ) {
 	$filename = preg_replace( '/[\r\n\t -]+/', '-', $filename );
 	$filename = trim( $filename, '.-_' );
 
-	if ( ! str_contains( $filename, '.' ) ) {
+	if ( false === strpos( $filename, '.' ) ) {
 		$mime_types = wp_get_mime_types();
 		$filetype   = wp_check_filetype( 'test.' . $filename, $mime_types );
 		if ( $filetype['ext'] === $filename ) {
@@ -2481,7 +2470,7 @@ function convert_chars( $content, $deprecated = '' ) {
 		_deprecated_argument( __FUNCTION__, '0.71' );
 	}
 
-	if ( str_contains( $content, '&' ) ) {
+	if ( strpos( $content, '&' ) !== false ) {
 		$content = preg_replace( '/&([^#])(?![a-z1-4]{1,8};)/i', '&#038;$1', $content );
 	}
 
@@ -2532,7 +2521,7 @@ function convert_invalid_entities( $content ) {
 		'&#159;' => '&#376;',
 	);
 
-	if ( str_contains( $content, '&#1' ) ) {
+	if ( strpos( $content, '&#1' ) !== false ) {
 		$content = strtr( $content, $wp_htmltranswinuni );
 	}
 
@@ -2634,7 +2623,7 @@ function force_balance_tags( $text ) {
 		$is_single_tag     = in_array( $tag, $single_tags, true );
 		$pre_attribute_ws  = isset( $regex[4] ) ? $regex[4] : '';
 		$attributes        = trim( isset( $regex[5] ) ? $regex[5] : $regex[3] );
-		$has_self_closer   = str_ends_with( $attributes, '/' );
+		$has_self_closer   = '/' === substr( $attributes, -1 );
 
 		$newtext .= $tagqueue;
 
@@ -2668,24 +2657,17 @@ function force_balance_tags( $text ) {
 				$tag = '';
 			}
 		} else { // Begin tag.
-			if ( $has_self_closer ) {
-				/*
-				 * If it presents itself as a self-closing tag, but it isn't a known single-entity self-closing tag,
-				 * then don't let it be treated as such and immediately close it with a closing tag.
-				 * The tag will encapsulate no text as a result.
-				 */
+			if ( $has_self_closer ) { // If it presents itself as a self-closing tag...
+				// ...but it isn't a known single-entity self-closing tag, then don't let it be treated as such
+				// and immediately close it with a closing tag (the tag will encapsulate no text as a result).
 				if ( ! $is_single_tag ) {
 					$attributes = trim( substr( $attributes, 0, -1 ) ) . "></$tag";
 				}
-			} elseif ( $is_single_tag ) {
-				// Else if it's a known single-entity tag but it doesn't close itself, do so.
+			} elseif ( $is_single_tag ) { // Else if it's a known single-entity tag but it doesn't close itself, do so.
 				$pre_attribute_ws = ' ';
 				$attributes      .= '/';
-			} else {
-				/*
-				 * It's not a single-entity tag.
-				 * If the top of the stack is the same as the tag we want to push, close previous tag.
-				 */
+			} else { // It's not a single-entity tag.
+				// If the top of the stack is the same as the tag we want to push, close previous tag.
 				if ( $stacksize > 0 && ! in_array( $tag, $nestable_tags, true ) && $tagstack[ $stacksize - 1 ] === $tag ) {
 					$tagqueue = '</' . array_pop( $tagstack ) . '>';
 					$stacksize--;
@@ -2939,10 +2921,8 @@ function _make_url_clickable_cb( $matches ) {
 	$url = $matches[2];
 
 	if ( ')' === $matches[3] && strpos( $url, '(' ) ) {
-		/*
-		 * If the trailing character is a closing parethesis, and the URL has an opening parenthesis in it,
-		 * add the closing parenthesis to the URL. Then we can let the parenthesis balancer do its thing below.
-		 */
+		// If the trailing character is a closing parethesis, and the URL has an opening parenthesis in it,
+		// add the closing parenthesis to the URL. Then we can let the parenthesis balancer do its thing below.
 		$url   .= $matches[3];
 		$suffix = '';
 	} else {
@@ -3072,26 +3052,13 @@ function make_clickable( $text ) {
 	$nested_code_pre = 0; // Keep track of how many levels link is nested inside <pre> or <code>.
 	foreach ( $textarr as $piece ) {
 
-		if ( preg_match( '|^<code[\s>]|i', $piece )
-			|| preg_match( '|^<pre[\s>]|i', $piece )
-			|| preg_match( '|^<script[\s>]|i', $piece )
-			|| preg_match( '|^<style[\s>]|i', $piece )
-		) {
+		if ( preg_match( '|^<code[\s>]|i', $piece ) || preg_match( '|^<pre[\s>]|i', $piece ) || preg_match( '|^<script[\s>]|i', $piece ) || preg_match( '|^<style[\s>]|i', $piece ) ) {
 			$nested_code_pre++;
-		} elseif ( $nested_code_pre
-			&& ( '</code>' === strtolower( $piece )
-				|| '</pre>' === strtolower( $piece )
-				|| '</script>' === strtolower( $piece )
-				|| '</style>' === strtolower( $piece )
-			)
-		) {
+		} elseif ( $nested_code_pre && ( '</code>' === strtolower( $piece ) || '</pre>' === strtolower( $piece ) || '</script>' === strtolower( $piece ) || '</style>' === strtolower( $piece ) ) ) {
 			$nested_code_pre--;
 		}
 
-		if ( $nested_code_pre
-			|| empty( $piece )
-			|| ( '<' === $piece[0] && ! preg_match( '|^<\s*[\w]{1,20}+://|', $piece ) )
-		) {
+		if ( $nested_code_pre || empty( $piece ) || ( '<' === $piece[0] && ! preg_match( '|^<\s*[\w]{1,20}+://|', $piece ) ) ) {
 			$r .= $piece;
 			continue;
 		}
@@ -3122,10 +3089,8 @@ function make_clickable( $text ) {
 				)
 				(\)?)                                          # 3: Trailing closing parenthesis (for parethesis balancing post processing).
 			~xS';
-			/*
-			 * The regex is a non-anchored pattern and does not have a single fixed starting character.
-			 * Tell PCRE to spend more time optimizing since, when used on a page load, it will probably be used several times.
-			 */
+			// The regex is a non-anchored pattern and does not have a single fixed starting character.
+			// Tell PCRE to spend more time optimizing since, when used on a page load, it will probably be used several times.
 
 			$ret = preg_replace_callback( $url_clickable, '_make_url_clickable_cb', $ret );
 
@@ -3449,7 +3414,7 @@ function wp_remove_targeted_link_rel_filters() {
 function translate_smiley( $matches ) {
 	global $wpsmiliestrans;
 
-	if ( count( $matches ) === 0 ) {
+	if ( count( $matches ) == 0 ) {
 		return '';
 	}
 
@@ -3574,19 +3539,15 @@ function is_email( $email, $deprecated = false ) {
 	// Split out the local and domain parts.
 	list( $local, $domain ) = explode( '@', $email, 2 );
 
-	/*
-	 * LOCAL PART
-	 * Test for invalid characters.
-	 */
+	// LOCAL PART
+	// Test for invalid characters.
 	if ( ! preg_match( '/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~\.-]+$/', $local ) ) {
 		/** This filter is documented in wp-includes/formatting.php */
 		return apply_filters( 'is_email', false, $email, 'local_invalid_chars' );
 	}
 
-	/*
-	 * DOMAIN PART
-	 * Test for sequences of periods.
-	 */
+	// DOMAIN PART
+	// Test for sequences of periods.
 	if ( preg_match( '/\.{2,}/', $domain ) ) {
 		/** This filter is documented in wp-includes/formatting.php */
 		return apply_filters( 'is_email', false, $email, 'domain_period_sequence' );
@@ -3715,7 +3676,7 @@ function iso8601_timezone_to_offset( $timezone ) {
 	if ( 'Z' === $timezone ) {
 		$offset = 0;
 	} else {
-		$sign    = ( str_starts_with( $timezone, '+' ) ) ? 1 : -1;
+		$sign    = ( '+' === substr( $timezone, 0, 1 ) ) ? 1 : -1;
 		$hours   = (int) substr( $timezone, 1, 2 );
 		$minutes = (int) substr( $timezone, 3, 4 ) / 60;
 		$offset  = $sign * HOUR_IN_SECONDS * ( $hours + $minutes );
@@ -3788,20 +3749,16 @@ function sanitize_email( $email ) {
 	// Split out the local and domain parts.
 	list( $local, $domain ) = explode( '@', $email, 2 );
 
-	/*
-	 * LOCAL PART
-	 * Test for invalid characters.
-	 */
+	// LOCAL PART
+	// Test for invalid characters.
 	$local = preg_replace( '/[^a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~\.-]/', '', $local );
 	if ( '' === $local ) {
 		/** This filter is documented in wp-includes/formatting.php */
 		return apply_filters( 'sanitize_email', '', $email, 'local_invalid_chars' );
 	}
 
-	/*
-	 * DOMAIN PART
-	 * Test for sequences of periods.
-	 */
+	// DOMAIN PART
+	// Test for sequences of periods.
 	$domain = preg_replace( '/\.{2,}/', '', $domain );
 	if ( '' === $domain ) {
 		/** This filter is documented in wp-includes/formatting.php */
@@ -3861,7 +3818,7 @@ function sanitize_email( $email ) {
 /**
  * Determines the difference between two timestamps.
  *
- * The difference is returned in a human-readable format such as "1 hour",
+ * The difference is returned in a human readable format such as "1 hour",
  * "5 mins", "2 days".
  *
  * @since 1.5.0
@@ -3869,7 +3826,7 @@ function sanitize_email( $email ) {
  *
  * @param int $from Unix timestamp from which the difference begins.
  * @param int $to   Optional. Unix timestamp to end the time difference. Default becomes time() if not set.
- * @return string Human-readable time difference.
+ * @return string Human readable time difference.
  */
 function human_time_diff( $from, $to = 0 ) {
 	if ( empty( $to ) ) {
@@ -3930,11 +3887,11 @@ function human_time_diff( $from, $to = 0 ) {
 	}
 
 	/**
-	 * Filters the human-readable difference between two timestamps.
+	 * Filters the human readable difference between two timestamps.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $since The difference in human-readable text.
+	 * @param string $since The difference in human readable text.
 	 * @param int    $diff  The difference in seconds.
 	 * @param int    $from  Unix timestamp from which the difference begins.
 	 * @param int    $to    Unix timestamp to end the time difference.
@@ -3947,12 +3904,11 @@ function human_time_diff( $from, $to = 0 ) {
  *
  * Returns a maximum of 55 words with an ellipsis appended if necessary.
  *
- * The 55-word limit can be modified by plugins/themes using the {@see 'excerpt_length'} filter
+ * The 55 word limit can be modified by plugins/themes using the {@see 'excerpt_length'} filter
  * The ' [&hellip;]' string can be modified by plugins/themes using the {@see 'excerpt_more'} filter
  *
  * @since 1.5.0
  * @since 5.2.0 Added the `$post` parameter.
- * @since 6.3.0 Removes footnotes markup from the excerpt content.
  *
  * @param string             $text Optional. The excerpt. If set to empty, an excerpt is generated.
  * @param WP_Post|object|int $post Optional. WP_Post instance or Post ID/object. Default null.
@@ -3967,27 +3923,10 @@ function wp_trim_excerpt( $text = '', $post = null ) {
 
 		$text = strip_shortcodes( $text );
 		$text = excerpt_remove_blocks( $text );
-		$text = excerpt_remove_footnotes( $text );
-
-		/*
-		 * Temporarily unhook wp_filter_content_tags() since any tags
-		 * within the excerpt are stripped out. Modifying the tags here
-		 * is wasteful and can lead to bugs in the image counting logic.
-		 */
-		$filter_removed = remove_filter( 'the_content', 'wp_filter_content_tags' );
 
 		/** This filter is documented in wp-includes/post-template.php */
 		$text = apply_filters( 'the_content', $text );
 		$text = str_replace( ']]>', ']]&gt;', $text );
-
-		/**
-		 * Only restore the filter callback if it was removed above. The logic
-		 * to unhook and restore only applies on the default priority of 10,
-		 * which is generally used for the filter callback in WordPress core.
-		 */
-		if ( $filter_removed ) {
-			add_filter( 'the_content', 'wp_filter_content_tags' );
-		}
 
 		/* translators: Maximum number of words used in a post excerpt. */
 		$excerpt_length = (int) _x( '55', 'excerpt_length' );
@@ -4010,7 +3949,6 @@ function wp_trim_excerpt( $text = '', $post = null ) {
 		 */
 		$excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
 		$text         = wp_trim_words( $text, $excerpt_length, $excerpt_more );
-
 	}
 
 	/**
@@ -4403,7 +4341,7 @@ function format_for_editor( $text, $default_editor = null ) {
 /**
  * Performs a deep string replace operation to ensure the values in $search are no longer present.
  *
- * Repeats the replacement operation until it no longer replaces anything to remove "nested" values
+ * Repeats the replacement operation until it no longer replaces anything so as to remove "nested" values
  * e.g. $subject = '%0%0%0DDD', $search ='%0D', $result ='' rather than the '%0%0DD' that
  * str_replace would return
  *
@@ -4435,7 +4373,7 @@ function _deep_replace( $search, $subject ) {
  *
  * NOTE: Since 4.8.3, '%' characters will be replaced with a placeholder string,
  * this prevents certain SQLi attacks from taking place. This change in behavior
- * may cause issues for code that expects the return value of esc_sql() to be usable
+ * may cause issues for code that expects the return value of esc_sql() to be useable
  * for other purposes.
  *
  * @since 2.8.0
@@ -4492,9 +4430,8 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 	 * it needs http:// prepended (unless it's a relative link
 	 * starting with /, # or ?, or a PHP file).
 	 */
-	if ( ! str_contains( $url, ':' ) && ! in_array( $url[0], array( '/', '#', '?' ), true ) &&
-		! preg_match( '/^[a-z0-9-]+?\.php/i', $url )
-	) {
+	if ( strpos( $url, ':' ) === false && ! in_array( $url[0], array( '/', '#', '?' ), true ) &&
+		! preg_match( '/^[a-z0-9-]+?\.php/i', $url ) ) {
 		$url = 'http://' . $url;
 	}
 
@@ -4505,7 +4442,7 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 		$url = str_replace( "'", '&#039;', $url );
 	}
 
-	if ( ( str_contains( $url, '[' ) ) || ( str_contains( $url, ']' ) ) ) {
+	if ( ( false !== strpos( $url, '[' ) ) || ( false !== strpos( $url, ']' ) ) ) {
 
 		$parsed = wp_parse_url( $url );
 		$front  = '';
@@ -4549,7 +4486,7 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 			$protocols = wp_allowed_protocols();
 		}
 		$good_protocol_url = wp_kses_bad_protocol( $url, $protocols );
-		if ( strtolower( $good_protocol_url ) !== strtolower( $url ) ) {
+		if ( strtolower( $good_protocol_url ) != strtolower( $url ) ) {
 			return '';
 		}
 	}
@@ -4610,15 +4547,13 @@ function sanitize_url( $url, $protocols = null ) {
  *
  * @since 1.2.2
  *
- * @param string $text The text to be converted.
+ * @param string $myHTML The text to be converted.
  * @return string Converted text.
  */
-function htmlentities2( $text ) {
-	$translation_table = get_html_translation_table( HTML_ENTITIES, ENT_QUOTES );
-
+function htmlentities2( $myHTML ) {
+	$translation_table              = get_html_translation_table( HTML_ENTITIES, ENT_QUOTES );
 	$translation_table[ chr( 38 ) ] = '&';
-
-	return preg_replace( '/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,3};)/', '&amp;', strtr( $text, $translation_table ) );
+	return preg_replace( '/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,3};)/', '&amp;', strtr( $myHTML, $translation_table ) );
 }
 
 /**
@@ -4912,11 +4847,7 @@ function sanitize_option( $option, $value ) {
 			break;
 
 		case 'blog_charset':
-			if ( is_string( $value ) ) {
-				$value = preg_replace( '/[^a-zA-Z0-9_-]/', '', $value ); // Strips slashes.
-			} else {
-				$value = '';
-			}
+			$value = preg_replace( '/[^a-zA-Z0-9_-]/', '', $value ); // Strips slashes.
 			break;
 
 		case 'blog_public':
@@ -4951,11 +4882,7 @@ function sanitize_option( $option, $value ) {
 			break;
 
 		case 'gmt_offset':
-			if ( is_numeric( $value ) ) {
-				$value = preg_replace( '/[^0-9:.-]/', '', $value ); // Strips slashes.
-			} else {
-				$value = '';
-			}
+			$value = preg_replace( '/[^0-9:.-]/', '', $value ); // Strips slashes.
 			break;
 
 		case 'siteurl':
@@ -5181,7 +5108,7 @@ function wp_pre_kses_less_than( $content ) {
  * @return string The text returned after esc_html if needed.
  */
 function wp_pre_kses_less_than_callback( $matches ) {
-	if ( ! str_contains( $matches[0], '>' ) ) {
+	if ( false === strpos( $matches[0], '>' ) ) {
 		return esc_html( $matches[0] );
 	}
 	return $matches[0];
@@ -5213,7 +5140,7 @@ function wp_pre_kses_block_attributes( $content, $allowed_html, $allowed_protoco
 }
 
 /**
- * WordPress' implementation of PHP sprintf() with filters.
+ * WordPress implementation of PHP sprintf() with filters.
  *
  * @since 2.5.0
  * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
@@ -5232,7 +5159,7 @@ function wp_sprintf( $pattern, ...$args ) {
 	$arg_index = 0;
 	while ( $len > $start ) {
 		// Last character: append and break.
-		if ( strlen( $pattern ) - 1 === $start ) {
+		if ( strlen( $pattern ) - 1 == $start ) {
 			$result .= substr( $pattern, -1 );
 			break;
 		}
@@ -5304,7 +5231,7 @@ function wp_sprintf( $pattern, ...$args ) {
  */
 function wp_sprintf_l( $pattern, $args ) {
 	// Not a match.
-	if ( ! str_starts_with( $pattern, '%l' ) ) {
+	if ( '%l' !== substr( $pattern, 0, 2 ) ) {
 		return $pattern;
 	}
 
@@ -5338,7 +5265,7 @@ function wp_sprintf_l( $pattern, $args ) {
 
 	$args   = (array) $args;
 	$result = array_shift( $args );
-	if ( count( $args ) === 1 ) {
+	if ( count( $args ) == 1 ) {
 		$result .= $l['between_only_two'] . array_shift( $args );
 	}
 
@@ -5347,7 +5274,7 @@ function wp_sprintf_l( $pattern, $args ) {
 	while ( $i ) {
 		$arg = array_shift( $args );
 		$i--;
-		if ( 0 === $i ) {
+		if ( 0 == $i ) {
 			$result .= $l['between_last_two'] . $arg;
 		} else {
 			$result .= $l['between'] . $arg;
@@ -5391,8 +5318,8 @@ function wp_html_excerpt( $str, $count, $more = null ) {
 /**
  * Adds a base URL to relative links in passed content.
  *
- * By default, this function supports the 'src' and 'href' attributes.
- * However, this can be modified via the `$attrs` parameter.
+ * By default it supports the 'src' and 'href' attributes. However this can be
+ * changed via the 3rd param.
  *
  * @since 2.7.0
  *
@@ -5433,19 +5360,19 @@ function _links_add_base( $m ) {
 }
 
 /**
- * Adds a target attribute to all links in passed content.
+ * Adds a Target attribute to all links in passed content.
  *
- * By default, this function only applies to `<a>` tags.
- * However, this can be modified via the `$tags` parameter.
+ * This function by default only applies to `<a>` tags, however this can be
+ * modified by the 3rd param.
  *
- * *NOTE:* Any current target attribute will be stripped and replaced.
+ * *NOTE:* Any current target attributed will be stripped and replaced.
  *
  * @since 2.7.0
  *
  * @global string $_links_add_target
  *
  * @param string   $content String to search for links in.
- * @param string   $target  The target to add to the links.
+ * @param string   $target  The Target to add to the links.
  * @param string[] $tags    An array of tags to apply to.
  * @return string The processed content.
  */
@@ -5618,7 +5545,7 @@ function _sanitize_text_fields( $str, $keep_newlines = false ) {
 
 	$filtered = wp_check_invalid_utf8( $str );
 
-	if ( str_contains( $filtered, '<' ) ) {
+	if ( strpos( $filtered, '<' ) !== false ) {
 		$filtered = wp_pre_kses_less_than( $filtered );
 		// This will strip extra whitespace for us.
 		$filtered = wp_strip_all_tags( $filtered, false );
@@ -5951,7 +5878,7 @@ function _print_emoji_detection_script() {
 
 	wp_print_inline_script_tag(
 		sprintf( 'window._wpemojiSettings = %s;', wp_json_encode( $settings ) ) . "\n" .
-			file_get_contents( ABSPATH . WPINC . '/js/wp-emoji-loader' . wp_scripts_get_suffix() . '.js' )
+			file_get_contents( sprintf( ABSPATH . WPINC . '/js/wp-emoji-loader' . wp_scripts_get_suffix() . '.js' ) )
 	);
 }
 
@@ -5970,7 +5897,7 @@ function wp_encode_emoji( $content ) {
 
 	foreach ( $emoji as $emojum ) {
 		$emoji_char = html_entity_decode( $emojum );
-		if ( str_contains( $content, $emoji_char ) ) {
+		if ( false !== strpos( $content, $emoji_char ) ) {
 			$content = preg_replace( "/$emoji_char/", $emojum, $content );
 		}
 	}
@@ -5987,7 +5914,7 @@ function wp_encode_emoji( $content ) {
  * @return string The encoded content.
  */
 function wp_staticize_emoji( $text ) {
-	if ( ! str_contains( $text, '&#x' ) ) {
+	if ( false === strpos( $text, '&#x' ) ) {
 		if ( ( function_exists( 'mb_check_encoding' ) && mb_check_encoding( $text, 'ASCII' ) ) || ! preg_match( '/[^\x00-\x7F]/', $text ) ) {
 			// The text doesn't contain anything that might be emoji, so we can return early.
 			return $text;
@@ -6006,7 +5933,7 @@ function wp_staticize_emoji( $text ) {
 	// Quickly narrow down the list of emoji that might be in the text and need replacing.
 	$possible_emoji = array();
 	foreach ( $emoji as $emojum ) {
-		if ( str_contains( $text, $emojum ) ) {
+		if ( false !== strpos( $text, $emojum ) ) {
 			$possible_emoji[ $emojum ] = html_entity_decode( $emojum );
 		}
 	}
@@ -6044,9 +5971,9 @@ function wp_staticize_emoji( $text ) {
 		}
 
 		// If it's not a tag and not in ignore block.
-		if ( '' === $ignore_block_element && strlen( $content ) > 0 && '<' !== $content[0] && str_contains( $content, '&#x' ) ) {
+		if ( '' === $ignore_block_element && strlen( $content ) > 0 && '<' !== $content[0] && false !== strpos( $content, '&#x' ) ) {
 			foreach ( $possible_emoji as $emojum => $emoji_char ) {
-				if ( ! str_contains( $content, $emojum ) ) {
+				if ( false === strpos( $content, $emojum ) ) {
 					continue;
 				}
 
@@ -6103,7 +6030,7 @@ function wp_staticize_emoji_for_email( $mail ) {
 	}
 
 	foreach ( $headers as $header ) {
-		if ( ! str_contains( $header, ':' ) ) {
+		if ( strpos( $header, ':' ) === false ) {
 			continue;
 		}
 
@@ -6115,7 +6042,7 @@ function wp_staticize_emoji_for_email( $mail ) {
 		$content = trim( $content );
 
 		if ( 'content-type' === strtolower( $name ) ) {
-			if ( str_contains( $content, ';' ) ) {
+			if ( strpos( $content, ';' ) !== false ) {
 				list( $type, $charset ) = explode( ';', $content );
 				$content_type           = trim( $type );
 			} else {

@@ -102,7 +102,7 @@ function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
 	// If no text domain is defined fall back to the plugin slug.
 	if ( ! $plugin_data['TextDomain'] ) {
 		$plugin_slug = dirname( plugin_basename( $plugin_file ) );
-		if ( '.' !== $plugin_slug && ! str_contains( $plugin_slug, '/' ) ) {
+		if ( '.' !== $plugin_slug && false === strpos( $plugin_slug, '/' ) ) {
 			$plugin_data['TextDomain'] = $plugin_slug;
 		}
 	}
@@ -178,10 +178,8 @@ function _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup 
 		'title' => true,
 	);
 
-	/*
-	 * Name is marked up inside <a> tags. Don't allow these.
-	 * Author is too, but some plugins have used <a> here (omitting Author URI).
-	 */
+	// Name is marked up inside <a> tags. Don't allow these.
+	// Author is too, but some plugins have used <a> here (omitting Author URI).
 	$plugin_data['Name']   = wp_kses( $plugin_data['Name'], $allowed_tags_in_links );
 	$plugin_data['Author'] = wp_kses( $plugin_data['Author'], $allowed_tags );
 
@@ -296,7 +294,7 @@ function get_plugins( $plugin_folder = '' ) {
 
 	if ( $plugins_dir ) {
 		while ( ( $file = readdir( $plugins_dir ) ) !== false ) {
-			if ( str_starts_with( $file, '.' ) ) {
+			if ( '.' === substr( $file, 0, 1 ) ) {
 				continue;
 			}
 
@@ -305,11 +303,11 @@ function get_plugins( $plugin_folder = '' ) {
 
 				if ( $plugins_subdir ) {
 					while ( ( $subfile = readdir( $plugins_subdir ) ) !== false ) {
-						if ( str_starts_with( $subfile, '.' ) ) {
+						if ( '.' === substr( $subfile, 0, 1 ) ) {
 							continue;
 						}
 
-						if ( str_ends_with( $subfile, '.php' ) ) {
+						if ( '.php' === substr( $subfile, -4 ) ) {
 							$plugin_files[] = "$file/$subfile";
 						}
 					}
@@ -317,7 +315,7 @@ function get_plugins( $plugin_folder = '' ) {
 					closedir( $plugins_subdir );
 				}
 			} else {
-				if ( str_ends_with( $file, '.php' ) ) {
+				if ( '.php' === substr( $file, -4 ) ) {
 					$plugin_files[] = $file;
 				}
 			}
@@ -373,7 +371,7 @@ function get_mu_plugins() {
 	$plugins_dir = @opendir( WPMU_PLUGIN_DIR );
 	if ( $plugins_dir ) {
 		while ( ( $file = readdir( $plugins_dir ) ) !== false ) {
-			if ( str_ends_with( $file, '.php' ) ) {
+			if ( '.php' === substr( $file, -4 ) ) {
 				$plugin_files[] = $file;
 			}
 		}
@@ -971,10 +969,8 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 
 		$this_plugin_dir = trailingslashit( dirname( $plugins_dir . $plugin_file ) );
 
-		/*
-		 * If plugin is in its own directory, recursively delete the directory.
-		 * Base check on if plugin includes directory separator AND that it's not the root plugin folder.
-		 */
+		// If plugin is in its own directory, recursively delete the directory.
+		// Base check on if plugin includes directory separator AND that it's not the root plugin folder.
 		if ( strpos( $plugin_file, '/' ) && $this_plugin_dir !== $plugins_dir ) {
 			$deleted = $wp_filesystem->delete( $this_plugin_dir, true );
 		} else {
@@ -1939,7 +1935,7 @@ function get_admin_page_parent( $parent_page = '' ) {
 				$parent_file = $parent_page;
 				return $parent_page;
 			} elseif ( empty( $typenow ) && $pagenow === $submenu_array[2]
-				&& ( empty( $parent_file ) || ! str_contains( $parent_file, '?' ) )
+				&& ( empty( $parent_file ) || false === strpos( $parent_file, '?' ) )
 			) {
 				$parent_file = $parent_page;
 				return $parent_page;

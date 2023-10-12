@@ -181,8 +181,7 @@ function render_block_core_navigation_link( $attributes, $content, $block ) {
 
 	$css_classes = trim( implode( ' ', $classes ) );
 	$has_submenu = count( $block->inner_blocks ) > 0;
-	$kind        = empty( $attributes['kind'] ) ? 'post_type' : str_replace( '-', '_', $attributes['kind'] );
-	$is_active   = ! empty( $attributes['id'] ) && get_queried_object_id() === (int) $attributes['id'] && ! empty( get_queried_object()->$kind );
+	$is_active   = ! empty( $attributes['id'] ) && ( get_queried_object_id() === (int) $attributes['id'] );
 
 	$wrapper_attributes = get_block_wrapper_attributes(
 		array(

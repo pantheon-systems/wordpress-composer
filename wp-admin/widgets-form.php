@@ -272,8 +272,7 @@ if ( isset( $_GET['editwidget'] ) && $_GET['editwidget'] ) {
 	$width = ' style="width:' . max( $control['width'], 350 ) . 'px"';
 	$key   = isset( $_GET['key'] ) ? (int) $_GET['key'] : 0;
 
-	require_once ABSPATH . 'wp-admin/admin-header.php';
-	?>
+	require_once ABSPATH . 'wp-admin/admin-header.php'; ?>
 	<div class="wrap">
 	<h1><?php echo esc_html( $title ); ?></h1>
 	<div class="editwidget"<?php echo $width; ?>>
@@ -301,7 +300,7 @@ if ( isset( $_GET['editwidget'] ) && $_GET['editwidget'] ) {
 	<?php
 	foreach ( $wp_registered_sidebars as $sbname => $sbvalue ) {
 		echo "\t\t<tr><td><label><input type='radio' name='sidebar' value='" . esc_attr( $sbname ) . "'" . checked( $sbname, $sidebar, false ) . " /> $sbvalue[name]</label></td><td>";
-		if ( 'wp_inactive_widgets' === $sbname || str_starts_with( $sbname, 'orphaned_widgets' ) ) {
+		if ( 'wp_inactive_widgets' === $sbname || 'orphaned_widgets' === substr( $sbname, 0, 16 ) ) {
 			echo '&nbsp;';
 		} else {
 			if ( ! isset( $sidebars_widgets[ $sbname ] ) || ! is_array( $sidebars_widgets[ $sbname ] ) ) {
@@ -450,7 +449,7 @@ do_action( 'widgets_admin_page' );
 
 $theme_sidebars = array();
 foreach ( $wp_registered_sidebars as $sidebar => $registered_sidebar ) {
-	if ( str_contains( $registered_sidebar['class'], 'inactive-sidebar' ) || str_starts_with( $sidebar, 'orphaned_widgets' ) ) {
+	if ( false !== strpos( $registered_sidebar['class'], 'inactive-sidebar' ) || 'orphaned_widgets' === substr( $sidebar, 0, 16 ) ) {
 		$wrap_class = 'widgets-holder-wrap';
 		if ( ! empty( $registered_sidebar['class'] ) ) {
 			$wrap_class .= ' ' . $registered_sidebar['class'];

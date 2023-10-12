@@ -52,9 +52,7 @@
 		$( '#pw-weak-text-label' ).text( __( 'Confirm use of weak password' ) );
 
 		// Focus the password field.
-		if ( 'mailserver_pass' !== $pass1.prop('id' ) ) {
-			$( $pass1 ).trigger( 'focus' );
-		}
+		$( $pass1 ).trigger( 'focus' );
 	}
 
 	function bindPass1() {
@@ -173,7 +171,7 @@
 		var $generateButton,
 			$cancelButton;
 
-		$pass1Row = $( '.user-pass1-wrap, .user-pass-wrap, .mailserver-pass-wrap, .reset-pass-submit' );
+		$pass1Row = $( '.user-pass1-wrap, .user-pass-wrap, .reset-pass-submit' );
 
 		// Hide the confirm password field when JavaScript support is enabled.
 		$('.user-pass2-wrap').hide();
@@ -190,7 +188,7 @@
 			$submitButtons.prop( 'disabled', ! $weakCheckbox.prop( 'checked' ) );
 		} );
 
-		$pass1 = $('#pass1, #mailserver_pass');
+		$pass1 = $('#pass1');
 		if ( $pass1.length ) {
 			bindPass1();
 		} else {
@@ -316,27 +314,23 @@
 	}
 
 	function showOrHideWeakPasswordCheckbox() {
-		var passStrengthResult = $('#pass-strength-result');
+		var passStrength = $('#pass-strength-result')[0];
 
-		if ( passStrengthResult.length ) {
-			var passStrength = passStrengthResult[0];
-
-			if ( passStrength.className ) {
-				$pass1.addClass( passStrength.className );
-				if ( $( passStrength ).is( '.short, .bad' ) ) {
-					if ( ! $weakCheckbox.prop( 'checked' ) ) {
-						$submitButtons.prop( 'disabled', true );
-					}
-					$weakRow.show();
-				} else {
-					if ( $( passStrength ).is( '.empty' ) ) {
-						$submitButtons.prop( 'disabled', true );
-						$weakCheckbox.prop( 'checked', false );
-					} else {
-						$submitButtons.prop( 'disabled', false );
-					}
-					$weakRow.hide();
+		if ( passStrength.className ) {
+			$pass1.addClass( passStrength.className );
+			if ( $( passStrength ).is( '.short, .bad' ) ) {
+				if ( ! $weakCheckbox.prop( 'checked' ) ) {
+					$submitButtons.prop( 'disabled', true );
 				}
+				$weakRow.show();
+			} else {
+				if ( $( passStrength ).is( '.empty' ) ) {
+					$submitButtons.prop( 'disabled', true );
+					$weakCheckbox.prop( 'checked', false );
+				} else {
+					$submitButtons.prop( 'disabled', false );
+				}
+				$weakRow.hide();
 			}
 		}
 	}

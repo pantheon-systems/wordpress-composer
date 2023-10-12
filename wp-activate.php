@@ -87,7 +87,7 @@ do_action( 'activate_header' );
  */
 function do_activate_header() {
 	/**
-	 * Fires within the `<head>` section of the Site Activation page.
+	 * Fires before the Site Activation page is loaded.
 	 *
 	 * Fires on the {@see 'wp_head'} action.
 	 *
@@ -120,7 +120,7 @@ add_filter( 'wp_robots', 'wp_robots_sensitive_page' );
 
 get_header( 'wp-activate' );
 
-$blog_details = get_site();
+$blog_details = get_blog_details();
 ?>
 
 <div id="signup-content" class="widecolumn">

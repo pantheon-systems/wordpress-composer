@@ -74,7 +74,6 @@ var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external
 
 
 
-
 /**
  * Dispatches a control action for triggering an api fetch call.
  *
@@ -94,6 +93,7 @@ var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external
  *
  * @return {Object} The control descriptor.
  */
+
 function apiFetch(request) {
   return {
     type: 'API_FETCH',
@@ -104,49 +104,43 @@ function apiFetch(request) {
  * Control for resolving a selector in a registered data store.
  * Alias for the `resolveSelect` built-in control in the `@wordpress/data` package.
  *
- * @param storeNameOrDescriptor The store object or identifier.
- * @param selectorName          The selector name.
- * @param args                  Arguments passed without change to the `@wordpress/data` control.
+ * @param {Array} args Arguments passed without change to the `@wordpress/data` control.
  */
 
-function build_module_select(storeNameOrDescriptor, selectorName, ...args) {
+function build_module_select() {
   external_wp_deprecated_default()('`select` control in `@wordpress/data-controls`', {
     since: '5.7',
     alternative: 'built-in `resolveSelect` control in `@wordpress/data`'
   });
-  return external_wp_data_namespaceObject.controls.resolveSelect(storeNameOrDescriptor, selectorName, ...args);
+  return external_wp_data_namespaceObject.controls.resolveSelect(...arguments);
 }
 /**
  * Control for calling a selector in a registered data store.
  * Alias for the `select` built-in control in the `@wordpress/data` package.
  *
- * @param storeNameOrDescriptor The store object or identifier.
- * @param selectorName          The selector name.
- * @param args                  Arguments passed without change to the `@wordpress/data` control.
+ * @param {Array} args Arguments passed without change to the `@wordpress/data` control.
  */
 
-function syncSelect(storeNameOrDescriptor, selectorName, ...args) {
+function syncSelect() {
   external_wp_deprecated_default()('`syncSelect` control in `@wordpress/data-controls`', {
     since: '5.7',
     alternative: 'built-in `select` control in `@wordpress/data`'
   });
-  return external_wp_data_namespaceObject.controls.select(storeNameOrDescriptor, selectorName, ...args);
+  return external_wp_data_namespaceObject.controls.select(...arguments);
 }
 /**
  * Control for dispatching an action in a registered data store.
  * Alias for the `dispatch` control in the `@wordpress/data` package.
  *
- * @param storeNameOrDescriptor The store object or identifier.
- * @param actionName            The action name.
- * @param args                  Arguments passed without change to the `@wordpress/data` control.
+ * @param {Array} args Arguments passed without change to the `@wordpress/data` control.
  */
 
-function dispatch(storeNameOrDescriptor, actionName, ...args) {
+function dispatch() {
   external_wp_deprecated_default()('`dispatch` control in `@wordpress/data-controls`', {
     since: '5.7',
     alternative: 'built-in `dispatch` control in `@wordpress/data`'
   });
-  return external_wp_data_namespaceObject.controls.dispatch(storeNameOrDescriptor, actionName, ...args);
+  return external_wp_data_namespaceObject.controls.dispatch(...arguments);
 }
 /**
  * Dispatches a control action for awaiting on a promise to be resolved.
@@ -203,13 +197,17 @@ const __unstableAwaitPromise = function (promise) {
  */
 
 const controls = {
-  AWAIT_PROMISE: ({
-    promise
-  }) => promise,
+  AWAIT_PROMISE: _ref => {
+    let {
+      promise
+    } = _ref;
+    return promise;
+  },
 
-  API_FETCH({
-    request
-  }) {
+  API_FETCH(_ref2) {
+    let {
+      request
+    } = _ref2;
     return external_wp_apiFetch_default()(request);
   }
 

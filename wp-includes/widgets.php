@@ -185,10 +185,8 @@ function register_sidebars( $number = 1, $args = array() ) {
 			$_args['name'] = isset( $args['name'] ) ? $args['name'] : __( 'Sidebar' );
 		}
 
-		/*
-		 * Custom specified ID's are suffixed if they exist already.
-		 * Automatically generated sidebar names need to be suffixed regardless starting at -0.
-		 */
+		// Custom specified ID's are suffixed if they exist already.
+		// Automatically generated sidebar names need to be suffixed regardless starting at -0.
 		if ( isset( $args['id'] ) ) {
 			$_args['id'] = $args['id'];
 			$n           = 2; // Start at -2 for conflicting custom IDs.
@@ -910,7 +908,7 @@ function is_active_widget( $callback = false, $widget_id = false, $id_base = fal
 
 	if ( is_array( $sidebars_widgets ) ) {
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
-			if ( $skip_inactive && ( 'wp_inactive_widgets' === $sidebar || str_starts_with( $sidebar, 'orphaned_widgets' ) ) ) {
+			if ( $skip_inactive && ( 'wp_inactive_widgets' === $sidebar || 'orphaned_widgets' === substr( $sidebar, 0, 16 ) ) ) {
 				continue;
 			}
 
@@ -1015,10 +1013,8 @@ function wp_get_sidebars_widgets( $deprecated = true ) {
 
 	global $_wp_sidebars_widgets, $sidebars_widgets;
 
-	/*
-	 * If loading from front page, consult $_wp_sidebars_widgets rather than options
-	 * to see if wp_convert_widget_settings() has made manipulations in memory.
-	 */
+	// If loading from front page, consult $_wp_sidebars_widgets rather than options
+	// to see if wp_convert_widget_settings() has made manipulations in memory.
 	if ( ! is_admin() ) {
 		if ( empty( $_wp_sidebars_widgets ) ) {
 			$_wp_sidebars_widgets = get_option( 'sidebars_widgets', array() );
@@ -1386,7 +1382,7 @@ function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 	}
 
 	foreach ( $existing_sidebars_widgets as $sidebar => $widgets ) {
-		if ( 'wp_inactive_widgets' === $sidebar || str_starts_with( $sidebar, 'orphaned_widgets' ) ) {
+		if ( 'wp_inactive_widgets' === $sidebar || 'orphaned_widgets' === substr( $sidebar, 0, 16 ) ) {
 			$new_sidebars_widgets['wp_inactive_widgets'] = array_merge( $new_sidebars_widgets['wp_inactive_widgets'], (array) $widgets );
 			unset( $existing_sidebars_widgets[ $sidebar ] );
 		}
@@ -1494,7 +1490,7 @@ function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 
 		// Remove orphaned widgets, we're only interested in previously active sidebars.
 		foreach ( $old_sidebars_widgets as $sidebar => $widgets ) {
-			if ( str_starts_with( $sidebar, 'orphaned_widgets' ) ) {
+			if ( 'orphaned_widgets' === substr( $sidebar, 0, 16 ) ) {
 				unset( $old_sidebars_widgets[ $sidebar ] );
 			}
 		}
@@ -1631,7 +1627,7 @@ function wp_widget_rss_output( $rss, $args = array() ) {
 			$summary = $desc;
 
 			// Change existing [...] to [&hellip;].
-			if ( str_ends_with( $summary, '[...]' ) ) {
+			if ( '[...]' === substr( $summary, -5 ) ) {
 				$summary = substr( $summary, 0, -5 ) . '[&hellip;]';
 			}
 

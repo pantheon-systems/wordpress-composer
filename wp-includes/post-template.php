@@ -37,13 +37,12 @@ function get_the_ID() { // phpcs:ignore WordPress.NamingConventions.ValidFunctio
  * @param string $before  Optional. Markup to prepend to the title. Default empty.
  * @param string $after   Optional. Markup to append to the title. Default empty.
  * @param bool   $display Optional. Whether to echo or return the title. Default true for echo.
- * @return void|string Void if `$display` argument is true or the title is empty,
- *                     current post title if `$display` is false.
+ * @return void|string Void if `$display` argument is true, current post title if `$display` is false.
  */
 function the_title( $before = '', $after = '', $display = true ) {
 	$title = get_the_title();
 
-	if ( strlen( $title ) === 0 ) {
+	if ( strlen( $title ) == 0 ) {
 		return;
 	}
 
@@ -89,7 +88,7 @@ function the_title_attribute( $args = '' ) {
 
 	$title = get_the_title( $parsed_args['post'] );
 
-	if ( strlen( $title ) === 0 ) {
+	if ( strlen( $title ) == 0 ) {
 		return;
 	}
 
@@ -285,10 +284,8 @@ function get_the_content( $more_link_text = null, $strip_teaser = false, $post =
 		return '';
 	}
 
-	/*
-	 * Use the globals if the $post parameter was not specified,
-	 * but only after they have been set up in setup_postdata().
-	 */
+	// Use the globals if the $post parameter was not specified,
+	// but only after they have been set up in setup_postdata().
 	if ( null === $post && did_action( 'the_post' ) ) {
 		$elements = compact( 'page', 'more', 'preview', 'pages', 'multipage' );
 	} else {
@@ -345,7 +342,7 @@ function get_the_content( $more_link_text = null, $strip_teaser = false, $post =
 		$content = array( $content );
 	}
 
-	if ( str_contains( $_post->post_content, '<!--noteaser-->' ) && ( ! $elements['multipage'] || 1 == $elements['page'] ) ) {
+	if ( false !== strpos( $_post->post_content, '<!--noteaser-->' ) && ( ! $elements['multipage'] || 1 == $elements['page'] ) ) {
 		$strip_teaser = true;
 	}
 
@@ -889,7 +886,7 @@ function post_password_required( $post = null ) {
 	$hasher = new PasswordHash( 8, true );
 
 	$hash = wp_unslash( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
-	if ( ! str_starts_with( $hash, '$P$B' ) ) {
+	if ( 0 !== strpos( $hash, '$P$B' ) ) {
 		$required = true;
 	} else {
 		$required = ! $hasher->CheckPassword( $post->post_password, $hash );

@@ -147,7 +147,10 @@ var external_wp_url_namespaceObject = window["wp"]["url"];
  */
 
 function createPreloadingMiddleware(preloadedData) {
-  const cache = Object.fromEntries(Object.entries(preloadedData).map(([path, data]) => [(0,external_wp_url_namespaceObject.normalizePath)(path), data]));
+  const cache = Object.fromEntries(Object.entries(preloadedData).map(_ref => {
+    let [path, data] = _ref;
+    return [(0,external_wp_url_namespaceObject.normalizePath)(path), data];
+  }));
   return (options, next) => {
     const {
       parse = true
@@ -226,14 +229,17 @@ function prepareResponse(responseData, parse) {
  * @return {import('../types').APIFetchOptions} The request with the modified query args
  */
 
-const modifyQuery = ({
-  path,
-  url,
-  ...options
-}, queryArgs) => ({ ...options,
-  url: url && (0,external_wp_url_namespaceObject.addQueryArgs)(url, queryArgs),
-  path: path && (0,external_wp_url_namespaceObject.addQueryArgs)(path, queryArgs)
-});
+const modifyQuery = (_ref, queryArgs) => {
+  let {
+    path,
+    url,
+    ...options
+  } = _ref;
+  return { ...options,
+    url: url && (0,external_wp_url_namespaceObject.addQueryArgs)(url, queryArgs),
+    path: path && (0,external_wp_url_namespaceObject.addQueryArgs)(path, queryArgs)
+  };
+};
 /**
  * Duplicates parsing functionality from apiFetch.
  *
@@ -433,7 +439,9 @@ const userLocaleMiddleware = (options, next) => {
  * @return {Promise<any> | null | Response} Parsed response.
  */
 
-const response_parseResponse = (response, shouldParseResponse = true) => {
+const response_parseResponse = function (response) {
+  let shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
   if (shouldParseResponse) {
     if (response.status === 204) {
       return null;
@@ -477,7 +485,8 @@ const parseJsonAndNormalizeError = response => {
  */
 
 
-const parseResponseAndNormalizeError = (response, shouldParseResponse = true) => {
+const parseResponseAndNormalizeError = function (response) {
+  let shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
   return Promise.resolve(response_parseResponse(response, shouldParseResponse)).catch(res => parseAndThrowError(res, shouldParseResponse));
 };
 /**
@@ -488,7 +497,9 @@ const parseResponseAndNormalizeError = (response, shouldParseResponse = true) =>
  * @return {Promise<any>} Parsed response.
  */
 
-function parseAndThrowError(response, shouldParseResponse = true) {
+function parseAndThrowError(response) {
+  let shouldParseResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
   if (!shouldParseResponse) {
     throw response;
   }
@@ -587,37 +598,6 @@ const mediaUploadMiddleware = (options, next) => {
 
 /* harmony default export */ var media_upload = (mediaUploadMiddleware);
 
-;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/theme-preview.js
-/**
- * WordPress dependencies
- */
-
-/**
- * This appends a `wp_theme_preview` parameter to the REST API request URL if
- * the admin URL contains a `theme` GET parameter.
- *
- * @param {Record<string, any>} themePath
- * @return {import('../types').APIFetchMiddleware} Preloading middleware.
- */
-
-const createThemePreviewMiddleware = themePath => (options, next) => {
-  if (typeof options.url === 'string' && !(0,external_wp_url_namespaceObject.hasQueryArg)(options.url, 'wp_theme_preview')) {
-    options.url = (0,external_wp_url_namespaceObject.addQueryArgs)(options.url, {
-      wp_theme_preview: themePath
-    });
-  }
-
-  if (typeof options.path === 'string' && !(0,external_wp_url_namespaceObject.hasQueryArg)(options.path, 'wp_theme_preview')) {
-    options.path = (0,external_wp_url_namespaceObject.addQueryArgs)(options.path, {
-      wp_theme_preview: themePath
-    });
-  }
-
-  return next(options);
-};
-
-/* harmony default export */ var theme_preview = (createThemePreviewMiddleware);
-
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/index.js
 /**
  * WordPress dependencies
@@ -626,7 +606,6 @@ const createThemePreviewMiddleware = themePath => (options, next) => {
 /**
  * Internal dependencies
  */
-
 
 
 
@@ -798,7 +777,6 @@ apiFetch.createPreloadingMiddleware = preloading;
 apiFetch.createRootURLMiddleware = root_url;
 apiFetch.fetchAllMiddleware = fetch_all_middleware;
 apiFetch.mediaUploadMiddleware = media_upload;
-apiFetch.createThemePreviewMiddleware = theme_preview;
 /* harmony default export */ var build_module = (apiFetch);
 
 (window.wp = window.wp || {}).apiFetch = __webpack_exports__["default"];

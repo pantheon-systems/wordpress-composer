@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "core/gallery",
 	"title": "Gallery",
 	"category": "media",
@@ -115,9 +115,7 @@
 			"blockGap": [ "horizontal", "vertical" ],
 			"__experimentalSkipSerialization": [ "blockGap" ],
 			"__experimentalDefaultControls": {
-				"blockGap": true,
-				"margin": false,
-				"padding": false
+				"blockGap": true
 			}
 		},
 		"color": {
@@ -125,7 +123,7 @@
 			"background": true,
 			"gradients": true
 		},
-		"layout": {
+		"__experimentalLayout": {
 			"allowSwitching": false,
 			"allowInheriting": false,
 			"allowEditing": false,

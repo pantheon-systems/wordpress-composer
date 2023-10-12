@@ -81,7 +81,7 @@ if ( $doaction ) {
 		$sendback = admin_url( $parent_file );
 	}
 	$sendback = add_query_arg( 'paged', $pagenum, $sendback );
-	if ( str_contains( $sendback, 'post.php' ) ) {
+	if ( strpos( $sendback, 'post.php' ) !== false ) {
 		$sendback = admin_url( $post_new_file );
 	}
 
@@ -442,13 +442,8 @@ foreach ( $bulk_counts as $message => $count ) {
 	}
 
 	if ( 'trashed' === $message && isset( $_REQUEST['ids'] ) ) {
-		$ids = preg_replace( '/[^0-9,]/', '', $_REQUEST['ids'] );
-
-		$messages[] = sprintf(
-			'<a href="%1$s">%2$s</a>',
-			esc_url( wp_nonce_url( "edit.php?post_type=$post_type&doaction=undo&action=untrash&ids=$ids", 'bulk-posts' ) ),
-			__( 'Undo' )
-		);
+		$ids        = preg_replace( '/[^0-9,]/', '', $_REQUEST['ids'] );
+		$messages[] = '<a href="' . esc_url( wp_nonce_url( "edit.php?post_type=$post_type&doaction=undo&action=untrash&ids=$ids", 'bulk-posts' ) ) . '">' . __( 'Undo' ) . '</a>';
 	}
 
 	if ( 'untrashed' === $message && isset( $_REQUEST['ids'] ) ) {
@@ -465,10 +460,7 @@ foreach ( $bulk_counts as $message => $count ) {
 }
 
 if ( $messages ) {
-	printf(
-		'<div id="message" class="updated notice is-dismissible"><p>%s</p></div>',
-		implode( ' ', $messages )
-	);
+	echo '<div id="message" class="updated notice is-dismissible"><p>' . implode( ' ', $messages ) . '</p></div>';
 }
 unset( $messages );
 

@@ -37,7 +37,8 @@ class TokenList {
    *
    * @param {string} initialValue Initial value to assign.
    */
-  constructor(initialValue = '') {
+  constructor() {
+    let initialValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     this.value = initialValue; // Disable reason: These are type hints on the class.
 
     /* eslint-disable no-unused-expressions */
@@ -55,32 +56,32 @@ class TokenList {
    */
 
 
-  entries(...args) {
-    return this._valueAsArray.entries(...args);
+  entries() {
+    return this._valueAsArray.entries(...arguments);
   }
   /**
    * @param {Parameters<Array<string>['forEach']>} args
    */
 
 
-  forEach(...args) {
-    return this._valueAsArray.forEach(...args);
+  forEach() {
+    return this._valueAsArray.forEach(...arguments);
   }
   /**
    * @param {Parameters<Array<string>['keys']>} args
    */
 
 
-  keys(...args) {
-    return this._valueAsArray.keys(...args);
+  keys() {
+    return this._valueAsArray.keys(...arguments);
   }
   /**
    * @param {Parameters<Array<string>['values']>} args
    */
 
 
-  values(...args) {
-    return this._valueAsArray.values(...args);
+  values() {
+    return this._valueAsArray.values(...arguments);
   }
   /**
    * Returns the associated set as string.
@@ -182,7 +183,11 @@ class TokenList {
    */
 
 
-  add(...items) {
+  add() {
+    for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
+      items[_key] = arguments[_key];
+    }
+
     this.value += ' ' + items.join(' ');
   }
   /**
@@ -194,7 +199,11 @@ class TokenList {
    */
 
 
-  remove(...items) {
+  remove() {
+    for (var _len2 = arguments.length, items = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      items[_key2] = arguments[_key2];
+    }
+
     this.value = this._valueAsArray.filter(val => !items.includes(val)).join(' ');
   }
   /**

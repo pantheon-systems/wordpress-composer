@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "core/query",
 	"title": "Query Loop",
 	"category": "theme",
@@ -32,6 +32,12 @@
 			"type": "string",
 			"default": "div"
 		},
+		"displayLayout": {
+			"type": "object",
+			"default": {
+				"type": "list"
+			}
+		},
 		"namespace": {
 			"type": "string"
 		}
@@ -44,7 +50,7 @@
 	"supports": {
 		"align": [ "wide", "full" ],
 		"html": false,
-		"layout": true
+		"__experimentalLayout": true
 	},
 	"editorStyle": "wp-block-query-editor"
 }

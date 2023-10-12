@@ -162,7 +162,7 @@ if ( ! empty( $posted_content ) ) {
 	$content = file_get_contents( $real_file );
 }
 
-if ( str_ends_with( $real_file, '.php' ) ) {
+if ( '.php' === substr( $real_file, strrpos( $real_file, '.' ) ) ) {
 	$functions = wp_doc_link_parse( $content );
 
 	if ( ! empty( $functions ) ) {

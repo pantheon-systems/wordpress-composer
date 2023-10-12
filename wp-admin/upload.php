@@ -15,99 +15,73 @@ if ( ! current_user_can( 'upload_files' ) ) {
 
 $message = '';
 if ( ! empty( $_GET['posted'] ) ) {
-	$message = __( 'Media file updated.' );
-
+	$message                = __( 'Media file updated.' );
 	$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'posted' ), $_SERVER['REQUEST_URI'] );
 	unset( $_GET['posted'] );
 }
 
 if ( ! empty( $_GET['attached'] ) && absint( $_GET['attached'] ) ) {
 	$attached = absint( $_GET['attached'] );
-
 	if ( 1 === $attached ) {
 		$message = __( 'Media file attached.' );
 	} else {
-		$message = sprintf(
-			/* translators: %s: Number of media files. */
-			_n( '%s media file attached.', '%s media files attached.', $attached ),
-			number_format_i18n( $attached )
-		);
+		/* translators: %s: Number of media files. */
+		$message = _n( '%s media file attached.', '%s media files attached.', $attached );
 	}
-
+	$message                = sprintf( $message, $attached );
 	$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'detach', 'attached' ), $_SERVER['REQUEST_URI'] );
 	unset( $_GET['detach'], $_GET['attached'] );
 }
 
 if ( ! empty( $_GET['detach'] ) && absint( $_GET['detach'] ) ) {
 	$detached = absint( $_GET['detach'] );
-
 	if ( 1 === $detached ) {
 		$message = __( 'Media file detached.' );
 	} else {
-		$message = sprintf(
-			/* translators: %s: Number of media files. */
-			_n( '%s media file detached.', '%s media files detached.', $detached ),
-			number_format_i18n( $detached )
-		);
+		/* translators: %s: Number of media files. */
+		$message = _n( '%s media file detached.', '%s media files detached.', $detached );
 	}
-
+	$message                = sprintf( $message, $detached );
 	$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'detach', 'attached' ), $_SERVER['REQUEST_URI'] );
 	unset( $_GET['detach'], $_GET['attached'] );
 }
 
 if ( ! empty( $_GET['deleted'] ) && absint( $_GET['deleted'] ) ) {
 	$deleted = absint( $_GET['deleted'] );
-
 	if ( 1 === $deleted ) {
 		$message = __( 'Media file permanently deleted.' );
 	} else {
-		$message = sprintf(
-			/* translators: %s: Number of media files. */
-			_n( '%s media file permanently deleted.', '%s media files permanently deleted.', $deleted ),
-			number_format_i18n( $deleted )
-		);
+		/* translators: %s: Number of media files. */
+		$message = _n( '%s media file permanently deleted.', '%s media files permanently deleted.', $deleted );
 	}
-
+	$message                = sprintf( $message, $deleted );
 	$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'deleted' ), $_SERVER['REQUEST_URI'] );
 	unset( $_GET['deleted'] );
 }
 
 if ( ! empty( $_GET['trashed'] ) && absint( $_GET['trashed'] ) ) {
 	$trashed = absint( $_GET['trashed'] );
-
 	if ( 1 === $trashed ) {
 		$message = __( 'Media file moved to the Trash.' );
 	} else {
-		$message = sprintf(
-			/* translators: %s: Number of media files. */
-			_n( '%s media file moved to the Trash.', '%s media files moved to the Trash.', $trashed ),
-			number_format_i18n( $trashed )
-		);
+		/* translators: %s: Number of media files. */
+		$message = _n( '%s media file moved to the Trash.', '%s media files moved to the Trash.', $trashed );
 	}
-
-	$message .= sprintf(
-		' <a href="%1$s">%2$s</a>',
-		esc_url( wp_nonce_url( 'upload.php?doaction=undo&action=untrash&ids=' . ( isset( $_GET['ids'] ) ? $_GET['ids'] : '' ), 'bulk-media' ) ),
-		__( 'Undo' )
-	);
-
+	$message                = sprintf( $message, $trashed );
+	$message               .= ' <a href="' . esc_url( wp_nonce_url( 'upload.php?doaction=undo&action=untrash&ids=' . ( isset( $_GET['ids'] ) ? $_GET['ids'] : '' ), 'bulk-media' ) ) . '">' . __( 'Undo' ) . '</a>';
 	$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'trashed' ), $_SERVER['REQUEST_URI'] );
 	unset( $_GET['trashed'] );
 }
 
 if ( ! empty( $_GET['untrashed'] ) && absint( $_GET['untrashed'] ) ) {
 	$untrashed = absint( $_GET['untrashed'] );
-
 	if ( 1 === $untrashed ) {
 		$message = __( 'Media file restored from the Trash.' );
 	} else {
-		$message = sprintf(
-			/* translators: %s: Number of media files. */
-			_n( '%s media file restored from the Trash.', '%s media files restored from the Trash.', $untrashed ),
-			number_format_i18n( $untrashed )
-		);
+		/* translators: %s: Number of media files. */
+		$message = _n( '%s media file restored from the Trash.', '%s media files restored from the Trash.', $untrashed );
 	}
-
+	$message                = sprintf( $message, $untrashed );
 	$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'untrashed' ), $_SERVER['REQUEST_URI'] );
 	unset( $_GET['untrashed'] );
 }
@@ -115,16 +89,11 @@ if ( ! empty( $_GET['untrashed'] ) && absint( $_GET['untrashed'] ) ) {
 $messages[1] = __( 'Media file updated.' );
 $messages[2] = __( 'Media file permanently deleted.' );
 $messages[3] = __( 'Error saving media file.' );
-$messages[4] = __( 'Media file moved to the Trash.' ) . sprintf(
-	' <a href="%1$s">%2$s</a>',
-	esc_url( wp_nonce_url( 'upload.php?doaction=undo&action=untrash&ids=' . ( isset( $_GET['ids'] ) ? $_GET['ids'] : '' ), 'bulk-media' ) ),
-	__( 'Undo' )
-);
+$messages[4] = __( 'Media file moved to the Trash.' ) . ' <a href="' . esc_url( wp_nonce_url( 'upload.php?doaction=undo&action=untrash&ids=' . ( isset( $_GET['ids'] ) ? $_GET['ids'] : '' ), 'bulk-media' ) ) . '">' . __( 'Undo' ) . '</a>';
 $messages[5] = __( 'Media file restored from the Trash.' );
 
 if ( ! empty( $_GET['message'] ) && isset( $messages[ $_GET['message'] ] ) ) {
-	$message = $messages[ $_GET['message'] ];
-
+	$message                = $messages[ $_GET['message'] ];
 	$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'message' ), $_SERVER['REQUEST_URI'] );
 }
 
@@ -141,15 +110,7 @@ if ( 'grid' === $mode ) {
 	wp_enqueue_script( 'media-grid' );
 	wp_enqueue_script( 'media' );
 
-	// Remove the error parameter added by deprecation of wp-admin/media.php.
-	add_filter(
-		'removable_query_args',
-		function() {
-			return array( 'error' );
-		},
-		10,
-		0
-	);
+	remove_action( 'admin_head', 'wp_admin_canonical_url' );
 
 	$q = $_GET;
 	// Let JS handle this.
@@ -263,7 +224,7 @@ if ( $doaction ) {
 	$location = 'upload.php';
 	$referer  = wp_get_referer();
 	if ( $referer ) {
-		if ( str_contains( $referer, 'upload.php' ) ) {
+		if ( false !== strpos( $referer, 'upload.php' ) ) {
 			$location = remove_query_arg( array( 'trashed', 'untrashed', 'deleted', 'message', 'ids', 'posted' ), $referer );
 		}
 	}
