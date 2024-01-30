@@ -426,7 +426,7 @@ class Theme_Upgrader extends WP_Upgrader {
 		$this->update_count   = count( $themes );
 		$this->update_current = 0;
 		foreach ( $themes as $theme ) {
-			++$this->update_current;
+			$this->update_current++;
 
 			$this->skin->theme_info = $this->theme_info( $theme );
 
@@ -768,4 +768,5 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		return $theme;
 	}
+
 }

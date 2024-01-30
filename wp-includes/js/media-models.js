@@ -1395,7 +1395,8 @@ var __webpack_exports__ = {};
  * @output wp-includes/js/media-models.js
  */
 
-var Attachment, Attachments, l10n, media;
+var $ = jQuery,
+	Attachment, Attachments, l10n, media;
 
 /** @namespace wp */
 window.wp = window.wp || {};
@@ -1629,6 +1630,11 @@ media.query = function( props ) {
 		props: _.extend( _.defaults( props || {}, { orderby: 'date' } ), { query: true } )
 	});
 };
+
+// Clean up. Prevents mobile browsers caching.
+$(window).on('unload', function(){
+	window.wp = null;
+});
 
 }();
 /******/ })()

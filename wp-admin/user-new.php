@@ -381,50 +381,35 @@ if ( current_user_can( 'create_users' ) ) {
 ?>
 </h1>
 
-<?php
-if ( isset( $errors ) && is_wp_error( $errors ) ) :
-	$error_message = '';
-	foreach ( $errors->get_error_messages() as $err ) {
-		$error_message .= "<li>$err</li>\n";
-	}
-	wp_admin_notice(
-		'<ul>' . $error_message . '</ul>',
-		array(
-			'additional_classes' => array( 'error' ),
-			'paragraph_wrap'     => false,
-		)
-	);
+<?php if ( isset( $errors ) && is_wp_error( $errors ) ) : ?>
+	<div class="error">
+		<ul>
+		<?php
+		foreach ( $errors->get_error_messages() as $err ) {
+			echo "<li>$err</li>\n";
+		}
+		?>
+		</ul>
+	</div>
+	<?php
 endif;
 
 if ( ! empty( $messages ) ) {
 	foreach ( $messages as $msg ) {
-		wp_admin_notice(
-			$msg,
-			array(
-				'id'                 => 'message',
-				'additional_classes' => array( 'updated' ),
-				'dismissible'        => true,
-			)
-		);
+		echo '<div id="message" class="updated notice is-dismissible"><p>' . $msg . '</p></div>';
 	}
 }
 ?>
 
-<?php
-if ( isset( $add_user_errors ) && is_wp_error( $add_user_errors ) ) :
-	$error_message = '';
-	foreach ( $add_user_errors->get_error_messages() as $message ) {
-		$error_message .= "<p>$message</p>\n";
-	}
-	wp_admin_notice(
-		$error_message,
-		array(
-			'additional_classes' => array( 'error' ),
-			'paragraph_wrap'     => false,
-		)
-	);
-endif;
-?>
+<?php if ( isset( $add_user_errors ) && is_wp_error( $add_user_errors ) ) : ?>
+	<div class="error">
+		<?php
+		foreach ( $add_user_errors->get_error_messages() as $message ) {
+			echo "<p>$message</p>";
+		}
+		?>
+	</div>
+<?php endif; ?>
 <div id="ajax-response"></div>
 
 <?php

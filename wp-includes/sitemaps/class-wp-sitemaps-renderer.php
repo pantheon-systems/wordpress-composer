@@ -131,6 +131,7 @@ class WP_Sitemaps_Renderer {
 
 		if ( ! empty( $index_xml ) ) {
 			// All output is escaped within get_sitemap_index_xml().
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $index_xml;
 		}
 	}
@@ -195,6 +196,7 @@ class WP_Sitemaps_Renderer {
 
 		if ( ! empty( $sitemap_xml ) ) {
 			// All output is escaped within get_sitemap_xml().
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $sitemap_xml;
 		}
 	}

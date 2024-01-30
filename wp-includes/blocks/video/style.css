@@ -2,7 +2,6 @@
   box-sizing:border-box;
 }
 .wp-block-video video{
-  vertical-align:middle;
   width:100%;
 }
 @supports (position:sticky){

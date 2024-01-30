@@ -25,12 +25,12 @@ class WP_Sitemaps_Stylesheet {
 		header( 'Content-Type: application/xml; charset=UTF-8' );
 
 		if ( 'sitemap' === $type ) {
-			// All content is escaped below.
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- All content escaped below.
 			echo $this->get_sitemap_stylesheet();
 		}
 
 		if ( 'index' === $type ) {
-			// All content is escaped below.
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- All content escaped below.
 			echo $this->get_sitemap_index_stylesheet();
 		}
 

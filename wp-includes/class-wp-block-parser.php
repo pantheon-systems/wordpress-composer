@@ -49,6 +49,14 @@ class WP_Block_Parser {
 	public $stack;
 
 	/**
+	 * Empty associative array, here due to PHP quirks
+	 *
+	 * @since 4.4.0
+	 * @var array empty associative array
+	 */
+	public $empty_attrs;
+
+	/**
 	 * Parses a document and returns a list of block structures
 	 *
 	 * When encountering an invalid parse will return a best-effort
@@ -61,10 +69,11 @@ class WP_Block_Parser {
 	 * @return array[]
 	 */
 	public function parse( $document ) {
-		$this->document = $document;
-		$this->offset   = 0;
-		$this->output   = array();
-		$this->stack    = array();
+		$this->document    = $document;
+		$this->offset      = 0;
+		$this->output      = array();
+		$this->stack       = array();
+		$this->empty_attrs = json_decode( '{}', true );
 
 		while ( $this->proceed() ) {
 			continue;
@@ -278,7 +287,7 @@ class WP_Block_Parser {
 		 */
 		$attrs = $has_attrs
 			? json_decode( $matches['attrs'][0], /* as-associative */ true )
-			: array();
+			: $this->empty_attrs;
 
 		/*
 		 * This state isn't allowed
@@ -309,7 +318,7 @@ class WP_Block_Parser {
 	 * @return WP_Block_Parser_Block freeform block object.
 	 */
 	public function freeform( $inner_html ) {
-		return new WP_Block_Parser_Block( null, array(), array(), $inner_html, array( $inner_html ) );
+		return new WP_Block_Parser_Block( null, $this->empty_attrs, array(), $inner_html, array( $inner_html ) );
 	}
 
 	/**

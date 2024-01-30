@@ -13,8 +13,7 @@
 		"queryContext",
 		"displayLayout",
 		"templateSlug",
-		"previewPostType",
-		"enhancedPagination"
+		"previewPostType"
 	],
 	"supports": {
 		"reusable": false,

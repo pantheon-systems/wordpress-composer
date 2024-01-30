@@ -38,15 +38,14 @@ var external_wp_hooks_namespaceObject = window["wp"]["hooks"];
  * WordPress dependencies
  */
 
-
 /**
  * Object map tracking messages which have been logged, for use in ensuring a
  * message is only logged once.
  *
  * @type {Record<string, true | undefined>}
  */
-const logged = Object.create(null);
 
+const logged = Object.create(null);
 /**
  * Logs a message to notify developers about a deprecated feature.
  *
@@ -74,6 +73,7 @@ const logged = Object.create(null);
  * // Logs: 'Eating meat is deprecated since version 2019.01.01 and will be removed from the earth in version 2020.01.01. Please use vegetables instead. Note: You may find it beneficial to transition gradually.'
  * ```
  */
+
 function deprecated(feature, options = {}) {
   const {
     since,
@@ -89,13 +89,11 @@ function deprecated(feature, options = {}) {
   const useInsteadMessage = alternative ? ` Please use ${alternative} instead.` : '';
   const linkMessage = link ? ` See: ${link}` : '';
   const hintMessage = hint ? ` Note: ${hint}` : '';
-  const message = `${feature} is deprecated${sinceMessage}${versionMessage}.${useInsteadMessage}${linkMessage}${hintMessage}`;
+  const message = `${feature} is deprecated${sinceMessage}${versionMessage}.${useInsteadMessage}${linkMessage}${hintMessage}`; // Skip if already logged.
 
-  // Skip if already logged.
   if (message in logged) {
     return;
   }
-
   /**
    * Fires whenever a deprecated feature is encountered
    *
@@ -109,13 +107,13 @@ function deprecated(feature, options = {}) {
    * @param {?string} options.hint        Additional message to help transition away from the deprecated feature.
    * @param {?string} message             Message sent to console.warn
    */
-  (0,external_wp_hooks_namespaceObject.doAction)('deprecated', feature, options, message);
 
-  // eslint-disable-next-line no-console
+
+  (0,external_wp_hooks_namespaceObject.doAction)('deprecated', feature, options, message); // eslint-disable-next-line no-console
+
   console.warn(message);
   logged[message] = true;
 }
-
 /** @typedef {import('utility-types').NonUndefined<Parameters<typeof deprecated>[1]>} DeprecatedOptions */
 
 (window.wp = window.wp || {}).deprecated = __webpack_exports__["default"];

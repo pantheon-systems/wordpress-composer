@@ -143,16 +143,10 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 		echo '</p></div>';
 		if ( $this->error || ! $this->result ) {
 			if ( $this->error ) {
-				$after_error_message = sprintf( $this->upgrader->strings['skin_update_failed_error'], $title, '<strong>' . $this->error . '</strong>' );
+				echo '<div class="error"><p>' . sprintf( $this->upgrader->strings['skin_update_failed_error'], $title, '<strong>' . $this->error . '</strong>' ) . '</p></div>';
 			} else {
-				$after_error_message = sprintf( $this->upgrader->strings['skin_update_failed'], $title );
+				echo '<div class="error"><p>' . sprintf( $this->upgrader->strings['skin_update_failed'], $title ) . '</p></div>';
 			}
-			wp_admin_notice(
-				$after_error_message,
-				array(
-					'additional_classes' => array( 'error' ),
-				)
-			);
 
 			echo '<script type="text/javascript">jQuery(\'#progress-' . esc_js( $this->upgrader->update_current ) . '\').show();</script>';
 		}

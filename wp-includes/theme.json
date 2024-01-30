@@ -263,18 +263,12 @@
 			"letterSpacing": true,
 			"lineHeight": false,
 			"textDecoration": true,
-			"textTransform": true,
-			"writingMode": false
+			"textTransform": true
 		},
 		"blocks": {
 			"core/button": {
 				"border": {
 					"radius": true
-				}
-			},
-			"core/image": {
-				"lightbox": {
-					"allowEditing": true
 				}
 			},
 			"core/pullquote": {

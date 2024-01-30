@@ -290,17 +290,10 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	/**
 	 */
 	public function no_items() {
-		if ( isset( $this->error ) ) {
-			$error_message  = '<p>' . $this->error->get_error_message() . '</p>';
-			$error_message .= '<p class="hide-if-no-js"><button class="button try-again">' . __( 'Try Again' ) . '</button></p>';
-			wp_admin_notice(
-				$error_message,
-				array(
-					'additional_classes' => array( 'inline', 'error' ),
-					'paragraph_wrap'     => false,
-				)
-			);
-			?>
+		if ( isset( $this->error ) ) { ?>
+			<div class="inline error"><p><?php echo $this->error->get_error_message(); ?></p>
+				<p class="hide-if-no-js"><button class="button try-again"><?php _e( 'Try Again' ); ?></button></p>
+			</div>
 		<?php } else { ?>
 			<div class="no-plugin-results"><?php _e( 'No plugins found. Try a different search.' ); ?></div>
 			<?php
@@ -336,7 +329,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 	public function views() {
 		$views = $this->get_views();
 
-		/** This filter is documented in wp-admin/includes/class-wp-list-table.php */
+		/** This filter is documented in wp-admin/inclues/class-wp-list-table.php */
 		$views = apply_filters( "views_{$this->screen->id}", $views );
 
 		$this->screen->render_screen_reader_content( 'heading_views' );
@@ -693,59 +686,52 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		<div class="plugin-card plugin-card-<?php echo sanitize_html_class( $plugin['slug'] ); ?>">
 			<?php
 			if ( ! $compatible_php || ! $compatible_wp ) {
-				$incompatible_notice_message = '';
+				echo '<div class="notice inline notice-error notice-alt"><p>';
 				if ( ! $compatible_php && ! $compatible_wp ) {
-					$incompatible_notice_message .= __( 'This plugin does not work with your versions of WordPress and PHP.' );
+					_e( 'This plugin does not work with your versions of WordPress and PHP.' );
 					if ( current_user_can( 'update_core' ) && current_user_can( 'update_php' ) ) {
-						$incompatible_notice_message .= sprintf(
+						printf(
 							/* translators: 1: URL to WordPress Updates screen, 2: URL to Update PHP page. */
 							' ' . __( '<a href="%1$s">Please update WordPress</a>, and then <a href="%2$s">learn more about updating PHP</a>.' ),
 							self_admin_url( 'update-core.php' ),
 							esc_url( wp_get_update_php_url() )
 						);
-						$incompatible_notice_message .= wp_update_php_annotation( '</p><p><em>', '</em>', false );
+						wp_update_php_annotation( '</p><p><em>', '</em>' );
 					} elseif ( current_user_can( 'update_core' ) ) {
-						$incompatible_notice_message .= sprintf(
+						printf(
 							/* translators: %s: URL to WordPress Updates screen. */
 							' ' . __( '<a href="%s">Please update WordPress</a>.' ),
 							self_admin_url( 'update-core.php' )
 						);
 					} elseif ( current_user_can( 'update_php' ) ) {
-						$incompatible_notice_message .= sprintf(
+						printf(
 							/* translators: %s: URL to Update PHP page. */
 							' ' . __( '<a href="%s">Learn more about updating PHP</a>.' ),
 							esc_url( wp_get_update_php_url() )
 						);
-						$incompatible_notice_message .= wp_update_php_annotation( '</p><p><em>', '</em>', false );
+						wp_update_php_annotation( '</p><p><em>', '</em>' );
 					}
 				} elseif ( ! $compatible_wp ) {
-					$incompatible_notice_message .= __( 'This plugin does not work with your version of WordPress.' );
+					_e( 'This plugin does not work with your version of WordPress.' );
 					if ( current_user_can( 'update_core' ) ) {
-						$incompatible_notice_message .= printf(
+						printf(
 							/* translators: %s: URL to WordPress Updates screen. */
 							' ' . __( '<a href="%s">Please update WordPress</a>.' ),
 							self_admin_url( 'update-core.php' )
 						);
 					}
 				} elseif ( ! $compatible_php ) {
-					$incompatible_notice_message .= __( 'This plugin does not work with your version of PHP.' );
+					_e( 'This plugin does not work with your version of PHP.' );
 					if ( current_user_can( 'update_php' ) ) {
-						$incompatible_notice_message .= sprintf(
+						printf(
 							/* translators: %s: URL to Update PHP page. */
 							' ' . __( '<a href="%s">Learn more about updating PHP</a>.' ),
 							esc_url( wp_get_update_php_url() )
 						);
-						$incompatible_notice_message .= wp_update_php_annotation( '</p><p><em>', '</em>', false );
+						wp_update_php_annotation( '</p><p><em>', '</em>' );
 					}
 				}
-
-				wp_admin_notice(
-					$incompatible_notice_message,
-					array(
-						'type'               => 'error',
-						'additional_classes' => array( 'notice-alt', 'inline' ),
-					)
-				);
+				echo '</p></div>';
 			}
 			?>
 			<div class="plugin-card-top">

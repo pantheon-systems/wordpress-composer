@@ -191,6 +191,7 @@ function list_core_update( $update ) {
 	}
 
 	echo '</form>';
+
 }
 
 /**
@@ -241,8 +242,13 @@ function dismissed_updates() {
  * Display upgrade WordPress for downloading latest or upgrading automatically form.
  *
  * @since 2.7.0
+ *
+ * @global string $required_php_version   The required PHP version string.
+ * @global string $required_mysql_version The required MySQL version string.
  */
 function core_upgrade_preamble() {
+	global $required_php_version, $required_mysql_version;
+
 	$updates = get_core_updates();
 
 	// Include an unmodified $wp_version.
@@ -255,19 +261,14 @@ function core_upgrade_preamble() {
 		_e( 'An updated version of WordPress is available.' );
 		echo '</h2>';
 
-		$message = sprintf(
+		echo '<div class="notice notice-warning inline"><p>';
+		printf(
 			/* translators: 1: Documentation on WordPress backups, 2: Documentation on updating WordPress. */
 			__( '<strong>Important:</strong> Before updating, please <a href="%1$s">back up your database and files</a>. For help with updates, visit the <a href="%2$s">Updating WordPress</a> documentation page.' ),
 			__( 'https://wordpress.org/documentation/article/wordpress-backups/' ),
 			__( 'https://wordpress.org/documentation/article/updating-wordpress/' )
 		);
-		wp_admin_notice(
-			$message,
-			array(
-				'type'               => 'warning',
-				'additional_classes' => array( 'inline' ),
-			)
-		);
+		echo '</p></div>';
 	} elseif ( $is_development_version ) {
 		echo '<h2 class="response">' . __( 'You are using a development version of WordPress.' ) . '</h2>';
 	} else {
@@ -307,22 +308,10 @@ function core_auto_updates_settings() {
 	if ( isset( $_GET['core-major-auto-updates-saved'] ) ) {
 		if ( 'enabled' === $_GET['core-major-auto-updates-saved'] ) {
 			$notice_text = __( 'Automatic updates for all WordPress versions have been enabled. Thank you!' );
-			wp_admin_notice(
-				$notice_text,
-				array(
-					'type'        => 'success',
-					'dismissible' => true,
-				)
-			);
+			echo '<div class="notice notice-success is-dismissible"><p>' . $notice_text . '</p></div>';
 		} elseif ( 'disabled' === $_GET['core-major-auto-updates-saved'] ) {
 			$notice_text = __( 'WordPress will only receive automatic security and maintenance releases from now on.' );
-			wp_admin_notice(
-				$notice_text,
-				array(
-					'type'        => 'success',
-					'dismissible' => true,
-				)
-			);
+			echo '<div class="notice notice-success is-dismissible"><p>' . $notice_text . '</p></div>';
 		}
 	}
 
@@ -582,8 +571,7 @@ function list_plugin_updates() {
 	<tr>
 		<td class="check-column">
 			<?php if ( $compatible_php ) : ?>
-				<input type="checkbox" name="checked[]" id="<?php echo $checkbox_id; ?>" value="<?php echo esc_attr( $plugin_file ); ?>" />
-				<label for="<?php echo $checkbox_id; ?>">
+				<label for="<?php echo $checkbox_id; ?>" class="label-covers-full-cell">
 					<span class="screen-reader-text">
 					<?php
 					/* translators: Hidden accessibility text. %s: Plugin name. */
@@ -591,6 +579,7 @@ function list_plugin_updates() {
 					?>
 					</span>
 				</label>
+				<input type="checkbox" name="checked[]" id="<?php echo $checkbox_id; ?>" value="<?php echo esc_attr( $plugin_file ); ?>" />
 			<?php endif; ?>
 		</td>
 		<td class="plugin-title"><p>
@@ -760,8 +749,7 @@ function list_theme_updates() {
 	<tr>
 		<td class="check-column">
 			<?php if ( $compatible_wp && $compatible_php ) : ?>
-				<input type="checkbox" name="checked[]" id="<?php echo $checkbox_id; ?>" value="<?php echo esc_attr( $stylesheet ); ?>" />
-				<label for="<?php echo $checkbox_id; ?>">
+				<label for="<?php echo $checkbox_id; ?>" class="label-covers-full-cell">
 					<span class="screen-reader-text">
 					<?php
 					/* translators: Hidden accessibility text. %s: Theme name. */
@@ -769,6 +757,7 @@ function list_theme_updates() {
 					?>
 					</span>
 				</label>
+				<input type="checkbox" name="checked[]" id="<?php echo $checkbox_id; ?>" value="<?php echo esc_attr( $stylesheet ); ?>" />
 			<?php endif; ?>
 		</td>
 		<td class="plugin-title"><p>
@@ -1072,22 +1061,16 @@ if ( 'upgrade-core' === $action ) {
 		if ( 'themes' === $upgrade_error ) {
 			$theme_updates = get_theme_updates();
 			if ( ! empty( $theme_updates ) ) {
-				wp_admin_notice(
-					__( 'Please select one or more themes to update.' ),
-					array(
-						'additional_classes' => array( 'error' ),
-					)
-				);
+				echo '<div class="error"><p>';
+				_e( 'Please select one or more themes to update.' );
+				echo '</p></div>';
 			}
 		} else {
 			$plugin_updates = get_plugin_updates();
 			if ( ! empty( $plugin_updates ) ) {
-				wp_admin_notice(
-					__( 'Please select one or more plugins to update.' ),
-					array(
-						'additional_classes' => array( 'error' ),
-					)
-				);
+				echo '<div class="error"><p>';
+				_e( 'Please select one or more plugins to update.' );
+				echo '</p></div>';
 			}
 		}
 	}
