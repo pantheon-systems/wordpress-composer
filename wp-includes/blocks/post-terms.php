@@ -59,11 +59,9 @@ function render_block_core_post_terms( $attributes, $content, $block ) {
 }
 
 /**
- * Returns the available variations for the `core/post-terms` block.
- *
- * @return array The available variations for the block.
+ * Registers the `core/post-terms` block on the server.
  */
-function block_core_post_terms_build_variations() {
+function register_block_core_post_terms() {
 	$taxonomies = get_taxonomies(
 		array(
 			'publicly_queryable' => true,
@@ -105,18 +103,11 @@ function block_core_post_terms_build_variations() {
 		}
 	}
 
-	return array_merge( $built_ins, $custom_variations );
-}
-
-/**
- * Registers the `core/post-terms` block on the server.
- */
-function register_block_core_post_terms() {
 	register_block_type_from_metadata(
 		__DIR__ . '/post-terms',
 		array(
-			'render_callback'    => 'render_block_core_post_terms',
-			'variation_callback' => 'block_core_post_terms_build_variations',
+			'render_callback' => 'render_block_core_post_terms',
+			'variations'      => array_merge( $built_ins, $custom_variations ),
 		)
 	);
 }
