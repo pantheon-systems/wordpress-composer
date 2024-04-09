@@ -243,6 +243,7 @@ function display_themes() {
 	}
 	$wp_list_table->prepare_items();
 	$wp_list_table->display();
+
 }
 
 /**

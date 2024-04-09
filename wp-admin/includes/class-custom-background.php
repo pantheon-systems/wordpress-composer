@@ -239,37 +239,30 @@ class Custom_Background {
 <div class="wrap" id="custom-background">
 <h1><?php _e( 'Custom Background' ); ?></h1>
 
-		<?php
-		if ( current_user_can( 'customize' ) ) {
-			$message = sprintf(
+		<?php if ( current_user_can( 'customize' ) ) { ?>
+<div class="notice notice-info hide-if-no-customize">
+	<p>
+			<?php
+			printf(
 				/* translators: %s: URL to background image configuration in Customizer. */
 				__( 'You can now manage and live-preview Custom Backgrounds in the <a href="%s">Customizer</a>.' ),
 				admin_url( 'customize.php?autofocus[control]=background_image' )
 			);
-			wp_admin_notice(
-				$message,
-				array(
-					'type'               => 'info',
-					'additional_classes' => array( 'hide-if-no-customize' ),
-				)
-			);
-		}
+			?>
+	</p>
+</div>
+		<?php } ?>
 
-		if ( ! empty( $this->updated ) ) {
-			$updated_message = sprintf(
-				/* translators: %s: Home URL. */
-				__( 'Background updated. <a href="%s">Visit your site</a> to see how it looks.' ),
-				esc_url( home_url( '/' ) )
-			);
-			wp_admin_notice(
-				$updated_message,
-				array(
-					'id'                 => 'message',
-					'additional_classes' => array( 'updated' ),
-				)
-			);
-		}
-		?>
+		<?php if ( ! empty( $this->updated ) ) { ?>
+<div id="message" class="updated">
+	<p>
+			<?php
+			/* translators: %s: Home URL. */
+			printf( __( 'Background updated. <a href="%s">Visit your site</a> to see how it looks.' ), esc_url( home_url( '/' ) ) );
+			?>
+	</p>
+</div>
+		<?php } ?>
 
 <h2><?php _e( 'Background Image' ); ?></h2>
 
@@ -571,9 +564,8 @@ class Custom_Background {
 		$thumbnail = wp_get_attachment_image_src( $id, 'thumbnail' );
 		set_theme_mod( 'background_image_thumb', sanitize_url( $thumbnail[0] ) );
 
-		/** This filter is documented in wp-admin/includes/class-custom-image-header.php */
-		$file = apply_filters( 'wp_create_file_in_uploads', $file, $id ); // For replication.
-
+		/** This action is documented in wp-admin/includes/class-custom-image-header.php */
+		do_action( 'wp_create_file_in_uploads', $file, $id ); // For replication.
 		$this->updated = true;
 	}
 

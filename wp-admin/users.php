@@ -256,7 +256,7 @@ switch ( $wp_list_table->current_action() ) {
 
 			// Send the password reset link.
 			$user = get_userdata( $id );
-			if ( true === retrieve_password( $user->user_login ) ) {
+			if ( retrieve_password( $user->user_login ) ) {
 				++$reset_count;
 			}
 		}
@@ -339,16 +339,11 @@ switch ( $wp_list_table->current_action() ) {
 		<div class="wrap">
 		<h1><?php _e( 'Delete Users' ); ?></h1>
 
-		<?php
-		if ( isset( $_REQUEST['error'] ) ) :
-			wp_admin_notice(
-				'<strong>' . __( 'Error:' ) . '</strong> ' . __( 'Please select an option.' ),
-				array(
-					'additional_classes' => array( 'error' ),
-				)
-			);
-		endif;
-		?>
+		<?php if ( isset( $_REQUEST['error'] ) ) : ?>
+			<div class="error">
+				<p><strong><?php _e( 'Error:' ); ?></strong> <?php _e( 'Please select an option.' ); ?></p>
+			</div>
+		<?php endif; ?>
 
 		<?php if ( 1 === count( $all_user_ids ) ) : ?>
 			<p><?php _e( 'You have specified this user for deletion:' ); ?></p>
@@ -386,7 +381,7 @@ switch ( $wp_list_table->current_action() ) {
 				);
 				echo "</li>\n";
 
-				++$go_delete;
+				$go_delete++;
 			}
 		}
 		?>
@@ -615,18 +610,11 @@ switch ( $wp_list_table->current_action() ) {
 						/* translators: %s: Number of users. */
 						$message = _n( '%s user deleted.', '%s users deleted.', $delete_count );
 					}
-					$message    = sprintf( $message, number_format_i18n( $delete_count ) );
-					$messages[] = wp_get_admin_notice(
-						$message,
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'updated' ),
-							'dismissible'        => true,
-						)
-					);
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( $message, number_format_i18n( $delete_count ) ) . '</p></div>';
 					break;
 				case 'add':
 					$message = __( 'New user created.' );
+
 					$user_id = isset( $_GET['id'] ) ? $_GET['id'] : false;
 					if ( $user_id && current_user_can( 'edit_user', $user_id ) ) {
 						$message .= sprintf(
@@ -642,14 +630,7 @@ switch ( $wp_list_table->current_action() ) {
 						);
 					}
 
-					$messages[] = wp_get_admin_notice(
-						$message,
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'updated' ),
-							'dismissible'        => true,
-						)
-					);
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . $message . '</p></div>';
 					break;
 				case 'resetpassword':
 					$reset_count = isset( $_GET['reset_count'] ) ? (int) $_GET['reset_count'] : 0;
@@ -659,106 +640,41 @@ switch ( $wp_list_table->current_action() ) {
 						/* translators: %s: Number of users. */
 						$message = _n( 'Password reset links sent to %s user.', 'Password reset links sent to %s users.', $reset_count );
 					}
-					$message    = sprintf( $message, number_format_i18n( $reset_count ) );
-					$messages[] = wp_get_admin_notice(
-						$message,
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'updated' ),
-							'dismissible'        => true,
-						)
-					);
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( $message, number_format_i18n( $reset_count ) ) . '</p></div>';
 					break;
 				case 'promote':
-					$messages[] = wp_get_admin_notice(
-						__( 'Changed roles.' ),
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'updated' ),
-							'dismissible'        => true,
-						)
-					);
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __( 'Changed roles.' ) . '</p></div>';
 					break;
 				case 'err_admin_role':
-					$messages[] = wp_get_admin_notice(
-						__( 'The current user&#8217;s role must have user editing capabilities.' ),
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'error' ),
-							'dismissible'        => true,
-						)
-					);
-					$messages[] = wp_get_admin_notice(
-						__( 'Other user roles have been changed.' ),
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'updated' ),
-							'dismissible'        => true,
-						)
-					);
+					$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . __( 'The current user&#8217;s role must have user editing capabilities.' ) . '</p></div>';
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __( 'Other user roles have been changed.' ) . '</p></div>';
 					break;
 				case 'err_admin_del':
-					$messages[] = wp_get_admin_notice(
-						__( 'You cannot delete the current user.' ),
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'error' ),
-							'dismissible'        => true,
-						)
-					);
-					$messages[] = wp_get_admin_notice(
-						__( 'Other users have been deleted.' ),
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'updated' ),
-							'dismissible'        => true,
-						)
-					);
+					$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . __( 'You cannot delete the current user.' ) . '</p></div>';
+					$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . __( 'Other users have been deleted.' ) . '</p></div>';
 					break;
 				case 'remove':
-					$messages[] = wp_get_admin_notice(
-						__( 'User removed from this site.' ),
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'updated', 'fade' ),
-							'dismissible'        => true,
-						)
-					);
+					$messages[] = '<div id="message" class="updated notice is-dismissible fade"><p>' . __( 'User removed from this site.' ) . '</p></div>';
 					break;
 				case 'err_admin_remove':
-					$messages[] = wp_get_admin_notice(
-						__( 'You cannot remove the current user.' ),
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'error' ),
-							'dismissible'        => true,
-						)
-					);
-					$messages[] = wp_get_admin_notice(
-						__( 'Other users have been removed.' ),
-						array(
-							'id'                 => 'message',
-							'additional_classes' => array( 'updated', 'fade' ),
-							'dismissible'        => true,
-						)
-					);
+					$messages[] = '<div id="message" class="error notice is-dismissible"><p>' . __( 'You cannot remove the current user.' ) . '</p></div>';
+					$messages[] = '<div id="message" class="updated notice is-dismissible fade"><p>' . __( 'Other users have been removed.' ) . '</p></div>';
 					break;
 			}
 		endif;
 		?>
 
-		<?php
-		if ( isset( $errors ) && is_wp_error( $errors ) ) :
-			$error_message = '';
-			foreach ( $errors->get_error_messages() as $err ) {
-				$error_message .= "<li>$err</li>\n";
-			}
-			wp_admin_notice(
-				'<ul>' . $error_message . '</ul>',
-				array(
-					'additional_classes' => array( 'error' ),
-				)
-			);
+		<?php if ( isset( $errors ) && is_wp_error( $errors ) ) : ?>
+			<div class="error">
+				<ul>
+				<?php
+				foreach ( $errors->get_error_messages() as $err ) {
+					echo "<li>$err</li>\n";
+				}
+				?>
+				</ul>
+			</div>
+			<?php
 		endif;
 
 		if ( ! empty( $messages ) ) {
@@ -778,13 +694,13 @@ switch ( $wp_list_table->current_action() ) {
 			printf(
 				'<a href="%1$s" class="page-title-action">%2$s</a>',
 				esc_url( admin_url( 'user-new.php' ) ),
-				esc_html__( 'Add New User' )
+				esc_html_x( 'Add New', 'user' )
 			);
 		} elseif ( is_multisite() && current_user_can( 'promote_users' ) ) {
 			printf(
 				'<a href="%1$s" class="page-title-action">%2$s</a>',
 				esc_url( admin_url( 'user-new.php' ) ),
-				esc_html__( 'Add Existing User' )
+				esc_html_x( 'Add Existing', 'user' )
 			);
 		}
 

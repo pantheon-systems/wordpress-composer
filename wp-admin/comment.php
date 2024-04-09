@@ -161,23 +161,11 @@ switch ( $action ) {
 					break;
 			}
 			if ( $message ) {
-				wp_admin_notice(
-					$message,
-					array(
-						'type' => 'info',
-						'id'   => 'message',
-					)
-				);
+				echo '<div id="message" class="notice notice-info"><p>' . $message . '</p></div>';
 			}
 		}
-		wp_admin_notice(
-			'<strong>' . __( 'Caution:' ) . '</strong> ' . $caution_msg,
-			array(
-				'type' => 'warning',
-				'id'   => 'message',
-			)
-		);
 		?>
+<div id="message" class="notice notice-warning"><p><strong><?php _e( 'Caution:' ); ?></strong> <?php echo $caution_msg; ?></p></div>
 
 <table class="form-table comment-ays">
 <tr>

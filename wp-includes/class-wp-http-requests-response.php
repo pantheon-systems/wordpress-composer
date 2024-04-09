@@ -8,7 +8,7 @@
  */
 
 /**
- * Core wrapper object for a WpOrg\Requests\Response for standardization.
+ * Core wrapper object for a WpOrg\Requests\Response for standardisation.
  *
  * @since 4.6.0
  *

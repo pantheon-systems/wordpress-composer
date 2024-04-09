@@ -118,7 +118,7 @@ class WP_REST_Themes_Controller extends WP_REST_Controller {
 	 * @since 5.7.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access for the item, otherwise WP_Error object.
+	 * @return bool|WP_Error True if the request has read access for the item, otherwise WP_Error object.
 	 */
 	public function get_item_permissions_check( $request ) {
 		if ( current_user_can( 'switch_themes' ) || current_user_can( 'manage_network_themes' ) ) {
@@ -144,7 +144,7 @@ class WP_REST_Themes_Controller extends WP_REST_Controller {
 	 *
 	 * @since 5.7.0
 	 *
-	 * @return true|WP_Error True if the theme can be read, WP_Error object otherwise.
+	 * @return bool|WP_Error Whether the theme can be read.
 	 */
 	protected function check_read_active_theme_permission() {
 		if ( current_user_can( 'edit_posts' ) ) {
@@ -231,10 +231,9 @@ class WP_REST_Themes_Controller extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		// Restores the more descriptive, specific name for use within this method.
-		$theme = $item;
-
-		$fields = $this->get_fields_for_response( $request );
+		$theme  = $item;
 		$data   = array();
+		$fields = $this->get_fields_for_response( $request );
 
 		if ( rest_is_field_included( 'stylesheet', $fields ) ) {
 			$data['stylesheet'] = $theme->get_stylesheet();

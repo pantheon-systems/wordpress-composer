@@ -509,37 +509,30 @@ class Custom_Image_Header {
 <div class="wrap">
 <h1><?php _e( 'Custom Header' ); ?></h1>
 
-		<?php
-		if ( current_user_can( 'customize' ) ) {
-			$message = sprintf(
+		<?php if ( current_user_can( 'customize' ) ) { ?>
+<div class="notice notice-info hide-if-no-customize">
+	<p>
+			<?php
+			printf(
 				/* translators: %s: URL to header image configuration in Customizer. */
 				__( 'You can now manage and live-preview Custom Header in the <a href="%s">Customizer</a>.' ),
 				admin_url( 'customize.php?autofocus[control]=header_image' )
 			);
-			wp_admin_notice(
-				$message,
-				array(
-					'type'               => 'info',
-					'additional_classes' => array( 'hide-if-no-customize' ),
-				)
-			);
-		}
+			?>
+	</p>
+</div>
+		<?php } ?>
 
-		if ( ! empty( $this->updated ) ) {
-			$updated_message = sprintf(
-				/* translators: %s: Home URL. */
-				__( 'Header updated. <a href="%s">Visit your site</a> to see how it looks.' ),
-				esc_url( home_url( '/' ) )
-			);
-			wp_admin_notice(
-				$updated_message,
-				array(
-					'id'                 => 'message',
-					'additional_classes' => array( 'updated' ),
-				)
-			);
-		}
-		?>
+		<?php if ( ! empty( $this->updated ) ) { ?>
+<div id="message" class="updated">
+	<p>
+			<?php
+			/* translators: %s: Home URL. */
+			printf( __( 'Header updated. <a href="%s">Visit your site</a> to see how it looks.' ), esc_url( home_url( '/' ) ) );
+			?>
+	</p>
+</div>
+		<?php } ?>
 
 <h2><?php _e( 'Header Image' ); ?></h2>
 
@@ -882,16 +875,14 @@ endif;
 			$this->set_header_image( compact( 'url', 'attachment_id', 'width', 'height' ) );
 
 			/**
-			 * Filters the attachment file path after the custom header or background image is set.
-			 *
-			 * Used for file replication.
+			 * Fires after the header image is set or an error is returned.
 			 *
 			 * @since 2.1.0
 			 *
 			 * @param string $file          Path to the file.
 			 * @param int    $attachment_id Attachment ID.
 			 */
-			$file = apply_filters( 'wp_create_file_in_uploads', $file, $attachment_id ); // For replication.
+			do_action( 'wp_create_file_in_uploads', $file, $attachment_id ); // For replication.
 
 			return $this->finished();
 		} elseif ( $width > $max_width ) {

@@ -164,4 +164,5 @@ class WP_Privacy_Data_Removal_Requests_List_Table extends WP_Privacy_Requests_Ta
 				break;
 		}
 	}
+
 }

@@ -287,6 +287,7 @@ function get_legacy_widget_block_editor_settings() {
  * @since 6.0.0
  * @access private
  *
+ * @global string     $pagenow    The filename of the current screen.
  * @global WP_Styles  $wp_styles  The WP_Styles current instance.
  * @global WP_Scripts $wp_scripts The WP_Scripts current instance.
  *
@@ -298,7 +299,7 @@ function get_legacy_widget_block_editor_settings() {
  * }
  */
 function _wp_get_iframed_editor_assets() {
-	global $wp_styles, $wp_scripts;
+	global $wp_styles, $wp_scripts, $pagenow;
 
 	// Keep track of the styles and scripts instance to restore later.
 	$current_wp_styles  = $wp_styles;
@@ -328,6 +329,10 @@ function _wp_get_iframed_editor_assets() {
 	// Enqueue the `editorStyle` handles for all core block, and dependencies.
 	wp_enqueue_style( 'wp-edit-blocks' );
 
+	if ( 'site-editor.php' === $pagenow ) {
+		wp_enqueue_style( 'wp-edit-site' );
+	}
+
 	if ( current_theme_supports( 'wp-block-styles' ) ) {
 		wp_enqueue_style( 'wp-block-library-theme' );
 	}
@@ -354,23 +359,9 @@ function _wp_get_iframed_editor_assets() {
 		}
 	}
 
-	/**
-	 * Remove the deprecated `print_emoji_styles` handler.
-	 * It avoids breaking style generation with a deprecation message.
-	 */
-	$has_emoji_styles = has_action( 'wp_print_styles', 'print_emoji_styles' );
-	if ( $has_emoji_styles ) {
-		remove_action( 'wp_print_styles', 'print_emoji_styles' );
-	}
-
 	ob_start();
 	wp_print_styles();
-	wp_print_font_faces();
 	$styles = ob_get_clean();
-
-	if ( $has_emoji_styles ) {
-		add_action( 'wp_print_styles', 'print_emoji_styles' );
-	}
 
 	ob_start();
 	wp_print_head_scripts();
@@ -417,12 +408,11 @@ function wp_get_first_block( $blocks, $block_name ) {
  * Retrieves Post Content block attributes from the current post template.
  *
  * @since 6.3.0
- * @since 6.4.0 Return null if there is no post content block.
  * @access private
  *
  * @global int $post_ID
  *
- * @return array|null Post Content block attributes array or null if Post Content block doesn't exist.
+ * @return array Post Content block attributes or empty array if they don't exist.
  */
 function wp_get_post_content_block_attributes() {
 	global $post_ID;
@@ -430,7 +420,7 @@ function wp_get_post_content_block_attributes() {
 	$is_block_theme = wp_is_block_theme();
 
 	if ( ! $is_block_theme || ! $post_ID ) {
-		return null;
+		return array();
 	}
 
 	$template_slug = get_page_template_slug( $post_ID );
@@ -466,12 +456,12 @@ function wp_get_post_content_block_attributes() {
 		$template_blocks    = parse_blocks( $current_template[0]->content );
 		$post_content_block = wp_get_first_block( $template_blocks, 'core/post-content' );
 
-		if ( isset( $post_content_block['attrs'] ) ) {
+		if ( ! empty( $post_content_block['attrs'] ) ) {
 			return $post_content_block['attrs'];
 		}
 	}
 
-	return null;
+	return array();
 }
 
 /**
@@ -644,7 +634,7 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 
 	$post_content_block_attributes = wp_get_post_content_block_attributes();
 
-	if ( isset( $post_content_block_attributes ) ) {
+	if ( ! empty( $post_content_block_attributes ) ) {
 		$editor_settings['postContentAttributes'] = $post_content_block_attributes;
 	}
 

@@ -241,22 +241,16 @@ function create_initial_rest_routes() {
 			continue;
 		}
 
-		if ( ! $post_type->late_route_registration ) {
-			$controller->register_routes();
-		}
+		$controller->register_routes();
 
-		$revisions_controller = $post_type->get_revisions_rest_controller();
-		if ( $revisions_controller ) {
+		if ( post_type_supports( $post_type->name, 'revisions' ) ) {
+			$revisions_controller = new WP_REST_Revisions_Controller( $post_type->name );
 			$revisions_controller->register_routes();
 		}
 
-		$autosaves_controller = $post_type->get_autosave_rest_controller();
-		if ( $autosaves_controller ) {
+		if ( 'attachment' !== $post_type->name ) {
+			$autosaves_controller = new WP_REST_Autosaves_Controller( $post_type->name );
 			$autosaves_controller->register_routes();
-		}
-
-		if ( $post_type->late_route_registration ) {
-			$controller->register_routes();
 		}
 	}
 
@@ -1222,13 +1216,13 @@ function rest_add_application_passwords_to_index( $response ) {
 }
 
 /**
- * Retrieves the avatar URLs in various sizes.
+ * Retrieves the avatar urls in various sizes.
  *
  * @since 4.7.0
  *
  * @see get_avatar_url()
  *
- * @param mixed $id_or_email The avatar to retrieve a URL for. Accepts a user ID, Gravatar MD5 hash,
+ * @param mixed $id_or_email The Gravatar to retrieve a URL for. Accepts a user_id, gravatar md5 hash,
  *                           user email, WP_User object, WP_Post object, or WP_Comment object.
  * @return (string|false)[] Avatar URLs keyed by size. Each value can be a URL string or boolean false.
  */

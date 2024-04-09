@@ -7800,11 +7800,11 @@
 			},
 
 			/**
-			 * Builds the front preview URL with the current state of customizer.
+			 * Builds the front preview url with the current state of customizer.
 			 *
-			 * @since 4.9.0
+			 * @since 4.9
 			 *
-			 * @return {string} Preview URL.
+			 * @return {string} Preview url.
 			 */
 			getFrontendPreviewUrl: function() {
 				var previewer = this, params, urlParser;

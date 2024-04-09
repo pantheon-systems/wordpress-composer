@@ -20,11 +20,6 @@ var characterMap = {
 	"Ầ": "A",
 	"Ằ": "A",
 	"Ȃ": "A",
-	"Ả": "A",
-	"Ạ": "A",
-	"Ẩ": "A",
-	"Ẫ": "A",
-	"Ậ": "A",
 	"Ç": "C",
 	"Ḉ": "C",
 	"È": "E",
@@ -37,20 +32,12 @@ var characterMap = {
 	"Ḕ": "E",
 	"Ḝ": "E",
 	"Ȇ": "E",
-	"Ẻ": "E",
-	"Ẽ": "E",
-	"Ẹ": "E",
-	"Ể": "E",
-	"Ễ": "E",
-	"Ệ": "E",
 	"Ì": "I",
 	"Í": "I",
 	"Î": "I",
 	"Ï": "I",
 	"Ḯ": "I",
 	"Ȋ": "I",
-	"Ỉ": "I",
-	"Ị": "I",
 	"Ð": "D",
 	"Ñ": "N",
 	"Ò": "O",
@@ -63,25 +50,10 @@ var characterMap = {
 	"Ṍ": "O",
 	"Ṓ": "O",
 	"Ȏ": "O",
-	"Ỏ": "O",
-	"Ọ": "O",
-	"Ổ": "O",
-	"Ỗ": "O",
-	"Ộ": "O",
-	"Ờ": "O",
-	"Ở": "O",
-	"Ỡ": "O",
-	"Ớ": "O",
-	"Ợ": "O",
 	"Ù": "U",
 	"Ú": "U",
 	"Û": "U",
 	"Ü": "U",
-	"Ủ": "U",
-	"Ụ": "U",
-	"Ử": "U",
-	"Ữ": "U",
-	"Ự": "U",
 	"Ý": "Y",
 	"à": "a",
 	"á": "a",
@@ -98,11 +70,6 @@ var characterMap = {
 	"ầ": "a",
 	"ằ": "a",
 	"ȃ": "a",
-	"ả": "a",
-	"ạ": "a",
-	"ẩ": "a",
-	"ẫ": "a",
-	"ậ": "a",
 	"ç": "c",
 	"ḉ": "c",
 	"è": "e",
@@ -115,20 +82,12 @@ var characterMap = {
 	"ḕ": "e",
 	"ḝ": "e",
 	"ȇ": "e",
-	"ẻ": "e",
-	"ẽ": "e",
-	"ẹ": "e",
-	"ể": "e",
-	"ễ": "e",
-	"ệ": "e",
 	"ì": "i",
 	"í": "i",
 	"î": "i",
 	"ï": "i",
 	"ḯ": "i",
 	"ȋ": "i",
-	"ỉ": "i",
-	"ị": "i",
 	"ð": "d",
 	"ñ": "n",
 	"ò": "o",
@@ -141,25 +100,10 @@ var characterMap = {
 	"ṍ": "o",
 	"ṓ": "o",
 	"ȏ": "o",
-	"ỏ": "o",
-	"ọ": "o",
-	"ổ": "o",
-	"ỗ": "o",
-	"ộ": "o",
-	"ờ": "o",
-	"ở": "o",
-	"ỡ": "o",
-	"ớ": "o",
-	"ợ": "o",
 	"ù": "u",
 	"ú": "u",
 	"û": "u",
 	"ü": "u",
-	"ủ": "u",
-	"ụ": "u",
-	"ử": "u",
-	"ữ": "u",
-	"ự": "u",
 	"ý": "y",
 	"ÿ": "y",
 	"Ā": "A",
@@ -281,6 +225,7 @@ var characterMap = {
 	"ş": "s",
 	"Š": "S",
 	"š": "s",
+	"ß": "ss",
 	"Ţ": "T",
 	"ţ": "t",
 	"ț": "t",
@@ -474,7 +419,7 @@ function matcher(match) {
 	return characterMap[match];
 }
 
-var removeAccents = function(string) {
+var removeAccents = function(string) {	
 	return string.replace(allAccents, matcher);
 };
 
@@ -566,33 +511,33 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  addQueryArgs: function() { return /* reexport */ addQueryArgs; },
-  buildQueryString: function() { return /* reexport */ buildQueryString; },
-  cleanForSlug: function() { return /* reexport */ cleanForSlug; },
-  filterURLForDisplay: function() { return /* reexport */ filterURLForDisplay; },
-  getAuthority: function() { return /* reexport */ getAuthority; },
-  getFilename: function() { return /* reexport */ getFilename; },
-  getFragment: function() { return /* reexport */ getFragment; },
-  getPath: function() { return /* reexport */ getPath; },
-  getPathAndQueryString: function() { return /* reexport */ getPathAndQueryString; },
-  getProtocol: function() { return /* reexport */ getProtocol; },
-  getQueryArg: function() { return /* reexport */ getQueryArg; },
-  getQueryArgs: function() { return /* reexport */ getQueryArgs; },
-  getQueryString: function() { return /* reexport */ getQueryString; },
-  hasQueryArg: function() { return /* reexport */ hasQueryArg; },
-  isEmail: function() { return /* reexport */ isEmail; },
-  isURL: function() { return /* reexport */ isURL; },
-  isValidAuthority: function() { return /* reexport */ isValidAuthority; },
-  isValidFragment: function() { return /* reexport */ isValidFragment; },
-  isValidPath: function() { return /* reexport */ isValidPath; },
-  isValidProtocol: function() { return /* reexport */ isValidProtocol; },
-  isValidQueryString: function() { return /* reexport */ isValidQueryString; },
-  normalizePath: function() { return /* reexport */ normalizePath; },
-  prependHTTP: function() { return /* reexport */ prependHTTP; },
-  prependHTTPS: function() { return /* reexport */ prependHTTPS; },
-  removeQueryArgs: function() { return /* reexport */ removeQueryArgs; },
-  safeDecodeURI: function() { return /* reexport */ safeDecodeURI; },
-  safeDecodeURIComponent: function() { return /* reexport */ safeDecodeURIComponent; }
+  "addQueryArgs": function() { return /* reexport */ addQueryArgs; },
+  "buildQueryString": function() { return /* reexport */ buildQueryString; },
+  "cleanForSlug": function() { return /* reexport */ cleanForSlug; },
+  "filterURLForDisplay": function() { return /* reexport */ filterURLForDisplay; },
+  "getAuthority": function() { return /* reexport */ getAuthority; },
+  "getFilename": function() { return /* reexport */ getFilename; },
+  "getFragment": function() { return /* reexport */ getFragment; },
+  "getPath": function() { return /* reexport */ getPath; },
+  "getPathAndQueryString": function() { return /* reexport */ getPathAndQueryString; },
+  "getProtocol": function() { return /* reexport */ getProtocol; },
+  "getQueryArg": function() { return /* reexport */ getQueryArg; },
+  "getQueryArgs": function() { return /* reexport */ getQueryArgs; },
+  "getQueryString": function() { return /* reexport */ getQueryString; },
+  "hasQueryArg": function() { return /* reexport */ hasQueryArg; },
+  "isEmail": function() { return /* reexport */ isEmail; },
+  "isURL": function() { return /* reexport */ isURL; },
+  "isValidAuthority": function() { return /* reexport */ isValidAuthority; },
+  "isValidFragment": function() { return /* reexport */ isValidFragment; },
+  "isValidPath": function() { return /* reexport */ isValidPath; },
+  "isValidProtocol": function() { return /* reexport */ isValidProtocol; },
+  "isValidQueryString": function() { return /* reexport */ isValidQueryString; },
+  "normalizePath": function() { return /* reexport */ normalizePath; },
+  "prependHTTP": function() { return /* reexport */ prependHTTP; },
+  "prependHTTPS": function() { return /* reexport */ prependHTTPS; },
+  "removeQueryArgs": function() { return /* reexport */ removeQueryArgs; },
+  "safeDecodeURI": function() { return /* reexport */ safeDecodeURI; },
+  "safeDecodeURIComponent": function() { return /* reexport */ safeDecodeURIComponent; }
 });
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/is-url.js
@@ -624,7 +569,6 @@ function isURL(url) {
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/url/build-module/is-email.js
 const EMAIL_REGEXP = /^(mailto:)?[a-z0-9._%+-]+@[a-z0-9][a-z0-9.-]*\.[a-z]{2,63}$/i;
-
 /**
  * Determines whether the given string looks like an email.
  *
@@ -637,6 +581,7 @@ const EMAIL_REGEXP = /^(mailto:)?[a-z0-9._%+-]+@[a-z0-9][a-z0-9.-]*\.[a-z]{2,63}
  *
  * @return {boolean} Whether or not it looks like an email.
  */
+
 function isEmail(email) {
   return EMAIL_REGEXP.test(email);
 }
@@ -657,6 +602,7 @@ function isEmail(email) {
  */
 function getProtocol(url) {
   const matches = /^([^\s:]+:)/.exec(url);
+
   if (matches) {
     return matches[1];
   }
@@ -680,6 +626,7 @@ function isValidProtocol(protocol) {
   if (!protocol) {
     return false;
   }
+
   return /^[a-z\-.\+]+[0-9]*:$/i.test(protocol);
 }
 
@@ -699,6 +646,7 @@ function isValidProtocol(protocol) {
  */
 function getAuthority(url) {
   const matches = /^[^\/\s:]+:(?:\/\/)?\/?([^\/\s#?]+)[\/#?]{0,1}\S*$/.exec(url);
+
   if (matches) {
     return matches[1];
   }
@@ -722,6 +670,7 @@ function isValidAuthority(authority) {
   if (!authority) {
     return false;
   }
+
   return /^[^\s#?]+$/.test(authority);
 }
 
@@ -741,6 +690,7 @@ function isValidAuthority(authority) {
  */
 function getPath(url) {
   const matches = /^[^\/\s:]+:(?:\/\/)?[^\/\s#?]+[\/]([^\s#?]+)[#?]{0,1}\S*$/.exec(url);
+
   if (matches) {
     return matches[1];
   }
@@ -764,6 +714,7 @@ function isValidPath(path) {
   if (!path) {
     return false;
   }
+
   return /^[^\s#?]+$/.test(path);
 }
 
@@ -782,9 +733,11 @@ function isValidPath(path) {
  */
 function getQueryString(url) {
   let query;
+
   try {
     query = new URL(url, 'http://example.com').search.substring(1);
   } catch (error) {}
+
   if (query) {
     return query;
   }
@@ -819,16 +772,18 @@ function buildQueryString(data) {
   let string = '';
   const stack = Object.entries(data);
   let pair;
-  while (pair = stack.shift()) {
-    let [key, value] = pair;
 
-    // Support building deeply nested data, from array or object values.
+  while (pair = stack.shift()) {
+    let [key, value] = pair; // Support building deeply nested data, from array or object values.
+
     const hasNestedData = Array.isArray(value) || value && value.constructor === Object;
+
     if (hasNestedData) {
       // Push array or object values onto the stack as composed of their
       // original key and nested index or key, retaining order by a
       // combination of Array#reverse and Array#unshift onto the stack.
       const valuePairs = Object.entries(value).reverse();
+
       for (const [member, memberValue] of valuePairs) {
         stack.unshift([`${key}[${member}]`, memberValue]);
       }
@@ -837,13 +792,14 @@ function buildQueryString(data) {
       if (value === null) {
         value = '';
       }
+
       string += '&' + [key, value].map(encodeURIComponent).join('=');
     }
-  }
-
-  // Loop will concatenate with leading `&`, but it's only expected for all
+  } // Loop will concatenate with leading `&`, but it's only expected for all
   // but the first query parameter. This strips the leading `&`, while still
   // accounting for the case that the string may in-fact be empty.
+
+
   return string.substr(1);
 }
 
@@ -865,6 +821,7 @@ function isValidQueryString(queryString) {
   if (!queryString) {
     return false;
   }
+
   return /^[^\s#?\/]+$/.test(queryString);
 }
 
@@ -872,7 +829,6 @@ function isValidQueryString(queryString) {
 /**
  * Internal dependencies
  */
-
 
 /**
  * Returns the path part and query string part of the URL.
@@ -887,6 +843,7 @@ function isValidQueryString(queryString) {
  *
  * @return {string} The path part and query string part of the URL.
  */
+
 function getPathAndQueryString(url) {
   const path = getPath(url);
   const queryString = getQueryString(url);
@@ -912,6 +869,7 @@ function getPathAndQueryString(url) {
  */
 function getFragment(url) {
   const matches = /^\S+?(#[^\s\?]*)/.exec(url);
+
   if (matches) {
     return matches[1];
   }
@@ -935,6 +893,7 @@ function isValidFragment(fragment) {
   if (!fragment) {
     return false;
   }
+
   return /^#[^\s#?\/]*$/.test(fragment);
 }
 
@@ -961,7 +920,6 @@ function safeDecodeURIComponent(uriComponent) {
  */
 
 
-
 /** @typedef {import('./get-query-arg').QueryArgParsed} QueryArgParsed */
 
 /**
@@ -976,40 +934,40 @@ function safeDecodeURIComponent(uriComponent) {
  * @param {string[]}         path   Path segment at which to set value.
  * @param {*}                value  Value to set.
  */
+
 function setPath(object, path, value) {
   const length = path.length;
   const lastIndex = length - 1;
+
   for (let i = 0; i < length; i++) {
     let key = path[i];
+
     if (!key && Array.isArray(object)) {
       // If key is empty string and next value is array, derive key from
       // the current length of the array.
       key = object.length.toString();
     }
-    key = ['__proto__', 'constructor', 'prototype'].includes(key) ? key.toUpperCase() : key;
 
-    // If the next key in the path is numeric (or empty string), it will be
+    key = ['__proto__', 'constructor', 'prototype'].includes(key) ? key.toUpperCase() : key; // If the next key in the path is numeric (or empty string), it will be
     // created as an array. Otherwise, it will be created as an object.
+
     const isNextKeyArrayIndex = !isNaN(Number(path[i + 1]));
-    object[key] = i === lastIndex ?
-    // If at end of path, assign the intended value.
-    value :
-    // Otherwise, advance to the next object in the path, creating
+    object[key] = i === lastIndex ? // If at end of path, assign the intended value.
+    value : // Otherwise, advance to the next object in the path, creating
     // it if it does not yet exist.
     object[key] || (isNextKeyArrayIndex ? [] : {});
+
     if (Array.isArray(object[key]) && !isNextKeyArrayIndex) {
       // If we current key is non-numeric, but the next value is an
       // array, coerce the value to an object.
-      object[key] = {
-        ...object[key]
+      object[key] = { ...object[key]
       };
-    }
+    } // Update working reference object to the next in the path.
 
-    // Update working reference object to the next in the path.
+
     object = object[key];
   }
 }
-
 /**
  * Returns an object of query arguments of the given URL. If the given URL is
  * invalid or has no querystring, an empty object is returned.
@@ -1024,21 +982,23 @@ function setPath(object, path, value) {
  *
  * @return {QueryArgs} Query args object.
  */
+
+
 function getQueryArgs(url) {
-  return (getQueryString(url) || ''
-  // Normalize space encoding, accounting for PHP URL encoding
+  return (getQueryString(url) || '' // Normalize space encoding, accounting for PHP URL encoding
   // corresponding to `application/x-www-form-urlencoded`.
   //
   // See: https://tools.ietf.org/html/rfc1866#section-8.2.1
   ).replace(/\+/g, '%20').split('&').reduce((accumulator, keyValue) => {
-    const [key, value = ''] = keyValue.split('=')
-    // Filtering avoids decoding as `undefined` for value, where
+    const [key, value = ''] = keyValue.split('=') // Filtering avoids decoding as `undefined` for value, where
     // default is restored in destructuring assignment.
     .filter(Boolean).map(safeDecodeURIComponent);
+
     if (key) {
       const segments = key.replace(/\]/g, '').split('[');
       setPath(accumulator, segments, value);
     }
+
     return accumulator;
   }, Object.create(null));
 }
@@ -1047,7 +1007,6 @@ function getQueryArgs(url) {
 /**
  * Internal dependencies
  */
-
 
 
 /**
@@ -1066,22 +1025,24 @@ function getQueryArgs(url) {
  *
  * @return {string} URL with arguments applied.
  */
+
 function addQueryArgs(url = '', args) {
   // If no arguments are to be appended, return original URL.
   if (!args || !Object.keys(args).length) {
     return url;
   }
-  let baseUrl = url;
 
-  // Determine whether URL already had query arguments.
+  let baseUrl = url; // Determine whether URL already had query arguments.
+
   const queryStringIndex = url.indexOf('?');
+
   if (queryStringIndex !== -1) {
     // Merge into existing query arguments.
-    args = Object.assign(getQueryArgs(url), args);
+    args = Object.assign(getQueryArgs(url), args); // Change working base URL to omit previous query arguments.
 
-    // Change working base URL to omit previous query arguments.
     baseUrl = baseUrl.substr(0, queryStringIndex);
   }
+
   return baseUrl + '?' + buildQueryString(args);
 }
 
@@ -1089,7 +1050,6 @@ function addQueryArgs(url = '', args) {
 /**
  * Internal dependencies
  */
-
 
 /**
  * @typedef {{[key: string]: QueryArgParsed}} QueryArgObject
@@ -1112,6 +1072,7 @@ function addQueryArgs(url = '', args) {
  *
  * @return {QueryArgParsed|void} Query arg value.
  */
+
 function getQueryArg(url, arg) {
   return getQueryArgs(url)[arg];
 }
@@ -1120,7 +1081,6 @@ function getQueryArg(url, arg) {
 /**
  * Internal dependencies
  */
-
 
 /**
  * Determines whether the URL contains a given query arg.
@@ -1135,6 +1095,7 @@ function getQueryArg(url, arg) {
  *
  * @return {boolean} Whether or not the URL contains the query arg.
  */
+
 function hasQueryArg(url, arg) {
   return getQueryArg(url, arg) !== undefined;
 }
@@ -1143,7 +1104,6 @@ function hasQueryArg(url, arg) {
 /**
  * Internal dependencies
  */
-
 
 
 /**
@@ -1159,11 +1119,14 @@ function hasQueryArg(url, arg) {
  *
  * @return {string} Updated URL.
  */
+
 function removeQueryArgs(url, ...args) {
   const queryStringIndex = url.indexOf('?');
+
   if (queryStringIndex === -1) {
     return url;
   }
+
   const query = getQueryArgs(url);
   const baseURL = url.substr(0, queryStringIndex);
   args.forEach(arg => delete query[arg]);
@@ -1177,7 +1140,6 @@ function removeQueryArgs(url, ...args) {
  */
 
 const USABLE_HREF_REGEXP = /^(?:[a-z]+:|#|\?|\.|\/)/i;
-
 /**
  * Prepends "http://" to a url, if it looks like something that is meant to be a TLD.
  *
@@ -1190,14 +1152,18 @@ const USABLE_HREF_REGEXP = /^(?:[a-z]+:|#|\?|\.|\/)/i;
  *
  * @return {string} The updated URL.
  */
+
 function prependHTTP(url) {
   if (!url) {
     return url;
   }
+
   url = url.trim();
+
   if (!USABLE_HREF_REGEXP.test(url) && !isEmail(url)) {
     return 'http://' + url;
   }
+
   return url;
 }
 
@@ -1240,26 +1206,28 @@ function safeDecodeURI(uri) {
  */
 function filterURLForDisplay(url, maxLength = null) {
   // Remove protocol and www prefixes.
-  let filteredURL = url.replace(/^(?:https?:)\/\/(?:www\.)?/, '');
+  let filteredURL = url.replace(/^(?:https?:)\/\/(?:www\.)?/, ''); // Ends with / and only has that single slash, strip it.
 
-  // Ends with / and only has that single slash, strip it.
   if (filteredURL.match(/^[^\/]+\/$/)) {
     filteredURL = filteredURL.replace('/', '');
   }
+
   const mediaRegexp = /([\w|:])*\.(?:jpg|jpeg|gif|png|svg)/;
+
   if (!maxLength || filteredURL.length <= maxLength || !filteredURL.match(mediaRegexp)) {
     return filteredURL;
-  }
+  } // If the file is not greater than max length, return last portion of URL.
 
-  // If the file is not greater than max length, return last portion of URL.
+
   filteredURL = filteredURL.split('?')[0];
   const urlPieces = filteredURL.split('/');
   const file = urlPieces[urlPieces.length - 1];
+
   if (file.length <= maxLength) {
     return '…' + filteredURL.slice(-maxLength);
-  }
+  } // If the file is greater than max length, truncate the file.
 
-  // If the file is greater than max length, truncate the file.
+
   const index = file.lastIndexOf('.');
   const [fileName, extension] = [file.slice(0, index), file.slice(index + 1)];
   const truncatedFile = fileName.slice(-3) + '.' + extension;
@@ -1273,7 +1241,6 @@ var remove_accents_default = /*#__PURE__*/__webpack_require__.n(remove_accents);
 /**
  * External dependencies
  */
-
 
 /**
  * Performs some basic cleanup of a string for use as a post slug.
@@ -1291,20 +1258,17 @@ var remove_accents_default = /*#__PURE__*/__webpack_require__.n(remove_accents);
  *
  * @return {string} Processed string.
  */
+
 function cleanForSlug(string) {
   if (!string) {
     return '';
   }
-  return remove_accents_default()(string)
-  // Convert each group of whitespace, periods, and forward slashes to a hyphen.
-  .replace(/[\s\./]+/g, '-')
-  // Remove anything that's not a letter, number, underscore or hyphen.
-  .replace(/[^\p{L}\p{N}_-]+/gu, '')
-  // Convert to lowercase
-  .toLowerCase()
-  // Replace multiple hyphens with a single one.
-  .replace(/-+/g, '-')
-  // Remove any remaining leading or trailing hyphens.
+
+  return remove_accents_default()(string) // Convert each group of whitespace, periods, and forward slashes to a hyphen.
+  .replace(/[\s\./]+/g, '-') // Remove anything that's not a letter, number, underscore or hyphen.
+  .replace(/[^\p{L}\p{N}_-]+/gu, '') // Convert to lowercase
+  .toLowerCase() // Replace multiple hyphens with a single one.
+  .replace(/-+/g, '-') // Remove any remaining leading or trailing hyphens.
   .replace(/(^-+)|(-+$)/g, '');
 }
 
@@ -1324,9 +1288,11 @@ function cleanForSlug(string) {
  */
 function getFilename(url) {
   let filename;
+
   try {
     filename = new URL(url, 'http://example.com').pathname.split('/').pop();
   } catch (error) {}
+
   if (filename) {
     return filename;
   }
@@ -1346,25 +1312,19 @@ function normalizePath(path) {
   const splitted = path.split('?');
   const query = splitted[1];
   const base = splitted[0];
+
   if (!query) {
     return base;
-  }
+  } // 'b=1%2C2&c=2&a=5'
 
-  // 'b=1%2C2&c=2&a=5'
-  return base + '?' + query
-  // [ 'b=1%2C2', 'c=2', 'a=5' ]
-  .split('&')
-  // [ [ 'b, '1%2C2' ], [ 'c', '2' ], [ 'a', '5' ] ]
-  .map(entry => entry.split('='))
-  // [ [ 'b', '1,2' ], [ 'c', '2' ], [ 'a', '5' ] ]
-  .map(pair => pair.map(decodeURIComponent))
-  // [ [ 'a', '5' ], [ 'b, '1,2' ], [ 'c', '2' ] ]
-  .sort((a, b) => a[0].localeCompare(b[0]))
-  // [ [ 'a', '5' ], [ 'b, '1%2C2' ], [ 'c', '2' ] ]
-  .map(pair => pair.map(encodeURIComponent))
-  // [ 'a=5', 'b=1%2C2', 'c=2' ]
-  .map(pair => pair.join('='))
-  // 'a=5&b=1%2C2&c=2'
+
+  return base + '?' + query // [ 'b=1%2C2', 'c=2', 'a=5' ]
+  .split('&') // [ [ 'b, '1%2C2' ], [ 'c', '2' ], [ 'a', '5' ] ]
+  .map(entry => entry.split('=')) // [ [ 'b', '1,2' ], [ 'c', '2' ], [ 'a', '5' ] ]
+  .map(pair => pair.map(decodeURIComponent)) // [ [ 'a', '5' ], [ 'b, '1,2' ], [ 'c', '2' ] ]
+  .sort((a, b) => a[0].localeCompare(b[0])) // [ [ 'a', '5' ], [ 'b, '1%2C2' ], [ 'c', '2' ] ]
+  .map(pair => pair.map(encodeURIComponent)) // [ 'a=5', 'b=1%2C2', 'c=2' ]
+  .map(pair => pair.join('=')) // 'a=5&b=1%2C2&c=2'
   .join('&');
 }
 
@@ -1372,7 +1332,6 @@ function normalizePath(path) {
 /**
  * Internal dependencies
  */
-
 
 /**
  * Prepends "https://" to a url, if it looks like something that is meant to be a TLD.
@@ -1388,15 +1347,17 @@ function normalizePath(path) {
  *
  * @return {string} The updated URL.
  */
+
 function prependHTTPS(url) {
   if (!url) {
     return url;
-  }
+  } // If url starts with http://, return it as is.
 
-  // If url starts with http://, return it as is.
+
   if (url.startsWith('http://')) {
     return url;
   }
+
   url = prependHTTP(url);
   return url.replace(/^http:/, 'https:');
 }

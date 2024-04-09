@@ -1088,20 +1088,16 @@ function wp_kses_split2( $content, $allowed_html, $allowed_protocols ) {
 	// Allow HTML comments.
 	if ( str_starts_with( $content, '<!--' ) ) {
 		$content = str_replace( array( '<!--', '-->' ), '', $content );
-
-		while ( ( $newstring = wp_kses( $content, $allowed_html, $allowed_protocols ) ) !== $content ) {
+		while ( ( $newstring = wp_kses( $content, $allowed_html, $allowed_protocols ) ) != $content ) {
 			$content = $newstring;
 		}
-
 		if ( '' === $content ) {
 			return '';
 		}
-
 		// Prevent multiple dashes in comments.
 		$content = preg_replace( '/--+/', '-', $content );
 		// Prevent three dashes closing a comment.
 		$content = preg_replace( '/-$/', '', $content );
-
 		return "<!--{$content}-->";
 	}
 
@@ -1183,7 +1179,7 @@ function wp_kses_attr( $element, $attr, $allowed_html, $allowed_protocols ) {
 	// Check if there are attributes that are required.
 	$required_attrs = array_filter(
 		$allowed_html[ $element_low ],
-		static function ( $required_attr_limits ) {
+		static function( $required_attr_limits ) {
 			return isset( $required_attr_limits['required'] ) && true === $required_attr_limits['required'];
 		}
 	);
@@ -1361,7 +1357,6 @@ function wp_kses_hair( $attr, $allowed_protocols ) {
 				if ( preg_match( '/^\s+/', $attr ) ) { // Valueless.
 					$working = 1;
 					$mode    = 0;
-
 					if ( false === array_key_exists( $attrname, $attrarr ) ) {
 						$attrarr[ $attrname ] = array(
 							'name'  => $attrname,
@@ -1370,7 +1365,6 @@ function wp_kses_hair( $attr, $allowed_protocols ) {
 							'vless' => 'y',
 						);
 					}
-
 					$attr = preg_replace( '/^\s+/', '', $attr );
 				}
 
@@ -1392,7 +1386,6 @@ function wp_kses_hair( $attr, $allowed_protocols ) {
 							'vless' => 'n',
 						);
 					}
-
 					$working = 1;
 					$mode    = 0;
 					$attr    = preg_replace( '/^"[^"]*"(\s+|$)/', '', $attr );
@@ -1414,7 +1407,6 @@ function wp_kses_hair( $attr, $allowed_protocols ) {
 							'vless' => 'n',
 						);
 					}
-
 					$working = 1;
 					$mode    = 0;
 					$attr    = preg_replace( "/^'[^']*'(\s+|$)/", '', $attr );
@@ -1436,7 +1428,6 @@ function wp_kses_hair( $attr, $allowed_protocols ) {
 							'vless' => 'n',
 						);
 					}
-
 					// We add quotes to conform to W3C's HTML spec.
 					$working = 1;
 					$mode    = 0;
@@ -1446,13 +1437,13 @@ function wp_kses_hair( $attr, $allowed_protocols ) {
 				break;
 		} // End switch.
 
-		if ( 0 === $working ) { // Not well-formed, remove and try again.
+		if ( 0 == $working ) { // Not well-formed, remove and try again.
 			$attr = wp_kses_html_error( $attr );
 			$mode = 0;
 		}
 	} // End while.
 
-	if ( 1 === $mode && false === array_key_exists( $attrname, $attrarr ) ) {
+	if ( 1 == $mode && false === array_key_exists( $attrname, $attrarr ) ) {
 		/*
 		 * Special case, for when the attribute list ends with a valueless
 		 * attribute like "selected".
@@ -1716,9 +1707,9 @@ function wp_kses_bad_protocol( $content, $allowed_protocols ) {
 	do {
 		$original_content = $content;
 		$content          = wp_kses_bad_protocol_once( $content, $allowed_protocols );
-	} while ( $original_content !== $content && ++$iterations < 6 );
+	} while ( $original_content != $content && ++$iterations < 6 );
 
-	if ( $original_content !== $content ) {
+	if ( $original_content != $content ) {
 		return '';
 	}
 
@@ -1983,7 +1974,6 @@ function wp_kses_normalize_entities2( $matches ) {
 	}
 
 	$i = $matches[1];
-
 	if ( valid_unicode( $i ) ) {
 		$i = str_pad( ltrim( $i, '0' ), 3, '0', STR_PAD_LEFT );
 		$i = "&#$i;";
@@ -2013,7 +2003,6 @@ function wp_kses_normalize_entities3( $matches ) {
 	}
 
 	$hexchars = $matches[1];
-
 	return ( ! valid_unicode( hexdec( $hexchars ) ) ) ? "&amp;#x$hexchars;" : '&#x' . ltrim( $hexchars, '0' ) . ';';
 }
 
@@ -2026,13 +2015,10 @@ function wp_kses_normalize_entities3( $matches ) {
  * @return bool Whether or not the codepoint is a valid Unicode codepoint.
  */
 function valid_unicode( $i ) {
-	$i = (int) $i;
-
-	return ( 0x9 === $i || 0xa === $i || 0xd === $i ||
-		( 0x20 <= $i && $i <= 0xd7ff ) ||
-		( 0xe000 <= $i && $i <= 0xfffd ) ||
-		( 0x10000 <= $i && $i <= 0x10ffff )
-	);
+	return ( 0x9 == $i || 0xa == $i || 0xd == $i ||
+			( 0x20 <= $i && $i <= 0xd7ff ) ||
+			( 0xe000 <= $i && $i <= 0xfffd ) ||
+			( 0x10000 <= $i && $i <= 0x10ffff ) );
 }
 
 /**
@@ -2301,7 +2287,6 @@ function kses_init() {
  *              and `z-index` CSS properties.
  * @since 6.3.0 Extended support for `filter` to accept a URL and added support for repeat().
  *              Added support for `box-shadow`.
- * @since 6.4.0 Added support for `writing-mode`.
  *
  * @param string $css        A string of CSS rules.
  * @param string $deprecated Not used.
@@ -2462,7 +2447,6 @@ function safecss_filter_attr( $css, $deprecated = '' ) {
 			'object-position',
 			'overflow',
 			'vertical-align',
-			'writing-mode',
 
 			'position',
 			'top',
@@ -2633,7 +2617,6 @@ function safecss_filter_attr( $css, $deprecated = '' ) {
  * @since 5.0.0 Added support for `data-*` wildcard attributes.
  * @since 6.0.0 Added `dir`, `lang`, and `xml:lang` to global attributes.
  * @since 6.3.0 Added `aria-controls`, `aria-current`, and `aria-expanded` attributes.
- * @since 6.4.0 Added `aria-live` and `hidden` attributes.
  *
  * @access private
  * @ignore
@@ -2648,14 +2631,12 @@ function _wp_add_global_attributes( $value ) {
 		'aria-describedby' => true,
 		'aria-details'     => true,
 		'aria-expanded'    => true,
-		'aria-hidden'      => true,
 		'aria-label'       => true,
 		'aria-labelledby'  => true,
-		'aria-live'        => true,
+		'aria-hidden'      => true,
 		'class'            => true,
 		'data-*'           => true,
 		'dir'              => true,
-		'hidden'           => true,
 		'id'               => true,
 		'lang'             => true,
 		'style'            => true,

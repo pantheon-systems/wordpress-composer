@@ -670,8 +670,8 @@ function get_body_class( $css_class = '' ) {
 	}
 
 	if ( is_singular() ) {
+		$post_id   = $wp_query->get_queried_object_id();
 		$post      = $wp_query->get_queried_object();
-		$post_id   = $post->ID;
 		$post_type = $post->post_type;
 
 		if ( is_page_template() ) {
@@ -714,11 +714,16 @@ function get_body_class( $css_class = '' ) {
 			$classes[]   = 'attachment-' . str_replace( $mime_prefix, '', $mime_type );
 		} elseif ( is_page() ) {
 			$classes[] = 'page';
-			$classes[] = 'page-id-' . $post_id;
+
+			$page_id = $wp_query->get_queried_object_id();
+
+			$post = get_post( $page_id );
+
+			$classes[] = 'page-id-' . $page_id;
 
 			if ( get_pages(
 				array(
-					'parent' => $post_id,
+					'parent' => $page_id,
 					'number' => 1,
 				)
 			) ) {

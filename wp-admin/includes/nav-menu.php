@@ -1291,21 +1291,15 @@ function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 		}
 
 		if ( $some_pending_menu_items ) {
-			$message     = __( 'Click Save Menu to make pending menu items public.' );
-			$notice_args = array(
-				'type'               => 'info',
-				'additional_classes' => array( 'notice-alt', 'inline' ),
-			);
-			$result     .= wp_get_admin_notice( $message, $notice_args );
+			$result .= '<div class="notice notice-info notice-alt inline"><p>'
+				. __( 'Click Save Menu to make pending menu items public.' )
+				. '</p></div>';
 		}
 
 		if ( $some_invalid_menu_items ) {
-			$message     = __( 'There are some invalid menu items. Please check or delete them.' );
-			$notice_args = array(
-				'type'               => 'error',
-				'additional_classes' => array( 'notice-alt', 'inline' ),
-			);
-			$result     .= wp_get_admin_notice( $message, $notice_args );
+			$result .= '<div class="notice notice-error notice-alt inline"><p>'
+				. __( 'There are some invalid menu items. Please check or delete them.' )
+				. '</p></div>';
 		}
 
 		$result .= '<ul class="menu" id="menu-to-edit"> ';
@@ -1320,6 +1314,7 @@ function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 	} elseif ( is_wp_error( $menu ) ) {
 		return $menu;
 	}
+
 }
 
 /**
@@ -1437,13 +1432,7 @@ function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selecte
 			);
 
 			if ( is_wp_error( $menu_item_db_id ) ) {
-				$messages[] = wp_get_admin_notice(
-					$menu_item_db_id->get_error_message(),
-					array(
-						'id'                 => 'message',
-						'additional_classes' => array( 'error' ),
-					)
-				);
+				$messages[] = '<div id="message" class="error"><p>' . $menu_item_db_id->get_error_message() . '</p></div>';
 			} else {
 				unset( $menu_items[ $menu_item_db_id ] );
 			}
@@ -1491,15 +1480,12 @@ function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selecte
 	/** This action is documented in wp-includes/nav-menu.php */
 	do_action( 'wp_update_nav_menu', $nav_menu_selected_id );
 
-	/* translators: %s: Nav menu title. */
-	$message     = sprintf( __( '%s has been updated.' ), '<strong>' . $nav_menu_selected_title . '</strong>' );
-	$notice_args = array(
-		'id'                 => 'message',
-		'dismissible'        => true,
-		'additional_classes' => array( 'updated' ),
-	);
-
-	$messages[] = wp_get_admin_notice( $message, $notice_args );
+	$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' .
+		sprintf(
+			/* translators: %s: Nav menu title. */
+			__( '%s has been updated.' ),
+			'<strong>' . $nav_menu_selected_title . '</strong>'
+		) . '</p></div>';
 
 	unset( $menu_items, $unsorted_menu_items );
 
