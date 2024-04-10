@@ -1,102 +1,334 @@
-/******/ (function() { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	// The require scope
-/******/ 	var __webpack_require__ = {};
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 5755:
+/***/ ((module, exports) => {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	Copyright (c) 2018 Jed Watson.
+	Licensed under the MIT License (MIT), see
+	http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+	var nativeCodeString = '[native code]';
+
+	function classNames() {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg)) {
+				if (arg.length) {
+					var inner = classNames.apply(null, arg);
+					if (inner) {
+						classes.push(inner);
+					}
+				}
+			} else if (argType === 'object') {
+				if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes('[native code]')) {
+					classes.push(arg.toString());
+					continue;
+				}
+
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ( true && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}());
+
+
+/***/ }),
+
+/***/ 6007:
+/***/ ((module) => {
+
+// The scores are arranged so that a continuous match of characters will
+// result in a total score of 1.
+//
+// The best case, this character is a match, and either this is the start
+// of the string, or the previous character was also a match.
+var SCORE_CONTINUE_MATCH = 1,
+
+    // A new match at the start of a word scores better than a new match
+    // elsewhere as it's more likely that the user will type the starts
+    // of fragments.
+    // (Our notion of word includes CamelCase and hypen-separated, etc.)
+    SCORE_WORD_JUMP = 0.9,
+
+    // Any other match isn't ideal, but we include it for completeness.
+    SCORE_CHARACTER_JUMP = 0.3,
+
+    // If the user transposed two letters, it should be signficantly penalized.
+    //
+    // i.e. "ouch" is more likely than "curtain" when "uc" is typed.
+    SCORE_TRANSPOSITION = 0.1,
+
+    // If the user jumped to half-way through a subsequent word, it should be
+    // very significantly penalized.
+    //
+    // i.e. "loes" is very unlikely to match "loch ness".
+    // NOTE: this is set to 0 for superhuman right now, but we may want to revisit.
+    SCORE_LONG_JUMP = 0,
+
+    // The goodness of a match should decay slightly with each missing
+    // character.
+    //
+    // i.e. "bad" is more likely than "bard" when "bd" is typed.
+    //
+    // This will not change the order of suggestions based on SCORE_* until
+    // 100 characters are inserted between matches.
+    PENALTY_SKIPPED = 0.999,
+
+    // The goodness of an exact-case match should be higher than a
+    // case-insensitive match by a small amount.
+    //
+    // i.e. "HTML" is more likely than "haml" when "HM" is typed.
+    //
+    // This will not change the order of suggestions based on SCORE_* until
+    // 1000 characters are inserted between matches.
+    PENALTY_CASE_MISMATCH = 0.9999,
+
+    // If the word has more characters than the user typed, it should
+    // be penalised slightly.
+    //
+    // i.e. "html" is more likely than "html5" if I type "html".
+    //
+    // However, it may well be the case that there's a sensible secondary
+    // ordering (like alphabetical) that it makes sense to rely on when
+    // there are many prefix matches, so we don't make the penalty increase
+    // with the number of tokens.
+    PENALTY_NOT_COMPLETE = 0.99;
+
+var IS_GAP_REGEXP = /[\\\/\-_+.# \t"@\[\(\{&]/,
+    COUNT_GAPS_REGEXP = /[\\\/\-_+.# \t"@\[\(\{&]/g;
+
+function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, stringIndex, abbreviationIndex) {
+
+    if (abbreviationIndex === abbreviation.length) {
+        if (stringIndex === string.length) {
+            return SCORE_CONTINUE_MATCH;
+
+        }
+        return PENALTY_NOT_COMPLETE;
+    }
+
+    var abbreviationChar = lowerAbbreviation.charAt(abbreviationIndex);
+    var index = lowerString.indexOf(abbreviationChar, stringIndex);
+    var highScore = 0;
+
+    var score, transposedScore, wordBreaks;
+
+    while (index >= 0) {
+
+        score = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 1);
+        if (score > highScore) {
+            if (index === stringIndex) {
+                score *= SCORE_CONTINUE_MATCH;
+            } else if (IS_GAP_REGEXP.test(string.charAt(index - 1))) {
+                score *= SCORE_WORD_JUMP;
+                wordBreaks = string.slice(stringIndex, index - 1).match(COUNT_GAPS_REGEXP);
+                if (wordBreaks && stringIndex > 0) {
+                    score *= Math.pow(PENALTY_SKIPPED, wordBreaks.length);
+                }
+            } else if (IS_GAP_REGEXP.test(string.slice(stringIndex, index - 1))) {
+                score *= SCORE_LONG_JUMP;
+                if (stringIndex > 0) {
+                    score *= Math.pow(PENALTY_SKIPPED, index - stringIndex);
+                }
+            } else {
+                score *= SCORE_CHARACTER_JUMP;
+                if (stringIndex > 0) {
+                    score *= Math.pow(PENALTY_SKIPPED, index - stringIndex);
+                }
+            }
+
+            if (string.charAt(index) !== abbreviation.charAt(abbreviationIndex)) {
+                score *= PENALTY_CASE_MISMATCH;
+            }
+
+        }
+
+        if (score < SCORE_TRANSPOSITION &&
+                lowerString.charAt(index - 1) === lowerAbbreviation.charAt(abbreviationIndex + 1) &&
+                lowerString.charAt(index - 1) !== lowerAbbreviation.charAt(abbreviationIndex)) {
+            transposedScore = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 2);
+
+            if (transposedScore * SCORE_TRANSPOSITION > score) {
+                score = transposedScore * SCORE_TRANSPOSITION;
+            }
+        }
+
+        if (score > highScore) {
+            highScore = score;
+        }
+
+        index = lowerString.indexOf(abbreviationChar, index + 1);
+    }
+
+    return highScore;
+}
+
+function commandScore(string, abbreviation) {
+    /* NOTE:
+     * in the original, we used to do the lower-casing on each recursive call, but this meant that toLowerCase()
+     * was the dominating cost in the algorithm, passing both is a little ugly, but considerably faster.
+     */
+    return commandScoreInner(string, abbreviation, string.toLowerCase(), abbreviation.toLowerCase(), 0, 0);
+}
+
+module.exports = commandScore;
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = function(module) {
+/******/ 		__webpack_require__.n = (module) => {
 /******/ 			var getter = module && module.__esModule ?
-/******/ 				function() { return module['default']; } :
-/******/ 				function() { return module; };
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 		__webpack_require__.d = (exports, definition) => {
 /******/ 			for(var key in definition) {
 /******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
+/******/ 		__webpack_require__.r = (exports) => {
 /******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
 /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/nonce */
-/******/ 	!function() {
+/******/ 	(() => {
 /******/ 		__webpack_require__.nc = undefined;
-/******/ 	}();
+/******/ 	})();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "CommandMenu": function() { return /* reexport */ CommandMenu; },
-  "privateApis": function() { return /* reexport */ privateApis; },
-  "store": function() { return /* reexport */ store; },
-  "useCommand": function() { return /* reexport */ useCommand; },
-  "useCommandLoader": function() { return /* reexport */ useCommandLoader; }
+  CommandMenu: () => (/* reexport */ CommandMenu),
+  privateApis: () => (/* reexport */ privateApis),
+  store: () => (/* reexport */ store),
+  useCommand: () => (/* reexport */ useCommand),
+  useCommandLoader: () => (/* reexport */ useCommandLoader)
 });
 
 // NAMESPACE OBJECT: ./node_modules/@wordpress/commands/build-module/store/actions.js
 var actions_namespaceObject = {};
 __webpack_require__.r(actions_namespaceObject);
 __webpack_require__.d(actions_namespaceObject, {
-  "close": function() { return actions_close; },
-  "open": function() { return actions_open; },
-  "registerCommand": function() { return registerCommand; },
-  "registerCommandLoader": function() { return registerCommandLoader; },
-  "unregisterCommand": function() { return unregisterCommand; },
-  "unregisterCommandLoader": function() { return unregisterCommandLoader; }
+  close: () => (actions_close),
+  open: () => (actions_open),
+  registerCommand: () => (registerCommand),
+  registerCommandLoader: () => (registerCommandLoader),
+  unregisterCommand: () => (unregisterCommand),
+  unregisterCommandLoader: () => (unregisterCommandLoader)
 });
 
 // NAMESPACE OBJECT: ./node_modules/@wordpress/commands/build-module/store/selectors.js
 var selectors_namespaceObject = {};
 __webpack_require__.r(selectors_namespaceObject);
 __webpack_require__.d(selectors_namespaceObject, {
-  "getCommandLoaders": function() { return getCommandLoaders; },
-  "getCommands": function() { return getCommands; },
-  "getContext": function() { return getContext; },
-  "isOpen": function() { return selectors_isOpen; }
+  getCommandLoaders: () => (getCommandLoaders),
+  getCommands: () => (getCommands),
+  getContext: () => (getContext),
+  isOpen: () => (selectors_isOpen)
 });
 
 // NAMESPACE OBJECT: ./node_modules/@wordpress/commands/build-module/store/private-actions.js
 var private_actions_namespaceObject = {};
 __webpack_require__.r(private_actions_namespaceObject);
 __webpack_require__.d(private_actions_namespaceObject, {
-  "setContext": function() { return setContext; }
+  setContext: () => (setContext)
 });
 
-;// CONCATENATED MODULE: external ["wp","element"]
-var external_wp_element_namespaceObject = window["wp"]["element"];
-;// CONCATENATED MODULE: ./node_modules/cmdk/dist/chunk-XJATAMEX.mjs
-var U=1,Y=.9,a=.8,H=.17,p=.1,u=.999,J=.9999;var k=.99,m=/[\\\/_+.#"@\[\(\{&]/,B=/[\\\/_+.#"@\[\(\{&]/g,K=/[\s-]/,X=/[\s-]/g;function G(c,f,P,C,h,A,O){if(A===f.length)return h===c.length?U:k;var T=`${h},${A}`;if(O[T]!==void 0)return O[T];for(var L=C.charAt(A),E=P.indexOf(L,h),S=0,_,N,R,M;E>=0;)_=G(c,f,P,C,E+1,A+1,O),_>S&&(E===h?_*=U:m.test(c.charAt(E-1))?(_*=a,R=c.slice(h,E-1).match(B),R&&h>0&&(_*=Math.pow(u,R.length))):K.test(c.charAt(E-1))?(_*=Y,M=c.slice(h,E-1).match(X),M&&h>0&&(_*=Math.pow(u,M.length))):(_*=H,h>0&&(_*=Math.pow(u,E-h))),c.charAt(E)!==f.charAt(A)&&(_*=J)),(_<p&&P.charAt(E-1)===C.charAt(A+1)||C.charAt(A+1)===C.charAt(A)&&P.charAt(E-1)!==C.charAt(A))&&(N=G(c,f,P,C,E+1,A+2,O),N*p>_&&(_=N*p)),_>S&&(S=_),E=P.indexOf(L,E+1);return O[T]=S,S}function D(c){return c.toLowerCase().replace(X," ")}function W(c,f){return G(c,f,D(c),D(f),0,0,{})}
-
+;// CONCATENATED MODULE: external "React"
+const external_React_namespaceObject = window["React"];
 ;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
   _extends = Object.assign ? Object.assign.bind() : function (target) {
@@ -112,8 +344,6 @@ function _extends() {
   };
   return _extends.apply(this, arguments);
 }
-;// CONCATENATED MODULE: external "React"
-var external_React_namespaceObject = window["React"];
 ;// CONCATENATED MODULE: ./node_modules/@radix-ui/primitive/dist/index.module.js
 function $e42e1063c40fb3ef$export$b9ecd428b558ff10(originalEventHandler, ourEventHandler, { checkForDefaultPrevented: checkForDefaultPrevented = true  } = {}) {
     return function handleEvent(event) {
@@ -409,7 +639,7 @@ function $71cd76cc60e0454e$var$useUncontrolledState({ defaultProp: defaultProp ,
 
 
 ;// CONCATENATED MODULE: external "ReactDOM"
-var external_ReactDOM_namespaceObject = window["ReactDOM"];
+const external_ReactDOM_namespaceObject = window["ReactDOM"];
 var external_ReactDOM_default = /*#__PURE__*/__webpack_require__.n(external_ReactDOM_namespaceObject);
 ;// CONCATENATED MODULE: ./node_modules/@radix-ui/react-dialog/node_modules/@radix-ui/react-slot/dist/index.module.js
 
@@ -1671,7 +1901,7 @@ function __classPrivateFieldIn(state, receiver) {
 
 function __addDisposableResource(env, value, async) {
   if (value !== null && value !== void 0) {
-    if (typeof value !== "object") throw new TypeError("Object expected.");
+    if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
     var dispose;
     if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
@@ -1716,7 +1946,7 @@ function __disposeResources(env) {
   return next();
 }
 
-/* harmony default export */ var tslib_es6 = ({
+/* harmony default export */ const tslib_es6 = ({
   __extends,
   __assign,
   __rest,
@@ -1824,9 +2054,6 @@ function useCallbackRef(initialValue, callback) {
 ;// CONCATENATED MODULE: ./node_modules/use-callback-ref/dist/es2015/useMergeRef.js
 
 
-
-var useIsomorphicLayoutEffect = typeof window !== 'undefined' ? external_React_namespaceObject.useLayoutEffect : external_React_namespaceObject.useEffect;
-var currentValues = new WeakMap();
 /**
  * Merges two or more refs together providing a single interface to set their value
  * @param {RefObject|Ref} refs
@@ -1842,30 +2069,7 @@ var currentValues = new WeakMap();
  * }
  */
 function useMergeRefs(refs, defaultValue) {
-    var callbackRef = useCallbackRef(defaultValue || null, function (newValue) {
-        return refs.forEach(function (ref) { return assignRef(ref, newValue); });
-    });
-    // handle refs changes - added or removed
-    useIsomorphicLayoutEffect(function () {
-        var oldValue = currentValues.get(callbackRef);
-        if (oldValue) {
-            var prevRefs_1 = new Set(oldValue);
-            var nextRefs_1 = new Set(refs);
-            var current_1 = callbackRef.current;
-            prevRefs_1.forEach(function (ref) {
-                if (!nextRefs_1.has(ref)) {
-                    assignRef(ref, null);
-                }
-            });
-            nextRefs_1.forEach(function (ref) {
-                if (!prevRefs_1.has(ref)) {
-                    assignRef(ref, current_1);
-                }
-            });
-        }
-        currentValues.set(callbackRef, refs);
-    }, [refs]);
-    return callbackRef;
+    return useCallbackRef(defaultValue || null, function (newValue) { return refs.forEach(function (ref) { return assignRef(ref, newValue); }); });
 }
 
 ;// CONCATENATED MODULE: ./node_modules/use-sidecar/dist/es2015/medium.js
@@ -2159,46 +2363,26 @@ var getGapWidth = function (gapMode) {
 
 
 var Style = styleSingleton();
-var lockAttribute = 'data-scroll-locked';
 // important tip - once we measure scrollBar width and remove them
 // we could not repeat this operation
 // thus we are using style-singleton - only the first "yet correct" style will be applied.
 var getStyles = function (_a, allowRelative, gapMode, important) {
     var left = _a.left, top = _a.top, right = _a.right, gap = _a.gap;
     if (gapMode === void 0) { gapMode = 'margin'; }
-    return "\n  .".concat(noScrollbarsClassName, " {\n   overflow: hidden ").concat(important, ";\n   padding-right: ").concat(gap, "px ").concat(important, ";\n  }\n  body[").concat(lockAttribute, "] {\n    overflow: hidden ").concat(important, ";\n    overscroll-behavior: contain;\n    ").concat([
+    return "\n  .".concat(noScrollbarsClassName, " {\n   overflow: hidden ").concat(important, ";\n   padding-right: ").concat(gap, "px ").concat(important, ";\n  }\n  body {\n    overflow: hidden ").concat(important, ";\n    overscroll-behavior: contain;\n    ").concat([
         allowRelative && "position: relative ".concat(important, ";"),
         gapMode === 'margin' &&
             "\n    padding-left: ".concat(left, "px;\n    padding-top: ").concat(top, "px;\n    padding-right: ").concat(right, "px;\n    margin-left:0;\n    margin-top:0;\n    margin-right: ").concat(gap, "px ").concat(important, ";\n    "),
         gapMode === 'padding' && "padding-right: ".concat(gap, "px ").concat(important, ";"),
     ]
         .filter(Boolean)
-        .join(''), "\n  }\n  \n  .").concat(zeroRightClassName, " {\n    right: ").concat(gap, "px ").concat(important, ";\n  }\n  \n  .").concat(fullWidthClassName, " {\n    margin-right: ").concat(gap, "px ").concat(important, ";\n  }\n  \n  .").concat(zeroRightClassName, " .").concat(zeroRightClassName, " {\n    right: 0 ").concat(important, ";\n  }\n  \n  .").concat(fullWidthClassName, " .").concat(fullWidthClassName, " {\n    margin-right: 0 ").concat(important, ";\n  }\n  \n  body[").concat(lockAttribute, "] {\n    ").concat(removedBarSizeVariable, ": ").concat(gap, "px;\n  }\n");
-};
-var getCurrentUseCounter = function () {
-    var counter = parseInt(document.body.getAttribute(lockAttribute) || '0', 10);
-    return isFinite(counter) ? counter : 0;
-};
-var useLockAttribute = function () {
-    external_React_namespaceObject.useEffect(function () {
-        document.body.setAttribute(lockAttribute, (getCurrentUseCounter() + 1).toString());
-        return function () {
-            var newCounter = getCurrentUseCounter() - 1;
-            if (newCounter <= 0) {
-                document.body.removeAttribute(lockAttribute);
-            }
-            else {
-                document.body.setAttribute(lockAttribute, newCounter.toString());
-            }
-        };
-    }, []);
+        .join(''), "\n  }\n  \n  .").concat(zeroRightClassName, " {\n    right: ").concat(gap, "px ").concat(important, ";\n  }\n  \n  .").concat(fullWidthClassName, " {\n    margin-right: ").concat(gap, "px ").concat(important, ";\n  }\n  \n  .").concat(zeroRightClassName, " .").concat(zeroRightClassName, " {\n    right: 0 ").concat(important, ";\n  }\n  \n  .").concat(fullWidthClassName, " .").concat(fullWidthClassName, " {\n    margin-right: 0 ").concat(important, ";\n  }\n  \n  body {\n    ").concat(removedBarSizeVariable, ": ").concat(gap, "px;\n  }\n");
 };
 /**
  * Removes page scrollbar and blocks page scroll when mounted
  */
-var RemoveScrollBar = function (_a) {
-    var noRelative = _a.noRelative, noImportant = _a.noImportant, _b = _a.gapMode, gapMode = _b === void 0 ? 'margin' : _b;
-    useLockAttribute();
+var RemoveScrollBar = function (props) {
+    var noRelative = props.noRelative, noImportant = props.noImportant, _a = props.gapMode, gapMode = _a === void 0 ? 'margin' : _a;
     /*
      gap will be measured on every component mount
      however it will be used only by the "first" invocation
@@ -2479,7 +2663,7 @@ function RemoveScrollSideCar(props) {
 
 
 
-/* harmony default export */ var sidecar = (exportSidecar(effectCar, RemoveScrollSideCar));
+/* harmony default export */ const sidecar = (exportSidecar(effectCar, RemoveScrollSideCar));
 
 ;// CONCATENATED MODULE: ./node_modules/@radix-ui/react-dialog/node_modules/react-remove-scroll/dist/es2015/Combination.js
 
@@ -2488,7 +2672,7 @@ function RemoveScrollSideCar(props) {
 
 var ReactRemoveScroll = external_React_namespaceObject.forwardRef(function (props, ref) { return (external_React_namespaceObject.createElement(RemoveScroll, __assign({}, props, { ref: ref, sideCar: sidecar }))); });
 ReactRemoveScroll.classNames = RemoveScroll.classNames;
-/* harmony default export */ var Combination = (ReactRemoveScroll);
+/* harmony default export */ const Combination = (ReactRemoveScroll);
 
 ;// CONCATENATED MODULE: ./node_modules/aria-hidden/dist/es2015/index.js
 var getDefaultParent = function (originalTarget) {
@@ -2554,26 +2738,21 @@ var applyAttributeToOthers = function (originalTarget, parentNode, markerName, c
                 deep(node);
             }
             else {
-                try {
-                    var attr = node.getAttribute(controlAttribute);
-                    var alreadyHidden = attr !== null && attr !== 'false';
-                    var counterValue = (counterMap.get(node) || 0) + 1;
-                    var markerValue = (markerCounter.get(node) || 0) + 1;
-                    counterMap.set(node, counterValue);
-                    markerCounter.set(node, markerValue);
-                    hiddenNodes.push(node);
-                    if (counterValue === 1 && alreadyHidden) {
-                        uncontrolledNodes.set(node, true);
-                    }
-                    if (markerValue === 1) {
-                        node.setAttribute(markerName, 'true');
-                    }
-                    if (!alreadyHidden) {
-                        node.setAttribute(controlAttribute, 'true');
-                    }
+                var attr = node.getAttribute(controlAttribute);
+                var alreadyHidden = attr !== null && attr !== 'false';
+                var counterValue = (counterMap.get(node) || 0) + 1;
+                var markerValue = (markerCounter.get(node) || 0) + 1;
+                counterMap.set(node, counterValue);
+                markerCounter.set(node, markerValue);
+                hiddenNodes.push(node);
+                if (counterValue === 1 && alreadyHidden) {
+                    uncontrolledNodes.set(node, true);
                 }
-                catch (e) {
-                    console.error('aria-hidden: cannot operate on ', node, e);
+                if (markerValue === 1) {
+                    node.setAttribute(markerName, 'true');
+                }
+                if (!alreadyHidden) {
+                    node.setAttribute(controlAttribute, 'true');
                 }
             }
         });
@@ -3018,52 +3197,77 @@ const $5d3850c4d0b4e6c7$export$f39c2d165cd861fe = (/* unused pure expression or 
 
 
 
+// EXTERNAL MODULE: ./node_modules/command-score/index.js
+var command_score = __webpack_require__(6007);
 ;// CONCATENATED MODULE: ./node_modules/cmdk/dist/index.mjs
-var fe='[cmdk-list-sizer=""]',O='[cmdk-group=""]',dist_U='[cmdk-group-items=""]',me='[cmdk-group-heading=""]',dist_W='[cmdk-item=""]',ae=`${dist_W}:not([aria-disabled="true"])`,dist_B="cmdk-item-select",S="data-value",pe=(r,c)=>W(r,c),se=external_React_namespaceObject.createContext(void 0),A=()=>external_React_namespaceObject.useContext(se),ie=external_React_namespaceObject.createContext(void 0),dist_J=()=>external_React_namespaceObject.useContext(ie),ce=external_React_namespaceObject.createContext(void 0),le=external_React_namespaceObject.forwardRef((r,c)=>{let n=external_React_namespaceObject.useRef(null),o=w(()=>{var e,s,a;return{search:"",value:(a=(s=r.value)!=null?s:(e=r.defaultValue)==null?void 0:e.toLowerCase())!=null?a:"",filtered:{count:0,items:new Map,groups:new Set}}}),l=w(()=>new Set),d=w(()=>new Map),f=w(()=>new Map),g=w(()=>new Set),u=ue(r),{label:b,children:p,value:R,onValueChange:T,filter:I,shouldFilter:C,vimBindings:F=!0,...P}=r,Q=external_React_namespaceObject.useId(),K=external_React_namespaceObject.useId(),V=external_React_namespaceObject.useId(),E=Le();dist_D(()=>{if(R!==void 0){let e=R.trim().toLowerCase();o.current.value=e,E(6,Y),m.emit()}},[R]);let m=external_React_namespaceObject.useMemo(()=>({subscribe:e=>(g.current.add(e),()=>g.current.delete(e)),snapshot:()=>o.current,setState:(e,s,a)=>{var i,v,h;if(!Object.is(o.current[e],s)){if(o.current[e]=s,e==="search")$(),N(),E(1,j);else if(e==="value")if(((i=u.current)==null?void 0:i.value)!==void 0){let x=s!=null?s:"";(h=(v=u.current).onValueChange)==null||h.call(v,x);return}else a||E(5,Y);m.emit()}},emit:()=>{g.current.forEach(e=>e())}}),[]),M=external_React_namespaceObject.useMemo(()=>({value:(e,s)=>{s!==f.current.get(e)&&(f.current.set(e,s),o.current.filtered.items.set(e,X(s)),E(2,()=>{N(),m.emit()}))},item:(e,s)=>(l.current.add(e),s&&(d.current.has(s)?d.current.get(s).add(e):d.current.set(s,new Set([e]))),E(3,()=>{$(),N(),o.current.value||j(),m.emit()}),()=>{f.current.delete(e),l.current.delete(e),o.current.filtered.items.delete(e);let a=k();E(4,()=>{$(),(a==null?void 0:a.getAttribute("id"))===e&&j(),m.emit()})}),group:e=>(d.current.has(e)||d.current.set(e,new Set),()=>{f.current.delete(e),d.current.delete(e)}),filter:()=>u.current.shouldFilter,label:b||r["aria-label"],commandRef:n,listId:Q,inputId:V,labelId:K}),[]);function X(e){var a,i;let s=(i=(a=u.current)==null?void 0:a.filter)!=null?i:pe;return e?s(e,o.current.search):0}function N(){if(!n.current||!o.current.search||u.current.shouldFilter===!1)return;let e=o.current.filtered.items,s=[];o.current.filtered.groups.forEach(i=>{let v=d.current.get(i),h=0;v.forEach(x=>{let G=e.get(x);h=Math.max(G,h)}),s.push([i,h])});let a=n.current.querySelector(fe);H().sort((i,v)=>{var G,re;let h=i.getAttribute(S),x=v.getAttribute(S);return((G=e.get(x))!=null?G:0)-((re=e.get(h))!=null?re:0)}).forEach(i=>{let v=i.closest(dist_U);v?v.appendChild(i.parentElement===v?i:i.closest(`${dist_U} > *`)):a.appendChild(i.parentElement===a?i:i.closest(`${dist_U} > *`))}),s.sort((i,v)=>v[1]-i[1]).forEach(i=>{let v=n.current.querySelector(`${O}[${S}="${i[0]}"]`);v==null||v.parentElement.appendChild(v)})}function j(){let e=H().find(a=>!a.ariaDisabled),s=e==null?void 0:e.getAttribute(S);m.setState("value",s||void 0)}function $(){if(!o.current.search||u.current.shouldFilter===!1){o.current.filtered.count=l.current.size;return}o.current.filtered.groups=new Set;let e=0;for(let s of l.current){let a=f.current.get(s),i=X(a);o.current.filtered.items.set(s,i),i>0&&e++}for(let[s,a]of d.current)for(let i of a)if(o.current.filtered.items.get(i)>0){o.current.filtered.groups.add(s);break}o.current.filtered.count=e}function Y(){var s,a,i;let e=k();e&&(((s=e.parentElement)==null?void 0:s.firstChild)===e&&((i=(a=e.closest(O))==null?void 0:a.querySelector(me))==null||i.scrollIntoView({block:"nearest"})),e.scrollIntoView({block:"nearest"}))}function k(){var e;return(e=n.current)==null?void 0:e.querySelector(`${dist_W}[aria-selected="true"]`)}function H(){return Array.from(n.current.querySelectorAll(ae))}function q(e){let a=H()[e];a&&m.setState("value",a.getAttribute(S))}function z(e){var h;let s=k(),a=H(),i=a.findIndex(x=>x===s),v=a[i+e];(h=u.current)!=null&&h.loop&&(v=i+e<0?a[a.length-1]:i+e===a.length?a[0]:a[i+e]),v&&m.setState("value",v.getAttribute(S))}function Z(e){let s=k(),a=s==null?void 0:s.closest(O),i;for(;a&&!i;)a=e>0?ye(a,O):xe(a,O),i=a==null?void 0:a.querySelector(ae);i?m.setState("value",i.getAttribute(S)):z(e)}let ee=()=>q(H().length-1),te=e=>{e.preventDefault(),e.metaKey?ee():e.altKey?Z(1):z(1)},ne=e=>{e.preventDefault(),e.metaKey?q(0):e.altKey?Z(-1):z(-1)};return external_React_namespaceObject.createElement("div",{ref:_([n,c]),...P,"cmdk-root":"",onKeyDown:e=>{var s;if((s=P.onKeyDown)==null||s.call(P,e),!e.defaultPrevented)switch(e.key){case"n":case"j":{F&&e.ctrlKey&&te(e);break}case"ArrowDown":{te(e);break}case"p":case"k":{F&&e.ctrlKey&&ne(e);break}case"ArrowUp":{ne(e);break}case"Home":{e.preventDefault(),q(0);break}case"End":{e.preventDefault(),ee();break}case"Enter":if(!e.nativeEvent.isComposing){e.preventDefault();let a=k();if(a){let i=new Event(dist_B);a.dispatchEvent(i)}}}}},external_React_namespaceObject.createElement("label",{"cmdk-label":"",htmlFor:M.inputId,id:M.labelId,style:Te},b),external_React_namespaceObject.createElement(ie.Provider,{value:m},external_React_namespaceObject.createElement(se.Provider,{value:M},p)))}),ve=external_React_namespaceObject.forwardRef((r,c)=>{var V,E;let n=external_React_namespaceObject.useId(),o=external_React_namespaceObject.useRef(null),l=external_React_namespaceObject.useContext(ce),d=A(),f=ue(r),g=(E=(V=f.current)==null?void 0:V.forceMount)!=null?E:l==null?void 0:l.forceMount;dist_D(()=>d.item(n,l==null?void 0:l.id),[]);let u=de(n,o,[r.value,r.children,o]),b=dist_J(),p=L(m=>m.value&&m.value===u.current),R=L(m=>g||d.filter()===!1?!0:m.search?m.filtered.items.get(n)>0:!0);external_React_namespaceObject.useEffect(()=>{let m=o.current;if(!(!m||r.disabled))return m.addEventListener(dist_B,T),()=>m.removeEventListener(dist_B,T)},[R,r.onSelect,r.disabled]);function T(){var m,M;I(),(M=(m=f.current).onSelect)==null||M.call(m,u.current)}function I(){b.setState("value",u.current,!0)}if(!R)return null;let{disabled:C,value:F,onSelect:P,forceMount:Q,...K}=r;return external_React_namespaceObject.createElement("div",{ref:_([o,c]),...K,id:n,"cmdk-item":"",role:"option","aria-disabled":C||void 0,"aria-selected":p||void 0,"data-disabled":C||void 0,"data-selected":p||void 0,onPointerMove:C?void 0:I,onClick:C?void 0:T},r.children)}),ge=external_React_namespaceObject.forwardRef((r,c)=>{let{heading:n,children:o,forceMount:l,...d}=r,f=external_React_namespaceObject.useId(),g=external_React_namespaceObject.useRef(null),u=external_React_namespaceObject.useRef(null),b=external_React_namespaceObject.useId(),p=A(),R=L(C=>l||p.filter()===!1?!0:C.search?C.filtered.groups.has(f):!0);dist_D(()=>p.group(f),[]),de(f,g,[r.value,r.heading,u]);let T=external_React_namespaceObject.useMemo(()=>({id:f,forceMount:l}),[l]),I=external_React_namespaceObject.createElement(ce.Provider,{value:T},o);return external_React_namespaceObject.createElement("div",{ref:_([g,c]),...d,"cmdk-group":"",role:"presentation",hidden:R?void 0:!0},n&&external_React_namespaceObject.createElement("div",{ref:u,"cmdk-group-heading":"","aria-hidden":!0,id:b},n),external_React_namespaceObject.createElement("div",{"cmdk-group-items":"",role:"group","aria-labelledby":n?b:void 0},I))}),Re=external_React_namespaceObject.forwardRef((r,c)=>{let{alwaysRender:n,...o}=r,l=external_React_namespaceObject.useRef(null),d=L(f=>!f.search);return!n&&!d?null:external_React_namespaceObject.createElement("div",{ref:_([l,c]),...o,"cmdk-separator":"",role:"separator"})}),be=external_React_namespaceObject.forwardRef((r,c)=>{let{onValueChange:n,...o}=r,l=r.value!=null,d=dist_J(),f=L(p=>p.search),g=L(p=>p.value),u=A(),b=external_React_namespaceObject.useMemo(()=>{var R;let p=(R=u.commandRef.current)==null?void 0:R.querySelector(`${dist_W}[${S}="${g}"]`);return p==null?void 0:p.getAttribute("id")},[g,u.commandRef]);return external_React_namespaceObject.useEffect(()=>{r.value!=null&&d.setState("search",r.value)},[r.value]),external_React_namespaceObject.createElement("input",{ref:c,...o,"cmdk-input":"",autoComplete:"off",autoCorrect:"off",spellCheck:!1,"aria-autocomplete":"list",role:"combobox","aria-expanded":!0,"aria-controls":u.listId,"aria-labelledby":u.labelId,"aria-activedescendant":b,id:u.inputId,type:"text",value:l?r.value:f,onChange:p=>{l||d.setState("search",p.target.value),n==null||n(p.target.value)}})}),he=external_React_namespaceObject.forwardRef((r,c)=>{let{children:n,...o}=r,l=external_React_namespaceObject.useRef(null),d=external_React_namespaceObject.useRef(null),f=A();return external_React_namespaceObject.useEffect(()=>{if(d.current&&l.current){let g=d.current,u=l.current,b,p=new ResizeObserver(()=>{b=requestAnimationFrame(()=>{let R=g.offsetHeight;u.style.setProperty("--cmdk-list-height",R.toFixed(1)+"px")})});return p.observe(g),()=>{cancelAnimationFrame(b),p.unobserve(g)}}},[]),external_React_namespaceObject.createElement("div",{ref:_([l,c]),...o,"cmdk-list":"",role:"listbox","aria-label":"Suggestions",id:f.listId,"aria-labelledby":f.inputId},external_React_namespaceObject.createElement("div",{ref:d,"cmdk-list-sizer":""},n))}),Ee=external_React_namespaceObject.forwardRef((r,c)=>{let{open:n,onOpenChange:o,overlayClassName:l,contentClassName:d,container:f,...g}=r;return external_React_namespaceObject.createElement($5d3850c4d0b4e6c7$export$be92b6f5f03c0fe9,{open:n,onOpenChange:o},external_React_namespaceObject.createElement($5d3850c4d0b4e6c7$export$602eac185826482c,{container:f},external_React_namespaceObject.createElement($5d3850c4d0b4e6c7$export$c6fdb837b070b4ff,{"cmdk-overlay":"",className:l}),external_React_namespaceObject.createElement($5d3850c4d0b4e6c7$export$7c6e2c02157bb7d2,{"aria-label":r.label,"cmdk-dialog":"",className:d},external_React_namespaceObject.createElement(le,{ref:c,...g}))))}),Se=external_React_namespaceObject.forwardRef((r,c)=>{let n=external_React_namespaceObject.useRef(!0),o=L(l=>l.filtered.count===0);return external_React_namespaceObject.useEffect(()=>{n.current=!1},[]),n.current||!o?null:external_React_namespaceObject.createElement("div",{ref:c,...r,"cmdk-empty":"",role:"presentation"})}),Ce=external_React_namespaceObject.forwardRef((r,c)=>{let{progress:n,children:o,...l}=r;return external_React_namespaceObject.createElement("div",{ref:c,...l,"cmdk-loading":"",role:"progressbar","aria-valuenow":n,"aria-valuemin":0,"aria-valuemax":100,"aria-label":"Loading..."},external_React_namespaceObject.createElement("div",{"aria-hidden":!0},o))}),we=Object.assign(le,{List:he,Item:ve,Input:be,Group:ge,Separator:Re,Dialog:Ee,Empty:Se,Loading:Ce});function ye(r,c){let n=r.nextElementSibling;for(;n;){if(n.matches(c))return n;n=n.nextElementSibling}}function xe(r,c){let n=r.previousElementSibling;for(;n;){if(n.matches(c))return n;n=n.previousElementSibling}}function ue(r){let c=external_React_namespaceObject.useRef(r);return dist_D(()=>{c.current=r}),c}var dist_D=typeof window=="undefined"?external_React_namespaceObject.useEffect:external_React_namespaceObject.useLayoutEffect;function w(r){let c=external_React_namespaceObject.useRef();return c.current===void 0&&(c.current=r()),c}function _(r){return c=>{r.forEach(n=>{typeof n=="function"?n(c):n!=null&&(n.current=c)})}}function L(r){let c=dist_J(),n=()=>r(c.snapshot());return external_React_namespaceObject.useSyncExternalStore(c.subscribe,n,n)}function de(r,c,n){let o=external_React_namespaceObject.useRef(),l=A();return dist_D(()=>{var f;let d=(()=>{var g;for(let u of n){if(typeof u=="string")return u.trim().toLowerCase();if(typeof u=="object"&&"current"in u)return u.current?(g=u.current.textContent)==null?void 0:g.trim().toLowerCase():o.current}})();l.value(r,d),(f=c.current)==null||f.setAttribute(S,d),o.current=d}),o}var Le=()=>{let[r,c]=external_React_namespaceObject.useState(),n=w(()=>new Map);return dist_D(()=>{n.current.forEach(o=>o()),n.current=new Map},[r]),(o,l)=>{n.current.set(o,l),c({})}},Te={position:"absolute",width:"1px",height:"1px",padding:"0",margin:"-1px",overflow:"hidden",clip:"rect(0, 0, 0, 0)",whiteSpace:"nowrap",borderWidth:"0"};
+var ue='[cmdk-list-sizer=""]',M='[cmdk-group=""]',N='[cmdk-group-items=""]',de='[cmdk-group-heading=""]',ee='[cmdk-item=""]',Z=`${ee}:not([aria-disabled="true"])`,z="cmdk-item-select",S="data-value",fe=(n,a)=>command_score(n,a),te=external_React_namespaceObject.createContext(void 0),k=()=>external_React_namespaceObject.useContext(te),re=external_React_namespaceObject.createContext(void 0),U=()=>external_React_namespaceObject.useContext(re),ne=external_React_namespaceObject.createContext(void 0),oe=external_React_namespaceObject.forwardRef((n,a)=>{let r=external_React_namespaceObject.useRef(null),o=x(()=>({search:"",value:"",filtered:{count:0,items:new Map,groups:new Set}})),u=x(()=>new Set),l=x(()=>new Map),p=x(()=>new Map),f=x(()=>new Set),d=ae(n),{label:v,children:E,value:R,onValueChange:w,filter:O,shouldFilter:ie,...D}=n,F=external_React_namespaceObject.useId(),g=external_React_namespaceObject.useId(),A=external_React_namespaceObject.useId(),y=ye();L(()=>{if(R!==void 0){let e=R.trim().toLowerCase();o.current.value=e,y(6,W),h.emit()}},[R]);let h=external_React_namespaceObject.useMemo(()=>({subscribe:e=>(f.current.add(e),()=>f.current.delete(e)),snapshot:()=>o.current,setState:(e,c,i)=>{var s,m,b;if(!Object.is(o.current[e],c)){if(o.current[e]=c,e==="search")j(),G(),y(1,V);else if(e==="value")if(((s=d.current)==null?void 0:s.value)!==void 0){(b=(m=d.current).onValueChange)==null||b.call(m,c);return}else i||y(5,W);h.emit()}},emit:()=>{f.current.forEach(e=>e())}}),[]),K=external_React_namespaceObject.useMemo(()=>({value:(e,c)=>{c!==p.current.get(e)&&(p.current.set(e,c),o.current.filtered.items.set(e,B(c)),y(2,()=>{G(),h.emit()}))},item:(e,c)=>(u.current.add(e),c&&(l.current.has(c)?l.current.get(c).add(e):l.current.set(c,new Set([e]))),y(3,()=>{j(),G(),o.current.value||V(),h.emit()}),()=>{p.current.delete(e),u.current.delete(e),o.current.filtered.items.delete(e),y(4,()=>{j(),V(),h.emit()})}),group:e=>(l.current.has(e)||l.current.set(e,new Set),()=>{p.current.delete(e),l.current.delete(e)}),filter:()=>d.current.shouldFilter,label:v||n["aria-label"],listId:F,inputId:A,labelId:g}),[]);function B(e){var i;let c=((i=d.current)==null?void 0:i.filter)??fe;return e?c(e,o.current.search):0}function G(){if(!r.current||!o.current.search||d.current.shouldFilter===!1)return;let e=o.current.filtered.items,c=[];o.current.filtered.groups.forEach(s=>{let m=l.current.get(s),b=0;m.forEach(P=>{let ce=e.get(P);b=Math.max(ce,b)}),c.push([s,b])});let i=r.current.querySelector(ue);I().sort((s,m)=>{let b=s.getAttribute(S),P=m.getAttribute(S);return(e.get(P)??0)-(e.get(b)??0)}).forEach(s=>{let m=s.closest(N);m?m.appendChild(s.parentElement===m?s:s.closest(`${N} > *`)):i.appendChild(s.parentElement===i?s:s.closest(`${N} > *`))}),c.sort((s,m)=>m[1]-s[1]).forEach(s=>{let m=r.current.querySelector(`${M}[${S}="${s[0]}"]`);m==null||m.parentElement.appendChild(m)})}function V(){let e=I().find(i=>!i.ariaDisabled),c=e==null?void 0:e.getAttribute(S);h.setState("value",c||void 0)}function j(){if(!o.current.search||d.current.shouldFilter===!1){o.current.filtered.count=u.current.size;return}o.current.filtered.groups=new Set;let e=0;for(let c of u.current){let i=p.current.get(c),s=B(i);o.current.filtered.items.set(c,s),s>0&&e++}for(let[c,i]of l.current)for(let s of i)if(o.current.filtered.items.get(s)>0){o.current.filtered.groups.add(c);break}o.current.filtered.count=e}function W(){var c,i,s;let e=_();e&&(((c=e.parentElement)==null?void 0:c.firstChild)===e&&((s=(i=e.closest(M))==null?void 0:i.querySelector(de))==null||s.scrollIntoView({block:"nearest"})),e.scrollIntoView({block:"nearest"}))}function _(){return r.current.querySelector(`${ee}[aria-selected="true"]`)}function I(){return Array.from(r.current.querySelectorAll(Z))}function q(e){let i=I()[e];i&&h.setState("value",i.getAttribute(S))}function $(e){var b;let c=_(),i=I(),s=i.findIndex(P=>P===c),m=i[s+e];(b=d.current)!=null&&b.loop&&(m=s+e<0?i[i.length-1]:s+e===i.length?i[0]:i[s+e]),m&&h.setState("value",m.getAttribute(S))}function J(e){let c=_(),i=c==null?void 0:c.closest(M),s;for(;i&&!s;)i=e>0?Se(i,M):Ce(i,M),s=i==null?void 0:i.querySelector(Z);s?h.setState("value",s.getAttribute(S)):$(e)}let Q=()=>q(I().length-1),X=e=>{e.preventDefault(),e.metaKey?Q():e.altKey?J(1):$(1)},Y=e=>{e.preventDefault(),e.metaKey?q(0):e.altKey?J(-1):$(-1)};return external_React_namespaceObject.createElement("div",{ref:H([r,a]),...D,"cmdk-root":"",onKeyDown:e=>{var c;if((c=D.onKeyDown)==null||c.call(D,e),!e.defaultPrevented)switch(e.key){case"n":case"j":{e.ctrlKey&&X(e);break}case"ArrowDown":{X(e);break}case"p":case"k":{e.ctrlKey&&Y(e);break}case"ArrowUp":{Y(e);break}case"Home":{e.preventDefault(),q(0);break}case"End":{e.preventDefault(),Q();break}case"Enter":{e.preventDefault();let i=_();if(i){let s=new Event(z);i.dispatchEvent(s)}}}}},external_React_namespaceObject.createElement("label",{"cmdk-label":"",htmlFor:K.inputId,id:K.labelId,style:xe},v),external_React_namespaceObject.createElement(re.Provider,{value:h},external_React_namespaceObject.createElement(te.Provider,{value:K},E)))}),me=external_React_namespaceObject.forwardRef((n,a)=>{let r=external_React_namespaceObject.useId(),o=external_React_namespaceObject.useRef(null),u=external_React_namespaceObject.useContext(ne),l=k(),p=ae(n);L(()=>l.item(r,u),[]);let f=se(r,o,[n.value,n.children,o]),d=U(),v=T(g=>g.value&&g.value===f.current),E=T(g=>l.filter()===!1?!0:g.search?g.filtered.items.get(r)>0:!0);external_React_namespaceObject.useEffect(()=>{let g=o.current;if(!(!g||n.disabled))return g.addEventListener(z,R),()=>g.removeEventListener(z,R)},[E,n.onSelect,n.disabled]);function R(){var g,A;(A=(g=p.current).onSelect)==null||A.call(g,f.current)}function w(){d.setState("value",f.current,!0)}if(!E)return null;let{disabled:O,value:ie,onSelect:D,...F}=n;return external_React_namespaceObject.createElement("div",{ref:H([o,a]),...F,"cmdk-item":"",role:"option","aria-disabled":O||void 0,"aria-selected":v||void 0,"data-selected":v||void 0,onPointerMove:O?void 0:w,onClick:O?void 0:R},n.children)}),pe=external_React_namespaceObject.forwardRef((n,a)=>{let{heading:r,children:o,...u}=n,l=external_React_namespaceObject.useId(),p=external_React_namespaceObject.useRef(null),f=external_React_namespaceObject.useRef(null),d=external_React_namespaceObject.useId(),v=k(),E=T(w=>v.filter()===!1?!0:w.search?w.filtered.groups.has(l):!0);L(()=>v.group(l),[]),se(l,p,[n.value,n.heading,f]);let R=external_React_namespaceObject.createElement(ne.Provider,{value:l},o);return external_React_namespaceObject.createElement("div",{ref:H([p,a]),...u,"cmdk-group":"",role:"presentation",hidden:E?void 0:!0},r&&external_React_namespaceObject.createElement("div",{ref:f,"cmdk-group-heading":"","aria-hidden":!0,id:d},r),external_React_namespaceObject.createElement("div",{"cmdk-group-items":"",role:"group","aria-labelledby":r?d:void 0},R))}),ge=external_React_namespaceObject.forwardRef((n,a)=>{let{alwaysRender:r,...o}=n,u=external_React_namespaceObject.useRef(null),l=T(p=>!p.search);return!r&&!l?null:external_React_namespaceObject.createElement("div",{ref:H([u,a]),...o,"cmdk-separator":"",role:"separator"})}),ve=external_React_namespaceObject.forwardRef((n,a)=>{let{onValueChange:r,...o}=n,u=n.value!=null,l=U(),p=T(d=>d.search),f=k();return external_React_namespaceObject.useEffect(()=>{n.value!=null&&l.setState("search",n.value)},[n.value]),external_React_namespaceObject.createElement("input",{ref:a,...o,"cmdk-input":"",autoComplete:"off",autoCorrect:"off",spellCheck:!1,"aria-autocomplete":"list",role:"combobox","aria-expanded":!0,"aria-controls":f.listId,"aria-labelledby":f.labelId,id:f.inputId,type:"text",value:u?n.value:p,onChange:d=>{u||l.setState("search",d.target.value),r==null||r(d.target.value)}})}),Re=external_React_namespaceObject.forwardRef((n,a)=>{let{children:r,...o}=n,u=external_React_namespaceObject.useRef(null),l=external_React_namespaceObject.useRef(null),p=k();return external_React_namespaceObject.useEffect(()=>{if(l.current&&u.current){let f=l.current,d=u.current,v,E=new ResizeObserver(()=>{v=requestAnimationFrame(()=>{let R=f.getBoundingClientRect().height;d.style.setProperty("--cmdk-list-height",R.toFixed(1)+"px")})});return E.observe(f),()=>{cancelAnimationFrame(v),E.unobserve(f)}}},[]),external_React_namespaceObject.createElement("div",{ref:H([u,a]),...o,"cmdk-list":"",role:"listbox","aria-label":"Suggestions",id:p.listId,"aria-labelledby":p.inputId},external_React_namespaceObject.createElement("div",{ref:l,"cmdk-list-sizer":""},r))}),be=external_React_namespaceObject.forwardRef((n,a)=>{let{open:r,onOpenChange:o,container:u,...l}=n;return external_React_namespaceObject.createElement($5d3850c4d0b4e6c7$export$be92b6f5f03c0fe9,{open:r,onOpenChange:o},external_React_namespaceObject.createElement($5d3850c4d0b4e6c7$export$602eac185826482c,{container:u},external_React_namespaceObject.createElement($5d3850c4d0b4e6c7$export$c6fdb837b070b4ff,{"cmdk-overlay":""}),external_React_namespaceObject.createElement($5d3850c4d0b4e6c7$export$7c6e2c02157bb7d2,{"aria-label":n.label,"cmdk-dialog":""},external_React_namespaceObject.createElement(oe,{ref:a,...l}))))}),he=external_React_namespaceObject.forwardRef((n,a)=>{let r=external_React_namespaceObject.useRef(!0),o=T(u=>u.filtered.count===0);return external_React_namespaceObject.useEffect(()=>{r.current=!1},[]),r.current||!o?null:external_React_namespaceObject.createElement("div",{ref:a,...n,"cmdk-empty":"",role:"presentation"})}),Ee=external_React_namespaceObject.forwardRef((n,a)=>{let{progress:r,children:o,...u}=n;return external_React_namespaceObject.createElement("div",{ref:a,...u,"cmdk-loading":"",role:"progressbar","aria-valuenow":r,"aria-valuemin":0,"aria-valuemax":100,"aria-label":"Loading..."},external_React_namespaceObject.createElement("div",{"aria-hidden":!0},o))}),Le=Object.assign(oe,{List:Re,Item:me,Input:ve,Group:pe,Separator:ge,Dialog:be,Empty:he,Loading:Ee});function Se(n,a){let r=n.nextElementSibling;for(;r;){if(r.matches(a))return r;r=r.nextElementSibling}}function Ce(n,a){let r=n.previousElementSibling;for(;r;){if(r.matches(a))return r;r=r.previousElementSibling}}function ae(n){let a=external_React_namespaceObject.useRef(n);return L(()=>{a.current=n}),a}var L=typeof window>"u"?external_React_namespaceObject.useEffect:external_React_namespaceObject.useLayoutEffect;function x(n){let a=external_React_namespaceObject.useRef();return a.current===void 0&&(a.current=n()),a}function H(n){return a=>{n.forEach(r=>{typeof r=="function"?r(a):r!=null&&(r.current=a)})}}function T(n){let a=U(),r=()=>n(a.snapshot());return external_React_namespaceObject.useSyncExternalStore(a.subscribe,r,r)}function se(n,a,r){let o=external_React_namespaceObject.useRef(),u=k();return L(()=>{var p;let l=(()=>{var f;for(let d of r){if(typeof d=="string")return d.trim().toLowerCase();if(typeof d=="object"&&"current"in d&&d.current)return(f=d.current.textContent)==null?void 0:f.trim().toLowerCase()}})();u.value(n,l),(p=a.current)==null||p.setAttribute(S,l),o.current=l}),o}var ye=()=>{let[n,a]=external_React_namespaceObject.useState(),r=x(()=>new Map);return L(()=>{r.current.forEach(o=>o()),r.current=new Map},[n]),(o,u)=>{r.current.set(o,u),a({})}},xe={position:"absolute",width:"1px",height:"1px",padding:"0",margin:"-1px",overflow:"hidden",clip:"rect(0, 0, 0, 0)",whiteSpace:"nowrap",borderWidth:"0"};
 
+// EXTERNAL MODULE: ./node_modules/classnames/index.js
+var classnames = __webpack_require__(5755);
+var classnames_default = /*#__PURE__*/__webpack_require__.n(classnames);
 ;// CONCATENATED MODULE: external ["wp","data"]
-var external_wp_data_namespaceObject = window["wp"]["data"];
+const external_wp_data_namespaceObject = window["wp"]["data"];
+;// CONCATENATED MODULE: external ["wp","element"]
+const external_wp_element_namespaceObject = window["wp"]["element"];
 ;// CONCATENATED MODULE: external ["wp","i18n"]
-var external_wp_i18n_namespaceObject = window["wp"]["i18n"];
+const external_wp_i18n_namespaceObject = window["wp"]["i18n"];
 ;// CONCATENATED MODULE: external ["wp","components"]
-var external_wp_components_namespaceObject = window["wp"]["components"];
+const external_wp_components_namespaceObject = window["wp"]["components"];
 ;// CONCATENATED MODULE: external ["wp","keyboardShortcuts"]
-var external_wp_keyboardShortcuts_namespaceObject = window["wp"]["keyboardShortcuts"];
+const external_wp_keyboardShortcuts_namespaceObject = window["wp"]["keyboardShortcuts"];
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/icons/build-module/icon/index.js
 /**
  * WordPress dependencies
  */
+
 
 /** @typedef {{icon: JSX.Element, size?: number} & import('@wordpress/primitives').SVGProps} IconProps */
 
 /**
  * Return an SVG icon.
  *
- * @param {IconProps} props icon is the SVG component to render
- *                          size is a number specifiying the icon size in pixels
- *                          Other props will be passed to wrapped SVG component
+ * @param {IconProps}                                 props icon is the SVG component to render
+ *                                                          size is a number specifiying the icon size in pixels
+ *                                                          Other props will be passed to wrapped SVG component
+ * @param {import('react').ForwardedRef<HTMLElement>} ref   The forwarded ref to the SVG element.
  *
  * @return {JSX.Element}  Icon component
  */
-
 function Icon({
   icon,
   size = 24,
   ...props
-}) {
+}, ref) {
   return (0,external_wp_element_namespaceObject.cloneElement)(icon, {
     width: size,
     height: size,
-    ...props
+    ...props,
+    ref
   });
 }
+/* harmony default export */ const icon = ((0,external_wp_element_namespaceObject.forwardRef)(Icon));
 
-/* harmony default export */ var icon = (Icon);
+;// CONCATENATED MODULE: external ["wp","primitives"]
+const external_wp_primitives_namespaceObject = window["wp"]["primitives"];
+;// CONCATENATED MODULE: ./node_modules/@wordpress/icons/build-module/library/search.js
+
+/**
+ * WordPress dependencies
+ */
+
+const search = (0,external_React_namespaceObject.createElement)(external_wp_primitives_namespaceObject.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24"
+}, (0,external_React_namespaceObject.createElement)(external_wp_primitives_namespaceObject.Path, {
+  d: "M13 5c-3.3 0-6 2.7-6 6 0 1.4.5 2.7 1.3 3.7l-3.8 3.8 1.1 1.1 3.8-3.8c1 .8 2.3 1.3 3.7 1.3 3.3 0 6-2.7 6-6S16.3 5 13 5zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"
+}));
+/* harmony default export */ const library_search = (search);
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/commands/build-module/store/reducer.js
 /**
  * WordPress dependencies
  */
+
 
 /**
  * Reducer returning the registered commands
@@ -3073,11 +3277,11 @@ function Icon({
  *
  * @return {Object} Updated state.
  */
-
 function commands(state = {}, action) {
   switch (action.type) {
     case 'REGISTER_COMMAND':
-      return { ...state,
+      return {
+        ...state,
         [action.name]: {
           name: action.name,
           label: action.label,
@@ -3087,7 +3291,6 @@ function commands(state = {}, action) {
           icon: action.icon
         }
       };
-
     case 'UNREGISTER_COMMAND':
       {
         const {
@@ -3097,9 +3300,9 @@ function commands(state = {}, action) {
         return remainingState;
       }
   }
-
   return state;
 }
+
 /**
  * Reducer returning the command loaders
  *
@@ -3108,19 +3311,17 @@ function commands(state = {}, action) {
  *
  * @return {Object} Updated state.
  */
-
-
 function commandLoaders(state = {}, action) {
   switch (action.type) {
     case 'REGISTER_COMMAND_LOADER':
-      return { ...state,
+      return {
+        ...state,
         [action.name]: {
           name: action.name,
           context: action.context,
           hook: action.hook
         }
       };
-
     case 'UNREGISTER_COMMAND_LOADER':
       {
         const {
@@ -3130,9 +3331,9 @@ function commandLoaders(state = {}, action) {
         return remainingState;
       }
   }
-
   return state;
 }
+
 /**
  * Reducer returning the command palette open state.
  *
@@ -3141,19 +3342,16 @@ function commandLoaders(state = {}, action) {
  *
  * @return {boolean} Updated state.
  */
-
-
 function isOpen(state = false, action) {
   switch (action.type) {
     case 'OPEN':
       return true;
-
     case 'CLOSE':
       return false;
   }
-
   return state;
 }
+
 /**
  * Reducer returning the command palette's active context.
  *
@@ -3162,24 +3360,20 @@ function isOpen(state = false, action) {
  *
  * @return {boolean} Updated state.
  */
-
-
 function context(state = 'root', action) {
   switch (action.type) {
     case 'SET_CONTEXT':
       return action.context;
   }
-
   return state;
 }
-
 const reducer = (0,external_wp_data_namespaceObject.combineReducers)({
   commands,
   commandLoaders,
   isOpen,
   context
 });
-/* harmony default export */ var store_reducer = (reducer);
+/* harmony default export */ const store_reducer = (reducer);
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/commands/build-module/store/actions.js
 /** @typedef {import('@wordpress/keycodes').WPKeycodeModifier} WPKeycodeModifier */
@@ -3195,6 +3389,7 @@ const reducer = (0,external_wp_data_namespaceObject.combineReducers)({
  * @property {string=}     context     Command context.
  * @property {JSX.Element} icon        Command icon.
  * @property {Function}    callback    Command callback.
+ * @property {boolean}     disabled    Whether to disable the command.
  */
 
 /**
@@ -3206,9 +3401,10 @@ const reducer = (0,external_wp_data_namespaceObject.combineReducers)({
  *
  * @typedef {Object} WPCommandLoaderConfig
  *
- * @property {string}              name    Command loader name.
- * @property {string=}             context Command loader context.
- * @property {WPCommandLoaderHook} hook    Command loader hook.
+ * @property {string}              name     Command loader name.
+ * @property {string=}             context  Command loader context.
+ * @property {WPCommandLoaderHook} hook     Command loader hook.
+ * @property {boolean}             disabled Whether to disable the command loader.
  */
 
 /**
@@ -3224,6 +3420,7 @@ function registerCommand(config) {
     ...config
   };
 }
+
 /**
  * Returns an action object used to unregister a command.
  *
@@ -3231,13 +3428,13 @@ function registerCommand(config) {
  *
  * @return {Object} action.
  */
-
 function unregisterCommand(name) {
   return {
     type: 'UNREGISTER_COMMAND',
     name
   };
 }
+
 /**
  * Register command loader.
  *
@@ -3245,13 +3442,13 @@ function unregisterCommand(name) {
  *
  * @return {Object} action.
  */
-
 function registerCommandLoader(config) {
   return {
     type: 'REGISTER_COMMAND_LOADER',
     ...config
   };
 }
+
 /**
  * Unregister command loader hook.
  *
@@ -3259,30 +3456,29 @@ function registerCommandLoader(config) {
  *
  * @return {Object} action.
  */
-
 function unregisterCommandLoader(name) {
   return {
     type: 'UNREGISTER_COMMAND_LOADER',
     name
   };
 }
+
 /**
  * Opens the command palette.
  *
  * @return {Object} action.
  */
-
 function actions_open() {
   return {
     type: 'OPEN'
   };
 }
+
 /**
  * Closes the command palette.
  *
  * @return {Object} action.
  */
-
 function actions_close() {
   return {
     type: 'CLOSE'
@@ -3592,17 +3788,51 @@ function isShallowEqual(a, b, fromIndex) {
  * External dependencies
  */
 
+
+/**
+ * Returns the registered static commands.
+ *
+ * @param {Object}  state      State tree.
+ * @param {boolean} contextual Whether to return only contextual commands.
+ *
+ * @return {import('./actions').WPCommandConfig[]} The list of registered commands.
+ */
 const getCommands = rememo((state, contextual = false) => Object.values(state.commands).filter(command => {
   const isContextual = command.context && command.context === state.context;
   return contextual ? isContextual : !isContextual;
 }), state => [state.commands, state.context]);
+
+/**
+ * Returns the registered command loaders.
+ *
+ * @param {Object}  state      State tree.
+ * @param {boolean} contextual Whether to return only contextual command loaders.
+ *
+ * @return {import('./actions').WPCommandLoaderConfig[]} The list of registered command loaders.
+ */
 const getCommandLoaders = rememo((state, contextual = false) => Object.values(state.commandLoaders).filter(loader => {
   const isContextual = loader.context && loader.context === state.context;
   return contextual ? isContextual : !isContextual;
 }), state => [state.commandLoaders, state.context]);
+
+/**
+ * Returns whether the command palette is open.
+ *
+ * @param {Object} state State tree.
+ *
+ * @return {boolean} Returns whether the command palette is open.
+ */
 function selectors_isOpen(state) {
   return state.isOpen;
 }
+
+/**
+ * Returns whether the active context.
+ *
+ * @param {Object} state State tree.
+ *
+ * @return {string} Context.
+ */
 function getContext(state) {
   return state.context;
 }
@@ -3623,7 +3853,7 @@ function setContext(context) {
 }
 
 ;// CONCATENATED MODULE: external ["wp","privateApis"]
-var external_wp_privateApis_namespaceObject = window["wp"]["privateApis"];
+const external_wp_privateApis_namespaceObject = window["wp"]["privateApis"];
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/commands/build-module/lock-unlock.js
 /**
  * WordPress dependencies
@@ -3632,12 +3862,13 @@ var external_wp_privateApis_namespaceObject = window["wp"]["privateApis"];
 const {
   lock,
   unlock
-} = (0,external_wp_privateApis_namespaceObject.__dangerousOptInToUnstableAPIsOnlyForCoreModules)('I know using unstable features means my plugin or theme will inevitably break on the next WordPress release.', '@wordpress/commands');
+} = (0,external_wp_privateApis_namespaceObject.__dangerousOptInToUnstableAPIsOnlyForCoreModules)('I know using unstable features means my theme or plugin will inevitably break in the next version of WordPress.', '@wordpress/commands');
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/commands/build-module/store/index.js
 /**
  * WordPress dependencies
  */
+
 
 /**
  * Internal dependencies
@@ -3647,16 +3878,23 @@ const {
 
 
 
-
 const STORE_NAME = 'core/commands';
+
 /**
  * Store definition for the commands namespace.
  *
  * @see https://github.com/WordPress/gutenberg/blob/HEAD/packages/data/README.md#createReduxStore
  *
  * @type {Object}
+ *
+ * @example
+ * ```js
+ * import { store as commandsStore } from '@wordpress/commands';
+ * import { useDispatch } from '@wordpress/data';
+ * ...
+ * const { open: openCommandCenter } = useDispatch( commandsStore );
+ * ```
  */
-
 const store = (0,external_wp_data_namespaceObject.createReduxStore)(STORE_NAME, {
   reducer: store_reducer,
   actions: actions_namespaceObject,
@@ -3667,10 +3905,11 @@ unlock(store).registerPrivateActions(private_actions_namespaceObject);
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/commands/build-module/components/command-menu.js
 
-
 /**
  * External dependencies
  */
+
+
 
 /**
  * WordPress dependencies
@@ -3686,8 +3925,7 @@ unlock(store).registerPrivateActions(private_actions_namespaceObject);
  * Internal dependencies
  */
 
-
-
+const inputLabel = (0,external_wp_i18n_namespaceObject.__)('Search for commands');
 function CommandMenuLoader({
   name,
   search,
@@ -3696,7 +3934,6 @@ function CommandMenuLoader({
   close
 }) {
   var _hook;
-
   const {
     isLoading,
     commands = []
@@ -3706,32 +3943,31 @@ function CommandMenuLoader({
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     setLoader(name, isLoading);
   }, [setLoader, name, isLoading]);
-
   if (!commands.length) {
     return null;
   }
-
-  return (0,external_wp_element_namespaceObject.createElement)(external_wp_element_namespaceObject.Fragment, null, (0,external_wp_element_namespaceObject.createElement)(we.List, null, commands.map(command => {
+  return (0,external_React_namespaceObject.createElement)(external_React_namespaceObject.Fragment, null, commands.map(command => {
     var _command$searchLabel;
-
-    return (0,external_wp_element_namespaceObject.createElement)(we.Item, {
+    return (0,external_React_namespaceObject.createElement)(Le.Item, {
       key: command.name,
       value: (_command$searchLabel = command.searchLabel) !== null && _command$searchLabel !== void 0 ? _command$searchLabel : command.label,
       onSelect: () => command.callback({
         close
-      })
-    }, (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.__experimentalHStack, {
+      }),
+      id: command.name
+    }, (0,external_React_namespaceObject.createElement)(external_wp_components_namespaceObject.__experimentalHStack, {
       alignment: "left",
-      className: "commands-command-menu__item"
-    }, (0,external_wp_element_namespaceObject.createElement)(icon, {
+      className: classnames_default()('commands-command-menu__item', {
+        'has-icon': command.icon
+      })
+    }, command.icon && (0,external_React_namespaceObject.createElement)(icon, {
       icon: command.icon
-    }), (0,external_wp_element_namespaceObject.createElement)("span", null, (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.TextHighlight, {
+    }), (0,external_React_namespaceObject.createElement)("span", null, (0,external_React_namespaceObject.createElement)(external_wp_components_namespaceObject.TextHighlight, {
       text: command.label,
       highlight: search
     }))));
-  })));
+  }));
 }
-
 function CommandMenuLoaderWrapper({
   hook,
   search,
@@ -3751,7 +3987,7 @@ function CommandMenuLoaderWrapper({
       setKey(prevKey => prevKey + 1);
     }
   }, [hook]);
-  return (0,external_wp_element_namespaceObject.createElement)(CommandMenuLoader, {
+  return (0,external_React_namespaceObject.createElement)(CommandMenuLoader, {
     key: key,
     hook: currentLoader.current,
     search: search,
@@ -3778,30 +4014,30 @@ function CommandMenuGroup({
       loaders: getCommandLoaders(isContextual)
     };
   }, [isContextual]);
-
   if (!commands.length && !loaders.length) {
     return null;
   }
-
-  return (0,external_wp_element_namespaceObject.createElement)(we.Group, null, commands.map(command => {
+  return (0,external_React_namespaceObject.createElement)(Le.Group, null, commands.map(command => {
     var _command$searchLabel2;
-
-    return (0,external_wp_element_namespaceObject.createElement)(we.Item, {
+    return (0,external_React_namespaceObject.createElement)(Le.Item, {
       key: command.name,
       value: (_command$searchLabel2 = command.searchLabel) !== null && _command$searchLabel2 !== void 0 ? _command$searchLabel2 : command.label,
       onSelect: () => command.callback({
         close
-      })
-    }, (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.__experimentalHStack, {
+      }),
+      id: command.name
+    }, (0,external_React_namespaceObject.createElement)(external_wp_components_namespaceObject.__experimentalHStack, {
       alignment: "left",
-      className: "commands-command-menu__item"
-    }, (0,external_wp_element_namespaceObject.createElement)(icon, {
+      className: classnames_default()('commands-command-menu__item', {
+        'has-icon': command.icon
+      })
+    }, command.icon && (0,external_React_namespaceObject.createElement)(icon, {
       icon: command.icon
-    }), (0,external_wp_element_namespaceObject.createElement)("span", null, (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.TextHighlight, {
+    }), (0,external_React_namespaceObject.createElement)("span", null, (0,external_React_namespaceObject.createElement)(external_wp_components_namespaceObject.TextHighlight, {
       text: command.label,
       highlight: search
     }))));
-  }), loaders.map(loader => (0,external_wp_element_namespaceObject.createElement)(CommandMenuLoaderWrapper, {
+  }), loaders.map(loader => (0,external_React_namespaceObject.createElement)(CommandMenuLoaderWrapper, {
     key: loader.name,
     hook: loader.hook,
     search: search,
@@ -3809,6 +4045,36 @@ function CommandMenuGroup({
     close: close
   })));
 }
+function CommandInput({
+  isOpen,
+  search,
+  setSearch
+}) {
+  const commandMenuInput = (0,external_wp_element_namespaceObject.useRef)();
+  const _value = T(state => state.value);
+  const selectedItemId = (0,external_wp_element_namespaceObject.useMemo)(() => {
+    const item = document.querySelector(`[cmdk-item=""][data-value="${_value}"]`);
+    return item?.getAttribute('id');
+  }, [_value]);
+  (0,external_wp_element_namespaceObject.useEffect)(() => {
+    // Focus the command palette input when mounting the modal.
+    if (isOpen) {
+      commandMenuInput.current.focus();
+    }
+  }, [isOpen]);
+  return (0,external_React_namespaceObject.createElement)(Le.Input, {
+    ref: commandMenuInput,
+    value: search,
+    onValueChange: setSearch,
+    placeholder: inputLabel,
+    "aria-activedescendant": selectedItemId,
+    icon: search
+  });
+}
+
+/**
+ * @ignore
+ */
 function CommandMenu() {
   const {
     registerShortcut
@@ -3820,25 +4086,30 @@ function CommandMenu() {
     close
   } = (0,external_wp_data_namespaceObject.useDispatch)(store);
   const [loaders, setLoaders] = (0,external_wp_element_namespaceObject.useState)({});
-  const commandMenuInput = (0,external_wp_element_namespaceObject.useRef)();
+  const commandListRef = (0,external_wp_element_namespaceObject.useRef)();
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     registerShortcut({
       name: 'core/commands',
       category: 'global',
-      description: (0,external_wp_i18n_namespaceObject.__)('Open the command palette'),
+      description: (0,external_wp_i18n_namespaceObject.__)('Open the command palette.'),
       keyCombination: {
         modifier: 'primary',
         character: 'k'
       }
     });
   }, [registerShortcut]);
-  (0,external_wp_keyboardShortcuts_namespaceObject.useShortcut)('core/commands',
-  /** @type {import('react').KeyboardEventHandler} */
+
+  // Temporary fix for the suggestions Listbox labeling.
+  // See https://github.com/pacocoursey/cmdk/issues/196
+  (0,external_wp_element_namespaceObject.useEffect)(() => {
+    commandListRef.current?.removeAttribute('aria-labelledby');
+    commandListRef.current?.setAttribute('aria-label', (0,external_wp_i18n_namespaceObject.__)('Command suggestions'));
+  }, [commandListRef.current]);
+  (0,external_wp_keyboardShortcuts_namespaceObject.useShortcut)('core/commands', /** @type {import('react').KeyboardEventHandler} */
   event => {
     // Bails to avoid obscuring the effect of the preceding handler(s).
     if (event.defaultPrevented) return;
     event.preventDefault();
-
     if (isOpen) {
       close();
     } else {
@@ -3847,60 +4118,56 @@ function CommandMenu() {
   }, {
     bindGlobal: true
   });
-  const setLoader = (0,external_wp_element_namespaceObject.useCallback)((name, value) => setLoaders(current => ({ ...current,
+  const setLoader = (0,external_wp_element_namespaceObject.useCallback)((name, value) => setLoaders(current => ({
+    ...current,
     [name]: value
   })), []);
-
   const closeAndReset = () => {
     setSearch('');
     close();
   };
-
-  (0,external_wp_element_namespaceObject.useEffect)(() => {
-    // Focus the command palette input when mounting the modal.
-    if (isOpen) {
-      commandMenuInput.current.focus();
-    }
-  }, [isOpen]);
-
   if (!isOpen) {
     return false;
   }
-
   const onKeyDown = event => {
-    if ( // Ignore keydowns from IMEs
-    event.nativeEvent.isComposing || // Workaround for Mac Safari where the final Enter/Backspace of an IME composition
+    if (
+    // Ignore keydowns from IMEs
+    event.nativeEvent.isComposing ||
+    // Workaround for Mac Safari where the final Enter/Backspace of an IME composition
     // is `isComposing=false`, even though it's technically still part of the composition.
     // These can only be detected by keyCode.
     event.keyCode === 229) {
       event.preventDefault();
     }
   };
-
   const isLoading = Object.values(loaders).some(Boolean);
-  return (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.Modal, {
+  return (0,external_React_namespaceObject.createElement)(external_wp_components_namespaceObject.Modal, {
     className: "commands-command-menu",
     overlayClassName: "commands-command-menu__overlay",
     onRequestClose: closeAndReset,
-    __experimentalHideHeader: true
-  }, (0,external_wp_element_namespaceObject.createElement)("div", {
+    __experimentalHideHeader: true,
+    contentLabel: (0,external_wp_i18n_namespaceObject.__)('Command palette')
+  }, (0,external_React_namespaceObject.createElement)("div", {
     className: "commands-command-menu__container"
-  }, (0,external_wp_element_namespaceObject.createElement)(we, {
-    label: (0,external_wp_i18n_namespaceObject.__)('Command palette'),
+  }, (0,external_React_namespaceObject.createElement)(Le, {
+    label: inputLabel,
     onKeyDown: onKeyDown
-  }, (0,external_wp_element_namespaceObject.createElement)("div", {
+  }, (0,external_React_namespaceObject.createElement)("div", {
     className: "commands-command-menu__header"
-  }, (0,external_wp_element_namespaceObject.createElement)(we.Input, {
-    ref: commandMenuInput,
-    value: search,
-    onValueChange: setSearch,
-    placeholder: (0,external_wp_i18n_namespaceObject.__)('Type a command or search')
-  })), (0,external_wp_element_namespaceObject.createElement)(we.List, null, search && !isLoading && (0,external_wp_element_namespaceObject.createElement)(we.Empty, null, (0,external_wp_i18n_namespaceObject.__)('No results found.')), (0,external_wp_element_namespaceObject.createElement)(CommandMenuGroup, {
+  }, (0,external_React_namespaceObject.createElement)(icon, {
+    icon: library_search
+  }), (0,external_React_namespaceObject.createElement)(CommandInput, {
+    search: search,
+    setSearch: setSearch,
+    isOpen: isOpen
+  })), (0,external_React_namespaceObject.createElement)(Le.List, {
+    ref: commandListRef
+  }, search && !isLoading && (0,external_React_namespaceObject.createElement)(Le.Empty, null, (0,external_wp_i18n_namespaceObject.__)('No results found.')), (0,external_React_namespaceObject.createElement)(CommandMenuGroup, {
     search: search,
     setLoader: setLoader,
     close: closeAndReset,
     isContextual: true
-  }), search && (0,external_wp_element_namespaceObject.createElement)(CommandMenuGroup, {
+  }), search && (0,external_React_namespaceObject.createElement)(CommandMenuGroup, {
     search: search,
     setLoader: setLoader,
     close: closeAndReset
@@ -3911,6 +4178,7 @@ function CommandMenu() {
 /**
  * WordPress dependencies
  */
+
 
 
 /**
@@ -3924,7 +4192,6 @@ function CommandMenu() {
  *
  * @param {string} context Context to set.
  */
-
 function useCommandContext(context) {
   const {
     getContext
@@ -3935,9 +4202,10 @@ function useCommandContext(context) {
   } = unlock((0,external_wp_data_namespaceObject.useDispatch)(store));
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     setContext(context);
-  }, [context, setContext]); // This effects ensures that on unmount, we restore the context
-  // that was set before the component actually mounts.
+  }, [context, setContext]);
 
+  // This effects ensures that on unmount, we restore the context
+  // that was set before the component actually mounts.
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     const initialContextRef = initialContext.current;
     return () => setContext(initialContextRef);
@@ -3950,6 +4218,10 @@ function useCommandContext(context) {
  */
 
 
+
+/**
+ * @private
+ */
 const privateApis = {};
 lock(privateApis, {
   useCommandContext: useCommandContext
@@ -3961,17 +4233,33 @@ lock(privateApis, {
  */
 
 
+
 /**
  * Internal dependencies
  */
 
 
 /**
- * Attach a command to the command palette.
+ * Attach a command to the command palette. Used for static commands.
  *
  * @param {import('../store/actions').WPCommandConfig} command command config.
+ *
+ * @example
+ * ```js
+ * import { useCommand } from '@wordpress/commands';
+ * import { plus } from '@wordpress/icons';
+ *
+ * useCommand( {
+ *     name: 'myplugin/my-command-name',
+ *     label: __( 'Add new post' ),
+ *	   icon: plus,
+ *     callback: ({ close }) => {
+ *         document.location.href = 'post-new.php';
+ *         close();
+ *     },
+ * } );
+ * ```
  */
-
 function useCommand(command) {
   const {
     registerCommand,
@@ -3982,6 +4270,9 @@ function useCommand(command) {
     currentCallback.current = command.callback;
   }, [command.callback]);
   (0,external_wp_element_namespaceObject.useEffect)(() => {
+    if (command.disabled) {
+      return;
+    }
     registerCommand({
       name: command.name,
       context: command.context,
@@ -3993,7 +4284,7 @@ function useCommand(command) {
     return () => {
       unregisterCommand(command.name);
     };
-  }, [command.name, command.label, command.searchLabel, command.icon, command.context, registerCommand, unregisterCommand]);
+  }, [command.name, command.label, command.searchLabel, command.icon, command.context, command.disabled, registerCommand, unregisterCommand]);
 }
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/commands/build-module/hooks/use-command-loader.js
@@ -4002,23 +4293,90 @@ function useCommand(command) {
  */
 
 
+
 /**
  * Internal dependencies
  */
 
 
 /**
- * Attach a command loader to the command palette.
+ * Attach a command loader to the command palette. Used for dynamic commands.
  *
  * @param {import('../store/actions').WPCommandLoaderConfig} loader command loader config.
+ *
+ * @example
+ * ```js
+ * import { useCommandLoader } from '@wordpress/commands';
+ * import { post, page, layout, symbolFilled } from '@wordpress/icons';
+ *
+ * const icons = {
+ *     post,
+ *     page,
+ *     wp_template: layout,
+ *     wp_template_part: symbolFilled,
+ * };
+ *
+ * function usePageSearchCommandLoader( { search } ) {
+ *     // Retrieve the pages for the "search" term.
+ *     const { records, isLoading } = useSelect( ( select ) => {
+ *         const { getEntityRecords } = select( coreStore );
+ *         const query = {
+ *             search: !! search ? search : undefined,
+ *             per_page: 10,
+ *             orderby: search ? 'relevance' : 'date',
+ *         };
+ *         return {
+ *             records: getEntityRecords( 'postType', 'page', query ),
+ *             isLoading: ! select( coreStore ).hasFinishedResolution(
+ *                 'getEntityRecords',
+ *                 'postType', 'page', query ]
+ *             ),
+ *         };
+ *     }, [ search ] );
+ *
+ *     // Create the commands.
+ *     const commands = useMemo( () => {
+ *         return ( records ?? [] ).slice( 0, 10 ).map( ( record ) => {
+ *             return {
+ *                 name: record.title?.rendered + ' ' + record.id,
+ *                 label: record.title?.rendered
+ *                     ? record.title?.rendered
+ *                     : __( '(no title)' ),
+ *                 icon: icons[ postType ],
+ *                 callback: ( { close } ) => {
+ *                     const args = {
+ *                         postType,
+ *                         postId: record.id,
+ *                         ...extraArgs,
+ *                     };
+ *                     document.location = addQueryArgs( 'site-editor.php', args );
+ *                     close();
+ *                 },
+ *             };
+ *         } );
+ *     }, [ records, history ] );
+ *
+ *     return {
+ *         commands,
+ *         isLoading,
+ *     };
+ * }
+ *
+ * useCommandLoader( {
+ *     name: 'myplugin/page-search',
+ *     hook: usePageSearchCommandLoader,
+ * } );
+ * ```
  */
-
 function useCommandLoader(loader) {
   const {
     registerCommandLoader,
     unregisterCommandLoader
   } = (0,external_wp_data_namespaceObject.useDispatch)(store);
   (0,external_wp_element_namespaceObject.useEffect)(() => {
+    if (loader.disabled) {
+      return;
+    }
     registerCommandLoader({
       name: loader.name,
       hook: loader.hook,
@@ -4027,7 +4385,7 @@ function useCommandLoader(loader) {
     return () => {
       unregisterCommandLoader(loader.name);
     };
-  }, [loader.name, loader.hook, loader.context, registerCommandLoader, unregisterCommandLoader]);
+  }, [loader.name, loader.hook, loader.context, loader.disabled, registerCommandLoader, unregisterCommandLoader]);
 }
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/commands/build-module/index.js
@@ -4036,6 +4394,8 @@ function useCommandLoader(loader) {
 
 
 
+
+})();
 
 (window.wp = window.wp || {}).commands = __webpack_exports__;
 /******/ })()
