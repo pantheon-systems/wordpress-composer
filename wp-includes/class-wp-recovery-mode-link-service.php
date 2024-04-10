@@ -11,7 +11,6 @@
  *
  * @since 5.2.0
  */
-#[AllowDynamicProperties]
 class WP_Recovery_Mode_Link_Service {
 	const LOGIN_ACTION_ENTER   = 'enter_recovery_mode';
 	const LOGIN_ACTION_ENTERED = 'entered_recovery_mode';

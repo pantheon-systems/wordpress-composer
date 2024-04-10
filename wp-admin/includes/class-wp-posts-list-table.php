@@ -11,6 +11,7 @@
  * Core class used to implement displaying posts in a list table.
  *
  * @since 3.1.0
+ * @access private
  *
  * @see WP_List_Table
  */
@@ -226,7 +227,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Determines if the current view is the "All" view.
+	 * Determine if the current view is the "All" view.
 	 *
 	 * @since 4.2.0
 	 *
@@ -246,7 +247,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Creates a link to edit.php with params.
+	 * Helper to create links to edit.php with params.
 	 *
 	 * @since 4.4.0
 	 *
@@ -330,14 +331,14 @@ class WP_Posts_List_Table extends WP_List_Table {
 				number_format_i18n( $this->user_posts_count )
 			);
 
-			$mine = array(
-				'url'     => esc_url( add_query_arg( $mine_args, 'edit.php' ) ),
-				'label'   => $mine_inner_html,
-				'current' => isset( $_GET['author'] ) && ( $current_user_id === (int) $_GET['author'] ),
-			);
+			$mine = $this->get_edit_link( $mine_args, $mine_inner_html, $class );
 
 			$all_args['all_posts'] = 1;
 			$class                 = '';
+		}
+
+		if ( empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ) ) {
+			$class = 'current';
 		}
 
 		$all_inner_html = sprintf(
@@ -351,11 +352,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			number_format_i18n( $total_posts )
 		);
 
-		$status_links['all'] = array(
-			'url'     => esc_url( add_query_arg( $all_args, 'edit.php' ) ),
-			'label'   => $all_inner_html,
-			'current' => empty( $class ) && ( $this->is_base_request() || isset( $_REQUEST['all_posts'] ) ),
-		);
+		$status_links['all'] = $this->get_edit_link( $all_args, $all_inner_html, $class );
 
 		if ( $mine ) {
 			$status_links['mine'] = $mine;
@@ -384,11 +381,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 				number_format_i18n( $num_posts->$status_name )
 			);
 
-			$status_links[ $status_name ] = array(
-				'url'     => esc_url( add_query_arg( $status_args, 'edit.php' ) ),
-				'label'   => $status_label,
-				'current' => isset( $_REQUEST['post_status'] ) && $status_name === $_REQUEST['post_status'],
-			);
+			$status_links[ $status_name ] = $this->get_edit_link( $status_args, $status_label, $class );
 		}
 
 		if ( ! empty( $this->sticky_posts_count ) ) {
@@ -411,11 +404,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			);
 
 			$sticky_link = array(
-				'sticky' => array(
-					'url'     => esc_url( add_query_arg( $sticky_args, 'edit.php' ) ),
-					'label'   => $sticky_inner_html,
-					'current' => ! empty( $_REQUEST['show_sticky'] ),
-				),
+				'sticky' => $this->get_edit_link( $sticky_args, $sticky_inner_html, $class ),
 			);
 
 			// Sticky comes after Publish, or if not listed, after All.
@@ -423,7 +412,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			$status_links = array_merge( array_slice( $status_links, 0, $split ), $sticky_link, array_slice( $status_links, $split ) );
 		}
 
-		return $this->get_views_links( $status_links );
+		return $status_links;
 	}
 
 	/**
@@ -534,12 +523,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 		$displayed_post_format = isset( $_GET['post_format'] ) ? $_GET['post_format'] : '';
 		?>
-		<label for="filter-by-format" class="screen-reader-text">
-			<?php
-			/* translators: Hidden accessibility text. */
-			_e( 'Filter by post format' );
-			?>
-		</label>
+		<label for="filter-by-format" class="screen-reader-text"><?php _e( 'Filter by post format' ); ?></label>
 		<select name="post_format" id="filter-by-format">
 			<option<?php selected( $displayed_post_format, '' ); ?> value=""><?php _e( 'All formats' ); ?></option>
 			<?php
@@ -651,7 +635,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return array
 	 */
 	public function get_columns() {
 		$post_type = $this->screen->post_type;
@@ -707,9 +691,8 @@ class WP_Posts_List_Table extends WP_List_Table {
 			&& ! in_array( $post_status, array( 'pending', 'draft', 'future' ), true )
 		) {
 			$posts_columns['comments'] = sprintf(
-				'<span class="vers comment-grey-bubble" title="%1$s" aria-hidden="true"></span><span class="screen-reader-text">%2$s</span>',
+				'<span class="vers comment-grey-bubble" title="%1$s"><span class="screen-reader-text">%2$s</span></span>',
 				esc_attr__( 'Comments' ),
-				/* translators: Hidden accessibility text. */
 				__( 'Comments' )
 			);
 		}
@@ -760,33 +743,12 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @return array
 	 */
 	protected function get_sortable_columns() {
-
-		$post_type = $this->screen->post_type;
-
-		if ( 'page' === $post_type ) {
-			if ( isset( $_GET['orderby'] ) ) {
-				$title_orderby_text = __( 'Table ordered by Title.' );
-			} else {
-				$title_orderby_text = __( 'Table ordered by Hierarchical Menu Order and Title.' );
-			}
-
-			$sortables = array(
-				'title'    => array( 'title', false, __( 'Title' ), $title_orderby_text, 'asc' ),
-				'parent'   => array( 'parent', false ),
-				'comments' => array( 'comment_count', false, __( 'Comments' ), __( 'Table ordered by Comments.' ) ),
-				'date'     => array( 'date', true, __( 'Date' ), __( 'Table ordered by Date.' ) ),
-			);
-		} else {
-			$sortables = array(
-				'title'    => array( 'title', false, __( 'Title' ), __( 'Table ordered by Title.' ) ),
-				'parent'   => array( 'parent', false ),
-				'comments' => array( 'comment_count', false, __( 'Comments' ), __( 'Table ordered by Comments.' ) ),
-				'date'     => array( 'date', true, __( 'Date' ), __( 'Table ordered by Date.' ), 'desc' ),
-			);
-		}
-		// Custom Post Types: there's a filter for that, see get_column_info().
-
-		return $sortables;
+		return array(
+			'title'    => 'title',
+			'parent'   => 'parent',
+			'comments' => 'comment_count',
+			'date'     => array( 'date', true ),
+		);
 	}
 
 	/**
@@ -828,7 +790,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 		if ( post_type_supports( $post_type, 'comments' ) ) {
 			$this->comment_pending_count = get_pending_comments_num( $post_ids );
 		}
-		update_post_author_caches( $posts );
 
 		foreach ( $posts as $post ) {
 			$this->single_row( $post, $level );
@@ -898,7 +859,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 				$to_display[ $page->ID ] = $level;
 			}
 
-			++$count;
+			$count++;
 
 			if ( isset( $children_pages ) ) {
 				$this->_page_rows( $children_pages, $count, $page->ID, $level + 1, $pagenum, $per_page, $to_display );
@@ -917,15 +878,13 @@ class WP_Posts_List_Table extends WP_List_Table {
 						$to_display[ $op->ID ] = 0;
 					}
 
-					++$count;
+					$count++;
 				}
 			}
 		}
 
 		$ids = array_keys( $to_display );
 		_prime_post_caches( $ids );
-		$_posts = array_map( 'get_post', $ids );
-		update_post_author_caches( $_posts );
 
 		if ( ! isset( $GLOBALS['post'] ) ) {
 			$GLOBALS['post'] = reset( $ids );
@@ -938,8 +897,8 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Displays the nested hierarchy of sub-pages together with paging
-	 * support, based on a top level page ID.
+	 * Given a top level page ID, display the nested hierarchy of sub-pages
+	 * together with paging support
 	 *
 	 * @since 3.1.0 (Standalone function exists since 2.6.0)
 	 * @since 4.2.0 Added the `$to_display` parameter.
@@ -992,7 +951,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 				while ( $my_parent = array_pop( $my_parents ) ) {
 					$to_display[ $my_parent->ID ] = $level - $num_parents;
-					--$num_parents;
+					$num_parents--;
 				}
 			}
 
@@ -1000,7 +959,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 				$to_display[ $page->ID ] = $level;
 			}
 
-			++$count;
+			$count++;
 
 			$this->_page_rows( $children_pages, $count, $page->ID, $level + 1, $pagenum, $per_page, $to_display );
 		}
@@ -1019,7 +978,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 	public function column_cb( $item ) {
 		// Restores the more descriptive, specific name for use within this method.
 		$post = $item;
-
 		$show = current_user_can( 'edit_post', $post->ID );
 
 		/**
@@ -1034,21 +992,19 @@ class WP_Posts_List_Table extends WP_List_Table {
 		 */
 		if ( apply_filters( 'wp_list_table_show_post_checkbox', $show, $post ) ) :
 			?>
-			<input id="cb-select-<?php the_ID(); ?>" type="checkbox" name="post[]" value="<?php the_ID(); ?>" />
-			<label for="cb-select-<?php the_ID(); ?>">
-				<span class="screen-reader-text">
+			<label class="screen-reader-text" for="cb-select-<?php the_ID(); ?>">
 				<?php
 					/* translators: %s: Post title. */
 					printf( __( 'Select %s' ), _draft_or_post_title() );
 				?>
-				</span>
 			</label>
+			<input id="cb-select-<?php the_ID(); ?>" type="checkbox" name="post[]" value="<?php the_ID(); ?>" />
 			<div class="locked-indicator">
 				<span class="locked-indicator-icon" aria-hidden="true"></span>
 				<span class="screen-reader-text">
 				<?php
 				printf(
-					/* translators: Hidden accessibility text. %s: Post title. */
+					/* translators: %s: Post title. */
 					__( '&#8220;%s&#8221; is locked' ),
 					_draft_or_post_title()
 				);
@@ -1098,7 +1054,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 						break;
 					}
 
-					++$this->current_level;
+					$this->current_level++;
 					$find_main_page = (int) $parent->post_parent;
 
 					if ( ! isset( $parent_name ) ) {
@@ -1168,12 +1124,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			}
 		}
 
-		/** This filter is documented in wp-admin/includes/class-wp-posts-list-table.php */
-		$quick_edit_enabled = apply_filters( 'quick_edit_enabled_for_post_type', true, $post->post_type );
-
-		if ( $quick_edit_enabled ) {
-			get_inline_data( $post );
-		}
+		get_inline_data( $post );
 	}
 
 	/**
@@ -1234,7 +1185,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 
 		/**
-		 * Filters the published, scheduled, or unpublished time of the post.
+		 * Filters the published time of the post.
 		 *
 		 * @since 2.5.1
 		 * @since 5.5.0 Removed the difference between 'excerpt' and 'list' modes.
@@ -1300,7 +1251,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			$taxonomy = 'category';
 		} elseif ( 'tags' === $column_name ) {
 			$taxonomy = 'post_tag';
-		} elseif ( str_starts_with( $column_name, 'taxonomy-' ) ) {
+		} elseif ( 0 === strpos( $column_name, 'taxonomy-' ) ) {
 			$taxonomy = substr( $column_name, 9 );
 		} else {
 			$taxonomy = false;
@@ -1464,8 +1415,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 
 		// Restores the more descriptive, specific name for use within this method.
-		$post = $item;
-
+		$post             = $item;
 		$post_type_object = get_post_type_object( $post->post_type );
 		$can_edit_post    = current_user_can( 'edit_post', $post->ID );
 		$actions          = array();
@@ -1480,17 +1430,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 				__( 'Edit' )
 			);
 
-			/**
-			 * Filters whether Quick Edit should be enabled for the given post type.
-			 *
-			 * @since 6.4.0
-			 *
-			 * @param bool   $enable    Whether to enable the Quick Edit functionality. Default true.
-			 * @param string $post_type Post type name.
-			 */
-			$quick_edit_enabled = apply_filters( 'quick_edit_enabled_for_post_type', true, $post->post_type );
-
-			if ( $quick_edit_enabled && 'wp_block' !== $post->post_type ) {
+			if ( 'wp_block' !== $post->post_type ) {
 				$actions['inline hide-if-no-js'] = sprintf(
 					'<button type="button" class="button-link editinline" aria-label="%s" aria-expanded="false">%s</button>',
 					/* translators: %s: Post title. */
@@ -2093,23 +2033,16 @@ class WP_Posts_List_Table extends WP_List_Table {
 					<input type="hidden" name="post_author" value="<?php echo esc_attr( $post->post_author ); ?>" />
 				<?php endif; ?>
 
-				<?php
-				wp_admin_notice(
-					'<p class="error"></p>',
-					array(
-						'type'               => 'error',
-						'additional_classes' => array( 'notice-alt', 'inline', 'hidden' ),
-						'paragraph_wrap'     => false,
-					)
-				);
-				?>
+				<div class="notice notice-error notice-alt inline hidden">
+					<p class="error"></p>
+				</div>
 			</div>
 		</div> <!-- end of .inline-edit-wrapper -->
 
 			</td></tr>
 
 			<?php
-			++$bulk;
+			$bulk++;
 		endwhile;
 		?>
 		</tbody></table>

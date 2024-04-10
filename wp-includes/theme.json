@@ -1,9 +1,7 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/theme.json",
 	"version": 2,
 	"settings": {
 		"appearanceTools": false,
-		"useRootPaddingAwareAlignments": false,
 		"border": {
 			"color": false,
 			"radius": false,
@@ -12,12 +10,10 @@
 		},
 		"color": {
 			"background": true,
-			"button": true,
-			"caption": true,
 			"custom": true,
 			"customDuotone": true,
-			"customGradient": true,
-			"defaultDuotone": true,
+ 			"customGradient": true,
+ 			"defaultDuotone": true,
 			"defaultGradients": true,
 			"defaultPalette": true,
 			"duotone": [
@@ -124,7 +120,6 @@
 					"slug": "midnight"
 				}
 			],
-			"heading": true,
 			"link": false,
 			"palette": [
 				{
@@ -190,49 +185,11 @@
 			],
 			"text": true
 		},
-		"shadow": {
-			"defaultPresets": true,
-			"presets": [
-				{
-					"name": "Natural",
-					"slug": "natural",
-					"shadow": "6px 6px 9px rgba(0, 0, 0, 0.2)"
-				},
-				{
-					"name": "Deep",
-					"slug": "deep",
-					"shadow": "12px 12px 50px rgba(0, 0, 0, 0.4)"
-				},
-				{
-					"name": "Sharp",
-					"slug": "sharp",
-					"shadow": "6px 6px 0px rgba(0, 0, 0, 0.2)"
-				},
-				{
-					"name": "Outlined",
-					"slug": "outlined",
-					"shadow": "6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1)"
-				},
-				{
-					"name": "Crisp",
-					"slug": "crisp",
-					"shadow": "6px 6px 0px rgba(0, 0, 0, 1)"
-				}
-			]
-		},
 		"spacing": {
 			"blockGap": null,
 			"margin": false,
 			"padding": false,
-			"customSpacingSize": true,
-			"units": [ "px", "em", "rem", "vh", "vw", "%" ],
-			"spacingScale": {
-				"operator": "*",
-				"increment": 1.5,
-				"steps": 7,
-				"mediumStep": 1.5,
-				"unit": "rem"
-			}
+			"units": [ "px", "em", "rem", "vh", "vw", "%" ]
 		},
 		"typography": {
 			"customFontSize": true,
@@ -264,18 +221,12 @@
 			"letterSpacing": true,
 			"lineHeight": false,
 			"textDecoration": true,
-			"textTransform": true,
-			"writingMode": false
+			"textTransform": true
 		},
 		"blocks": {
 			"core/button": {
 				"border": {
 					"radius": true
-				}
-			},
-			"core/image": {
-				"lightbox": {
-					"allowEditing": true
 				}
 			},
 			"core/pullquote": {
@@ -289,39 +240,6 @@
 		}
 	},
 	"styles": {
-		"elements": {
-			"button": {
-				"color": {
-					"text": "#fff",
-					"background": "#32373c"
-				},
-				"spacing": {
-					"padding": "calc(0.667em + 2px) calc(1.333em + 2px)"
-				},
-				"typography": {
-					"fontSize": "inherit",
-					"fontFamily": "inherit",
-					"lineHeight": "inherit",
-					"textDecoration": "none"
-				},
-				"border": {
-					"width": "0"
-				}
-			},
-			"link": {
-				"typography": {
-					"textDecoration": "underline"
-				}
-			}
-		},
-		"spacing": {
-			"blockGap": "24px",
-			"padding": {
-				"top": "0px",
-				"right": "0px",
-				"bottom": "0px",
-				"left": "0px"
-			}
-		}
+		"spacing": { "blockGap": "24px" }
 	}
 }

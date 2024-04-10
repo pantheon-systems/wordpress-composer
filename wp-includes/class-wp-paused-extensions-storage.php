@@ -11,11 +11,10 @@
  *
  * @since 5.2.0
  */
-#[AllowDynamicProperties]
 class WP_Paused_Extensions_Storage {
 
 	/**
-	 * Type of extension. Used to key extension storage. Either 'plugin' or 'theme'.
+	 * Type of extension. Used to key extension storage.
 	 *
 	 * @since 5.2.0
 	 * @var string

@@ -19,7 +19,6 @@
  *
  * @since 3.2.0
  */
-#[AllowDynamicProperties]
 class WP_Meta_Query {
 	/**
 	 * Array of metadata queries.
@@ -180,7 +179,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Ensures the 'meta_query' argument passed to the class constructor is well-formed.
+	 * Ensure the 'meta_query' argument passed to the class constructor is well-formed.
 	 *
 	 * Eliminates empty items and ensures that a 'relation' is set.
 	 *
@@ -247,7 +246,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Determines whether a query clause is first-order.
+	 * Determine whether a query clause is first-order.
 	 *
 	 * A first-order meta query clause is one that has either a 'key' or
 	 * a 'value' array key.
@@ -266,7 +265,7 @@ class WP_Meta_Query {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $qv The query variables.
+	 * @param array $qv The query variables
 	 */
 	public function parse_query_vars( $qv ) {
 		$meta_query = array();
@@ -309,7 +308,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Returns the appropriate alias for the given meta type if applicable.
+	 * Return the appropriate alias for the given meta type if applicable.
 	 *
 	 * @since 3.7.0
 	 *
@@ -345,7 +344,6 @@ class WP_Meta_Query {
 	 * @param string $primary_id_column ID column for the filtered object in $primary_table.
 	 * @param object $context           Optional. The main query object that corresponds to the type, for
 	 *                                  example a `WP_Query`, `WP_User_Query`, or `WP_Site_Query`.
-	 *                                  Default null.
 	 * @return string[]|false {
 	 *     Array containing JOIN and WHERE SQL clauses to append to the main query,
 	 *     or false if no table exists for the requested meta type.
@@ -374,7 +372,7 @@ class WP_Meta_Query {
 		 * If any JOINs are LEFT JOINs (as in the case of NOT EXISTS), then all JOINs should
 		 * be LEFT. Otherwise posts with no metadata will be excluded from results.
 		 */
-		if ( str_contains( $sql['join'], 'LEFT JOIN' ) ) {
+		if ( false !== strpos( $sql['join'], 'LEFT JOIN' ) ) {
 			$sql['join'] = str_replace( 'INNER JOIN', 'LEFT JOIN', $sql['join'] );
 		}
 
@@ -396,7 +394,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Generates SQL clauses to be appended to a main query.
+	 * Generate SQL clauses to be appended to a main query.
 	 *
 	 * Called by the public WP_Meta_Query::get_sql(), this method is abstracted
 	 * out to maintain parity with the other Query classes.
@@ -426,7 +424,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Generates SQL clauses for a single query array.
+	 * Generate SQL clauses for a single query array.
 	 *
 	 * If nested subqueries are found, this method recurses the tree to
 	 * produce the properly nested SQL.
@@ -510,7 +508,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Generates SQL JOIN and WHERE clauses for a first-order query clause.
+	 * Generate SQL JOIN and WHERE clauses for a first-order query clause.
 	 *
 	 * "First-order" means that it's an array with a 'key' or 'value'.
 	 *
@@ -522,12 +520,11 @@ class WP_Meta_Query {
 	 * @param array  $parent_query Parent query array.
 	 * @param string $clause_key   Optional. The array key used to name the clause in the original `$meta_query`
 	 *                             parameters. If not provided, a key will be generated automatically.
-	 *                             Default empty string.
-	 * @return array {
+	 * @return string[] {
 	 *     Array containing JOIN and WHERE SQL clauses to append to a first-order query.
 	 *
-	 *     @type string[] $join  Array of SQL fragments to append to the main JOIN clause.
-	 *     @type string[] $where Array of SQL fragments to append to the main WHERE clause.
+	 *     @type string $join  SQL fragment to append to the main JOIN clause.
+	 *     @type string $where SQL fragment to append to the main WHERE clause.
 	 * }
 	 */
 	public function get_sql_for_clause( &$clause, $parent_query, $clause_key = '' ) {
@@ -633,7 +630,7 @@ class WP_Meta_Query {
 		$clause_key_base = $clause_key;
 		while ( isset( $this->clauses[ $clause_key ] ) ) {
 			$clause_key = $clause_key_base . '-' . $iterator;
-			++$iterator;
+			$iterator++;
 		}
 
 		// Store the clause in our flat array.
@@ -682,13 +679,11 @@ class WP_Meta_Query {
 					case 'REGEXP':
 						$operator = $meta_compare_key;
 						if ( isset( $clause['type_key'] ) && 'BINARY' === strtoupper( $clause['type_key'] ) ) {
-							$cast     = 'BINARY';
-							$meta_key = "CAST($alias.meta_key AS BINARY)";
+							$cast = 'BINARY';
 						} else {
-							$cast     = '';
-							$meta_key = "$alias.meta_key";
+							$cast = '';
 						}
-						$where = $wpdb->prepare( "$meta_key $operator $cast %s", trim( $clause['key'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+						$where = $wpdb->prepare( "$alias.meta_key $operator $cast %s", trim( $clause['key'] ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 						break;
 
 					case '!=':
@@ -710,14 +705,12 @@ class WP_Meta_Query {
 					case 'NOT REGEXP':
 						$operator = $meta_compare_key;
 						if ( isset( $clause['type_key'] ) && 'BINARY' === strtoupper( $clause['type_key'] ) ) {
-							$cast     = 'BINARY';
-							$meta_key = "CAST($subquery_alias.meta_key AS BINARY)";
+							$cast = 'BINARY';
 						} else {
-							$cast     = '';
-							$meta_key = "$subquery_alias.meta_key";
+							$cast = '';
 						}
 
-						$meta_compare_string = $meta_compare_string_start . "AND $meta_key REGEXP $cast %s " . $meta_compare_string_end;
+						$meta_compare_string = $meta_compare_string_start . "AND $subquery_alias.meta_key REGEXP $cast %s " . $meta_compare_string_end;
 						$where               = $wpdb->prepare( $meta_compare_string, $clause['key'] ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 						break;
 				}
@@ -794,7 +787,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Gets a flattened list of sanitized meta clauses.
+	 * Get a flattened list of sanitized meta clauses.
 	 *
 	 * This array should be used for clause lookup, as when the table alias and CAST type must be determined for
 	 * a value of 'orderby' corresponding to a meta clause.
@@ -808,7 +801,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Identifies an existing table alias that is compatible with the current
+	 * Identify an existing table alias that is compatible with the current
 	 * query clause.
 	 *
 	 * We avoid unnecessary table joins by allowing each clause to look for

@@ -778,10 +778,6 @@ if (!is_callable('\\Sodium\\memzero')) {
      * @return void
      * @throws \SodiumException
      * @throws \TypeError
-     *
-     * @psalm-suppress MissingParamType
-     * @psalm-suppress MissingReturnType
-     * @psalm-suppress ReferenceConstraintViolation
      */
     function memzero(&$str)
     {

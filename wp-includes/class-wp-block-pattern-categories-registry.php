@@ -10,7 +10,6 @@
 /**
  * Class used for interacting with block pattern categories.
  */
-#[AllowDynamicProperties]
 final class WP_Block_Pattern_Categories_Registry {
 	/**
 	 * Registered block pattern categories array.

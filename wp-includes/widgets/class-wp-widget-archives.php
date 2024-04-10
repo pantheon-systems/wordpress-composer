@@ -100,6 +100,8 @@ class WP_Widget_Archives extends WP_Widget {
 					$label = __( 'Select Post' );
 					break;
 			}
+
+			$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
 			?>
 
 			<option value=""><?php echo esc_html( $label ); ?></option>
@@ -107,8 +109,8 @@ class WP_Widget_Archives extends WP_Widget {
 
 		</select>
 
-			<?php ob_start(); ?>
-<script>
+<script<?php echo $type_attr; ?>>
+/* <![CDATA[ */
 (function() {
 	var dropdown = document.getElementById( "<?php echo esc_js( $dropdown_id ); ?>" );
 	function onSelectChange() {
@@ -118,9 +120,9 @@ class WP_Widget_Archives extends WP_Widget {
 	}
 	dropdown.onchange = onSelectChange;
 })();
+/* ]]> */
 </script>
 			<?php
-			wp_print_inline_script_tag( wp_remove_surrounding_empty_script_tags( ob_get_clean() ) );
 		} else {
 			$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
 
@@ -221,7 +223,7 @@ class WP_Widget_Archives extends WP_Widget {
 		<p>
 			<input class="checkbox" type="checkbox"<?php checked( $instance['dropdown'] ); ?> id="<?php echo $this->get_field_id( 'dropdown' ); ?>" name="<?php echo $this->get_field_name( 'dropdown' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'dropdown' ); ?>"><?php _e( 'Display as dropdown' ); ?></label>
-			<br />
+			<br/>
 			<input class="checkbox" type="checkbox"<?php checked( $instance['count'] ); ?> id="<?php echo $this->get_field_id( 'count' ); ?>" name="<?php echo $this->get_field_name( 'count' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'count' ); ?>"><?php _e( 'Show post counts' ); ?></label>
 		</p>

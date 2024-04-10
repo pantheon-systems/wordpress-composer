@@ -14,7 +14,6 @@
  *
  * @since 5.5.0
  */
-#[AllowDynamicProperties]
 abstract class WP_Sitemaps_Provider {
 	/**
 	 * Provider name.
@@ -69,10 +68,8 @@ abstract class WP_Sitemaps_Provider {
 
 		$object_subtypes = $this->get_object_subtypes();
 
-		/*
-		 * If there are no object subtypes, include a single sitemap for the
-		 * entire object type.
-		 */
+		// If there are no object subtypes, include a single sitemap for the
+		// entire object type.
 		if ( empty( $object_subtypes ) ) {
 			$sitemap_data[] = array(
 				'name'  => '',
@@ -109,7 +106,7 @@ abstract class WP_Sitemaps_Provider {
 		$sitemap_types = $this->get_sitemap_type_data();
 
 		foreach ( $sitemap_types as $type ) {
-			for ( $page = 1; $page <= $type['pages']; $page++ ) {
+			for ( $page = 1; $page <= $type['pages']; $page ++ ) {
 				$sitemap_entry = array(
 					'loc' => $this->get_sitemap_url( $type['name'], $page ),
 				);

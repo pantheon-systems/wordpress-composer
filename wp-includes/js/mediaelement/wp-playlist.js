@@ -80,15 +80,13 @@
 		},
 
 		renderCurrent : function () {
-			var dimensions, defaultImage = 'wp-includes/images/media/video.svg';
+			var dimensions, defaultImage = 'wp-includes/images/media/video.png';
 			if ( 'video' === this.data.type ) {
 				if ( this.data.images && this.current.get( 'image' ) && -1 === this.current.get( 'image' ).src.indexOf( defaultImage ) ) {
 					this.playerNode.attr( 'poster', this.current.get( 'image' ).src );
 				}
-				dimensions = this.current.get( 'dimensions' );
-				if ( dimensions && dimensions.resized ) {
-					this.playerNode.attr( dimensions.resized );
-				}
+				dimensions = this.current.get( 'dimensions' ).resized;
+				this.playerNode.attr( dimensions );
 			} else {
 				if ( ! this.data.images ) {
 					this.current.set( 'image', false );

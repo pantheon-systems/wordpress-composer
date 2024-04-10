@@ -10,10 +10,7 @@
 if ( ! class_exists( 'Translation_Entry', false ) ) :
 	/**
 	 * Translation_Entry class encapsulates a translatable string.
-	 *
-	 * @since 2.8.0
 	 */
-	#[AllowDynamicProperties]
 	class Translation_Entry {
 
 		/**
@@ -77,7 +74,6 @@ if ( ! class_exists( 'Translation_Entry', false ) ) :
 		/**
 		 * PHP4 constructor.
 		 *
-		 * @since 2.8.0
 		 * @deprecated 5.4.0 Use __construct() instead.
 		 *
 		 * @see Translation_Entry::__construct()
@@ -90,12 +86,10 @@ if ( ! class_exists( 'Translation_Entry', false ) ) :
 		/**
 		 * Generates a unique key for this entry.
 		 *
-		 * @since 2.8.0
-		 *
-		 * @return string|false The key or false if the entry is null.
+		 * @return string|false The key or false if the entry is empty.
 		 */
 		public function key() {
-			if ( null === $this->singular ) {
+			if ( null === $this->singular || '' === $this->singular ) {
 				return false;
 			}
 
@@ -108,18 +102,15 @@ if ( ! class_exists( 'Translation_Entry', false ) ) :
 		}
 
 		/**
-		 * Merges another translation entry with the current one.
-		 *
-		 * @since 2.8.0
-		 *
-		 * @param Translation_Entry $other Other translation entry.
+		 * @param object $other
 		 */
 		public function merge_with( &$other ) {
 			$this->flags      = array_unique( array_merge( $this->flags, $other->flags ) );
 			$this->references = array_unique( array_merge( $this->references, $other->references ) );
-			if ( $this->extracted_comments !== $other->extracted_comments ) {
+			if ( $this->extracted_comments != $other->extracted_comments ) {
 				$this->extracted_comments .= $other->extracted_comments;
 			}
+
 		}
 	}
 endif;

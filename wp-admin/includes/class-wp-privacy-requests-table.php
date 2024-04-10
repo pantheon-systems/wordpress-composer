@@ -31,7 +31,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	protected $post_type = 'INVALID';
 
 	/**
-	 * Gets columns to show in the list table.
+	 * Get columns to show in the list table.
 	 *
 	 * @since 4.9.6
 	 *
@@ -49,7 +49,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Normalizes the admin URL to the current page (by request_type).
+	 * Normalize the admin URL to the current page (by request_type).
 	 *
 	 * @since 5.3.0
 	 *
@@ -66,7 +66,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Gets a list of sortable columns.
+	 * Get a list of sortable columns.
 	 *
 	 * @since 4.9.6
 	 *
@@ -87,7 +87,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Returns the default primary column.
+	 * Default primary column.
 	 *
 	 * @since 4.9.6
 	 *
@@ -98,7 +98,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Counts the number of requests for each status.
+	 * Count number of requests for each status.
 	 *
 	 * @since 4.9.6
 	 *
@@ -137,7 +137,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Gets an associative array ( id => link ) with the list of views available on this table.
+	 * Get an associative array ( id => link ) with the list of views available on this table.
 	 *
 	 * @since 4.9.6
 	 *
@@ -153,7 +153,8 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 		// Normalized admin URL.
 		$admin_url = $this->get_admin_url();
 
-		$status_label = sprintf(
+		$current_link_attributes = empty( $current_status ) ? ' class="current" aria-current="page"' : '';
+		$status_label            = sprintf(
 			/* translators: %s: Number of requests. */
 			_nx(
 				'All <span class="count">(%s)</span>',
@@ -164,10 +165,11 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 			number_format_i18n( $total_requests )
 		);
 
-		$views['all'] = array(
-			'url'     => esc_url( $admin_url ),
-			'label'   => $status_label,
-			'current' => empty( $current_status ),
+		$views['all'] = sprintf(
+			'<a href="%s"%s>%s</a>',
+			esc_url( $admin_url ),
+			$current_link_attributes,
+			$status_label
 		);
 
 		foreach ( $statuses as $status => $label ) {
@@ -176,7 +178,8 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 				continue;
 			}
 
-			$total_status_requests = absint( $counts->{$status} );
+			$current_link_attributes = $status === $current_status ? ' class="current" aria-current="page"' : '';
+			$total_status_requests   = absint( $counts->{$status} );
 
 			if ( ! $total_status_requests ) {
 				continue;
@@ -189,18 +192,19 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 
 			$status_link = add_query_arg( 'filter-status', $status, $admin_url );
 
-			$views[ $status ] = array(
-				'url'     => esc_url( $status_link ),
-				'label'   => $status_label,
-				'current' => $status === $current_status,
+			$views[ $status ] = sprintf(
+				'<a href="%s"%s>%s</a>',
+				esc_url( $status_link ),
+				$current_link_attributes,
+				$status_label
 			);
 		}
 
-		return $this->get_views_links( $views );
+		return $views;
 	}
 
 	/**
-	 * Gets bulk actions.
+	 * Get bulk actions.
 	 *
 	 * @since 4.9.6
 	 *
@@ -239,9 +243,9 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 					$resend = _wp_privacy_resend_request( $request_id );
 
 					if ( $resend && ! is_wp_error( $resend ) ) {
-						++$count;
+						$count++;
 					} else {
-						++$failures;
+						$failures++;
 					}
 				}
 
@@ -286,7 +290,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 					$result = _wp_privacy_completed_request( $request_id );
 
 					if ( $result && ! is_wp_error( $result ) ) {
-						++$count;
+						$count++;
 					}
 				}
 
@@ -309,9 +313,9 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 			case 'delete':
 				foreach ( $request_ids as $request_id ) {
 					if ( wp_delete_post( $request_id, true ) ) {
-						++$count;
+						$count++;
 					} else {
-						++$failures;
+						$failures++;
 					}
 				}
 
@@ -354,7 +358,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Prepares items to output.
+	 * Prepare items to output.
 	 *
 	 * @since 4.9.6
 	 * @since 5.1.0 Added support for column sorting.
@@ -407,7 +411,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Returns the markup for the Checkbox column.
+	 * Checkbox column.
 	 *
 	 * @since 4.9.6
 	 *
@@ -415,13 +419,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	 * @return string Checkbox column markup.
 	 */
 	public function column_cb( $item ) {
-		return sprintf(
-			'<input type="checkbox" name="request_id[]" id="requester_%1$s" value="%1$s" />' .
-			'<label for="requester_%1$s"><span class="screen-reader-text">%2$s</span></label><span class="spinner"></span>',
-			esc_attr( $item->ID ),
-			/* translators: Hidden accessibility text. %s: Email address. */
-			sprintf( __( 'Select %s' ), $item->email )
-		);
+		return sprintf( '<input type="checkbox" name="request_id[]" value="%1$s" /><span class="spinner"></span>', esc_attr( $item->ID ) );
 	}
 
 	/**
@@ -462,7 +460,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Converts a timestamp for display.
+	 * Convert timestamp for display.
 	 *
 	 * @since 4.9.6
 	 *
@@ -485,7 +483,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the default column.
+	 * Default column handler.
 	 *
 	 * @since 4.9.6
 	 * @since 5.7.0 Added `manage_{$this->screen->id}_custom_column` action.
@@ -509,7 +507,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Returns the markup for the Created timestamp column. Overridden by children.
+	 * Created timestamp column. Overridden by children.
 	 *
 	 * @since 5.7.0
 	 *
@@ -533,7 +531,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Returns the markup for the next steps column. Overridden by children.
+	 * Next steps column. Overridden by children.
 	 *
 	 * @since 4.9.6
 	 *
@@ -557,7 +555,7 @@ abstract class WP_Privacy_Requests_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Embeds scripts used to perform actions. Overridden by children.
+	 * Embed scripts used to perform actions. Overridden by children.
 	 *
 	 * @since 4.9.6
 	 */

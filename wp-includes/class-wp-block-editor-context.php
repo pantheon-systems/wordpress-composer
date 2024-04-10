@@ -11,7 +11,6 @@
  *
  * @since 5.8.0
  */
-#[AllowDynamicProperties]
 final class WP_Block_Editor_Context {
 	/**
 	 * String that identifies the block editor being rendered. Can be one of:

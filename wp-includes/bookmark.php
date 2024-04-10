@@ -7,12 +7,11 @@
  */
 
 /**
- * Retrieves bookmark data.
+ * Retrieve Bookmark data
  *
  * @since 2.1.0
  *
- * @global object $link Current link object.
- * @global wpdb   $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param int|stdClass $bookmark
  * @param string       $output   Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
@@ -66,13 +65,13 @@ function get_bookmark( $bookmark, $output = OBJECT, $filter = 'raw' ) {
 }
 
 /**
- * Retrieves single bookmark data item or field.
+ * Retrieve single bookmark data item or field.
  *
  * @since 2.3.0
  *
  * @param string $field    The name of the data field to return.
  * @param int    $bookmark The bookmark ID to get field.
- * @param string $context  Optional. The context of how the field will be used. Default 'display'.
+ * @param string $context  Optional. The context of how the field will be used.
  * @return string|WP_Error
  */
 function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
@@ -95,7 +94,7 @@ function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
 }
 
 /**
- * Retrieves the list of bookmarks.
+ * Retrieves the list of bookmarks
  *
  * Attempts to retrieve from the cache first based on MD5 hash of arguments. If
  * that fails, then the query will be built from the arguments and executed. The
@@ -405,10 +404,8 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 	switch ( $field ) {
 		case 'link_category': // array( ints )
 			$value = array_map( 'absint', (array) $value );
-			/*
-			 * We return here so that the categories aren't filtered.
-			 * The 'link_category' filter is for the name of a link category, not an array of a link's link categories.
-			 */
+			// We return here so that the categories aren't filtered.
+			// The 'link_category' filter is for the name of a link category, not an array of a link's link categories.
 			return $value;
 
 		case 'link_visible': // bool stored as Y|N

@@ -11,7 +11,6 @@
  *
  * @since 2.9.0
  */
-#[AllowDynamicProperties]
 class WP_MatchesMapRegex {
 	/**
 	 * store for matches
@@ -63,8 +62,8 @@ class WP_MatchesMapRegex {
 	 * @return string
 	 */
 	public static function apply( $subject, $matches ) {
-		$result = new WP_MatchesMapRegex( $subject, $matches );
-		return $result->output;
+		$oSelf = new WP_MatchesMapRegex( $subject, $matches );
+		return $oSelf->output;
 	}
 
 	/**

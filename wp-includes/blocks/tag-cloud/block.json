@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "core/tag-cloud",
 	"title": "Tag Cloud",
 	"category": "widgets",
@@ -23,7 +23,7 @@
 		},
 		"smallestFontSize": {
 			"type": "string",
-			"default": "8pt"
+			"default": "8pt" 
 		},
 		"largestFontSize": {
 			"type": "string",
@@ -36,22 +36,7 @@
 	],
 	"supports": {
 		"html": false,
-		"align": true,
-		"spacing": {
-			"margin": true,
-			"padding": true
-		},
-		"typography": {
-			"lineHeight": true,
-			"__experimentalFontFamily": true,
-			"__experimentalFontWeight": true,
-			"__experimentalFontStyle": true,
-			"__experimentalTextTransform": true,
-			"__experimentalLetterSpacing": true
-		},
-		"interactivity": {
-			"clientNavigation": true
-		}
+		"align": true
 	},
 	"editorStyle": "wp-block-tag-cloud-editor"
 }

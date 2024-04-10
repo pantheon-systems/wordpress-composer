@@ -14,7 +14,6 @@
  *
  * @since 4.8.0
  */
-#[AllowDynamicProperties]
 class WP_Community_Events {
 	/**
 	 * ID for a WordPress user account.
@@ -353,12 +352,8 @@ class WP_Community_Events {
 	 *                     on success, false on failure.
 	 */
 	public function get_cached_events() {
-		$transient_key = $this->get_events_transient_key( $this->user_location );
-		if ( ! $transient_key ) {
-			return false;
-		}
+		$cached_response = get_site_transient( $this->get_events_transient_key( $this->user_location ) );
 
-		$cached_response = get_site_transient( $transient_key );
 		if ( isset( $cached_response['events'] ) ) {
 			$cached_response['events'] = $this->trim_events( $cached_response['events'] );
 		}
@@ -483,7 +478,7 @@ class WP_Community_Events {
 
 		$future_wordcamps = array_filter(
 			$future_events,
-			static function ( $wordcamp ) {
+			static function( $wordcamp ) {
 				return 'wordcamp' === $wordcamp['type'];
 			}
 		);

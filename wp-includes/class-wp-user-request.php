@@ -6,7 +6,6 @@
  *
  * @since 4.9.6
  */
-#[AllowDynamicProperties]
 final class WP_User_Request {
 	/**
 	 * Request ID.

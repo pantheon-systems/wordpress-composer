@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "core/image",
 	"title": "Image",
 	"category": "media",
@@ -9,46 +9,38 @@
 	"keywords": [ "img", "photo", "picture" ],
 	"textdomain": "default",
 	"attributes": {
+		"align": {
+			"type": "string"
+		},
 		"url": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "img",
-			"attribute": "src",
-			"__experimentalRole": "content"
+			"attribute": "src"
 		},
 		"alt": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "img",
 			"attribute": "alt",
-			"default": "",
-			"__experimentalRole": "content"
+			"default": ""
 		},
 		"caption": {
-			"type": "rich-text",
-			"source": "rich-text",
-			"selector": "figcaption",
-			"__experimentalRole": "content"
-		},
-		"lightbox": {
-			"type": "object",
-			"enabled": {
-				"type": "boolean"
-			}
+			"type": "string",
+			"source": "html",
+			"selector": "figcaption"
 		},
 		"title": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "img",
-			"attribute": "title",
-			"__experimentalRole": "content"
+			"attribute": "title"
 		},
 		"href": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "figure > a",
-			"attribute": "href",
-			"__experimentalRole": "content"
+			"attribute": "href"
 		},
 		"rel": {
 			"type": "string",
@@ -63,20 +55,13 @@
 			"attribute": "class"
 		},
 		"id": {
-			"type": "number",
-			"__experimentalRole": "content"
+			"type": "number"
 		},
 		"width": {
-			"type": "string"
+			"type": "number"
 		},
 		"height": {
-			"type": "string"
-		},
-		"aspectRatio": {
-			"type": "string"
-		},
-		"scale": {
-			"type": "string"
+			"type": "number"
 		},
 		"sizeSlug": {
 			"type": "string"
@@ -92,36 +77,17 @@
 		}
 	},
 	"supports": {
-		"interactivity": true,
-		"align": [ "left", "center", "right", "wide", "full" ],
 		"anchor": true,
 		"color": {
+			"__experimentalDuotone": "img",
 			"text": false,
 			"background": false
 		},
-		"filter": {
-			"duotone": true
-		},
 		"__experimentalBorder": {
-			"color": true,
 			"radius": true,
-			"width": true,
-			"__experimentalSkipSerialization": true,
 			"__experimentalDefaultControls": {
-				"color": true,
-				"radius": true,
-				"width": true
+				"radius": true
 			}
-		},
-		"shadow": {
-			"__experimentalSkipSerialization": true
-		}
-	},
-	"selectors": {
-		"border": ".wp-block-image img, .wp-block-image .wp-block-image__crop-area, .wp-block-image .components-placeholder",
-		"shadow": ".wp-block-image img, .wp-block-image .wp-block-image__crop-area, .wp-block-image .components-placeholder",
-		"filter": {
-			"duotone": ".wp-block-image img, .wp-block-image .components-placeholder"
 		}
 	},
 	"styles": [

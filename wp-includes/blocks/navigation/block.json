@@ -1,22 +1,9 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "core/navigation",
 	"title": "Navigation",
 	"category": "theme",
-	"allowedBlocks": [
-		"core/navigation-link",
-		"core/search",
-		"core/social-links",
-		"core/page-list",
-		"core/spacer",
-		"core/home-link",
-		"core/site-title",
-		"core/site-logo",
-		"core/navigation-submenu",
-		"core/loginout",
-		"core/buttons"
-	],
 	"description": "A collection of blocks that allow visitors to get around your site.",
 	"keywords": [ "menu", "navigation", "links" ],
 	"textdomain": "default",
@@ -54,10 +41,6 @@
 			"type": "string",
 			"default": "mobile"
 		},
-		"icon": {
-			"type": "string",
-			"default": "handle"
-		},
 		"hasIcon": {
 			"type": "boolean",
 			"default": true
@@ -80,10 +63,6 @@
 		"maxNestingLevel": {
 			"type": "number",
 			"default": 5
-		},
-		"templateLock": {
-			"type": [ "string", "boolean" ],
-			"enum": [ "all", "insert", "contentOnly", false ]
 		}
 	},
 	"providesContext": {
@@ -100,11 +79,12 @@
 		"showSubmenuIcon": "showSubmenuIcon",
 		"openSubmenusOnClick": "openSubmenusOnClick",
 		"style": "style",
+		"orientation": "orientation",
 		"maxNestingLevel": "maxNestingLevel"
 	},
 	"supports": {
 		"align": [ "wide", "full" ],
-		"ariaLabel": true,
+		"anchor": true,
 		"html": false,
 		"inserter": true,
 		"typography": {
@@ -114,7 +94,6 @@
 			"__experimentalFontWeight": true,
 			"__experimentalTextTransform": true,
 			"__experimentalFontFamily": true,
-			"__experimentalLetterSpacing": true,
 			"__experimentalTextDecoration": true,
 			"__experimentalSkipSerialization": [ "textDecoration" ],
 			"__experimentalDefaultControls": {
@@ -128,27 +107,16 @@
 				"blockGap": true
 			}
 		},
-		"layout": {
+		"__experimentalLayout": {
 			"allowSwitching": false,
 			"allowInheriting": false,
 			"allowVerticalAlignment": false,
-			"allowSizingOnChildren": true,
 			"default": {
 				"type": "flex"
 			}
-		},
-		"__experimentalStyle": {
-			"elements": {
-				"link": {
-					"color": {
-						"text": "inherit"
-					}
-				}
-			}
-		},
-		"interactivity": true,
-		"renaming": false
+		}
 	},
+	"viewScript": "file:./view.min.js",
 	"editorStyle": "wp-block-navigation-editor",
 	"style": "wp-block-navigation"
 }

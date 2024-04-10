@@ -32,15 +32,17 @@ function render_block_core_query_no_results( $attributes, $content, $block ) {
 		$query      = new WP_Query( $query_args );
 	}
 
-	if ( $query->post_count > 0 ) {
+	if ( $query->have_posts() ) {
 		return '';
 	}
 
-	$classes            = ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) ? 'has-link-color' : '';
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classes ) );
+	if ( ! $use_global_query ) {
+		wp_reset_postdata();
+	}
+
 	return sprintf(
 		'<div %1$s>%2$s</div>',
-		$wrapper_attributes,
+		get_block_wrapper_attributes(),
 		$content
 	);
 }

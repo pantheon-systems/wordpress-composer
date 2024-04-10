@@ -5,7 +5,6 @@
  * @package WordPress
  * @since 3.1.0
  */
-#[AllowDynamicProperties]
 class WP_HTTP_IXR_Client extends IXR_Client {
 	public $scheme;
 	/**
