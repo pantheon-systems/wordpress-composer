@@ -117,6 +117,7 @@ $core_actions_post = array(
 	'parse-media-shortcode',
 	'destroy-sessions',
 	'install-plugin',
+	'activate-plugin',
 	'update-plugin',
 	'crop-image',
 	'generate-password',
@@ -153,7 +154,8 @@ $core_actions_post_deprecated = array(
 	'health-check-background-updates',
 	'health-check-loopback-requests',
 );
-$core_actions_post            = array_merge( $core_actions_post, $core_actions_post_deprecated );
+
+$core_actions_post = array_merge( $core_actions_post, $core_actions_post_deprecated );
 
 // Register core Ajax calls.
 if ( ! empty( $_GET['action'] ) && in_array( $_GET['action'], $core_actions_get, true ) ) {
@@ -167,6 +169,9 @@ if ( ! empty( $_POST['action'] ) && in_array( $_POST['action'], $core_actions_po
 add_action( 'wp_ajax_nopriv_generate-password', 'wp_ajax_nopriv_generate_password' );
 
 add_action( 'wp_ajax_nopriv_heartbeat', 'wp_ajax_nopriv_heartbeat', 1 );
+
+// Register Plugin Dependencies Ajax calls.
+add_action( 'wp_ajax_check_plugin_dependencies', array( 'WP_Plugin_Dependencies', 'check_plugin_dependencies_during_ajax' ) );
 
 $action = $_REQUEST['action'];
 

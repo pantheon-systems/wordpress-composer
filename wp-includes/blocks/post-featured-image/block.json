@@ -1,8 +1,8 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "core/post-featured-image",
-	"title": "Post Featured Image",
+	"title": "Featured Image",
 	"category": "theme",
 	"description": "Display a post's featured image.",
 	"textdomain": "default",
@@ -10,6 +10,9 @@
 		"isLink": {
 			"type": "boolean",
 			"default": false
+		},
+		"aspectRatio": {
+			"type": "string"
 		},
 		"width": {
 			"type": "string"
@@ -23,6 +26,35 @@
 		},
 		"sizeSlug": {
 			"type": "string"
+		},
+		"rel": {
+			"type": "string",
+			"attribute": "rel",
+			"default": ""
+		},
+		"linkTarget": {
+			"type": "string",
+			"default": "_self"
+		},
+		"overlayColor": {
+			"type": "string"
+		},
+		"customOverlayColor": {
+			"type": "string"
+		},
+		"dimRatio": {
+			"type": "number",
+			"default": 0
+		},
+		"gradient": {
+			"type": "string"
+		},
+		"customGradient": {
+			"type": "string"
+		},
+		"useFirstImageFromPost": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"usesContext": [ "postId", "postType", "queryId" ],
@@ -33,10 +65,25 @@
 			"text": false,
 			"background": false
 		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalSelector": "img, .block-editor-media-placeholder, .wp-block-post-featured-image__overlay",
+			"__experimentalSkipSerialization": true,
+			"__experimentalDefaultControls": {
+				"color": true,
+				"radius": true,
+				"width": true
+			}
+		},
 		"html": false,
 		"spacing": {
 			"margin": true,
 			"padding": true
+		},
+		"interactivity": {
+			"clientNavigation": true
 		}
 	},
 	"editorStyle": "wp-block-post-featured-image-editor",

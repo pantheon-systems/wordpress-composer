@@ -33,8 +33,9 @@ define('DB_COLLATE', '');
  * Authentication Unique Keys and Salts.
  *
  * Changing these will force all users to have to log in again.
- * Pantheon sets these values for you. If you want to shuffle them you must
- * contact support: https://pantheon.io/docs/getting-support
+ * Pantheon sets these values for you. If you want to shuffle them you could
+ * use terminus env:rotate-random-seed command:
+ * https://docs.pantheon.io/terminus/commands/env-rotate-random-seed
  *
  * @since 2.6.0
  */
@@ -94,6 +95,13 @@ if (getenv('WP_ENVIRONMENT_TYPE') === false) {
  *
  * To override, define your constant in your wp-config.php before wp-config-pantheon.php is required.
  */
+
+if ( ! defined('PANTHEON_HOSTNAME' ) ) {
+    $site_name = $_ENV['PANTHEON_SITE_NAME'];
+    $hostname = isset( $_SERVER['HTTP_HOST'] ) ? $_SERVER['HTTP_HOST'] : $_ENV['PANTHEON_ENVIRONMENT'] . "-{$site_name}.pantheonsite.io" ;
+    $hostname = isset( $_ENV['LANDO'] ) ? "{$site_name}.lndo.site" : $hostname;
+    define( 'PANTHEON_HOSTNAME', $hostname );
+}
 
 /** Disable wp-cron.php from running on every page load and rely on Pantheon to run cron via wp-cli */
 $network = isset($_ENV["FRAMEWORK"]) && $_ENV["FRAMEWORK"] === "wordpress_network";
