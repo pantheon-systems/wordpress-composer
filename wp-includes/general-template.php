@@ -158,10 +158,10 @@ function get_sidebar( $name = null, $args = array() ) {
  * @since 5.5.0 A return value was added.
  * @since 5.5.0 The `$args` parameter was added.
  *
- * @param string      $slug The slug name for the generic template.
- * @param string|null $name Optional. The name of the specialized template.
- * @param array       $args Optional. Additional arguments passed to the template.
- *                          Default empty array.
+ * @param string $slug The slug name for the generic template.
+ * @param string $name The name of the specialized template.
+ * @param array  $args Optional. Additional arguments passed to the template.
+ *                     Default empty array.
  * @return void|false Void on success, false if the template does not exist.
  */
 function get_template_part( $slug, $name = null, $args = array() ) {
@@ -175,8 +175,7 @@ function get_template_part( $slug, $name = null, $args = array() ) {
 	 * @since 5.5.0 The `$args` parameter was added.
 	 *
 	 * @param string      $slug The slug name for the generic template.
-	 * @param string|null $name The name of the specialized template or null if
-	 *                          there is none.
+	 * @param string|null $name The name of the specialized template.
 	 * @param array       $args Additional arguments passed to the template.
 	 */
 	do_action( "get_template_part_{$slug}", $slug, $name, $args );
@@ -196,8 +195,7 @@ function get_template_part( $slug, $name = null, $args = array() ) {
 	 * @since 5.5.0 The `$args` parameter was added.
 	 *
 	 * @param string   $slug      The slug name for the generic template.
-	 * @param string   $name      The name of the specialized template or an empty
-	 *                            string if there is none.
+	 * @param string   $name      The name of the specialized template.
 	 * @param string[] $templates Array of template files to search for, in order.
 	 * @param array    $args      Additional arguments passed to the template.
 	 */
@@ -654,7 +652,7 @@ function wp_lostpassword_url( $redirect = '' ) {
 	}
 
 	if ( is_multisite() ) {
-		$blog_details  = get_site();
+		$blog_details  = get_blog_details();
 		$wp_login_path = $blog_details->path . 'wp-login.php';
 	} else {
 		$wp_login_path = 'wp-login.php';
@@ -906,12 +904,15 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 			break;
 	}
 
+	$url = true;
+	if ( strpos( $show, 'url' ) === false &&
+		strpos( $show, 'directory' ) === false &&
+		strpos( $show, 'home' ) === false ) {
+		$url = false;
+	}
+
 	if ( 'display' === $filter ) {
-		if (
-			str_contains( $show, 'url' )
-			|| str_contains( $show, 'directory' )
-			|| str_contains( $show, 'home' )
-		) {
+		if ( $url ) {
 			/**
 			 * Filters the URL returned by get_bloginfo().
 			 *
@@ -955,7 +956,7 @@ function get_site_icon_url( $size = 512, $url = '', $blog_id = 0 ) {
 		$switched_blog = true;
 	}
 
-	$site_icon_id = (int) get_option( 'site_icon' );
+	$site_icon_id = get_option( 'site_icon' );
 
 	if ( $site_icon_id ) {
 		if ( $size >= 512 ) {
@@ -1319,7 +1320,7 @@ function _wp_render_title_tag() {
  * @param string $sep         Optional. How to separate the various items within the page title.
  *                            Default '&raquo;'.
  * @param bool   $display     Optional. Whether to display or retrieve title. Default true.
- * @param string $seplocation Optional. Location of the separator (either 'left' or 'right').
+ * @param string $seplocation Optional. Location of the separator ('left' or 'right').
  * @return string|void String when `$display` is false, nothing otherwise.
  */
 function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
@@ -1439,7 +1440,7 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 	 *
 	 * @param string $title       Page title.
 	 * @param string $sep         Title separator.
-	 * @param string $seplocation Location of the separator (either 'left' or 'right').
+	 * @param string $seplocation Location of the separator ('left' or 'right').
 	 */
 	$title = apply_filters( 'wp_title', $title, $sep, $seplocation );
 
@@ -1710,15 +1711,12 @@ function get_the_archive_title() {
 		$title  = get_the_author();
 		$prefix = _x( 'Author:', 'author archive title prefix' );
 	} elseif ( is_year() ) {
-		/* translators: See https://www.php.net/manual/datetime.format.php */
 		$title  = get_the_date( _x( 'Y', 'yearly archives date format' ) );
 		$prefix = _x( 'Year:', 'date archive title prefix' );
 	} elseif ( is_month() ) {
-		/* translators: See https://www.php.net/manual/datetime.format.php */
 		$title  = get_the_date( _x( 'F Y', 'monthly archives date format' ) );
 		$prefix = _x( 'Month:', 'date archive title prefix' );
 	} elseif ( is_day() ) {
-		/* translators: See https://www.php.net/manual/datetime.format.php */
 		$title  = get_the_date( _x( 'F j, Y', 'daily archives date format' ) );
 		$prefix = _x( 'Day:', 'date archive title prefix' );
 	} elseif ( is_tax( 'post_format' ) ) {
@@ -2056,10 +2054,10 @@ function wp_get_archives( $args = '' ) {
 		$query   = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date $order $limit";
 		$key     = md5( $query );
 		$key     = "wp_get_archives:$key:$last_changed";
-		$results = wp_cache_get( $key, 'post-queries' );
+		$results = wp_cache_get( $key, 'posts' );
 		if ( ! $results ) {
 			$results = $wpdb->get_results( $query );
-			wp_cache_set( $key, $results, 'post-queries' );
+			wp_cache_set( $key, $results, 'posts' );
 		}
 		if ( $results ) {
 			$after = $parsed_args['after'];
@@ -2081,10 +2079,10 @@ function wp_get_archives( $args = '' ) {
 		$query   = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date $order $limit";
 		$key     = md5( $query );
 		$key     = "wp_get_archives:$key:$last_changed";
-		$results = wp_cache_get( $key, 'post-queries' );
+		$results = wp_cache_get( $key, 'posts' );
 		if ( ! $results ) {
 			$results = $wpdb->get_results( $query );
-			wp_cache_set( $key, $results, 'post-queries' );
+			wp_cache_set( $key, $results, 'posts' );
 		}
 		if ( $results ) {
 			$after = $parsed_args['after'];
@@ -2105,10 +2103,10 @@ function wp_get_archives( $args = '' ) {
 		$query   = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, DAYOFMONTH(post_date) AS `dayofmonth`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date), DAYOFMONTH(post_date) ORDER BY post_date $order $limit";
 		$key     = md5( $query );
 		$key     = "wp_get_archives:$key:$last_changed";
-		$results = wp_cache_get( $key, 'post-queries' );
+		$results = wp_cache_get( $key, 'posts' );
 		if ( ! $results ) {
 			$results = $wpdb->get_results( $query );
-			wp_cache_set( $key, $results, 'post-queries' );
+			wp_cache_set( $key, $results, 'posts' );
 		}
 		if ( $results ) {
 			$after = $parsed_args['after'];
@@ -2131,10 +2129,10 @@ function wp_get_archives( $args = '' ) {
 		$query   = "SELECT DISTINCT $week AS `week`, YEAR( `post_date` ) AS `yr`, DATE_FORMAT( `post_date`, '%Y-%m-%d' ) AS `yyyymmdd`, count( `ID` ) AS `posts` FROM `$wpdb->posts` $join $where GROUP BY $week, YEAR( `post_date` ) ORDER BY `post_date` $order $limit";
 		$key     = md5( $query );
 		$key     = "wp_get_archives:$key:$last_changed";
-		$results = wp_cache_get( $key, 'post-queries' );
+		$results = wp_cache_get( $key, 'posts' );
 		if ( ! $results ) {
 			$results = $wpdb->get_results( $query );
-			wp_cache_set( $key, $results, 'post-queries' );
+			wp_cache_set( $key, $results, 'posts' );
 		}
 		$arc_w_last = '';
 		if ( $results ) {
@@ -2170,10 +2168,10 @@ function wp_get_archives( $args = '' ) {
 		$query   = "SELECT * FROM $wpdb->posts $join $where ORDER BY $orderby $limit";
 		$key     = md5( $query );
 		$key     = "wp_get_archives:$key:$last_changed";
-		$results = wp_cache_get( $key, 'post-queries' );
+		$results = wp_cache_get( $key, 'posts' );
 		if ( ! $results ) {
 			$results = $wpdb->get_results( $query );
-			wp_cache_set( $key, $results, 'post-queries' );
+			wp_cache_set( $key, $results, 'posts' );
 		}
 		if ( $results ) {
 			foreach ( (array) $results as $result ) {
@@ -2300,16 +2298,16 @@ function get_calendar( $initial = true, $display = true ) {
 		FROM $wpdb->posts
 		WHERE post_date < '$thisyear-$thismonth-01'
 		AND post_type = 'post' AND post_status = 'publish'
-		ORDER BY post_date DESC
-		LIMIT 1"
+			ORDER BY post_date DESC
+			LIMIT 1"
 	);
 	$next     = $wpdb->get_row(
 		"SELECT MONTH(post_date) AS month, YEAR(post_date) AS year
 		FROM $wpdb->posts
 		WHERE post_date > '$thisyear-$thismonth-{$last_day} 23:59:59'
 		AND post_type = 'post' AND post_status = 'publish'
-		ORDER BY post_date ASC
-		LIMIT 1"
+			ORDER BY post_date ASC
+			LIMIT 1"
 	);
 
 	/* translators: Calendar caption: 1: Month name, 2: 4-digit year. */
@@ -2620,6 +2618,7 @@ function the_modified_date( $format = '', $before = '', $after = '', $display = 
 	} else {
 		return $the_modified_date;
 	}
+
 }
 
 /**
@@ -3095,11 +3094,11 @@ function feed_links( $args = array() ) {
 	}
 
 	$defaults = array(
-		/* translators: Separator between site name and feed type in feed links. */
+		/* translators: Separator between blog name and feed type in feed links. */
 		'separator' => _x( '&raquo;', 'feed link' ),
-		/* translators: 1: Site title, 2: Separator (raquo). */
+		/* translators: 1: Blog title, 2: Separator (raquo). */
 		'feedtitle' => __( '%1$s %2$s Feed' ),
-		/* translators: 1: Site title, 2: Separator (raquo). */
+		/* translators: 1: Blog title, 2: Separator (raquo). */
 		'comstitle' => __( '%1$s %2$s Comments Feed' ),
 	);
 
@@ -3147,21 +3146,21 @@ function feed_links( $args = array() ) {
  */
 function feed_links_extra( $args = array() ) {
 	$defaults = array(
-		/* translators: Separator between site name and feed type in feed links. */
+		/* translators: Separator between blog name and feed type in feed links. */
 		'separator'     => _x( '&raquo;', 'feed link' ),
-		/* translators: 1: Site name, 2: Separator (raquo), 3: Post title. */
+		/* translators: 1: Blog name, 2: Separator (raquo), 3: Post title. */
 		'singletitle'   => __( '%1$s %2$s %3$s Comments Feed' ),
-		/* translators: 1: Site name, 2: Separator (raquo), 3: Category name. */
+		/* translators: 1: Blog name, 2: Separator (raquo), 3: Category name. */
 		'cattitle'      => __( '%1$s %2$s %3$s Category Feed' ),
-		/* translators: 1: Site name, 2: Separator (raquo), 3: Tag name. */
+		/* translators: 1: Blog name, 2: Separator (raquo), 3: Tag name. */
 		'tagtitle'      => __( '%1$s %2$s %3$s Tag Feed' ),
-		/* translators: 1: Site name, 2: Separator (raquo), 3: Term name, 4: Taxonomy singular name. */
+		/* translators: 1: Blog name, 2: Separator (raquo), 3: Term name, 4: Taxonomy singular name. */
 		'taxtitle'      => __( '%1$s %2$s %3$s %4$s Feed' ),
-		/* translators: 1: Site name, 2: Separator (raquo), 3: Author name. */
+		/* translators: 1: Blog name, 2: Separator (raquo), 3: Author name. */
 		'authortitle'   => __( '%1$s %2$s Posts by %3$s Feed' ),
-		/* translators: 1: Site name, 2: Separator (raquo), 3: Search query. */
+		/* translators: 1: Blog name, 2: Separator (raquo), 3: Search query. */
 		'searchtitle'   => __( '%1$s %2$s Search Results for &#8220;%3$s&#8221; Feed' ),
-		/* translators: 1: Site name, 2: Separator (raquo), 3: Post type name. */
+		/* translators: 1: Blog name, 2: Separator (raquo), 3: Post type name. */
 		'posttypetitle' => __( '%1$s %2$s %3$s Feed' ),
 	);
 
@@ -3374,6 +3373,19 @@ function rsd_link() {
 }
 
 /**
+ * Displays the link to the Windows Live Writer manifest file.
+ *
+ * @link https://msdn.microsoft.com/en-us/library/bb463265.aspx
+ * @since 2.3.1
+ */
+function wlwmanifest_link() {
+	printf(
+		'<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="%s" />' . "\n",
+		includes_url( 'wlwmanifest.xml' )
+	);
+}
+
+/**
  * Displays a referrer `strict-origin-when-cross-origin` meta tag.
  *
  * Outputs a referrer `strict-origin-when-cross-origin` meta tag that tells the browser not to send
@@ -3441,7 +3453,7 @@ function wp_site_icon() {
 
 /**
  * Prints resource hints to browsers for pre-fetching, pre-rendering
- * and pre-connecting to websites.
+ * and pre-connecting to web sites.
  *
  * Gives hints to browsers to prefetch specific pages or render them
  * in the background, to perform DNS lookups or to begin the connection
@@ -3463,7 +3475,7 @@ function wp_resource_hints() {
 		$unique_urls = array();
 
 		/**
-		 * Filters domains and URLs for resource hints of the given relation type.
+		 * Filters domains and URLs for resource hints of relation type.
 		 *
 		 * @since 4.6.0
 		 * @since 4.7.0 The `$urls` parameter accepts arrays of specific HTML attributes
@@ -3483,8 +3495,8 @@ function wp_resource_hints() {
 		 *         @type string $type        Type of the resource (`text/html`, `text/css`, etc).
 		 *     }
 		 * }
-		 * @param string $relation_type The relation type the URLs are printed for. One of
-		 *                              'dns-prefetch', 'preconnect', 'prefetch', or 'prerender'.
+		 * @param string $relation_type The relation type the URLs are printed for,
+		 *                              e.g. 'preconnect' or 'prerender'.
 		 */
 		$urls = apply_filters( 'wp_resource_hints', $urls, $relation_type );
 
@@ -3737,7 +3749,7 @@ function user_can_richedit() {
 			if ( $is_safari ) {
 				$wp_rich_edit = ! wp_is_mobile() || ( preg_match( '!AppleWebKit/(\d+)!', $_SERVER['HTTP_USER_AGENT'], $match ) && (int) $match[1] >= 534 );
 			} elseif ( $is_IE ) {
-				$wp_rich_edit = str_contains( $_SERVER['HTTP_USER_AGENT'], 'Trident/7.0;' );
+				$wp_rich_edit = ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Trident/7.0;' ) !== false );
 			} elseif ( $is_gecko || $is_chrome || $is_edge || ( $is_opera && ! wp_is_mobile() ) ) {
 				$wp_rich_edit = true;
 			}
@@ -3757,12 +3769,12 @@ function user_can_richedit() {
 /**
  * Finds out which editor should be displayed by default.
  *
- * Works out which of the editors to display as the current editor for a
+ * Works out which of the two editors to display as the current editor for a
  * user. The 'html' setting is for the "Text" editor tab.
  *
  * @since 2.5.0
  *
- * @return string Either 'tinymce', 'html', or 'test'
+ * @return string Either 'tinymce', or 'html', or 'test'
  */
 function wp_default_editor() {
 	$r = user_can_richedit() ? 'tinymce' : 'html'; // Defaults.
@@ -4020,7 +4032,7 @@ function wp_get_code_editor_settings( $args ) {
 		if ( 'application/x-patch' === $type || 'text/x-patch' === $type ) {
 			$type = 'text/x-diff';
 		}
-	} elseif ( isset( $args['file'] ) && str_contains( basename( $args['file'] ), '.' ) ) {
+	} elseif ( isset( $args['file'] ) && false !== strpos( basename( $args['file'] ), '.' ) ) {
 		$extension = strtolower( pathinfo( $args['file'], PATHINFO_EXTENSION ) );
 		foreach ( wp_get_mime_types() as $exts => $mime ) {
 			if ( preg_match( '!^(' . $exts . ')$!i', $extension ) ) {
@@ -4156,7 +4168,7 @@ function wp_get_code_editor_settings( $args ) {
 				'matchBrackets'     => true,
 			)
 		);
-	} elseif ( str_contains( $type, 'json' ) ) {
+	} elseif ( false !== strpos( $type, 'json' ) ) {
 		$settings['codemirror'] = array_merge(
 			$settings['codemirror'],
 			array(
@@ -4173,7 +4185,7 @@ function wp_get_code_editor_settings( $args ) {
 		} else {
 			$settings['codemirror']['mode']['json'] = true;
 		}
-	} elseif ( str_contains( $type, 'jsx' ) ) {
+	} elseif ( false !== strpos( $type, 'jsx' ) ) {
 		$settings['codemirror'] = array_merge(
 			$settings['codemirror'],
 			array(
@@ -4219,7 +4231,7 @@ function wp_get_code_editor_settings( $args ) {
 				'matchBrackets'     => true,
 			)
 		);
-	} elseif ( str_contains( $type, 'xml' ) ) {
+	} elseif ( false !== strpos( $type, 'xml' ) ) {
 		$settings['codemirror'] = array_merge(
 			$settings['codemirror'],
 			array(
@@ -4807,6 +4819,7 @@ function register_admin_color_schemes() {
 			'current' => '#fff',
 		)
 	);
+
 }
 
 /**
@@ -4860,7 +4873,7 @@ function wp_admin_css_uri( $file = 'wp-admin' ) {
  */
 function wp_admin_css( $file = 'wp-admin', $force_echo = false ) {
 	// For backward compatibility.
-	$handle = str_starts_with( $file, 'css/' ) ? substr( $file, 4 ) : $file;
+	$handle = 0 === strpos( $file, 'css/' ) ? substr( $file, 4 ) : $file;
 
 	if ( wp_styles()->query( $handle ) ) {
 		if ( $force_echo || did_action( 'wp_print_styles' ) ) {

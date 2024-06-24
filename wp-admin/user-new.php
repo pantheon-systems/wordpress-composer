@@ -34,7 +34,7 @@ if ( isset( $_REQUEST['action'] ) && 'adduser' === $_REQUEST['action'] ) {
 
 	$user_details = null;
 	$user_email   = wp_unslash( $_REQUEST['email'] );
-	if ( str_contains( $user_email, '@' ) ) {
+	if ( false !== strpos( $user_email, '@' ) ) {
 		$user_details = get_user_by( 'email', $user_email );
 	} else {
 		if ( current_user_can( 'manage_network_users' ) ) {
@@ -381,50 +381,35 @@ if ( current_user_can( 'create_users' ) ) {
 ?>
 </h1>
 
-<?php
-if ( isset( $errors ) && is_wp_error( $errors ) ) :
-	$error_message = '';
-	foreach ( $errors->get_error_messages() as $err ) {
-		$error_message .= "<li>$err</li>\n";
-	}
-	wp_admin_notice(
-		'<ul>' . $error_message . '</ul>',
-		array(
-			'additional_classes' => array( 'error' ),
-			'paragraph_wrap'     => false,
-		)
-	);
+<?php if ( isset( $errors ) && is_wp_error( $errors ) ) : ?>
+	<div class="error">
+		<ul>
+		<?php
+		foreach ( $errors->get_error_messages() as $err ) {
+			echo "<li>$err</li>\n";
+		}
+		?>
+		</ul>
+	</div>
+	<?php
 endif;
 
 if ( ! empty( $messages ) ) {
 	foreach ( $messages as $msg ) {
-		wp_admin_notice(
-			$msg,
-			array(
-				'id'                 => 'message',
-				'additional_classes' => array( 'updated' ),
-				'dismissible'        => true,
-			)
-		);
+		echo '<div id="message" class="updated notice is-dismissible"><p>' . $msg . '</p></div>';
 	}
 }
 ?>
 
-<?php
-if ( isset( $add_user_errors ) && is_wp_error( $add_user_errors ) ) :
-	$error_message = '';
-	foreach ( $add_user_errors->get_error_messages() as $message ) {
-		$error_message .= "<p>$message</p>\n";
-	}
-	wp_admin_notice(
-		$error_message,
-		array(
-			'additional_classes' => array( 'error' ),
-			'paragraph_wrap'     => false,
-		)
-	);
-endif;
-?>
+<?php if ( isset( $add_user_errors ) && is_wp_error( $add_user_errors ) ) : ?>
+	<div class="error">
+		<?php
+		foreach ( $add_user_errors->get_error_messages() as $message ) {
+			echo "<p>$message</p>";
+		}
+		?>
+	</div>
+<?php endif; ?>
 <div id="ajax-response"></div>
 
 <?php
@@ -472,7 +457,7 @@ if ( is_multisite() && current_user_can( 'promote_users' ) ) {
 		<th scope="row"><?php _e( 'Skip Confirmation Email' ); ?></th>
 		<td>
 			<input type="checkbox" name="noconfirmation" id="adduser-noconfirmation" value="1" />
-			<label for="adduser-noconfirmation"><?php _e( 'Add the user without sending an email that requires their confirmation' ); ?></label>
+			<label for="adduser-noconfirmation"><?php _e( 'Add the user without sending an email that requires their confirmation.' ); ?></label>
 		</td>
 	</tr>
 	<?php } ?>
@@ -581,18 +566,18 @@ if ( current_user_can( 'create_users' ) ) {
 			</label>
 		</th>
 		<td>
-			<input type="hidden" value=" " /><!-- #24364 workaround -->
+			<input class="hidden" value=" " /><!-- #24364 workaround -->
 			<button type="button" class="button wp-generate-pw hide-if-no-js"><?php _e( 'Generate password' ); ?></button>
 			<div class="wp-pwd">
 				<?php $initial_password = wp_generate_password( 24 ); ?>
-				<div class="password-input-wrapper">
+				<span class="password-input-wrapper">
 					<input type="password" name="pass1" id="pass1" class="regular-text" autocomplete="new-password" spellcheck="false" data-reveal="1" data-pw="<?php echo esc_attr( $initial_password ); ?>" aria-describedby="pass-strength-result" />
-					<div style="display:none" id="pass-strength-result" aria-live="polite"></div>
-				</div>
+				</span>
 				<button type="button" class="button wp-hide-pw hide-if-no-js" data-toggle="0" aria-label="<?php esc_attr_e( 'Hide password' ); ?>">
 					<span class="dashicons dashicons-hidden" aria-hidden="true"></span>
 					<span class="text"><?php _e( 'Hide' ); ?></span>
 				</button>
+				<div style="display:none" id="pass-strength-result" aria-live="polite"></div>
 			</div>
 		</td>
 	</tr>
@@ -616,7 +601,7 @@ if ( current_user_can( 'create_users' ) ) {
 		<th scope="row"><?php _e( 'Send User Notification' ); ?></th>
 		<td>
 			<input type="checkbox" name="send_user_notification" id="send_user_notification" value="1" <?php checked( $new_user_send_notification ); ?> />
-			<label for="send_user_notification"><?php _e( 'Send the new user an email about their account' ); ?></label>
+			<label for="send_user_notification"><?php _e( 'Send the new user an email about their account.' ); ?></label>
 		</td>
 	</tr>
 	<?php } // End if ! is_multisite(). ?>
@@ -639,7 +624,7 @@ if ( current_user_can( 'create_users' ) ) {
 		<th scope="row"><?php _e( 'Skip Confirmation Email' ); ?></th>
 		<td>
 			<input type="checkbox" name="noconfirmation" id="noconfirmation" value="1" <?php checked( $new_user_ignore_pass ); ?> />
-			<label for="noconfirmation"><?php _e( 'Add the user without sending an email that requires their confirmation' ); ?></label>
+			<label for="noconfirmation"><?php _e( 'Add the user without sending an email that requires their confirmation.' ); ?></label>
 		</td>
 	</tr>
 	<?php } ?>

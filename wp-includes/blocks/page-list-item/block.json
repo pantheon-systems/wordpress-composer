@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "core/page-list-item",
 	"title": "Page List Item",
 	"category": "widgets",
@@ -45,10 +45,7 @@
 		"html": false,
 		"lock": false,
 		"inserter": false,
-		"__experimentalToolbar": false,
-		"interactivity": {
-			"clientNavigation": true
-		}
+		"__experimentalToolbar": false
 	},
 	"editorStyle": "wp-block-page-list-editor",
 	"style": "wp-block-page-list"

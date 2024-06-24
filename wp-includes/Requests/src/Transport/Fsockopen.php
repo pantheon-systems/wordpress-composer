@@ -51,11 +51,6 @@ final class Fsockopen implements Transport {
 	 */
 	private $max_bytes = false;
 
-	/**
-	 * Cache for received connection errors.
-	 *
-	 * @var string
-	 */
 	private $connect_error = '';
 
 	/**
@@ -410,7 +405,7 @@ final class Fsockopen implements Transport {
 	/**
 	 * Format a URL given GET data
 	 *
-	 * @param array        $url_parts Array of URL parts as received from {@link https://www.php.net/parse_url}
+	 * @param array $url_parts
 	 * @param array|object $data Data to build query using, see {@link https://www.php.net/http_build_query}
 	 * @return string URL with data
 	 */

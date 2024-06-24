@@ -140,17 +140,16 @@ class WP_Comments_List_Table extends WP_List_Table {
 		);
 
 		$args = array(
-			'status'                    => isset( $status_map[ $comment_status ] ) ? $status_map[ $comment_status ] : $comment_status,
-			'search'                    => $search,
-			'user_id'                   => $user_id,
-			'offset'                    => $start,
-			'number'                    => $number,
-			'post_id'                   => $post_id,
-			'type'                      => $comment_type,
-			'orderby'                   => $orderby,
-			'order'                     => $order,
-			'post_type'                 => $post_type,
-			'update_comment_post_cache' => true,
+			'status'    => isset( $status_map[ $comment_status ] ) ? $status_map[ $comment_status ] : $comment_status,
+			'search'    => $search,
+			'user_id'   => $user_id,
+			'offset'    => $start,
+			'number'    => $number,
+			'post_id'   => $post_id,
+			'type'      => $comment_type,
+			'orderby'   => $orderby,
+			'order'     => $order,
+			'post_type' => $post_type,
 		);
 
 		/**
@@ -165,6 +164,8 @@ class WP_Comments_List_Table extends WP_List_Table {
 		$_comments = get_comments( $args );
 
 		if ( is_array( $_comments ) ) {
+			update_comment_cache( $_comments );
+
 			$this->items       = array_slice( $_comments, 0, $comments_per_page );
 			$this->extra_items = array_slice( $_comments, $comments_per_page );
 
@@ -177,10 +178,9 @@ class WP_Comments_List_Table extends WP_List_Table {
 			array_merge(
 				$args,
 				array(
-					'count'   => true,
-					'offset'  => 0,
-					'number'  => 0,
-					'orderby' => 'none',
+					'count'  => true,
+					'offset' => 0,
+					'number' => 0,
 				)
 			)
 		);
@@ -299,7 +299,6 @@ class WP_Comments_List_Table extends WP_List_Table {
 						'post_id' => $post_id ? $post_id : 0,
 						'user_id' => $current_user_id,
 						'count'   => true,
-						'orderby' => 'none',
 					)
 				);
 				$link               = add_query_arg( 'user_id', $current_user_id, $link );
@@ -437,7 +436,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 		 * @since 5.6.0 The `$which` parameter was added.
 		 *
 		 * @param string $comment_status The comment status name. Default 'All'.
-		 * @param string $which          The location of the extra table nav markup: Either 'top' or 'bottom'.
+		 * @param string $which          The location of the extra table nav markup: 'top' or 'bottom'.
 		 */
 		do_action( 'manage_comments_nav', $comment_status, $which );
 
@@ -458,7 +457,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 	/**
 	 * @global int $post_id
 	 *
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return array
 	 */
 	public function get_columns() {
 		global $post_id;
@@ -520,9 +519,8 @@ class WP_Comments_List_Table extends WP_List_Table {
 			foreach ( $comment_types as $type => $label ) {
 				if ( get_comments(
 					array(
-						'count'   => true,
-						'orderby' => 'none',
-						'type'    => $type,
+						'number' => 1,
+						'type'   => $type,
 					)
 				) ) {
 					printf(
@@ -543,8 +541,8 @@ class WP_Comments_List_Table extends WP_List_Table {
 	 */
 	protected function get_sortable_columns() {
 		return array(
-			'author'   => array( 'comment_author', false, __( 'Author' ), __( 'Table ordered by Comment Author.' ) ),
-			'response' => array( 'comment_post_ID', false, _x( 'In Response To', 'column name' ), __( 'Table ordered by Post Replied To.' ) ),
+			'author'   => 'comment_author',
+			'response' => 'comment_post_ID',
 			'date'     => 'comment_date',
 		);
 	}
@@ -583,17 +581,6 @@ class WP_Comments_List_Table extends WP_List_Table {
 
 		?>
 <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
-		<?php
-		if ( ! isset( $_GET['orderby'] ) ) {
-			// In the initial view, Comments are ordered by comment's date but there's no column for that.
-			echo '<caption class="screen-reader-text">' .
-			/* translators: Hidden accessibility text. */
-			__( 'Ordered by Comment Date, descending.' ) .
-			'</caption>';
-		} else {
-			$this->print_table_description();
-		}
-		?>
 	<thead>
 	<tr>
 		<?php $this->print_column_headers(); ?>
@@ -638,22 +625,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 	public function single_row( $item ) {
 		global $post, $comment;
 
-		// Restores the more descriptive, specific name for use within this method.
 		$comment = $item;
-
-		if ( $comment->comment_post_ID > 0 ) {
-			$post = get_post( $comment->comment_post_ID );
-		}
-
-		$edit_post_cap = $post ? 'edit_post' : 'edit_posts';
-
-		if ( ! current_user_can( $edit_post_cap, $comment->comment_post_ID )
-			&& ( post_password_required( $comment->comment_post_ID )
-				|| ! current_user_can( 'read_post', $comment->comment_post_ID ) )
-		) {
-			// The user has no access to the post and thus cannot see the comments.
-			return false;
-		}
 
 		$the_comment_class = wp_get_comment_status( $comment );
 
@@ -663,7 +635,24 @@ class WP_Comments_List_Table extends WP_List_Table {
 
 		$the_comment_class = implode( ' ', get_comment_class( $the_comment_class, $comment, $comment->comment_post_ID ) );
 
+		if ( $comment->comment_post_ID > 0 ) {
+			$post = get_post( $comment->comment_post_ID );
+		}
+
 		$this->user_can = current_user_can( 'edit_comment', $comment->comment_ID );
+
+		$edit_post_cap = $post ? 'edit_post' : 'edit_posts';
+		if (
+			current_user_can( $edit_post_cap, $comment->comment_post_ID ) ||
+			(
+				empty( $post->post_password ) &&
+				current_user_can( 'read_post', $comment->comment_post_ID )
+			)
+		) {
+			// The user has access to the post
+		} else {
+			return false;
+		}
 
 		echo "<tr id='comment-$comment->comment_ID' class='$the_comment_class'>";
 		$this->single_row_columns( $comment );
@@ -699,8 +688,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 		}
 
 		// Restores the more descriptive, specific name for use within this method.
-		$comment = $item;
-
+		$comment            = $item;
 		$the_comment_status = wp_get_comment_status( $comment );
 
 		$output = '';
@@ -910,15 +898,13 @@ class WP_Comments_List_Table extends WP_List_Table {
 
 		if ( $this->user_can ) {
 			?>
-		<input id="cb-select-<?php echo $comment->comment_ID; ?>" type="checkbox" name="delete_comments[]" value="<?php echo $comment->comment_ID; ?>" />
-		<label for="cb-select-<?php echo $comment->comment_ID; ?>">
-			<span class="screen-reader-text">
+		<label class="screen-reader-text" for="cb-select-<?php echo $comment->comment_ID; ?>">
 			<?php
 			/* translators: Hidden accessibility text. */
 			_e( 'Select comment' );
 			?>
-			</span>
 		</label>
+		<input id="cb-select-<?php echo $comment->comment_ID; ?>" type="checkbox" name="delete_comments[]" value="<?php echo $comment->comment_ID; ?>" />
 			<?php
 		}
 	}
@@ -1102,9 +1088,6 @@ class WP_Comments_List_Table extends WP_List_Table {
 	 * @param string     $column_name The custom column's name.
 	 */
 	public function column_default( $item, $column_name ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$comment = $item;
-
 		/**
 		 * Fires when the default column output is displayed for a single row.
 		 *
@@ -1113,6 +1096,6 @@ class WP_Comments_List_Table extends WP_List_Table {
 		 * @param string $column_name The custom column's name.
 		 * @param string $comment_id  The comment ID as a numeric string.
 		 */
-		do_action( 'manage_comments_custom_column', $column_name, $comment->comment_ID );
+		do_action( 'manage_comments_custom_column', $column_name, $item->comment_ID );
 	}
 }

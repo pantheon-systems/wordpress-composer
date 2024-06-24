@@ -104,14 +104,8 @@ network_edit_site_nav(
 );
 
 if ( ! empty( $messages ) ) {
-	$notice_args = array(
-		'type'        => 'success',
-		'dismissible' => true,
-		'id'          => 'message',
-	);
-
 	foreach ( $messages as $msg ) {
-		wp_admin_notice( $msg, $notice_args );
+		echo '<div id="message" class="notice notice-success is-dismissible"><p>' . $msg . '</p></div>';
 	}
 }
 ?>
@@ -149,7 +143,7 @@ if ( ! empty( $messages ) ) {
 				}
 			}
 
-			if ( str_contains( $option->option_value, "\n" ) ) {
+			if ( strpos( $option->option_value, "\n" ) !== false ) {
 				?>
 				<tr class="form-field">
 					<th scope="row"><label for="<?php echo esc_attr( $option->option_name ); ?>" class="code"><?php echo esc_html( $option->option_name ); ?></label></th>

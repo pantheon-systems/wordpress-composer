@@ -69,10 +69,7 @@ do_action( 'rss_tag_pre', 'atom-comments' );
 <?php
 while ( have_comments() ) :
 	the_comment();
-	$comment_post = get_post( $comment->comment_post_ID );
-	/**
-	 * @global WP_Post $post Global post object.
-	 */
+	$comment_post    = get_post( $comment->comment_post_ID );
 	$GLOBALS['post'] = $comment_post;
 	?>
 	<entry>
@@ -114,7 +111,7 @@ while ( have_comments() ) :
 
 		<?php
 		// Return comment threading information (https://www.ietf.org/rfc/rfc4685.txt).
-		if ( '0' === $comment->comment_parent ) : // This comment is top-level.
+		if ( 0 == $comment->comment_parent ) : // This comment is top-level.
 			?>
 			<thr:in-reply-to ref="<?php the_guid(); ?>" href="<?php the_permalink_rss(); ?>" type="<?php bloginfo_rss( 'html_type' ); ?>" />
 			<?php

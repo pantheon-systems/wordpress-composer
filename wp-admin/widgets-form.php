@@ -272,8 +272,7 @@ if ( isset( $_GET['editwidget'] ) && $_GET['editwidget'] ) {
 	$width = ' style="width:' . max( $control['width'], 350 ) . 'px"';
 	$key   = isset( $_GET['key'] ) ? (int) $_GET['key'] : 0;
 
-	require_once ABSPATH . 'wp-admin/admin-header.php';
-	?>
+	require_once ABSPATH . 'wp-admin/admin-header.php'; ?>
 	<div class="wrap">
 	<h1><?php echo esc_html( $title ); ?></h1>
 	<div class="editwidget"<?php echo $width; ?>>
@@ -301,7 +300,7 @@ if ( isset( $_GET['editwidget'] ) && $_GET['editwidget'] ) {
 	<?php
 	foreach ( $wp_registered_sidebars as $sbname => $sbvalue ) {
 		echo "\t\t<tr><td><label><input type='radio' name='sidebar' value='" . esc_attr( $sbname ) . "'" . checked( $sbname, $sidebar, false ) . " /> $sbvalue[name]</label></td><td>";
-		if ( 'wp_inactive_widgets' === $sbname || str_starts_with( $sbname, 'orphaned_widgets' ) ) {
+		if ( 'wp_inactive_widgets' === $sbname || 'orphaned_widgets' === substr( $sbname, 0, 16 ) ) {
 			echo '&nbsp;';
 		} else {
 			if ( ! isset( $sidebars_widgets[ $sbname ] ) || ! is_array( $sidebars_widgets[ $sbname ] ) ) {
@@ -310,7 +309,7 @@ if ( isset( $_GET['editwidget'] ) && $_GET['editwidget'] ) {
 			} else {
 				$j = count( $sidebars_widgets[ $sbname ] );
 				if ( isset( $_GET['addnew'] ) || ! in_array( $widget_id, $sidebars_widgets[ $sbname ], true ) ) {
-					++$j;
+					$j++;
 				}
 			}
 			$selected = '';
@@ -403,28 +402,14 @@ $nonce = wp_create_nonce( 'widgets-access' );
 
 <hr class="wp-header-end">
 
-<?php
-if ( isset( $_GET['message'] ) && isset( $messages[ $_GET['message'] ] ) ) {
-	wp_admin_notice(
-		$messages[ $_GET['message'] ],
-		array(
-			'id'                 => 'message',
-			'additional_classes' => array( 'updated' ),
-			'dismissible'        => true,
-		)
-	);
-}
-if ( isset( $_GET['error'] ) && isset( $errors[ $_GET['error'] ] ) ) {
-	wp_admin_notice(
-		$errors[ $_GET['error'] ],
-		array(
-			'id'                 => 'message',
-			'additional_classes' => array( 'error' ),
-			'dismissible'        => true,
-		)
-	);
-}
+<?php if ( isset( $_GET['message'] ) && isset( $messages[ $_GET['message'] ] ) ) { ?>
+<div id="message" class="updated notice is-dismissible"><p><?php echo $messages[ $_GET['message'] ]; ?></p></div>
+<?php } ?>
+<?php if ( isset( $_GET['error'] ) && isset( $errors[ $_GET['error'] ] ) ) { ?>
+<div id="message" class="error"><p><?php echo $errors[ $_GET['error'] ]; ?></p></div>
+<?php } ?>
 
+<?php
 /**
  * Fires before the Widgets administration page content loads.
  *
@@ -464,7 +449,7 @@ do_action( 'widgets_admin_page' );
 
 $theme_sidebars = array();
 foreach ( $wp_registered_sidebars as $sidebar => $registered_sidebar ) {
-	if ( str_contains( $registered_sidebar['class'], 'inactive-sidebar' ) || str_starts_with( $sidebar, 'orphaned_widgets' ) ) {
+	if ( false !== strpos( $registered_sidebar['class'], 'inactive-sidebar' ) || 'orphaned_widgets' === substr( $sidebar, 0, 16 ) ) {
 		$wrap_class = 'widgets-holder-wrap';
 		if ( ! empty( $registered_sidebar['class'] ) ) {
 			$wrap_class .= ' ' . $registered_sidebar['class'];
@@ -478,7 +463,7 @@ foreach ( $wp_registered_sidebars as $sidebar => $registered_sidebar ) {
 
 				<?php if ( $is_inactive_widgets ) { ?>
 				<div class="remove-inactive-widgets">
-					<form method="post">
+					<form action="" method="post">
 						<p>
 							<?php
 							$attributes = array( 'id' => 'inactive-widgets-control-remove' );
@@ -554,7 +539,7 @@ foreach ( $theme_sidebars as $sidebar => $registered_sidebar ) {
 	</div>
 	<?php
 
-	++$i;
+	$i++;
 }
 
 ?>

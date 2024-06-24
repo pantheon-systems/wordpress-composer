@@ -7,8 +7,6 @@
   border-radius:initial;
   display:flex;
   height:auto;
-  justify-content:center;
-  text-align:center;
 }
 .wp-block-search__components-button-group{
   margin-top:10px;

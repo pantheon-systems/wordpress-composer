@@ -51,7 +51,7 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action following a single theme update.
+	 * Action to perform following a single theme update.
 	 *
 	 * @since 2.8.0
 	 */
@@ -110,7 +110,7 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 					'<a href="%s" class="activatelink">' .
 					'<span aria-hidden="true">%s</span><span class="screen-reader-text">%s</span></a>',
 					esc_url( $activate_link ),
-					_x( 'Activate', 'theme' ),
+					__( 'Activate' ),
 					/* translators: Hidden accessibility text. %s: Theme name. */
 					sprintf( _x( 'Activate &#8220;%s&#8221;', 'theme' ), $name )
 				);

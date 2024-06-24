@@ -465,7 +465,7 @@ final class Curl implements Transport {
 	 * @param string $response Response data from the body
 	 * @param array $options Request options
 	 * @return string|false HTTP response data including headers. False if non-blocking.
-	 * @throws \WpOrg\Requests\Exception If the request resulted in a cURL error.
+	 * @throws \WpOrg\Requests\Exception
 	 */
 	public function process_response($response, $options) {
 		if ($options['blocking'] === false) {
@@ -561,7 +561,7 @@ final class Curl implements Transport {
 	/**
 	 * Format a URL given GET data
 	 *
-	 * @param string       $url  Original URL.
+	 * @param string $url
 	 * @param array|object $data Data to build query using, see {@link https://www.php.net/http_build_query}
 	 * @return string URL with data
 	 */

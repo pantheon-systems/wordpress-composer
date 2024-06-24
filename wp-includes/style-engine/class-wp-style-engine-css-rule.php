@@ -1,6 +1,8 @@
 <?php
 /**
- * Style Engine: WP_Style_Engine_CSS_Rule class
+ * WP_Style_Engine_CSS_Rule
+ *
+ * An object for CSS rules.
  *
  * @package WordPress
  * @subpackage StyleEngine
@@ -8,9 +10,9 @@
  */
 
 /**
- * Core class used for style engine CSS rules.
+ * Class WP_Style_Engine_CSS_Rule.
  *
- * Holds, sanitizes, processes, and prints CSS declarations for the style engine.
+ * Holds, sanitizes, processes and prints CSS declarations for the style engine.
  *
  * @since 6.1.0
  */
@@ -36,15 +38,13 @@ class WP_Style_Engine_CSS_Rule {
 	protected $declarations;
 
 	/**
-	 * Constructor.
+	 * Constructor
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param string                                    $selector     Optional. The CSS selector. Default empty string.
-	 * @param string[]|WP_Style_Engine_CSS_Declarations $declarations Optional. An associative array of CSS definitions,
-	 *                                                                e.g. `array( "$property" => "$value", "$property" => "$value" )`,
+	 * @param string                                    $selector     The CSS selector.
+	 * @param string[]|WP_Style_Engine_CSS_Declarations $declarations An associative array of CSS definitions, e.g., array( "$property" => "$value", "$property" => "$value" ),
 	 *                                                                or a WP_Style_Engine_CSS_Declarations object.
-	 *                                                                Default empty array.
 	 */
 	public function __construct( $selector = '', $declarations = array() ) {
 		$this->set_selector( $selector );
@@ -57,6 +57,7 @@ class WP_Style_Engine_CSS_Rule {
 	 * @since 6.1.0
 	 *
 	 * @param string $selector The CSS selector.
+	 *
 	 * @return WP_Style_Engine_CSS_Rule Returns the object to allow chaining of methods.
 	 */
 	public function set_selector( $selector ) {
@@ -69,8 +70,9 @@ class WP_Style_Engine_CSS_Rule {
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param string[]|WP_Style_Engine_CSS_Declarations $declarations An array of declarations (property => value pairs),
-	 *                                                                or a WP_Style_Engine_CSS_Declarations object.
+	 * @param array|WP_Style_Engine_CSS_Declarations $declarations An array of declarations (property => value pairs),
+	 *                                                             or a WP_Style_Engine_CSS_Declarations object.
+	 *
 	 * @return WP_Style_Engine_CSS_Rule Returns the object to allow chaining of methods.
 	 */
 	public function add_declarations( $declarations ) {
@@ -116,10 +118,9 @@ class WP_Style_Engine_CSS_Rule {
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param bool $should_prettify Optional. Whether to add spacing, new lines and indents.
-	 *                              Default false.
-	 * @param int  $indent_count    Optional. The number of tab indents to apply to the rule.
-	 *                              Applies if `prettify` is `true`. Default 0.
+	 * @param bool   $should_prettify Whether to add spacing, new lines and indents.
+	 * @param number $indent_count    The number of tab indents to apply to the rule. Applies if `prettify` is `true`.
+	 *
 	 * @return string
 	 */
 	public function get_css( $should_prettify = false, $indent_count = 0 ) {

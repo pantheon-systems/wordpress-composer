@@ -58,10 +58,14 @@ function check_upload_size( $file ) {
  * @since 3.0.0
  * @since 5.1.0 Use wp_delete_site() internally to delete the site row from the database.
  *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
  * @param int  $blog_id Site ID.
  * @param bool $drop    True if site's database tables should be dropped. Default false.
  */
 function wpmu_delete_blog( $blog_id, $drop = false ) {
+	global $wpdb;
+
 	$blog_id = (int) $blog_id;
 
 	$switch = false;
@@ -126,16 +130,11 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 }
 
 /**
- * Deletes a user and all of their posts from the network.
- *
- * This function:
- *
- * - Deletes all posts (of all post types) authored by the user on all sites on the network
- * - Deletes all links owned by the user on all sites on the network
- * - Removes the user from all sites on the network
- * - Deletes the user from the database
+ * Deletes a user from the network and remove from all sites.
  *
  * @since 3.0.0
+ *
+ * @todo Merge with wp_delete_user()?
  *
  * @global wpdb $wpdb WordPress database abstraction object.
  *
@@ -305,9 +304,7 @@ function upload_space_setting( $id ) {
 	<tr>
 		<th><label for="blog-upload-space-number"><?php _e( 'Site Upload Space Quota' ); ?></label></th>
 		<td>
-			<input type="number" step="1" min="0" style="width: 100px"
-				name="option[blog_upload_space]" id="blog-upload-space-number"
-				aria-describedby="blog-upload-space-desc" value="<?php echo esc_attr( $quota ); ?>" />
+			<input type="number" step="1" min="0" style="width: 100px" name="option[blog_upload_space]" id="blog-upload-space-number" aria-describedby="blog-upload-space-desc" value="<?php echo $quota; ?>" />
 			<span id="blog-upload-space-desc"><span class="screen-reader-text">
 				<?php
 				/* translators: Hidden accessibility text. */
@@ -694,20 +691,11 @@ function site_admin_notice() {
 	}
 
 	if ( (int) get_site_option( 'wpmu_upgrade_site' ) !== $wp_db_version ) {
-		$upgrade_network_message = sprintf(
+		echo "<div class='update-nag notice notice-warning inline'>" . sprintf(
 			/* translators: %s: URL to Upgrade Network screen. */
 			__( 'Thank you for Updating! Please visit the <a href="%s">Upgrade Network</a> page to update all your sites.' ),
 			esc_url( network_admin_url( 'upgrade.php' ) )
-		);
-
-		wp_admin_notice(
-			$upgrade_network_message,
-			array(
-				'type'               => 'warning',
-				'additional_classes' => array( 'update-nag', 'inline' ),
-				'paragraph_wrap'     => false,
-			)
-		);
+		) . '</div>';
 	}
 }
 
@@ -745,7 +733,7 @@ function avoid_blog_page_permalink_collision( $data, $postarr ) {
 
 	while ( $c < 10 && get_id_from_blogname( $post_name ) ) {
 		$post_name .= mt_rand( 1, 10 );
-		++$c;
+		$c++;
 	}
 
 	if ( $post_name !== $data['post_name'] ) {
@@ -855,7 +843,6 @@ var tb_pathToImage = "<?php echo esc_js( includes_url( 'js/thickbox/loadingAnima
 
 /**
  * @param array $users
- * @return bool
  */
 function confirm_delete_users( $users ) {
 	$current_user = wp_get_current_user();
@@ -1012,10 +999,8 @@ function network_settings_add_js() {
 jQuery( function($) {
 	var languageSelect = $( '#WPLANG' );
 	$( 'form' ).on( 'submit', function() {
-		/*
-		 * Don't show a spinner for English and installed languages,
-		 * as there is nothing to download.
-		 */
+		// Don't show a spinner for English and installed languages,
+		// as there is nothing to download.
 		if ( ! languageSelect.find( 'option:selected' ).data( 'installed' ) ) {
 			$( '#submit', this ).after( '<span class="spinner language-install-spinner is-active" />' );
 		}

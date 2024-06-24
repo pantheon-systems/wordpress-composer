@@ -1,43 +1,42 @@
-/******/ (() => { // webpackBootstrap
+/******/ (function() { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	// The require scope
 /******/ 	var __webpack_require__ = {};
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 		__webpack_require__.d = function(exports, definition) {
 /******/ 			for(var key in definition) {
 /******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "default": () => (/* binding */ deprecated)
+  "default": function() { return /* binding */ deprecated; }
 });
 
 // UNUSED EXPORTS: logged
 
 ;// CONCATENATED MODULE: external ["wp","hooks"]
-const external_wp_hooks_namespaceObject = window["wp"]["hooks"];
+var external_wp_hooks_namespaceObject = window["wp"]["hooks"];
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/deprecated/build-module/index.js
 /**
  * WordPress dependencies
  */
-
 
 /**
  * Object map tracking messages which have been logged, for use in ensuring a
@@ -45,8 +44,8 @@ const external_wp_hooks_namespaceObject = window["wp"]["hooks"];
  *
  * @type {Record<string, true | undefined>}
  */
-const logged = Object.create(null);
 
+const logged = Object.create(null);
 /**
  * Logs a message to notify developers about a deprecated feature.
  *
@@ -74,7 +73,9 @@ const logged = Object.create(null);
  * // Logs: 'Eating meat is deprecated since version 2019.01.01 and will be removed from the earth in version 2020.01.01. Please use vegetables instead. Note: You may find it beneficial to transition gradually.'
  * ```
  */
-function deprecated(feature, options = {}) {
+
+function deprecated(feature) {
+  let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   const {
     since,
     version,
@@ -89,13 +90,11 @@ function deprecated(feature, options = {}) {
   const useInsteadMessage = alternative ? ` Please use ${alternative} instead.` : '';
   const linkMessage = link ? ` See: ${link}` : '';
   const hintMessage = hint ? ` Note: ${hint}` : '';
-  const message = `${feature} is deprecated${sinceMessage}${versionMessage}.${useInsteadMessage}${linkMessage}${hintMessage}`;
+  const message = `${feature} is deprecated${sinceMessage}${versionMessage}.${useInsteadMessage}${linkMessage}${hintMessage}`; // Skip if already logged.
 
-  // Skip if already logged.
   if (message in logged) {
     return;
   }
-
   /**
    * Fires whenever a deprecated feature is encountered
    *
@@ -109,13 +108,13 @@ function deprecated(feature, options = {}) {
    * @param {?string} options.hint        Additional message to help transition away from the deprecated feature.
    * @param {?string} message             Message sent to console.warn
    */
-  (0,external_wp_hooks_namespaceObject.doAction)('deprecated', feature, options, message);
 
-  // eslint-disable-next-line no-console
+
+  (0,external_wp_hooks_namespaceObject.doAction)('deprecated', feature, options, message); // eslint-disable-next-line no-console
+
   console.warn(message);
   logged[message] = true;
 }
-
 /** @typedef {import('utility-types').NonUndefined<Parameters<typeof deprecated>[1]>} DeprecatedOptions */
 
 (window.wp = window.wp || {}).deprecated = __webpack_exports__["default"];

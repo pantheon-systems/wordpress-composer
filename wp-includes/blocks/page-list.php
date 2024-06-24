@@ -150,8 +150,7 @@ function block_core_page_list_render_nested_page_list( $open_submenus_on_click, 
 	if ( empty( $nested_pages ) ) {
 		return;
 	}
-	$front_page_id = (int) get_option( 'page_on_front' );
-	$markup        = '';
+	$markup = '';
 	foreach ( (array) $nested_pages as $page ) {
 		$css_class       = $page['is_active'] ? ' current-menu-item' : '';
 		$aria_current    = $page['is_active'] ? ' aria-current="page"' : '';
@@ -182,6 +181,7 @@ function block_core_page_list_render_nested_page_list( $open_submenus_on_click, 
 			}
 		}
 
+		$front_page_id = (int) get_option( 'page_on_front' );
 		if ( (int) $page['page_id'] === $front_page_id ) {
 			$css_class .= ' menu-item-home';
 		}
@@ -282,14 +282,14 @@ function render_block_core_page_list( $attributes, $content, $block ) {
 			$pages_with_children[ $page->post_parent ][ $page->ID ] = array(
 				'page_id'   => $page->ID,
 				'title'     => $page->post_title,
-				'link'      => get_permalink( $page ),
+				'link'      => get_permalink( $page->ID ),
 				'is_active' => $is_active,
 			);
 		} else {
 			$top_level_pages[ $page->ID ] = array(
 				'page_id'   => $page->ID,
 				'title'     => $page->post_title,
-				'link'      => get_permalink( $page ),
+				'link'      => get_permalink( $page->ID ),
 				'is_active' => $is_active,
 			);
 

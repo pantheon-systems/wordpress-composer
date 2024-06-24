@@ -28,7 +28,7 @@ interface Capability {
 	 *
 	 * Note: this does not automatically mean that the capability will be supported for your chosen transport!
 	 *
-	 * @var string[]
+	 * @var array<string>
 	 */
 	const ALL = [
 		self::SSL,

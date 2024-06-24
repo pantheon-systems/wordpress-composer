@@ -348,7 +348,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		// Store pagination values for headers then unset for count query.
 		$per_page = (int) $prepared_args['number'];
-		$page     = (int) ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
+		$page     = ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
 
 		$prepared_args['fields'] = 'ID';
 
@@ -363,9 +363,9 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		$response->header( 'X-WP-Total', (int) $total_users );
 
-		$max_pages = (int) ceil( $total_users / $per_page );
+		$max_pages = ceil( $total_users / $per_page );
 
-		$response->header( 'X-WP-TotalPages', $max_pages );
+		$response->header( 'X-WP-TotalPages', (int) $max_pages );
 
 		$base = add_query_arg( urlencode_deep( $request->get_query_params() ), rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ) );
 		if ( $page > 1 ) {
@@ -686,10 +686,8 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 			$request_params = array_keys( $request->get_params() );
 			sort( $request_params );
-			/*
-			 * If only 'id' and 'roles' are specified (we are only trying to
-			 * edit roles), then only the 'promote_user' cap is required.
-			 */
+			// If only 'id' and 'roles' are specified (we are only trying to
+			// edit roles), then only the 'promote_user' cap is required.
 			if ( array( 'id', 'roles' ) === $request_params ) {
 				return true;
 			}
@@ -987,10 +985,9 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		// Restores the more descriptive, specific name for use within this method.
-		$user = $item;
-
-		$fields = $this->get_fields_for_response( $request );
+		$user   = $item;
 		$data   = array();
+		$fields = $this->get_fields_for_response( $request );
 
 		if ( in_array( 'id', $fields, true ) ) {
 			$data['id'] = $user->ID;
@@ -1311,7 +1308,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			);
 		}
 
-		if ( str_contains( $password, '\\' ) ) {
+		if ( false !== strpos( $password, '\\' ) ) {
 			return new WP_Error(
 				'rest_user_invalid_password',
 				sprintf(
