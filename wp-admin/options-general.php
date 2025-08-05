@@ -7,18 +7,19 @@
  */
 
 /** WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once __DIR__ . '/admin.php';
 
 /** WordPress Translation Installation API */
-require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
 if ( ! current_user_can( 'manage_options' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
 }
 
+// Used in the HTML title tag.
 $title       = __( 'General Settings' );
 $parent_file = 'options-general.php';
-/* translators: Date and time format for exact current time, mainly about timezones, see https://secure.php.net/date */
+/* translators: Date and time format for exact current time, mainly about timezones, see https://www.php.net/manual/datetime.format.php */
 $timezone_format = _x( 'Y-m-d H:i:s', 'timezone date format' );
 
 add_action( 'admin_head', 'options_general_add_js' );
@@ -27,7 +28,7 @@ $options_help = '<p>' . __( 'The fields on this screen determine some of the bas
 	'<p>' . __( 'Most themes display the site title at the top of every page, in the title bar of the browser, and as the identifying name for syndicated feeds. The tagline is also displayed by many themes.' ) . '</p>';
 
 if ( ! is_multisite() ) {
-	$options_help .= '<p>' . __( 'The WordPress URL and the Site URL can be the same (example.com) or different; for example, having the WordPress core files (example.com/wordpress) in a subdirectory instead of the root directory.' ) . '</p>' .
+	$options_help .= '<p>' . __( 'The WordPress URL and the site URL can be the same (example.com) or different; for example, having the WordPress core files (example.com/wordpress) in a subdirectory instead of the root directory.' ) . '</p>' .
 		'<p>' . __( 'If you want site visitors to be able to register themselves, as opposed to by the site administrator, check the membership box. A default user role can be set for all new users, whether self-registered or registered by the site admin.' ) . '</p>';
 }
 
@@ -49,7 +50,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
 );
 
-include( ABSPATH . 'wp-admin/admin-header.php' );
+require_once ABSPATH . 'wp-admin/admin-header.php';
 ?>
 
 <div class="wrap">
@@ -110,10 +111,10 @@ if ( ! is_multisite() ) {
 <tr>
 <th scope="row"><label for="new_admin_email"><?php _e( 'Administration Email Address' ); ?></label></th>
 <td><input name="new_admin_email" type="email" id="new_admin_email" aria-describedby="new-admin-email-description" value="<?php form_option( 'admin_email' ); ?>" class="regular-text ltr" />
-<p class="description" id="new-admin-email-description"><?php _e( 'This address is used for admin purposes. If you change this we will send you an email at your new address to confirm it. <strong>The new address will not become active until confirmed.</strong>' ); ?></p>
+<p class="description" id="new-admin-email-description"><?php _e( 'This address is used for admin purposes. If you change this, an email will be sent to your new address to confirm it. <strong>The new address will not become active until confirmed.</strong>' ); ?></p>
 <?php
 $new_admin_email = get_option( 'new_admin_email' );
-if ( $new_admin_email && $new_admin_email != get_option( 'admin_email' ) ) :
+if ( $new_admin_email && get_option( 'admin_email' ) !== $new_admin_email ) :
 	?>
 	<div class="updated inline">
 	<p>
@@ -157,7 +158,7 @@ if ( $new_admin_email && $new_admin_email != get_option( 'admin_email' ) ) :
 
 $languages    = get_available_languages();
 $translations = wp_get_available_translations();
-if ( ! is_multisite() && defined( 'WPLANG' ) && '' !== WPLANG && 'en_US' !== WPLANG && ! in_array( WPLANG, $languages ) ) {
+if ( ! is_multisite() && defined( 'WPLANG' ) && '' !== WPLANG && 'en_US' !== WPLANG && ! in_array( WPLANG, $languages, true ) ) {
 	$languages[] = WPLANG;
 }
 if ( ! empty( $languages ) || ! empty( $translations ) ) {
@@ -167,7 +168,7 @@ if ( ! empty( $languages ) || ! empty( $translations ) ) {
 		<td>
 			<?php
 			$locale = get_locale();
-			if ( ! in_array( $locale, $languages ) ) {
+			if ( ! in_array( $locale, $languages, true ) ) {
 				$locale = '';
 			}
 
@@ -183,7 +184,7 @@ if ( ! empty( $languages ) || ! empty( $translations ) ) {
 			);
 
 			// Add note about deprecated WPLANG constant.
-			if ( defined( 'WPLANG' ) && ( '' !== WPLANG ) && $locale !== WPLANG ) {
+			if ( defined( 'WPLANG' ) && ( '' !== WPLANG ) && WPLANG !== $locale ) {
 				_deprecated_argument(
 					'define()',
 					'4.0.0',
@@ -209,7 +210,7 @@ if ( false !== strpos( $tzstring, 'Etc/GMT' ) ) {
 	$tzstring = '';
 }
 
-if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists
+if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 	$check_zone_info = false;
 	if ( 0 == $current_offset ) {
 		$tzstring = 'UTC+0';
@@ -276,7 +277,7 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists
 	?>
 	<br />
 	<?php
-	if ( in_array( $tzstring, timezone_identifiers_list() ) ) {
+	if ( in_array( $tzstring, timezone_identifiers_list(), true ) ) {
 		$transitions = timezone_transitions_get( timezone_open( $tzstring ), time() );
 
 		// 0 index is the state at current time, 1 index is the next transition, if any.
@@ -321,7 +322,7 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists
 
 foreach ( $date_formats as $format ) {
 	echo "\t<label><input type='radio' name='date_format' value='" . esc_attr( $format ) . "'";
-	if ( get_option( 'date_format' ) === $format ) { // checked() uses "==" rather than "==="
+	if ( get_option( 'date_format' ) === $format ) { // checked() uses "==" rather than "===".
 		echo " checked='checked'";
 		$custom = false;
 	}
@@ -358,7 +359,7 @@ foreach ( $date_formats as $format ) {
 
 foreach ( $time_formats as $format ) {
 	echo "\t<label><input type='radio' name='time_format' value='" . esc_attr( $format ) . "'";
-	if ( get_option( 'time_format' ) === $format ) { // checked() uses "==" rather than "==="
+	if ( get_option( 'time_format' ) === $format ) { // checked() uses "==" rather than "===".
 		echo " checked='checked'";
 		$custom = false;
 	}
@@ -405,4 +406,4 @@ endfor;
 
 </div>
 
-<?php include( ABSPATH . 'wp-admin/admin-footer.php' ); ?>
+<?php require_once ABSPATH . 'wp-admin/admin-footer.php'; ?>
