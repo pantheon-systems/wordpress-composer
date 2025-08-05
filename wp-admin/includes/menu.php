@@ -13,8 +13,8 @@ if ( is_network_admin() ) {
 	 *
 	 * The hook fires before menus and sub-menus are removed based on user privileges.
 	 *
+	 * @private
 	 * @since 3.1.0
-	 * @access private
 	 */
 	do_action( '_network_admin_menu' );
 } elseif ( is_user_admin() ) {
@@ -24,8 +24,8 @@ if ( is_network_admin() ) {
 	 *
 	 * The hook fires before menus and sub-menus are removed based on user privileges.
 	 *
+	 * @private
 	 * @since 3.1.0
-	 * @access private
 	 */
 	do_action( '_user_admin_menu' );
 } else {
@@ -35,8 +35,8 @@ if ( is_network_admin() ) {
 	 *
 	 * The hook fires before menus and sub-menus are removed based on user privileges.
 	 *
+	 * @private
 	 * @since 2.2.0
-	 * @access private
 	 */
 	do_action( '_admin_menu' );
 }
@@ -44,13 +44,11 @@ if ( is_network_admin() ) {
 // Create list of page plugin hook names.
 foreach ( $menu as $menu_page ) {
 	$pos = strpos( $menu_page[2], '?' );
-
 	if ( false !== $pos ) {
 		// Handle post_type=post|page|foo pages.
 		$hook_name = substr( $menu_page[2], 0, $pos );
 		$hook_args = substr( $menu_page[2], $pos + 1 );
 		wp_parse_str( $hook_args, $hook_args );
-
 		// Set the hook name to be the post type.
 		if ( isset( $hook_args['post_type'] ) ) {
 			$hook_name = $hook_args['post_type'];
@@ -61,7 +59,6 @@ foreach ( $menu as $menu_page ) {
 	} else {
 		$hook_name = basename( $menu_page[2], '.php' );
 	}
-
 	$hook_name = sanitize_title( $hook_name );
 
 	if ( isset( $compat[ $hook_name ] ) ) {
@@ -101,20 +98,17 @@ foreach ( $menu as $id => $data ) {
 	if ( empty( $submenu[ $data[2] ] ) ) {
 		continue;
 	}
-
 	$subs       = $submenu[ $data[2] ];
 	$first_sub  = reset( $subs );
 	$old_parent = $data[2];
 	$new_parent = $first_sub[2];
-
 	/*
 	 * If the first submenu is not the same as the assigned parent,
 	 * make the first submenu the new parent.
 	 */
-	if ( $new_parent !== $old_parent ) {
+	if ( $new_parent != $old_parent ) {
 		$_wp_real_parent_file[ $old_parent ] = $new_parent;
-
-		$menu[ $id ][2] = $new_parent;
+		$menu[ $id ][2]                      = $new_parent;
 
 		foreach ( $submenu[ $old_parent ] as $index => $data ) {
 			$submenu[ $new_parent ][ $index ] = $submenu[ $old_parent ][ $index ];
@@ -174,11 +168,10 @@ foreach ( $menu as $id => $data ) {
 	 * If there is only one submenu and it is has same destination as the parent,
 	 * remove the submenu.
 	 */
-	if ( ! empty( $submenu[ $data[2] ] ) && 1 === count( $submenu[ $data[2] ] ) ) {
+	if ( ! empty( $submenu[ $data[2] ] ) && 1 == count( $submenu[ $data[2] ] ) ) {
 		$subs      = $submenu[ $data[2] ];
 		$first_sub = reset( $subs );
-
-		if ( $data[2] === $first_sub[2] ) {
+		if ( $data[2] == $first_sub[2] ) {
 			unset( $submenu[ $data[2] ] );
 		}
 	}
@@ -194,74 +187,56 @@ foreach ( $menu as $id => $data ) {
 unset( $id, $data, $subs, $first_sub );
 
 /**
- * Adds a CSS class to a string.
- *
- * @since 2.7.0
- *
- * @param string $class_to_add The CSS class to add.
- * @param string $classes      The string to add the CSS class to.
- * @return string The string with the CSS class added.
+ * @param string $add
+ * @param string $class
+ * @return string
  */
-function add_cssclass( $class_to_add, $classes ) {
-	if ( empty( $classes ) ) {
-		return $class_to_add;
-	}
-
-	return $classes . ' ' . $class_to_add;
+function add_cssclass( $add, $class ) {
+	$class = empty( $class ) ? $add : $class .= ' ' . $add;
+	return $class;
 }
 
 /**
- * Adds CSS classes for top-level administration menu items.
- *
- * The list of added classes includes `.menu-top-first` and `.menu-top-last`.
- *
- * @since 2.7.0
- *
- * @param array $menu The array of administration menu items.
- * @return array The array of administration menu items with the CSS classes added.
+ * @param array $menu
+ * @return array
  */
 function add_menu_classes( $menu ) {
-	$first_item  = false;
-	$last_order  = false;
-	$items_count = count( $menu );
-
-	$i = 0;
-
+	$first     = false;
+	$lastorder = false;
+	$i         = 0;
+	$mc        = count( $menu );
 	foreach ( $menu as $order => $top ) {
-		++$i;
+		$i++;
 
-		if ( 0 === $order ) { // Dashboard is always shown/single.
+		if ( 0 == $order ) { // dashboard is always shown/single
 			$menu[0][4] = add_cssclass( 'menu-top-first', $top[4] );
-			$last_order = 0;
+			$lastorder  = 0;
 			continue;
 		}
 
-		if ( str_starts_with( $top[2], 'separator' ) && false !== $last_order ) { // If separator.
-			$first_item = true;
-			$classes    = $menu[ $last_order ][4];
-
-			$menu[ $last_order ][4] = add_cssclass( 'menu-top-last', $classes );
+		if ( 0 === strpos( $top[2], 'separator' ) && false !== $lastorder ) { // if separator
+			$first                 = true;
+			$c                     = $menu[ $lastorder ][4];
+			$menu[ $lastorder ][4] = add_cssclass( 'menu-top-last', $c );
 			continue;
 		}
 
-		if ( $first_item ) {
-			$first_item = false;
-			$classes    = $menu[ $order ][4];
-
-			$menu[ $order ][4] = add_cssclass( 'menu-top-first', $classes );
+		if ( $first ) {
+			$c                 = $menu[ $order ][4];
+			$menu[ $order ][4] = add_cssclass( 'menu-top-first', $c );
+			$first             = false;
 		}
 
-		if ( $i === $items_count ) { // Last item.
-			$classes = $menu[ $order ][4];
-
-			$menu[ $order ][4] = add_cssclass( 'menu-top-last', $classes );
+		if ( $mc == $i ) { // last item
+			$c                 = $menu[ $order ][4];
+			$menu[ $order ][4] = add_cssclass( 'menu-top-last', $c );
 		}
 
-		$last_order = $order;
+		$lastorder = $order;
 	}
 
 	/**
-	 * Filters administration menu array with classes added for top-level items.
+	 * Filters administration menus array with classes added for top-level items.
 	 *
 	 * @since 2.7.0
 	 *
@@ -270,7 +245,7 @@ function add_menu_classes( $menu ) {
 	return apply_filters( 'add_menu_classes', $menu );
 }
 
-uksort( $menu, 'strnatcasecmp' ); // Make it all pretty.
+uksort( $menu, 'strnatcasecmp' ); // make it all pretty
 
 /**
  * Filters whether to enable custom ordering of the administration menu.
@@ -283,12 +258,10 @@ uksort( $menu, 'strnatcasecmp' ); // Make it all pretty.
  */
 if ( apply_filters( 'custom_menu_order', false ) ) {
 	$menu_order = array();
-
 	foreach ( $menu as $menu_item ) {
 		$menu_order[] = $menu_item[2];
 	}
 	unset( $menu_item );
-
 	$default_menu_order = $menu_order;
 
 	/**
@@ -303,9 +276,8 @@ if ( apply_filters( 'custom_menu_order', false ) ) {
 	 *
 	 * @param array $menu_order An ordered array of menu items.
 	 */
-	$menu_order = apply_filters( 'menu_order', $menu_order );
-	$menu_order = array_flip( $menu_order );
-
+	$menu_order         = apply_filters( 'menu_order', $menu_order );
+	$menu_order         = array_flip( $menu_order );
 	$default_menu_order = array_flip( $default_menu_order );
 
 	/**
@@ -318,16 +290,14 @@ if ( apply_filters( 'custom_menu_order', false ) ) {
 	 */
 	function sort_menu( $a, $b ) {
 		global $menu_order, $default_menu_order;
-
 		$a = $a[2];
 		$b = $b[2];
-
 		if ( isset( $menu_order[ $a ] ) && ! isset( $menu_order[ $b ] ) ) {
 			return -1;
 		} elseif ( ! isset( $menu_order[ $a ] ) && isset( $menu_order[ $b ] ) ) {
 			return 1;
 		} elseif ( isset( $menu_order[ $a ] ) && isset( $menu_order[ $b ] ) ) {
-			if ( $menu_order[ $a ] === $menu_order[ $b ] ) {
+			if ( $menu_order[ $a ] == $menu_order[ $b ] ) {
 				return 0;
 			}
 			return ( $menu_order[ $a ] < $menu_order[ $b ] ) ? -1 : 1;
@@ -340,21 +310,21 @@ if ( apply_filters( 'custom_menu_order', false ) ) {
 	unset( $menu_order, $default_menu_order );
 }
 
-// Prevent adjacent separators.
+// Prevent adjacent separators
 $prev_menu_was_separator = false;
 foreach ( $menu as $id => $data ) {
 	if ( false === stristr( $data[4], 'wp-menu-separator' ) ) {
 
-		// This item is not a separator, so falsey the toggler and do nothing.
+		// This item is not a separator, so falsey the toggler and do nothing
 		$prev_menu_was_separator = false;
 	} else {
 
-		// The previous item was a separator, so unset this one.
+		// The previous item was a separator, so unset this one
 		if ( true === $prev_menu_was_separator ) {
 			unset( $menu[ $id ] );
 		}
 
-		// This item is a separator, so truthy the toggler and move on.
+		// This item is a separator, so truthy the toggler and move on
 		$prev_menu_was_separator = true;
 	}
 }
@@ -363,7 +333,7 @@ unset( $id, $data, $prev_menu_was_separator );
 // Remove the last menu item if it is a separator.
 $last_menu_key = array_keys( $menu );
 $last_menu_key = array_pop( $last_menu_key );
-if ( ! empty( $menu ) && 'wp-menu-separator' === $menu[ $last_menu_key ][4] ) {
+if ( ! empty( $menu ) && 'wp-menu-separator' == $menu[ $last_menu_key ][4] ) {
 	unset( $menu[ $last_menu_key ] );
 }
 unset( $last_menu_key );

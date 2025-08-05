@@ -22,6 +22,7 @@
 			shortlink,
 			skipLink,
 			mobileEvent,
+			fontFaceRegex,
 			adminBarSearchInput,
 			i;
 
@@ -31,11 +32,12 @@
 
 		topMenuItems = adminBar.querySelectorAll( 'li.menupop' );
 		allMenuItems = adminBar.querySelectorAll( '.ab-item' );
-		adminBarLogout = document.querySelector( '#wp-admin-bar-logout a' );
+		adminBarLogout = document.getElementById( 'wp-admin-bar-logout' );
 		adminBarSearchForm = document.getElementById( 'adminbarsearch' );
 		shortlink = document.getElementById( 'wp-admin-bar-get-shortlink' );
 		skipLink = adminBar.querySelector( '.screen-reader-shortcut' );
 		mobileEvent = /Mobile\/.+Safari/.test( navigator.userAgent ) ? 'touchstart' : 'click';
+		fontFaceRegex = /Android (1.0|1.1|1.5|1.6|2.0|2.1)|Nokia|Opera Mini|w(eb)?OSBrowser|webOS|UCWEB|Windows Phone OS 7|XBLWP7|ZuneWP7|MSIE 7/;
 
 		// Remove nojs class after the DOM is loaded.
 		removeClass( adminBar, 'nojs' );
@@ -95,6 +97,11 @@
 			} );
 		}
 
+		if ( skipLink ) {
+			// Focus the target of skip link after pressing Enter.
+			skipLink.addEventListener( 'keydown', focusTargetAfterEnter );
+		}
+
 		if ( shortlink ) {
 			shortlink.addEventListener( 'click', clickShortlink );
 		}
@@ -102,6 +109,15 @@
 		// Prevents the toolbar from covering up content when a hash is present in the URL.
 		if ( window.location.hash ) {
 			window.scrollBy( 0, -32 );
+		}
+
+		// Add no-font-face class to body if needed.
+		if (
+			navigator.userAgent &&
+			fontFaceRegex.test( navigator.userAgent ) &&
+			! hasClass( document.body, 'no-font-face' )
+		) {
+			addClass( document.body, 'no-font-face' );
 		}
 
 		// Clear sessionStorage on logging out.
@@ -144,8 +160,7 @@
 	function toggleHoverIfEnter( event ) {
 		var wrapper;
 
-		// Follow link if pressing Ctrl and/or Shift with Enter (opening in a new tab or window).
-		if ( event.which !== 13 || event.ctrlKey || event.shiftKey ) {
+		if ( event.which !== 13 ) {
 			return;
 		}
 
@@ -169,7 +184,36 @@
 	}
 
 	/**
-	 * Toggle hover class for mobile devices.
+	 * Focus the target of skip link after pressing Enter.
+	 *
+	 * @since 5.3.1
+	 *
+	 * @param {Event} event The keydown event.
+	 */
+	function focusTargetAfterEnter( event ) {
+		var id, userAgent;
+
+		if ( event.which !== 13 ) {
+			return;
+		}
+
+		id = event.target.getAttribute( 'href' );
+		userAgent = navigator.userAgent.toLowerCase();
+
+		if ( userAgent.indexOf( 'applewebkit' ) > -1 && id && id.charAt( 0 ) === '#' ) {
+			setTimeout( function() {
+				var target = document.getElementById( id.replace( '#', '' ) );
+
+				if ( target ) {
+					target.setAttribute( 'tabIndex', '0' );
+					target.focus();
+				}
+			}, 100 );
+		}
+	}
+
+	/**
+	 * Toogle hover class for mobile devices.
 	 *
 	 * @since 5.3.1
 	 *
@@ -220,7 +264,7 @@
 			return;
 		}
 
-		// (Old) IE doesn't support preventDefault, and does support returnValue.
+		// (Old) IE doesn't support preventDefault, and does support returnValue
 		if ( event.preventDefault ) {
 			event.preventDefault();
 		}
@@ -261,8 +305,8 @@
 	 * @since 5.3.1
 	 *
 	 * @param {HTMLElement} element The HTML element.
-	 * @param {string}      className The class name.
-	 * @return {boolean} Whether the element has the className.
+	 * @param {String}      className The class name.
+	 * @return {bool} Whether the element has the className.
 	 */
 	function hasClass( element, className ) {
 		var classNames;
@@ -287,7 +331,7 @@
 	 * @since 5.3.1
 	 *
 	 * @param {HTMLElement} element The HTML element.
-	 * @param {string}      className The class name.
+	 * @param {String}      className The class name.
 	 */
 	function addClass( element, className ) {
 		if ( ! element ) {
@@ -303,11 +347,6 @@
 
 			element.className += className;
 		}
-
-		var menuItemToggle = element.querySelector( 'a' );
-		if ( className === 'hover' && menuItemToggle && menuItemToggle.hasAttribute( 'aria-expanded' ) ) {
-			menuItemToggle.setAttribute( 'aria-expanded', 'true' );
-		}
 	}
 
 	/**
@@ -316,7 +355,7 @@
 	 * @since 5.3.1
 	 *
 	 * @param {HTMLElement} element The HTML element.
-	 * @param {string}      className The class name.
+	 * @param {String}      className The class name.
 	 */
 	function removeClass( element, className ) {
 		var testName,
@@ -337,11 +376,6 @@
 			}
 
 			element.className = classes.replace( /^[\s]+|[\s]+$/g, '' );
-		}
-
-		var menuItemToggle = element.querySelector( 'a' );
-		if ( className === 'hover' && menuItemToggle && menuItemToggle.hasAttribute( 'aria-expanded' ) ) {
-			menuItemToggle.setAttribute( 'aria-expanded', 'false' );
 		}
 	}
 
@@ -417,7 +451,7 @@
 				};
 		}
 
-		// Get the closest matching elent.
+		// Get the closest matching elent
 		for ( ; el && el !== document; el = el.parentNode ) {
 			if ( el.matches( selector ) ) {
 				return el;

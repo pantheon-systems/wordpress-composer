@@ -25,14 +25,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	private $parent_post_type;
 
 	/**
-	 * Instance of a revision meta fields object.
-	 *
-	 * @since 6.4.0
-	 * @var WP_REST_Post_Meta_Fields
-	 */
-	protected $meta;
-
-	/**
 	 * Parent controller.
 	 *
 	 * @since 4.7.0
@@ -56,23 +48,20 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @param string $parent_post_type Post type of the parent.
 	 */
 	public function __construct( $parent_post_type ) {
-		$this->parent_post_type = $parent_post_type;
-		$post_type_object       = get_post_type_object( $parent_post_type );
-		$parent_controller      = $post_type_object->get_rest_controller();
-
-		if ( ! $parent_controller ) {
-			$parent_controller = new WP_REST_Posts_Controller( $parent_post_type );
-		}
-
-		$this->parent_controller = $parent_controller;
+		$this->parent_post_type  = $parent_post_type;
+		$this->namespace         = 'wp/v2';
 		$this->rest_base         = 'revisions';
+		$post_type_object        = get_post_type_object( $parent_post_type );
 		$this->parent_base       = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
-		$this->namespace         = ! empty( $post_type_object->rest_namespace ) ? $post_type_object->rest_namespace : 'wp/v2';
-		$this->meta              = new WP_REST_Post_Meta_Fields( $parent_post_type );
+		$this->parent_controller = $post_type_object->get_rest_controller();
+
+		if ( ! $this->parent_controller ) {
+			$this->parent_controller = new WP_REST_Posts_Controller( $parent_post_type );
+		}
 	}
 
 	/**
-	 * Registers the routes for revisions based on post types supporting revisions.
+	 * Registers routes for revisions based on post types supporting revisions.
 	 *
 	 * @since 4.7.0
 	 *
@@ -86,7 +75,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			array(
 				'args'   => array(
 					'parent' => array(
-						'description' => __( 'The ID for the parent of the revision.' ),
+						'description' => __( 'The ID for the parent of the object.' ),
 						'type'        => 'integer',
 					),
 				),
@@ -106,11 +95,11 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			array(
 				'args'   => array(
 					'parent' => array(
-						'description' => __( 'The ID for the parent of the revision.' ),
+						'description' => __( 'The ID for the parent of the object.' ),
 						'type'        => 'integer',
 					),
 					'id'     => array(
-						'description' => __( 'Unique identifier for the revision.' ),
+						'description' => __( 'Unique identifier for the object.' ),
 						'type'        => 'integer',
 					),
 				),
@@ -137,6 +126,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
 	}
 
 	/**
@@ -144,29 +134,21 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 *
 	 * @since 4.7.2
 	 *
-	 * @param int $parent_post_id Supplied ID.
+	 * @param int $parent Supplied ID.
 	 * @return WP_Post|WP_Error Post object if ID is valid, WP_Error otherwise.
 	 */
-	protected function get_parent( $parent_post_id ) {
-		$error = new WP_Error(
-			'rest_post_invalid_parent',
-			__( 'Invalid post parent ID.' ),
-			array( 'status' => 404 )
-		);
-
-		if ( (int) $parent_post_id <= 0 ) {
+	protected function get_parent( $parent ) {
+		$error = new WP_Error( 'rest_post_invalid_parent', __( 'Invalid post parent ID.' ), array( 'status' => 404 ) );
+		if ( (int) $parent <= 0 ) {
 			return $error;
 		}
 
-		$parent_post = get_post( (int) $parent_post_id );
-
-		if ( empty( $parent_post ) || empty( $parent_post->ID )
-			|| $this->parent_post_type !== $parent_post->post_type
-		) {
+		$parent = get_post( (int) $parent );
+		if ( empty( $parent ) || empty( $parent->ID ) || $this->parent_post_type !== $parent->post_type ) {
 			return $error;
 		}
 
-		return $parent_post;
+		return $parent;
 	}
 
 	/**
@@ -174,7 +156,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
+	 * @param WP_REST_Request $request Full data about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 */
 	public function get_items_permissions_check( $request ) {
@@ -183,12 +165,9 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			return $parent;
 		}
 
-		if ( ! current_user_can( 'edit_post', $parent->ID ) ) {
-			return new WP_Error(
-				'rest_cannot_read',
-				__( 'Sorry, you are not allowed to view revisions of this post.' ),
-				array( 'status' => rest_authorization_required_code() )
-			);
+		$parent_post_type_obj = get_post_type_object( $parent->post_type );
+		if ( ! current_user_can( $parent_post_type_obj->cap->edit_post, $parent->ID ) ) {
+			return new WP_Error( 'rest_cannot_read', __( 'Sorry, you are not allowed to view revisions of this post.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -203,12 +182,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @return WP_Post|WP_Error Revision post object if ID is valid, WP_Error otherwise.
 	 */
 	protected function get_revision( $id ) {
-		$error = new WP_Error(
-			'rest_post_invalid_id',
-			__( 'Invalid revision ID.' ),
-			array( 'status' => 404 )
-		);
-
+		$error = new WP_Error( 'rest_post_invalid_id', __( 'Invalid revision ID.' ), array( 'status' => 404 ) );
 		if ( (int) $id <= 0 ) {
 			return $error;
 		}
@@ -226,7 +200,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
+	 * @param WP_REST_Request $request Full data about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
@@ -237,23 +211,13 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 		// Ensure a search string is set in case the orderby is set to 'relevance'.
 		if ( ! empty( $request['orderby'] ) && 'relevance' === $request['orderby'] && empty( $request['search'] ) ) {
-			return new WP_Error(
-				'rest_no_search_term_defined',
-				__( 'You need to define a search term to order by relevance.' ),
-				array( 'status' => 400 )
-			);
+			return new WP_Error( 'rest_no_search_term_defined', __( 'You need to define a search term to order by relevance.' ), array( 'status' => 400 ) );
 		}
 
 		// Ensure an include parameter is set in case the orderby is set to 'include'.
 		if ( ! empty( $request['orderby'] ) && 'include' === $request['orderby'] && empty( $request['include'] ) ) {
-			return new WP_Error(
-				'rest_orderby_include_missing_include',
-				__( 'You need to define an include parameter to order by include.' ),
-				array( 'status' => 400 )
-			);
+			return new WP_Error( 'rest_orderby_include_missing_include', __( 'You need to define an include parameter to order by include.' ), array( 'status' => 400 ) );
 		}
-
-		$is_head_request = $request->is_method( 'HEAD' );
 
 		if ( wp_revisions_enabled( $parent ) ) {
 			$registered = $this->get_collection_params();
@@ -289,14 +253,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 				$args['orderby'] = 'date ID';
 			}
 
-			if ( $is_head_request ) {
-				// Force the 'fields' argument. For HEAD requests, only post IDs are required to calculate pagination.
-				$args['fields'] = 'ids';
-				// Disable priming post meta for HEAD requests to improve performance.
-				$args['update_post_term_cache'] = false;
-				$args['update_post_meta_cache'] = false;
-			}
-
 			/** This filter is documented in wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
 			$args       = apply_filters( 'rest_revision_query', $args, $request );
 			$query_args = $this->prepare_items_query( $args, $request );
@@ -304,7 +260,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			$revisions_query = new WP_Query();
 			$revisions       = $revisions_query->query( $query_args );
 			$offset          = isset( $query_args['offset'] ) ? (int) $query_args['offset'] : 0;
-			$page            = isset( $query_args['paged'] ) ? (int) $query_args['paged'] : 0;
+			$page            = (int) $query_args['paged'];
 			$total_revisions = $revisions_query->found_posts;
 
 			if ( $total_revisions < 1 ) {
@@ -318,24 +274,16 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			}
 
 			if ( $revisions_query->query_vars['posts_per_page'] > 0 ) {
-				$max_pages = (int) ceil( $total_revisions / (int) $revisions_query->query_vars['posts_per_page'] );
+				$max_pages = ceil( $total_revisions / (int) $revisions_query->query_vars['posts_per_page'] );
 			} else {
 				$max_pages = $total_revisions > 0 ? 1 : 0;
 			}
 
 			if ( $total_revisions > 0 ) {
 				if ( $offset >= $total_revisions ) {
-					return new WP_Error(
-						'rest_revision_invalid_offset_number',
-						__( 'The offset number requested is larger than or equal to the number of available revisions.' ),
-						array( 'status' => 400 )
-					);
+					return new WP_Error( 'rest_revision_invalid_offset_number', __( 'The offset number requested is larger than or equal to the number of available revisions.' ), array( 'status' => 400 ) );
 				} elseif ( ! $offset && $page > $max_pages ) {
-					return new WP_Error(
-						'rest_revision_invalid_page_number',
-						__( 'The page number requested is larger than the number of pages available.' ),
-						array( 'status' => 400 )
-					);
+					return new WP_Error( 'rest_revision_invalid_page_number', __( 'The page number requested is larger than the number of pages available.' ), array( 'status' => 400 ) );
 				}
 			}
 		} else {
@@ -345,25 +293,19 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			$page            = (int) $request['page'];
 		}
 
-		if ( ! $is_head_request ) {
-			$response = array();
-
-			foreach ( $revisions as $revision ) {
-				$data       = $this->prepare_item_for_response( $revision, $request );
-				$response[] = $this->prepare_response_for_collection( $data );
-			}
-
-			$response = rest_ensure_response( $response );
-		} else {
-			$response = new WP_REST_Response( array() );
+		$response = array();
+		foreach ( $revisions as $revision ) {
+			$data       = $this->prepare_item_for_response( $revision, $request );
+			$response[] = $this->prepare_response_for_collection( $data );
 		}
+
+		$response = rest_ensure_response( $response );
 
 		$response->header( 'X-WP-Total', (int) $total_revisions );
 		$response->header( 'X-WP-TotalPages', (int) $max_pages );
 
 		$request_params = $request->get_query_params();
-		$base_path      = rest_url( sprintf( '%s/%s/%d/%s', $this->namespace, $this->parent_base, $request['parent'], $this->rest_base ) );
-		$base           = add_query_arg( urlencode_deep( $request_params ), $base_path );
+		$base           = add_query_arg( urlencode_deep( $request_params ), rest_url( sprintf( '%s/%s/%d/%s', $this->namespace, $this->parent_base, $request['parent'], $this->rest_base ) ) );
 
 		if ( $page > 1 ) {
 			$prev_page = $page - 1;
@@ -390,8 +332,8 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
 	 */
 	public function get_item_permissions_check( $request ) {
 		return $this->get_items_permissions_check( $request );
@@ -401,9 +343,8 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Retrieves one revision from the collection.
 	 *
 	 * @since 4.7.0
-	 * @since 6.5.0 Added a condition to check that parent id matches revision parent id.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
+	 * @param WP_REST_Request $request Full data about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_item( $request ) {
@@ -412,18 +353,14 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			return $parent;
 		}
 
+		$parent_post_type = get_post_type_object( $parent->post_type );
+		if ( ! current_user_can( $parent_post_type->cap->delete_post, $parent->ID ) ) {
+			return new WP_Error( 'rest_cannot_delete', __( 'Sorry, you are not allowed to delete revisions of this post.' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
 		$revision = $this->get_revision( $request['id'] );
 		if ( is_wp_error( $revision ) ) {
 			return $revision;
-		}
-
-		if ( (int) $parent->ID !== (int) $revision->post_parent ) {
-			return new WP_Error(
-				'rest_revision_parent_id_mismatch',
-				/* translators: %d: A post id. */
-				sprintf( __( 'The revision does not belong to the specified parent with id of "%d"' ), $parent->ID ),
-				array( 'status' => 404 )
-			);
 		}
 
 		$response = $this->prepare_item_for_response( $revision, $request );
@@ -436,20 +373,12 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
+	 * @return bool|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$parent = $this->get_parent( $request['parent'] );
 		if ( is_wp_error( $parent ) ) {
 			return $parent;
-		}
-
-		if ( ! current_user_can( 'delete_post', $parent->ID ) ) {
-			return new WP_Error(
-				'rest_cannot_delete',
-				__( 'Sorry, you are not allowed to delete revisions of this post.' ),
-				array( 'status' => rest_authorization_required_code() )
-			);
 		}
 
 		$revision = $this->get_revision( $request['id'] );
@@ -462,12 +391,10 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			return $response;
 		}
 
-		if ( ! current_user_can( 'delete_post', $revision->ID ) ) {
-			return new WP_Error(
-				'rest_cannot_delete',
-				__( 'Sorry, you are not allowed to delete this revision.' ),
-				array( 'status' => rest_authorization_required_code() )
-			);
+		$post_type = get_post_type_object( 'revision' );
+
+		if ( ! current_user_can( $post_type->cap->delete_post, $revision->ID ) ) {
+			return new WP_Error( 'rest_cannot_delete', __( 'Sorry, you are not allowed to delete this revision.' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -479,7 +406,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @return true|WP_Error True on success, or WP_Error object on failure.
 	 */
 	public function delete_item( $request ) {
 		$revision = $this->get_revision( $request['id'] );
@@ -491,12 +418,8 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 		// We don't support trashing for revisions.
 		if ( ! $force ) {
-			return new WP_Error(
-				'rest_trash_not_supported',
-				/* translators: %s: force=true */
-				sprintf( __( "Revisions do not support trashing. Set '%s' to delete." ), 'force=true' ),
-				array( 'status' => 501 )
-			);
+			/* translators: %s: force=true */
+			return new WP_Error( 'rest_trash_not_supported', sprintf( __( "Revisions do not support trashing. Set '%s' to delete." ), 'force=true' ), array( 'status' => 501 ) );
 		}
 
 		$previous = $this->prepare_item_for_response( $revision, $request );
@@ -508,19 +431,15 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Post|false|null $result The revision object (if it was deleted or moved to the Trash successfully)
-		 *                                   or false or null (failure). If the revision was moved to the Trash, $result represents
-		 *                                   its new state; if it was deleted, $result represents its state before deletion.
+		 * @param (mixed) $result The revision object (if it was deleted or moved to the trash successfully)
+		 *                        or false (failure). If the revision was moved to the trash, $result represents
+		 *                        its new state; if it was deleted, $result represents its state before deletion.
 		 * @param WP_REST_Request $request The request sent to the API.
 		 */
 		do_action( 'rest_delete_revision', $result, $request );
 
 		if ( ! $result ) {
-			return new WP_Error(
-				'rest_cannot_delete',
-				__( 'The post cannot be deleted.' ),
-				array( 'status' => 500 )
-			);
+			return new WP_Error( 'rest_cannot_delete', __( 'The post cannot be deleted.' ), array( 'status' => 500 ) );
 		}
 
 		$response = new WP_REST_Response();
@@ -572,27 +491,15 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Prepares the revision for the REST response.
 	 *
 	 * @since 4.7.0
-	 * @since 5.9.0 Renamed `$post` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @global WP_Post $post Global post object.
-	 *
-	 * @param WP_Post         $item    Post revision object.
+	 * @param WP_Post         $post    Post revision object.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response Response object.
 	 */
-	public function prepare_item_for_response( $item, $request ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$post = $item;
-
+	public function prepare_item_for_response( $post, $request ) {
 		$GLOBALS['post'] = $post;
 
 		setup_postdata( $post );
-
-		// Don't prepare the response body for HEAD requests.
-		if ( $request->is_method( 'HEAD' ) ) {
-			/** This filter is documented in wp-includes/rest-api/endpoints/class-wp-rest-revisions-controller.php */
-			return apply_filters( 'rest_prepare_revision', new WP_REST_Response( array() ), $post, $request );
-		}
 
 		$fields = $this->get_fields_for_response( $request );
 		$data   = array();
@@ -660,21 +567,17 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			);
 		}
 
-		if ( rest_is_field_included( 'meta', $fields ) ) {
-			$data['meta'] = $this->meta->get_value( $post->ID, $request );
-		}
-
 		$context  = ! empty( $request['context'] ) ? $request['context'] : 'view';
 		$data     = $this->add_additional_fields_to_object( $data, $request );
 		$data     = $this->filter_response_by_context( $data, $context );
 		$response = rest_ensure_response( $data );
 
 		if ( ! empty( $data['parent'] ) ) {
-			$response->add_link( 'parent', rest_url( rest_get_route_for_post( $data['parent'] ) ) );
+			$response->add_link( 'parent', rest_url( sprintf( '%s/%s/%d', $this->namespace, $this->parent_base, $data['parent'] ) ) );
 		}
 
 		/**
-		 * Filters a revision returned from the REST API.
+		 * Filters a revision returned from the API.
 		 *
 		 * Allows modification of the revision right before it is returned.
 		 *
@@ -728,51 +631,51 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			// Base properties for every Revision.
 			'properties' => array(
 				'author'       => array(
-					'description' => __( 'The ID for the author of the revision.' ),
+					'description' => __( 'The ID for the author of the object.' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
 				'date'         => array(
-					'description' => __( "The date the revision was published, in the site's timezone." ),
+					'description' => __( "The date the object was published, in the site's timezone." ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
 				'date_gmt'     => array(
-					'description' => __( 'The date the revision was published, as GMT.' ),
+					'description' => __( 'The date the object was published, as GMT.' ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'guid'         => array(
-					'description' => __( 'GUID for the revision, as it exists in the database.' ),
+					'description' => __( 'GUID for the object, as it exists in the database.' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'id'           => array(
-					'description' => __( 'Unique identifier for the revision.' ),
+					'description' => __( 'Unique identifier for the object.' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
 				'modified'     => array(
-					'description' => __( "The date the revision was last modified, in the site's timezone." ),
+					'description' => __( "The date the object was last modified, in the site's timezone." ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'modified_gmt' => array(
-					'description' => __( 'The date the revision was last modified, as GMT.' ),
+					'description' => __( 'The date the object was last modified, as GMT.' ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'parent'       => array(
-					'description' => __( 'The ID for the parent of the revision.' ),
+					'description' => __( 'The ID for the parent of the object.' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
 				'slug'         => array(
-					'description' => __( 'An alphanumeric identifier for the revision unique to its type.' ),
+					'description' => __( 'An alphanumeric identifier for the object unique to its type.' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
@@ -797,10 +700,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			$schema['properties']['guid'] = $parent_schema['properties']['guid'];
 		}
 
-		$schema['properties']['meta'] = $this->meta->get_field_schema();
-
 		$this->schema = $schema;
-
 		return $this->add_additional_fields_schema( $this->schema );
 	}
 

@@ -1,11 +1,7 @@
 $base-color: #59524c;
+$highlight-color: #c7a589;
+$notification-color: #9ea476;
 
-@use "../_admin.scss" with (
-	$scheme-name: "coffee",
-	$base-color: $base-color,
-	$highlight-color: #c7a589,
-	$notification-color: #9ea476,
-	$form-checked: $base-color,
+$form-checked: $base-color;
 
-	$low-contrast-theme: "true"
-);
+@import "../_admin.scss";

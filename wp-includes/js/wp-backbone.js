@@ -23,8 +23,8 @@ window.wp = window.wp || {};
 	 *
 	 * @class
 	 *
-	 * @param {wp.Backbone.View} view  The main view.
-	 * @param {Array|Object}     views The subviews for the main view.
+	 * @param  {wp.Backbone.View} view  The main view.
+	 * @param  {Array|Object}     views The subviews for the main view.
 	 */
 	wp.Backbone.Subviews = function( view, views ) {
 		this.view = view;
@@ -310,7 +310,7 @@ window.wp = window.wp || {};
 		 * @since 3.6.0
 		 *
 		 * @param {Object}  options        Options for call.
-		 * @param {boolean} options.silent If true, `unset` will *not* be triggered on
+		 * @param {boolean} options.silent If true, `unset` wil *not* be triggered on
 		 *                                 the master views' parent.
 		 *
 		 * @return {wp.Backbone.Subviews} The current Subviews instance.

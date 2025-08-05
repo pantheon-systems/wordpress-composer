@@ -6,7 +6,7 @@
 /* global ajaxurl, tagBox, array_unique_noempty */
 
 ( function( $ ) {
-	var tagDelimiter = wp.i18n._x( ',', 'tag delimiter' ) || ',';
+	var tagDelimiter = ( window.tagsSuggestL10n && window.tagsSuggestL10n.tagDelimiter ) || ',';
 
 	/**
 	 * Filters unique items and returns a new array.
@@ -27,8 +27,7 @@
 
 		// Trim the values and ensure they are unique.
 		$.each( array, function( key, val ) {
-			val = val || '';
-			val = val.trim();
+			val = $.trim( val );
 
 			if ( val && $.inArray( val, out ) === -1 ) {
 				out.push( val );
@@ -53,7 +52,6 @@
 		 * Cleans up tags by removing redundant characters.
 		 *
 		 * @since 2.9.0
-		 *
 		 * @memberOf tagBox
 		 *
 		 * @param {string} tags Comma separated tags that need to be cleaned up.
@@ -78,7 +76,6 @@
 		 * Parses tags and makes them editable.
 		 *
 		 * @since 2.9.0
-		 *
 		 * @memberOf tagBox
 		 *
 		 * @param {Object} el The tag element to retrieve the ID from.
@@ -97,8 +94,7 @@
 
 			// Sanitize the current tags and push them as if they're new tags.
 			$.each( current_tags, function( key, val ) {
-				val = val || '';
-				val = val.trim();
+				val = $.trim( val );
 				if ( val ) {
 					new_tags.push( val );
 				}
@@ -114,7 +110,6 @@
 		 * Creates clickable links, buttons and fields for adding or editing tags.
 		 *
 		 * @since 2.9.0
-		 *
 		 * @memberOf tagBox
 		 *
 		 * @param {Object} el The container HTML element.
@@ -139,7 +134,6 @@
 			 * Creates a delete button if tag editing is enabled, before adding it to the tag list.
 			 *
 			 * @since 2.5.0
-			 *
 			 * @memberOf tagBox
 			 *
 			 * @param {string} key The index of the current tag.
@@ -150,8 +144,7 @@
 			$.each( current_tags, function( key, val ) {
 				var listItem, xbutton;
 
-				val = val || '';
-				val = val.trim();
+				val = $.trim( val );
 
 				if ( ! val )
 					return;
@@ -167,7 +160,7 @@
 					 */
 					xbutton = $( '<button type="button" id="' + id + '-check-num-' + key + '" class="ntdelbutton">' +
 						'<span class="remove-tag-icon" aria-hidden="true"></span>' +
-						'<span class="screen-reader-text">' + wp.i18n.__( 'Remove term:' ) + ' ' + listItem.html() + '</span>' +
+						'<span class="screen-reader-text">' + window.tagsSuggestL10n.removeTerm + ' ' + listItem.html() + '</span>' +
 						'</button>' );
 
 					/**
@@ -191,7 +184,7 @@
 							 * key this will fire the `keyup` event on the input.
 							 */
 							if ( 13 === e.keyCode || 32 === e.keyCode ) {
- 								$( this ).closest( '.tagsdiv' ).find( 'input.newtag' ).trigger( 'focus' );
+ 								$( this ).closest( '.tagsdiv' ).find( 'input.newtag' ).focus();
  							}
 
 							tagBox.userAction = 'remove';
@@ -216,7 +209,6 @@
 		 * Also ensures that the quick links are properly generated.
 		 *
 		 * @since 2.9.0
-		 *
 		 * @memberOf tagBox
 		 *
 		 * @param {Object} el The container HTML element.
@@ -258,7 +250,7 @@
 			if ( ! a )
 				newtag.val('');
 			if ( 'undefined' == typeof( f ) )
-				newtag.trigger( 'focus' );
+				newtag.focus();
 
 			return false;
 		},
@@ -270,7 +262,6 @@
 		 * tagcloud. Clicking a tag will add it.
 		 *
 		 * @since 2.9.0
-		 *
 		 * @memberOf tagBox
 		 *
 		 * @param {string} id The ID to extract the taxonomy from.
@@ -287,8 +278,8 @@
 			 *
 			 * @since 2.9.0
 			 *
-			 * @param {number|string} r The response message from the Ajax call.
-			 * @param {string} stat The status of the Ajax request.
+			 * @param {number|string} r The response message from the AJAX call.
+			 * @param {string} stat The status of the AJAX request.
 			 *
 			 * @return {void}
 			 */
@@ -306,7 +297,7 @@
 				 *
 				 * @return {boolean} Returns false to prevent the default action.
 				 */
-				$( 'a', r ).on( 'click', function() {
+				$( 'a', r ).click( function() {
 					tagBox.userAction = 'add';
 					tagBox.flushTags( $( '#' + tax ), this );
 					return false;
@@ -337,11 +328,11 @@
 
 			switch ( this.userAction ) {
 				case 'remove':
-					message = wp.i18n.__( 'Term removed.' );
+					message = window.tagsSuggestL10n.termRemoved;
 					break;
 
 				case 'add':
-					message = wp.i18n.__( 'Term added.' );
+					message = window.tagsSuggestL10n.termAdded;
 					break;
 
 				default:
@@ -359,7 +350,6 @@
 		 * retrieval of tag suggestions.
 		 *
 		 * @since 2.9.0
-		 *
 		 * @memberOf tagBox
 		 *
 		 * @return {void}
@@ -371,7 +361,7 @@
 				tagBox.quickClicks( this );
 			});
 
-			$( '.tagadd', ajaxtag ).on( 'click', function() {
+			$( '.tagadd', ajaxtag ).click( function() {
 				tagBox.userAction = 'add';
 				tagBox.flushTags( $( this ).closest( '.tagsdiv' ) );
 			});
@@ -388,7 +378,7 @@
 			 *
 			 * @return {void}
 			 */
-			$( 'input.newtag', ajaxtag ).on( 'keypress', function( event ) {
+			$( 'input.newtag', ajaxtag ).keypress( function( event ) {
 				if ( 13 == event.which ) {
 					tagBox.userAction = 'add';
 					tagBox.flushTags( $( this ).closest( '.tagsdiv' ) );
@@ -407,7 +397,7 @@
 			 *
 			 * @return {void}
 			 */
-			$('#post').on( 'submit', function(){
+			$('#post').submit(function(){
 				$('div.tagsdiv').each( function() {
 					tagBox.flushTags(this, false, 1);
 				});
@@ -422,14 +412,14 @@
 			 *
 			 * @return {void}
 			 */
-			$('.tagcloud-link').on( 'click', function(){
+			$('.tagcloud-link').click(function(){
 				// On the first click, fetch the tag cloud and insert it in the DOM.
 				tagBox.get( $( this ).attr( 'id' ) );
 				// Update button state, remove previous click event and attach a new one to toggle the cloud.
 				$( this )
 					.attr( 'aria-expanded', 'true' )
-					.off()
-					.on( 'click', function() {
+					.unbind()
+					.click( function() {
 						$( this )
 							.attr( 'aria-expanded', 'false' === $( this ).attr( 'aria-expanded' ) ? 'true' : 'false' )
 							.siblings( '.the-tagcloud' ).toggle();

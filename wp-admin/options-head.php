@@ -8,12 +8,7 @@
  * @subpackage Administration
  */
 
-// Don't load directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	die( '-1' );
-}
-
-$action = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
+wp_reset_vars( array( 'action' ) );
 
 if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) ) {
 	// For back-compat with plugins that don't use the Settings API and just set updated=1 in the redirect.

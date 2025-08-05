@@ -16,9 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $opml;
 
 /**
- * Starts a new XML tag.
- *
- * Callback function for xml_set_element_handler().
+ * XML callback function for the start of a new XML tag.
  *
  * @since 0.71
  * @access private
@@ -29,14 +27,14 @@ global $opml;
  * @global array $descriptions
  * @global array $feeds
  *
- * @param resource $parser   XML Parser resource.
- * @param string   $tag_name XML element name.
- * @param array    $attrs    XML element attributes.
+ * @param mixed $parser XML Parser resource.
+ * @param string $tagName XML element name.
+ * @param array $attrs XML element attributes.
  */
-function startElement( $parser, $tag_name, $attrs ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
+function startElement( $parser, $tagName, $attrs ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	global $names, $urls, $targets, $descriptions, $feeds;
 
-	if ( 'OUTLINE' === $tag_name ) {
+	if ( 'OUTLINE' === $tagName ) {
 		$name = '';
 		if ( isset( $attrs['TEXT'] ) ) {
 			$name = $attrs['TEXT'];
@@ -62,29 +60,27 @@ function startElement( $parser, $tag_name, $attrs ) { // phpcs:ignore WordPress.
 }
 
 /**
- * Ends a new XML tag.
- *
- * Callback function for xml_set_element_handler().
+ * XML callback function that is called at the end of a XML tag.
  *
  * @since 0.71
  * @access private
  *
- * @param resource $parser   XML Parser resource.
- * @param string   $tag_name XML tag name.
+ * @param mixed $parser XML Parser resource.
+ * @param string $tagName XML tag name.
  */
-function endElement( $parser, $tag_name ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
+function endElement( $parser, $tagName ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	// Nothing to do.
 }
 
-// Create an XML parser.
+// Create an XML parser
 if ( ! function_exists( 'xml_parser_create' ) ) {
-	wp_trigger_error( '', __( "PHP's XML extension is not available. Please contact your hosting provider to enable PHP's XML extension." ) );
+	trigger_error( __( "PHP's XML extension is not available. Please contact your hosting provider to enable PHP's XML extension." ) );
 	wp_die( __( "PHP's XML extension is not available. Please contact your hosting provider to enable PHP's XML extension." ) );
 }
 
 $xml_parser = xml_parser_create();
 
-// Set the functions to handle opening and closing tags.
+// Set the functions to handle opening and closing tags
 xml_set_element_handler( $xml_parser, 'startElement', 'endElement' );
 
 if ( ! xml_parse( $xml_parser, $opml, true ) ) {
@@ -96,6 +92,5 @@ if ( ! xml_parse( $xml_parser, $opml, true ) ) {
 	);
 }
 
-// Free up memory used by the XML parser.
+// Free up memory used by the XML parser
 xml_parser_free( $xml_parser );
-unset( $xml_parser );

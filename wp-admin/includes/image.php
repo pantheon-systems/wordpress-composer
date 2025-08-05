@@ -7,31 +7,29 @@
  */
 
 /**
- * Crops an image to a given size.
+ * Crop an Image to a given size.
  *
  * @since 2.1.0
  *
- * @param string|int   $src      The source file or Attachment ID.
- * @param int          $src_x    The start x position to crop from.
- * @param int          $src_y    The start y position to crop from.
- * @param int          $src_w    The width to crop.
- * @param int          $src_h    The height to crop.
- * @param int          $dst_w    The destination width.
- * @param int          $dst_h    The destination height.
- * @param bool|false   $src_abs  Optional. If the source crop points are absolute.
- * @param string|false $dst_file Optional. The destination file to write to.
+ * @param string|int $src The source file or Attachment ID.
+ * @param int $src_x The start x position to crop from.
+ * @param int $src_y The start y position to crop from.
+ * @param int $src_w The width to crop.
+ * @param int $src_h The height to crop.
+ * @param int $dst_w The destination width.
+ * @param int $dst_h The destination height.
+ * @param int $src_abs Optional. If the source crop points are absolute.
+ * @param string $dst_file Optional. The destination file to write to.
  * @return string|WP_Error New filepath on success, WP_Error on failure.
  */
 function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $src_abs = false, $dst_file = false ) {
 	$src_file = $src;
-	if ( is_numeric( $src ) ) { // Handle int as attachment ID.
+	if ( is_numeric( $src ) ) { // Handle int as attachment ID
 		$src_file = get_attached_file( $src );
 
 		if ( ! file_exists( $src_file ) ) {
-			/*
-			 * If the file doesn't exist, attempt a URL fopen on the src link.
-			 * This can occur with certain file replication plugins.
-			 */
+			// If the file doesn't exist, attempt a URL fopen on the src link.
+			// This can occur with certain file replication plugins.
 			$src = _load_image_to_edit_path( $src, 'full' );
 		} else {
 			$src = $src_file;
@@ -65,10 +63,6 @@ function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $s
 		return $result;
 	}
 
-	if ( ! empty( $result['path'] ) ) {
-		return $result['path'];
-	}
-
 	return $dst_file;
 }
 
@@ -81,8 +75,7 @@ function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $s
  * @since 5.3.0
  *
  * @param int $attachment_id The image attachment post ID.
- * @return array[] Associative array of arrays of image sub-size information for
- *                 missing image sizes, keyed by image size name.
+ * @return array An array of the image sub-sizes that are currently defined but don't exist for this image.
  */
 function wp_get_missing_image_subsizes( $attachment_id ) {
 	if ( ! wp_attachment_is_image( $attachment_id ) ) {
@@ -100,7 +93,7 @@ function wp_get_missing_image_subsizes( $attachment_id ) {
 	// Use the originally uploaded image dimensions as full_width and full_height.
 	if ( ! empty( $image_meta['original_image'] ) ) {
 		$image_file = wp_get_original_image_path( $attachment_id );
-		$imagesize  = wp_getimagesize( $image_file );
+		$imagesize  = @getimagesize( $image_file );
 	}
 
 	if ( ! empty( $imagesize ) ) {
@@ -124,13 +117,11 @@ function wp_get_missing_image_subsizes( $attachment_id ) {
 		$image_meta['sizes'] = array();
 	}
 
-	/*
-	 * Remove sizes that already exist. Only checks for matching "size names".
-	 * It is possible that the dimensions for a particular size name have changed.
-	 * For example the user has changed the values on the Settings -> Media screen.
-	 * However we keep the old sub-sizes with the previous dimensions
-	 * as the image may have been used in an older post.
-	 */
+	// Remove sizes that already exist. Only checks for matching "size names".
+	// It is possible that the dimensions for a particular size name have changed.
+	// For example the user has changed the values on the Settings -> Media screen.
+	// However we keep the old sub-sizes with the previous dimensions
+	// as the image may have been used in an older post.
 	$missing_sizes = array_diff_key( $possible_sizes, $image_meta['sizes'] );
 
 	/**
@@ -138,10 +129,9 @@ function wp_get_missing_image_subsizes( $attachment_id ) {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param array[] $missing_sizes Associative array of arrays of image sub-size information for
-	 *                               missing image sizes, keyed by image size name.
-	 * @param array   $image_meta    The image meta data.
-	 * @param int     $attachment_id The image attachment post ID.
+	 * @param array $missing_sizes Array with the missing image sub-sizes.
+	 * @param array $image_meta    The image meta data.
+	 * @param int   $attachment_id The image attachment post ID.
 	 */
 	return apply_filters( 'wp_get_missing_image_subsizes', $missing_sizes, $image_meta, $attachment_id );
 }
@@ -161,10 +151,8 @@ function wp_update_image_subsizes( $attachment_id ) {
 	$image_file = wp_get_original_image_path( $attachment_id );
 
 	if ( empty( $image_meta ) || ! is_array( $image_meta ) ) {
-		/*
-		 * Previously failed upload?
-		 * If there is an uploaded file, make all sub-sizes and generate all of the attachment meta.
-		 */
+		// Previously failed upload?
+		// If there is an uploaded file, make all sub-sizes and generate all of the attachment meta.
 		if ( ! empty( $image_file ) ) {
 			$image_meta = wp_create_image_subsizes( $image_file, $attachment_id );
 		} else {
@@ -194,7 +182,6 @@ function wp_update_image_subsizes( $attachment_id ) {
  * Updates the attached file and image meta data when the original image was edited.
  *
  * @since 5.3.0
- * @since 6.0.0 The `$filesize` value was added to the returned array.
  * @access private
  *
  * @param array  $saved_data    The data returned from WP_Image_Editor after successfully saving an image.
@@ -216,9 +203,6 @@ function _wp_image_meta_replace_original( $saved_data, $original_file, $image_me
 	// Make the file path relative to the upload dir.
 	$image_meta['file'] = _wp_relative_upload_path( $new_file );
 
-	// Add image file size.
-	$image_meta['filesize'] = wp_filesize( $new_file );
-
 	// Store the original image file name in image_meta.
 	$image_meta['original_image'] = wp_basename( $original_file );
 
@@ -234,24 +218,23 @@ function _wp_image_meta_replace_original( $saved_data, $original_file, $image_me
  * @since 5.3.0
  *
  * @param string $file          Full path to the image file.
- * @param int    $attachment_id Attachment ID to process.
+ * @param int    $attachment_id Attachment Id to process.
  * @return array The image attachment meta data.
  */
 function wp_create_image_subsizes( $file, $attachment_id ) {
-	$imagesize = wp_getimagesize( $file );
+	$imagesize = @getimagesize( $file );
 
 	if ( empty( $imagesize ) ) {
 		// File is not an image.
 		return array();
 	}
 
-	// Default image meta.
+	// Default image meta
 	$image_meta = array(
-		'width'    => $imagesize[0],
-		'height'   => $imagesize[1],
-		'file'     => _wp_relative_upload_path( $file ),
-		'filesize' => wp_filesize( $file ),
-		'sizes'    => array(),
+		'width'  => $imagesize[0],
+		'height' => $imagesize[1],
+		'file'   => _wp_relative_upload_path( $file ),
+		'sizes'  => array(),
 	);
 
 	// Fetch additional metadata from EXIF/IPTC.
@@ -261,137 +244,104 @@ function wp_create_image_subsizes( $file, $attachment_id ) {
 		$image_meta['image_meta'] = $exif_meta;
 	}
 
-	/**
-	 * Filters the "BIG image" threshold value.
-	 *
-	 * If the original image width or height is above the threshold, it will be scaled down. The threshold is
-	 * used as max width and max height. The scaled down image will be used as the largest available size, including
-	 * the `_wp_attached_file` post meta value.
-	 *
-	 * Returning `false` from the filter callback will disable the scaling.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @param int    $threshold     The threshold value in pixels. Default 2560.
-	 * @param array  $imagesize     {
-	 *     Indexed array of the image width and height in pixels.
-	 *
-	 *     @type int $0 The image width.
-	 *     @type int $1 The image height.
-	 * }
-	 * @param string $file          Full path to the uploaded image file.
-	 * @param int    $attachment_id Attachment post ID.
-	 */
-	$threshold = (int) apply_filters( 'big_image_size_threshold', 2560, $imagesize, $file, $attachment_id );
+	// Do not scale (large) PNG images. May result in sub-sizes that have greater file size than the original. See #48736.
+	if ( $imagesize['mime'] !== 'image/png' ) {
 
-	/*
-	 * If the original image's dimensions are over the threshold,
-	 * scale the image and use it as the "full" size.
-	 */
-	$scale_down = false;
-	$convert    = false;
+		/**
+		 * Filters the "BIG image" threshold value.
+		 *
+		 * If the original image width or height is above the threshold, it will be scaled down. The threshold is
+		 * used as max width and max height. The scaled down image will be used as the largest available size, including
+		 * the `_wp_attached_file` post meta value.
+		 *
+		 * Returning `false` from the filter callback will disable the scaling.
+		 *
+		 * @since 5.3.0
+		 *
+		 * @param int    $threshold     The threshold value in pixels. Default 2560.
+		 * @param array  $imagesize     {
+		 *     Indexed array of the image width and height in pixels.
+		 *
+		 *     @type int $0 The image width.
+		 *     @type int $1 The image height.
+		 * }
+		 * @param string $file          Full path to the uploaded image file.
+		 * @param int    $attachment_id Attachment post ID.
+		 */
+		$threshold = (int) apply_filters( 'big_image_size_threshold', 2560, $imagesize, $file, $attachment_id );
 
-	if ( $threshold && ( $image_meta['width'] > $threshold || $image_meta['height'] > $threshold ) ) {
-		// The image will be converted if needed on saving.
-		$scale_down = true;
-	} else {
-		// The image may need to be converted regardless of its dimensions.
-		$output_format = wp_get_image_editor_output_format( $file, $imagesize['mime'] );
+		// If the original image's dimensions are over the threshold, scale the image
+		// and use it as the "full" size.
+		if ( $threshold && ( $image_meta['width'] > $threshold || $image_meta['height'] > $threshold ) ) {
+			$editor = wp_get_image_editor( $file );
 
-		if (
-			is_array( $output_format ) &&
-			array_key_exists( $imagesize['mime'], $output_format ) &&
-			$output_format[ $imagesize['mime'] ] !== $imagesize['mime']
-		) {
-			$convert = true;
-		}
-	}
+			if ( is_wp_error( $editor ) ) {
+				// This image cannot be edited.
+				return $image_meta;
+			}
 
-	if ( $scale_down || $convert ) {
-		$editor = wp_get_image_editor( $file );
-
-		if ( is_wp_error( $editor ) ) {
-			// This image cannot be edited.
-			return $image_meta;
-		}
-
-		if ( $scale_down ) {
-			// Resize the image. This will also convet it if needed.
+			// Resize the image
 			$resized = $editor->resize( $threshold, $threshold );
-		} elseif ( $convert ) {
-			// The image will be converted (if possible) when saved.
-			$resized = true;
-		}
+			$rotated = null;
 
-		$rotated = null;
+			// If there is EXIF data, rotate according to EXIF Orientation.
+			if ( ! is_wp_error( $resized ) && is_array( $exif_meta ) ) {
+				$resized = $editor->maybe_exif_rotate();
+				$rotated = $resized;
+			}
 
-		// If there is EXIF data, rotate according to EXIF Orientation.
-		if ( ! is_wp_error( $resized ) && is_array( $exif_meta ) ) {
-			$resized = $editor->maybe_exif_rotate();
-			$rotated = $resized; // bool true or WP_Error
-		}
-
-		if ( ! is_wp_error( $resized ) ) {
-			/*
-			 * Append "-scaled" to the image file name. It will look like "my_image-scaled.jpg".
-			 * This doesn't affect the sub-sizes names as they are generated from the original image (for best quality).
-			 */
-			if ( $scale_down ) {
+			if ( ! is_wp_error( $resized ) ) {
+				// Append "-scaled" to the image file name. It will look like "my_image-scaled.jpg".
+				// This doesn't affect the sub-sizes names as they are generated from the original image (for best quality).
 				$saved = $editor->save( $editor->generate_filename( 'scaled' ) );
-			} elseif ( $convert ) {
-				// Pass an empty string to avoid adding a suffix to converted file names.
-				$saved = $editor->save( $editor->generate_filename( '' ) );
-			} else {
-				$saved = $editor->save();
-			}
 
-			if ( ! is_wp_error( $saved ) ) {
-				$image_meta = _wp_image_meta_replace_original( $saved, $file, $image_meta, $attachment_id );
+				if ( ! is_wp_error( $saved ) ) {
+					$image_meta = _wp_image_meta_replace_original( $saved, $file, $image_meta, $attachment_id );
 
-				// If the image was rotated update the stored EXIF data.
-				if ( true === $rotated && ! empty( $image_meta['image_meta']['orientation'] ) ) {
-					$image_meta['image_meta']['orientation'] = 1;
+					// If the image was rotated update the stored EXIF data.
+					if ( true === $rotated && ! empty( $image_meta['image_meta']['orientation'] ) ) {
+						$image_meta['image_meta']['orientation'] = 1;
+					}
+				} else {
+					// TODO: log errors.
 				}
 			} else {
-				// TODO: Log errors.
+				// TODO: log errors.
 			}
-		} else {
-			// TODO: Log errors.
-		}
-	} elseif ( ! empty( $exif_meta['orientation'] ) && 1 !== (int) $exif_meta['orientation'] ) {
-		// Rotate the whole original image if there is EXIF data and "orientation" is not 1.
-		$editor = wp_get_image_editor( $file );
+		} elseif ( ! empty( $exif_meta['orientation'] ) && (int) $exif_meta['orientation'] !== 1 ) {
+			// Rotate the whole original image if there is EXIF data and "orientation" is not 1.
 
-		if ( is_wp_error( $editor ) ) {
-			// This image cannot be edited.
-			return $image_meta;
-		}
+			$editor = wp_get_image_editor( $file );
 
-		// Rotate the image.
-		$rotated = $editor->maybe_exif_rotate();
+			if ( is_wp_error( $editor ) ) {
+				// This image cannot be edited.
+				return $image_meta;
+			}
 
-		if ( true === $rotated ) {
-			// Append `-rotated` to the image file name.
-			$saved = $editor->save( $editor->generate_filename( 'rotated' ) );
+			// Rotate the image
+			$rotated = $editor->maybe_exif_rotate();
 
-			if ( ! is_wp_error( $saved ) ) {
-				$image_meta = _wp_image_meta_replace_original( $saved, $file, $image_meta, $attachment_id );
+			if ( true === $rotated ) {
+				// Append `-rotated` to the image file name.
+				$saved = $editor->save( $editor->generate_filename( 'rotated' ) );
 
-				// Update the stored EXIF data.
-				if ( ! empty( $image_meta['image_meta']['orientation'] ) ) {
-					$image_meta['image_meta']['orientation'] = 1;
+				if ( ! is_wp_error( $saved ) ) {
+					$image_meta = _wp_image_meta_replace_original( $saved, $file, $image_meta, $attachment_id );
+
+					// Update the stored EXIF data.
+					if ( ! empty( $image_meta['image_meta']['orientation'] ) ) {
+						$image_meta['image_meta']['orientation'] = 1;
+					}
+				} else {
+					// TODO: log errors.
 				}
-			} else {
-				// TODO: Log errors.
 			}
 		}
 	}
 
-	/*
-	 * Initial save of the new metadata.
-	 * At this point the file was uploaded and moved to the uploads directory
-	 * but the image sub-sizes haven't been created yet and the `sizes` array is empty.
-	 */
+	// Initial save of the new metadata.
+	// At this point the file was uploaded and moved to the uploads directory
+	// but the image sub-sizes haven't been created yet and the `sizes` array is empty.
 	wp_update_attachment_metadata( $attachment_id, $image_meta );
 
 	$new_sizes = wp_get_registered_image_subsizes();
@@ -424,7 +374,7 @@ function wp_create_image_subsizes( $file, $attachment_id ) {
  * @param array  $new_sizes     Array defining what sizes to create.
  * @param string $file          Full path to the image file.
  * @param array  $image_meta    The attachment meta data array.
- * @param int    $attachment_id Attachment ID to process.
+ * @param int    $attachment_id Attachment Id to process.
  * @return array The attachment meta data with updated `sizes` array. Includes an array of errors encountered while resizing.
  */
 function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
@@ -436,11 +386,9 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 	// Check if any of the new sizes already exist.
 	if ( isset( $image_meta['sizes'] ) && is_array( $image_meta['sizes'] ) ) {
 		foreach ( $image_meta['sizes'] as $size_name => $size_meta ) {
-			/*
-			 * Only checks "size name" so we don't override existing images even if the dimensions
-			 * don't match the currently defined size with the same name.
-			 * To change the behavior, unset changed/mismatched sizes in the `sizes` array in image meta.
-			 */
+			// Only checks "size name" so we don't override existing images even if the dimensions
+			// don't match the currently defined size with the same name.
+			// To change the behavior, unset changed/mismatched sizes in the `sizes` array in image meta.
 			if ( array_key_exists( $size_name, $new_sizes ) ) {
 				unset( $new_sizes[ $size_name ] );
 			}
@@ -454,11 +402,9 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 		return $image_meta;
 	}
 
-	/*
-	 * Sort the image sub-sizes in order of priority when creating them.
-	 * This ensures there is an appropriate sub-size the user can access immediately
-	 * even when there was an error and not all sub-sizes were created.
-	 */
+	// Sort the image sub-sizes in order of priority when creating them.
+	// This ensures there is an appropriate sub-size the user can access immediately
+	// even when there was an error and not all sub-sizes were created.
 	$priority = array(
 		'medium'       => null,
 		'large'        => null,
@@ -480,7 +426,7 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 		$rotated = $editor->maybe_exif_rotate();
 
 		if ( is_wp_error( $rotated ) ) {
-			// TODO: Log errors.
+			// TODO: log errors.
 		}
 	}
 
@@ -489,7 +435,7 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 			$new_size_meta = $editor->make_subsize( $new_size_data );
 
 			if ( is_wp_error( $new_size_meta ) ) {
-				// TODO: Log errors.
+				// TODO: log errors.
 			} else {
 				// Save the size meta value.
 				$image_meta['sizes'][ $new_size_name ] = $new_size_meta;
@@ -510,71 +456,13 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 }
 
 /**
- * Copy parent attachment properties to newly cropped image.
- *
- * @since 6.5.0
- *
- * @param string $cropped              Path to the cropped image file.
- * @param int    $parent_attachment_id Parent file Attachment ID.
- * @param string $context              Control calling the function.
- * @return array Properties of attachment.
- */
-function wp_copy_parent_attachment_properties( $cropped, $parent_attachment_id, $context = '' ) {
-	$parent          = get_post( $parent_attachment_id );
-	$parent_url      = wp_get_attachment_url( $parent->ID );
-	$parent_basename = wp_basename( $parent_url );
-	$url             = str_replace( wp_basename( $parent_url ), wp_basename( $cropped ), $parent_url );
-
-	$size       = wp_getimagesize( $cropped );
-	$image_type = $size ? $size['mime'] : 'image/jpeg';
-
-	$sanitized_post_title = sanitize_file_name( $parent->post_title );
-	$use_original_title   = (
-		( '' !== trim( $parent->post_title ) ) &&
-		/*
-		 * Check if the original image has a title other than the "filename" default,
-		 * meaning the image had a title when originally uploaded or its title was edited.
-		 */
-		( $parent_basename !== $sanitized_post_title ) &&
-		( pathinfo( $parent_basename, PATHINFO_FILENAME ) !== $sanitized_post_title )
-	);
-	$use_original_description = ( '' !== trim( $parent->post_content ) );
-
-	$attachment = array(
-		'post_title'     => $use_original_title ? $parent->post_title : wp_basename( $cropped ),
-		'post_content'   => $use_original_description ? $parent->post_content : $url,
-		'post_mime_type' => $image_type,
-		'guid'           => $url,
-		'context'        => $context,
-	);
-
-	// Copy the image caption attribute (post_excerpt field) from the original image.
-	if ( '' !== trim( $parent->post_excerpt ) ) {
-		$attachment['post_excerpt'] = $parent->post_excerpt;
-	}
-
-	// Copy the image alt text attribute from the original image.
-	if ( '' !== trim( $parent->_wp_attachment_image_alt ) ) {
-		$attachment['meta_input'] = array(
-			'_wp_attachment_image_alt' => wp_slash( $parent->_wp_attachment_image_alt ),
-		);
-	}
-
-	$attachment['post_parent'] = $parent_attachment_id;
-
-	return $attachment;
-}
-
-/**
- * Generates attachment meta data and create image sub-sizes for images.
+ * Generate attachment meta data and create image sub-sizes for images.
  *
  * @since 2.1.0
- * @since 6.0.0 The `$filesize` value was added to the returned array.
- * @since 6.7.0 The 'image/heic' mime type is supported.
  *
- * @param int    $attachment_id Attachment ID to process.
- * @param string $file          Filepath of the attached image.
- * @return array Metadata for attachment.
+ * @param int $attachment_id Attachment Id to process.
+ * @param string $file Filepath of the Attached image.
+ * @return mixed Metadata for attachment.
  */
 function wp_generate_attachment_metadata( $attachment_id, $file ) {
 	$attachment = get_post( $attachment_id );
@@ -583,7 +471,7 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 	$support   = false;
 	$mime_type = get_post_mime_type( $attachment );
 
-	if ( 'image/heic' === $mime_type || ( preg_match( '!^image/!', $mime_type ) && file_is_displayable_image( $file ) ) ) {
+	if ( preg_match( '!^image/!', $mime_type ) && file_is_displayable_image( $file ) ) {
 		// Make thumbnails and other intermediate sizes.
 		$metadata = wp_create_image_subsizes( $file, $attachment_id );
 	} elseif ( wp_attachment_is( 'video', $attachment ) ) {
@@ -592,15 +480,6 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 	} elseif ( wp_attachment_is( 'audio', $attachment ) ) {
 		$metadata = wp_read_audio_metadata( $file );
 		$support  = current_theme_supports( 'post-thumbnails', 'attachment:audio' ) || post_type_supports( 'attachment:audio', 'thumbnail' );
-	}
-
-	/*
-	 * wp_read_video_metadata() and wp_read_audio_metadata() return `false`
-	 * if the attachment does not exist in the local filesystem,
-	 * so make sure to convert the value to an array.
-	 */
-	if ( ! is_array( $metadata ) ) {
-		$metadata = array();
 	}
 
 	if ( $support && ! empty( $metadata['image']['data'] ) ) {
@@ -630,9 +509,6 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 				case 'image/png':
 					$ext = '.png';
 					break;
-				case 'image/webp':
-					$ext = '.webp';
-					break;
 			}
 			$basename = str_replace( '.', '-', wp_basename( $file ) ) . '-image' . $ext;
 			$uploaded = wp_upload_bits( $basename, '', $metadata['image']['data'] );
@@ -649,13 +525,7 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 				 *
 				 * @param array $image_attachment An array of parameters to create the thumbnail.
 				 * @param array $metadata         Current attachment metadata.
-				 * @param array $uploaded         {
-				 *     Information about the newly-uploaded file.
-				 *
-				 *     @type string $file  Filename of the newly-uploaded file.
-				 *     @type string $url   URL of the uploaded file.
-				 *     @type string $type  File type.
-				 * }
+				 * @param array $uploaded         An array containing the thumbnail path and url.
 				 */
 				$image_attachment = apply_filters( 'attachment_thumbnail_args', $image_attachment, $metadata, $uploaded );
 
@@ -697,7 +567,7 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 		if ( ! empty( $merged_sizes ) ) {
 			$editor = wp_get_image_editor( $file );
 
-			if ( ! is_wp_error( $editor ) ) { // No support for this type of file.
+			if ( ! is_wp_error( $editor ) ) { // No support for this type of file
 				/*
 				 * PDFs may have the same file filename as JPEGs.
 				 * Ensure the PDF preview image does not overwrite any JPEG images that already exist.
@@ -729,11 +599,8 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 	}
 
 	// Remove the blob of binary data from the array.
-	unset( $metadata['image']['data'] );
-
-	// Capture file size for cases where it has not been captured yet, such as PDFs.
-	if ( ! isset( $metadata['filesize'] ) && file_exists( $file ) ) {
-		$metadata['filesize'] = wp_filesize( $file );
+	if ( $metadata ) {
+		unset( $metadata['image']['data'] );
 	}
 
 	/**
@@ -751,53 +618,32 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 }
 
 /**
- * Converts a fraction string to a decimal.
+ * Convert a fraction string to a decimal.
  *
  * @since 2.5.0
  *
- * @param string $str Fraction string.
- * @return int|float Returns calculated fraction or integer 0 on invalid input.
+ * @param string $str
+ * @return int|float
  */
 function wp_exif_frac2dec( $str ) {
-	if ( ! is_scalar( $str ) || is_bool( $str ) ) {
-		return 0;
+	if ( false === strpos( $str, '/' ) ) {
+		return $str;
 	}
 
-	if ( ! is_string( $str ) ) {
-		return $str; // This can only be an integer or float, so this is fine.
+	list( $n, $d ) = explode( '/', $str );
+	if ( ! empty( $d ) ) {
+		return $n / $d;
 	}
-
-	// Fractions passed as a string must contain a single `/`.
-	if ( substr_count( $str, '/' ) !== 1 ) {
-		if ( is_numeric( $str ) ) {
-			return (float) $str;
-		}
-
-		return 0;
-	}
-
-	list( $numerator, $denominator ) = explode( '/', $str );
-
-	// Both the numerator and the denominator must be numbers.
-	if ( ! is_numeric( $numerator ) || ! is_numeric( $denominator ) ) {
-		return 0;
-	}
-
-	// The denominator must not be zero.
-	if ( 0 == $denominator ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual -- Deliberate loose comparison.
-		return 0;
-	}
-
-	return $numerator / $denominator;
+	return $str;
 }
 
 /**
- * Converts the exif date format to a unix timestamp.
+ * Convert the exif date format to a unix timestamp.
  *
  * @since 2.5.0
  *
- * @param string $str A date string expected to be in Exif format (Y:m:d H:i:s).
- * @return int|false The unix timestamp, or false on failure.
+ * @param string $str
+ * @return int
  */
 function wp_exif_date2ts( $str ) {
 	list( $date, $time ) = explode( ' ', trim( $str ) );
@@ -807,7 +653,7 @@ function wp_exif_date2ts( $str ) {
 }
 
 /**
- * Gets extended image metadata, exif or iptc as available.
+ * Get extended image metadata, exif or iptc as available.
  *
  * Retrieves the EXIF metadata aperture, credit, camera, caption, copyright, iso
  * created_timestamp, focal_length, shutter_speed, and title.
@@ -820,14 +666,14 @@ function wp_exif_date2ts( $str ) {
  * @since 2.5.0
  *
  * @param string $file
- * @return array|false Image metadata array on success, false on failure.
+ * @return bool|array False on failure. Image metadata array on success.
  */
 function wp_read_image_metadata( $file ) {
 	if ( ! file_exists( $file ) ) {
 		return false;
 	}
 
-	list( , , $image_type ) = wp_getimagesize( $file );
+	list( , , $image_type ) = @getimagesize( $file );
 
 	/*
 	 * EXIF contains a bunch of data we'll probably never need formatted in ways
@@ -851,41 +697,28 @@ function wp_read_image_metadata( $file ) {
 	);
 
 	$iptc = array();
-	$info = array();
 	/*
 	 * Read IPTC first, since it might contain data not available in exif such
 	 * as caption, description etc.
 	 */
 	if ( is_callable( 'iptcparse' ) ) {
-		wp_getimagesize( $file, $info );
+		@getimagesize( $file, $info );
 
 		if ( ! empty( $info['APP13'] ) ) {
-			// Don't silence errors when in debug mode, unless running unit tests.
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG
-				&& ! defined( 'WP_RUN_CORE_TESTS' )
-			) {
-				$iptc = iptcparse( $info['APP13'] );
-			} else {
-				// Silencing notice and warning is intentional. See https://core.trac.wordpress.org/ticket/42480
-				$iptc = @iptcparse( $info['APP13'] );
-			}
+			$iptc = @iptcparse( $info['APP13'] );
 
-			if ( ! is_array( $iptc ) ) {
-				$iptc = array();
-			}
-
-			// Headline, "A brief synopsis of the caption".
+			// Headline, "A brief synopsis of the caption."
 			if ( ! empty( $iptc['2#105'][0] ) ) {
 				$meta['title'] = trim( $iptc['2#105'][0] );
 				/*
 				* Title, "Many use the Title field to store the filename of the image,
-				* though the field may be used in many ways".
+				* though the field may be used in many ways."
 				*/
 			} elseif ( ! empty( $iptc['2#005'][0] ) ) {
 				$meta['title'] = trim( $iptc['2#005'][0] );
 			}
 
-			if ( ! empty( $iptc['2#120'][0] ) ) { // Description / legacy caption.
+			if ( ! empty( $iptc['2#120'][0] ) ) { // description / legacy caption
 				$caption = trim( $iptc['2#120'][0] );
 
 				mbstring_binary_safe_encoding();
@@ -900,21 +733,21 @@ function wp_read_image_metadata( $file ) {
 				$meta['caption'] = $caption;
 			}
 
-			if ( ! empty( $iptc['2#110'][0] ) ) { // Credit.
+			if ( ! empty( $iptc['2#110'][0] ) ) { // credit
 				$meta['credit'] = trim( $iptc['2#110'][0] );
-			} elseif ( ! empty( $iptc['2#080'][0] ) ) { // Creator / legacy byline.
+			} elseif ( ! empty( $iptc['2#080'][0] ) ) { // creator / legacy byline
 				$meta['credit'] = trim( $iptc['2#080'][0] );
 			}
 
-			if ( ! empty( $iptc['2#055'][0] ) && ! empty( $iptc['2#060'][0] ) ) { // Created date and time.
+			if ( ! empty( $iptc['2#055'][0] ) && ! empty( $iptc['2#060'][0] ) ) { // created date and time
 				$meta['created_timestamp'] = strtotime( $iptc['2#055'][0] . ' ' . $iptc['2#060'][0] );
 			}
 
-			if ( ! empty( $iptc['2#116'][0] ) ) { // Copyright.
+			if ( ! empty( $iptc['2#116'][0] ) ) { // copyright
 				$meta['copyright'] = trim( $iptc['2#116'][0] );
 			}
 
-			if ( ! empty( $iptc['2#025'][0] ) ) { // Keywords array.
+			if ( ! empty( $iptc['2#025'][0] ) ) { // keywords array
 				$meta['keywords'] = array_values( $iptc['2#025'] );
 			}
 		}
@@ -927,71 +760,29 @@ function wp_read_image_metadata( $file ) {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param int[] $image_types Array of image types to check for exif data. Each value
-	 *                           is usually one of the `IMAGETYPE_*` constants.
+	 * @param array $image_types Image types to check for exif data.
 	 */
 	$exif_image_types = apply_filters( 'wp_read_image_metadata_types', array( IMAGETYPE_JPEG, IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM ) );
 
 	if ( is_callable( 'exif_read_data' ) && in_array( $image_type, $exif_image_types, true ) ) {
-		// Don't silence errors when in debug mode, unless running unit tests.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG
-			&& ! defined( 'WP_RUN_CORE_TESTS' )
-		) {
-			$exif = exif_read_data( $file );
-		} else {
-			// Silencing notice and warning is intentional. See https://core.trac.wordpress.org/ticket/42480
-			$exif = @exif_read_data( $file );
-		}
+		$exif = @exif_read_data( $file );
 
-		if ( ! is_array( $exif ) ) {
-			$exif = array();
-		}
-
-		$exif_description = '';
-		$exif_usercomment = '';
 		if ( ! empty( $exif['ImageDescription'] ) ) {
-			$exif_description = trim( $exif['ImageDescription'] );
-		}
-
-		if ( ! empty( $exif['COMPUTED']['UserComment'] ) ) {
-			$exif_usercomment = trim( $exif['COMPUTED']['UserComment'] );
-		}
-
-		if ( $exif_description ) {
 			mbstring_binary_safe_encoding();
-			$description_length = strlen( $exif_description );
+			$description_length = strlen( $exif['ImageDescription'] );
 			reset_mbstring_encoding();
+
 			if ( empty( $meta['title'] ) && $description_length < 80 ) {
-				// Assume the title is stored in ImageDescription.
-				$meta['title'] = $exif_description;
+				// Assume the title is stored in ImageDescription
+				$meta['title'] = trim( $exif['ImageDescription'] );
 			}
 
-			// If both user comments and description are present.
-			if ( empty( $meta['caption'] ) && $exif_description && $exif_usercomment ) {
-				if ( ! empty( $meta['title'] ) && $exif_description === $meta['title'] ) {
-					$caption = $exif_usercomment;
-				} else {
-					if ( $exif_description === $exif_usercomment ) {
-						$caption = $exif_description;
-					} else {
-						$caption = trim( $exif_description . ' ' . $exif_usercomment );
-					}
-				}
-				$meta['caption'] = $caption;
-			}
-
-			if ( empty( $meta['caption'] ) && $exif_usercomment ) {
-				$meta['caption'] = $exif_usercomment;
+			if ( empty( $meta['caption'] ) && ! empty( $exif['COMPUTED']['UserComment'] ) ) {
+				$meta['caption'] = trim( $exif['COMPUTED']['UserComment'] );
 			}
 
 			if ( empty( $meta['caption'] ) ) {
-				$meta['caption'] = $exif_description;
-			}
-		} elseif ( empty( $meta['caption'] ) && $exif_usercomment ) {
-			$meta['caption']    = $exif_usercomment;
-			$description_length = strlen( $exif_usercomment );
-			if ( empty( $meta['title'] ) && $description_length < 80 ) {
-				$meta['title'] = trim( $exif_usercomment );
+				$meta['caption'] = trim( $exif['ImageDescription'] );
 			}
 		} elseif ( empty( $meta['caption'] ) && ! empty( $exif['Comments'] ) ) {
 			$meta['caption'] = trim( $exif['Comments'] );
@@ -1008,7 +799,7 @@ function wp_read_image_metadata( $file ) {
 		if ( empty( $meta['copyright'] ) && ! empty( $exif['Copyright'] ) ) {
 			$meta['copyright'] = trim( $exif['Copyright'] );
 		}
-		if ( ! empty( $exif['FNumber'] ) && is_scalar( $exif['FNumber'] ) ) {
+		if ( ! empty( $exif['FNumber'] ) ) {
 			$meta['aperture'] = round( wp_exif_frac2dec( $exif['FNumber'] ), 2 );
 		}
 		if ( ! empty( $exif['Model'] ) ) {
@@ -1018,20 +809,14 @@ function wp_read_image_metadata( $file ) {
 			$meta['created_timestamp'] = wp_exif_date2ts( $exif['DateTimeDigitized'] );
 		}
 		if ( ! empty( $exif['FocalLength'] ) ) {
-			$meta['focal_length'] = (string) $exif['FocalLength'];
-			if ( is_scalar( $exif['FocalLength'] ) ) {
-				$meta['focal_length'] = (string) wp_exif_frac2dec( $exif['FocalLength'] );
-			}
+			$meta['focal_length'] = (string) wp_exif_frac2dec( $exif['FocalLength'] );
 		}
 		if ( ! empty( $exif['ISOSpeedRatings'] ) ) {
 			$meta['iso'] = is_array( $exif['ISOSpeedRatings'] ) ? reset( $exif['ISOSpeedRatings'] ) : $exif['ISOSpeedRatings'];
 			$meta['iso'] = trim( $meta['iso'] );
 		}
 		if ( ! empty( $exif['ExposureTime'] ) ) {
-			$meta['shutter_speed'] = (string) $exif['ExposureTime'];
-			if ( is_scalar( $exif['ExposureTime'] ) ) {
-				$meta['shutter_speed'] = (string) wp_exif_frac2dec( $exif['ExposureTime'] );
-			}
+			$meta['shutter_speed'] = (string) wp_exif_frac2dec( $exif['ExposureTime'] );
 		}
 		if ( ! empty( $exif['Orientation'] ) ) {
 			$meta['orientation'] = $exif['Orientation'];
@@ -1066,10 +851,11 @@ function wp_read_image_metadata( $file ) {
 	 * @param array  $exif       EXIF data.
 	 */
 	return apply_filters( 'wp_read_image_metadata', $meta, $file, $image_type, $iptc, $exif );
+
 }
 
 /**
- * Validates that file is an image.
+ * Validate that file is an image.
  *
  * @since 2.5.0
  *
@@ -1077,12 +863,12 @@ function wp_read_image_metadata( $file ) {
  * @return bool True if valid image, false if not valid image.
  */
 function file_is_valid_image( $path ) {
-	$size = wp_getimagesize( $path );
+	$size = @getimagesize( $path );
 	return ! empty( $size );
 }
 
 /**
- * Validates that file is suitable for displaying within a web page.
+ * Validate that file is suitable for displaying within a web page.
  *
  * @since 2.5.0
  *
@@ -1090,9 +876,9 @@ function file_is_valid_image( $path ) {
  * @return bool True if suitable, false if not suitable.
  */
 function file_is_displayable_image( $path ) {
-	$displayable_image_types = array( IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP, IMAGETYPE_ICO, IMAGETYPE_WEBP, IMAGETYPE_AVIF );
+	$displayable_image_types = array( IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP, IMAGETYPE_ICO );
 
-	$info = wp_getimagesize( $path );
+	$info = @getimagesize( $path );
 	if ( empty( $info ) ) {
 		$result = false;
 	} elseif ( ! in_array( $info[2], $displayable_image_types, true ) ) {
@@ -1113,16 +899,14 @@ function file_is_displayable_image( $path ) {
 }
 
 /**
- * Loads an image resource for editing.
+ * Load an image resource for editing.
  *
  * @since 2.9.0
  *
- * @param int          $attachment_id Attachment ID.
- * @param string       $mime_type     Image mime type.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default 'full'.
- * @return resource|GdImage|false The resulting image resource or GdImage instance on success,
- *                                false on failure.
+ * @param string $attachment_id Attachment ID.
+ * @param string $mime_type Image mime type.
+ * @param string $size Optional. Image size, defaults to 'full'.
+ * @return resource|false The resulting image resource on success, false on failure.
  */
 function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 	$filepath = _load_image_to_edit_path( $attachment_id, $size );
@@ -1140,52 +924,41 @@ function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 		case 'image/gif':
 			$image = imagecreatefromgif( $filepath );
 			break;
-		case 'image/webp':
-			$image = false;
-			if ( function_exists( 'imagecreatefromwebp' ) ) {
-				$image = imagecreatefromwebp( $filepath );
-			}
-			break;
 		default:
 			$image = false;
 			break;
 	}
-
-	if ( is_gd_image( $image ) ) {
+	if ( is_resource( $image ) ) {
 		/**
 		 * Filters the current image being loaded for editing.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param resource|GdImage $image         Current image.
-		 * @param int              $attachment_id Attachment ID.
-		 * @param string|int[]     $size          Requested image size. Can be any registered image size name, or
-		 *                                        an array of width and height values in pixels (in that order).
+		 * @param resource $image         Current image.
+		 * @param string   $attachment_id Attachment ID.
+		 * @param string   $size          Image size.
 		 */
 		$image = apply_filters( 'load_image_to_edit', $image, $attachment_id, $size );
-
 		if ( function_exists( 'imagealphablending' ) && function_exists( 'imagesavealpha' ) ) {
 			imagealphablending( $image, false );
 			imagesavealpha( $image, true );
 		}
 	}
-
 	return $image;
 }
 
 /**
- * Retrieves the path or URL of an attachment's attached file.
+ * Retrieve the path or url of an attachment's attached file.
  *
  * If the attached file is not present on the local filesystem (usually due to replication plugins),
- * then the URL of the file is returned if `allow_url_fopen` is supported.
+ * then the url of the file is returned if url fopen is supported.
  *
  * @since 3.4.0
  * @access private
  *
- * @param int          $attachment_id Attachment ID.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default 'full'.
- * @return string|false File path or URL on success, false on failure.
+ * @param string $attachment_id Attachment ID.
+ * @param string $size Optional. Image size, defaults to 'full'.
+ * @return string|false File path or url on success, false on failure.
  */
 function _load_image_to_edit_path( $attachment_id, $size = 'full' ) {
 	$filepath = get_attached_file( $attachment_id );
@@ -1198,32 +971,30 @@ function _load_image_to_edit_path( $attachment_id, $size = 'full' ) {
 				$filepath = path_join( dirname( $filepath ), $data['file'] );
 
 				/**
-				 * Filters the path to an attachment's file when editing the image.
+				 * Filters the path to the current image.
 				 *
 				 * The filter is evaluated for all image sizes except 'full'.
 				 *
 				 * @since 3.1.0
 				 *
-				 * @param string       $path          Path to the current image.
-				 * @param int          $attachment_id Attachment ID.
-				 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-				 *                                    an array of width and height values in pixels (in that order).
+				 * @param string $path          Path to the current image.
+				 * @param string $attachment_id Attachment ID.
+				 * @param string $size          Size of the image.
 				 */
 				$filepath = apply_filters( 'load_image_to_edit_filesystempath', $filepath, $attachment_id, $size );
 			}
 		}
 	} elseif ( function_exists( 'fopen' ) && ini_get( 'allow_url_fopen' ) ) {
 		/**
-		 * Filters the path to an attachment's URL when editing the image.
+		 * Filters the image URL if not in the local filesystem.
 		 *
-		 * The filter is only evaluated if the file isn't stored locally and `allow_url_fopen` is enabled on the server.
+		 * The filter is only evaluated if fopen is enabled on the server.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string|false $image_url     Current image URL.
-		 * @param int          $attachment_id Attachment ID.
-		 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-		 *                                    an array of width and height values in pixels (in that order).
+		 * @param string $image_url     Current image URL.
+		 * @param string $attachment_id Attachment ID.
+		 * @param string $size          Size of the image.
 		 */
 		$filepath = apply_filters( 'load_image_to_edit_attachmenturl', wp_get_attachment_url( $attachment_id ), $attachment_id, $size );
 	}
@@ -1233,21 +1004,20 @@ function _load_image_to_edit_path( $attachment_id, $size = 'full' ) {
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string|false $filepath      File path or URL to current image, or false.
-	 * @param int          $attachment_id Attachment ID.
-	 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-	 *                                    an array of width and height values in pixels (in that order).
+	 * @param string|bool $filepath      File path or URL to current image, or false.
+	 * @param string      $attachment_id Attachment ID.
+	 * @param string      $size          Size of the image.
 	 */
 	return apply_filters( 'load_image_to_edit_path', $filepath, $attachment_id, $size );
 }
 
 /**
- * Copies an existing image file.
+ * Copy an existing image file.
  *
  * @since 3.4.0
  * @access private
  *
- * @param int $attachment_id Attachment ID.
+ * @param string $attachment_id Attachment ID.
  * @return string|false New file path on success, false on failure.
  */
 function _copy_image_file( $attachment_id ) {

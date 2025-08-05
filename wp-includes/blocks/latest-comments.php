@@ -30,29 +30,26 @@ function wp_latest_comments_draft_or_post_title( $post = 0 ) {
 	if ( empty( $title ) ) {
 		$title = __( '(no title)' );
 	}
-	return $title;
+	return esc_html( $title );
 }
 
 /**
  * Renders the `core/latest-comments` block on server.
- *
- * @since 5.1.0
  *
  * @param array $attributes The block attributes.
  *
  * @return string Returns the post content with latest comments added.
  */
 function render_block_core_latest_comments( $attributes = array() ) {
+	// This filter is documented in wp-includes/widgets/class-wp-widget-recent-comments.php.
 	$comments = get_comments(
-		/** This filter is documented in wp-includes/widgets/class-wp-widget-recent-comments.php */
 		apply_filters(
 			'widget_comments_args',
 			array(
 				'number'      => $attributes['commentsToShow'],
 				'status'      => 'approve',
 				'post_status' => 'publish',
-			),
-			array()
+			)
 		)
 	);
 
@@ -119,41 +116,78 @@ function render_block_core_latest_comments( $attributes = array() ) {
 		}
 	}
 
-	$classnames = array();
+	$class = 'wp-block-latest-comments';
+	if ( ! empty( $attributes['className'] ) ) {
+		$class .= ' ' . $attributes['className'];
+	}
+	if ( isset( $attributes['align'] ) ) {
+		$class .= " align{$attributes['align']}";
+	}
 	if ( $attributes['displayAvatar'] ) {
-		$classnames[] = 'has-avatars';
+		$class .= ' has-avatars';
 	}
 	if ( $attributes['displayDate'] ) {
-		$classnames[] = 'has-dates';
+		$class .= ' has-dates';
 	}
 	if ( $attributes['displayExcerpt'] ) {
-		$classnames[] = 'has-excerpts';
+		$class .= ' has-excerpts';
 	}
 	if ( empty( $comments ) ) {
-		$classnames[] = 'no-comments';
+		$class .= ' no-comments';
 	}
-	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => implode( ' ', $classnames ) ) );
+	$classnames = esc_attr( $class );
 
 	return ! empty( $comments ) ? sprintf(
-		'<ol %1$s>%2$s</ol>',
-		$wrapper_attributes,
+		'<ol class="%1$s">%2$s</ol>',
+		$classnames,
 		$list_items_markup
 	) : sprintf(
-		'<div %1$s>%2$s</div>',
-		$wrapper_attributes,
+		'<div class="%1$s">%2$s</div>',
+		$classnames,
 		__( 'No comments to show.' )
 	);
 }
 
 /**
  * Registers the `core/latest-comments` block.
- *
- * @since 5.3.0
  */
 function register_block_core_latest_comments() {
-	register_block_type_from_metadata(
-		__DIR__ . '/latest-comments',
+	register_block_type(
+		'core/latest-comments',
 		array(
+			'attributes'      => array(
+				'align'          => array(
+					'type' => 'string',
+					'enum' => array(
+						'left',
+						'center',
+						'right',
+						'wide',
+						'full',
+					),
+				),
+				'className'      => array(
+					'type' => 'string',
+				),
+				'commentsToShow' => array(
+					'type'    => 'number',
+					'default' => 5,
+					'minimum' => 1,
+					'maximum' => 100,
+				),
+				'displayAvatar'  => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
+				'displayDate'    => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
+				'displayExcerpt' => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
+			),
 			'render_callback' => 'render_block_core_latest_comments',
 		)
 	);

@@ -8,7 +8,7 @@
  */
 
 /** Make sure that the WordPress bootstrap has run before continuing. */
-require __DIR__ . '/wp-load.php';
+require( dirname( __FILE__ ) . '/wp-load.php' );
 
 /** This filter is documented in wp-admin/options.php */
 if ( ! apply_filters( 'enable_post_by_email_configuration', true ) ) {
@@ -29,30 +29,22 @@ if ( 'mail.example.com' === $mailserver_url || empty( $mailserver_url ) ) {
 do_action( 'wp-mail.php' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 /** Get the POP3 class with which to access the mailbox. */
-require_once ABSPATH . WPINC . '/class-pop3.php';
+require_once( ABSPATH . WPINC . '/class-pop3.php' );
 
 /** Only check at this interval for new messages. */
 if ( ! defined( 'WP_MAIL_INTERVAL' ) ) {
-	define( 'WP_MAIL_INTERVAL', 5 * MINUTE_IN_SECONDS );
+	define( 'WP_MAIL_INTERVAL', 300 ); // 5 minutes
 }
 
 $last_checked = get_transient( 'mailserver_last_checked' );
 
 if ( $last_checked ) {
-	wp_die(
-		sprintf(
-			// translators: %s human readable rate limit.
-			__( 'Email checks are rate limited to once every %s.' ),
-			human_time_diff( time() - WP_MAIL_INTERVAL, time() )
-		),
-		__( 'Slow down, no need to check for new mails so often!' ),
-		429
-	);
+	wp_die( __( 'Slow down cowboy, no need to check for new mails so often!' ) );
 }
 
 set_transient( 'mailserver_last_checked', true, WP_MAIL_INTERVAL );
 
-$time_difference = (int) ( (float) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+$time_difference = get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
 
 $phone_delim = '::';
 
@@ -70,7 +62,7 @@ if ( false === $count ) {
 
 if ( 0 === $count ) {
 	$pop3->quit();
-	wp_die( __( 'There does not seem to be any new mail.' ) );
+	wp_die( __( 'There doesn&#8217;t seem to be any new mail.' ) );
 }
 
 // Always run as an unauthenticated user.
@@ -88,9 +80,6 @@ for ( $i = 1; $i <= $count; $i++ ) {
 	$content_transfer_encoding = '';
 	$post_author               = 1;
 	$author_found              = false;
-	$post_date                 = null;
-	$post_date_gmt             = null;
-
 	foreach ( $message as $line ) {
 		// Body signal.
 		if ( strlen( $line ) < 3 ) {
@@ -115,7 +104,7 @@ for ( $i = 1; $i <= $count; $i++ ) {
 				$content_transfer_encoding = explode( ';', $content_transfer_encoding );
 				$content_transfer_encoding = $content_transfer_encoding[0];
 			}
-			if ( 'multipart/alternative' === $content_type && str_contains( $line, 'boundary="' ) && '' === $boundary ) {
+			if ( ( $content_type == 'multipart/alternative' ) && ( false !== strpos( $line, 'boundary="' ) ) && ( '' == $boundary ) ) {
 				$boundary = trim( $line );
 				$boundary = explode( '"', $boundary );
 				$boundary = $boundary[1];
@@ -123,7 +112,7 @@ for ( $i = 1; $i <= $count; $i++ ) {
 			if ( preg_match( '/Subject: /i', $line ) ) {
 				$subject = trim( $line );
 				$subject = substr( $subject, 9, strlen( $subject ) - 9 );
-				// Captures any text in the subject before $phone_delim as the subject.
+				// Captures any text in the subject before $phone_delim as the subject
 				if ( function_exists( 'iconv_mime_decode' ) ) {
 					$subject = iconv_mime_decode( $subject, 2, get_option( 'blog_charset' ) );
 				} else {
@@ -153,18 +142,17 @@ for ( $i = 1; $i <= $count; $i++ ) {
 				}
 			}
 
-			if ( preg_match( '/Date: /i', $line ) ) { // Of the form '20 Mar 2002 20:32:37 +0100'.
-				$ddate = str_replace( 'Date: ', '', trim( $line ) );
-				// Remove parenthesized timezone string if it exists, as this confuses strtotime().
-				$ddate           = preg_replace( '!\s*\(.+\)\s*$!', '', $ddate );
-				$ddate_timestamp = strtotime( $ddate );
-				$post_date       = gmdate( 'Y-m-d H:i:s', $ddate_timestamp + $time_difference );
-				$post_date_gmt   = gmdate( 'Y-m-d H:i:s', $ddate_timestamp );
+			if ( preg_match( '/Date: /i', $line ) ) { // of the form '20 Mar 2002 20:32:37 +0100'
+				$ddate         = str_replace( 'Date: ', '', trim( $line ) );
+				$ddate         = preg_replace( '!\s*\(.+\)\s*$!', '', $ddate ); // remove parenthesised timezone string if it exists, as this confuses strtotime
+				$ddate_U       = strtotime( $ddate );
+				$post_date     = gmdate( 'Y-m-d H:i:s', $ddate_U + $time_difference );
+				$post_date_gmt = gmdate( 'Y-m-d H:i:s', $ddate_U );
 			}
 		}
 	}
 
-	// Set $post_status based on $author_found and on author's publish_posts capability.
+	// Set $post_status based on $author_found and on author's publish_posts capability
 	if ( $author_found ) {
 		$user        = new WP_User( $post_author );
 		$post_status = ( $user->has_cap( 'publish_posts' ) ) ? 'publish' : 'pending';
@@ -175,11 +163,11 @@ for ( $i = 1; $i <= $count; $i++ ) {
 
 	$subject = trim( $subject );
 
-	if ( 'multipart/alternative' === $content_type ) {
+	if ( $content_type == 'multipart/alternative' ) {
 		$content = explode( '--' . $boundary, $content );
 		$content = $content[2];
 
-		// Match case-insensitive Content-Transfer-Encoding.
+		// Match case-insensitive content-transfer-encoding.
 		if ( preg_match( '/Content-Transfer-Encoding: quoted-printable/i', $content, $delim ) ) {
 			$content = explode( $delim[0], $content );
 			$content = $content[1];
@@ -208,7 +196,7 @@ for ( $i = 1; $i <= $count; $i++ ) {
 		$content = iconv( $charset, get_option( 'blog_charset' ), $content );
 	}
 
-	// Captures any text in the body after $phone_delim as the body.
+	// Captures any text in the body after $phone_delim as the body
 	$content = explode( $phone_delim, $content );
 	$content = empty( $content[1] ) ? $content[0] : $content[1];
 
@@ -225,7 +213,7 @@ for ( $i = 1; $i <= $count; $i++ ) {
 
 	$post_title = xmlrpc_getposttitle( $content );
 
-	if ( '' === trim( $post_title ) ) {
+	if ( $post_title == '' ) {
 		$post_title = $subject;
 	}
 
@@ -239,7 +227,7 @@ for ( $i = 1; $i <= $count; $i++ ) {
 		echo "\n" . $post_ID->get_error_message();
 	}
 
-	// The post wasn't inserted or updated, for whatever reason. Better move forward to the next email.
+	// We couldn't post, for whatever reason. Better move forward to the next email.
 	if ( empty( $post_ID ) ) {
 		continue;
 	}
