@@ -50,7 +50,7 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 	 * Search handlers used by the controller.
 	 *
 	 * @since 5.0.0
-	 * @var array
+	 * @var WP_REST_Search_Handler[]
 	 */
 	protected $search_handlers = array();
 
@@ -82,7 +82,7 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the routes for the objects of the controller.
+	 * Registers the routes for the search controller.
 	 *
 	 * @since 5.0.0
 	 *
@@ -140,7 +140,7 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 			);
 		}
 
-		$ids = array_map( 'absint', $result[ WP_REST_Search_Handler::RESULT_IDS ] );
+		$ids = $result[ WP_REST_Search_Handler::RESULT_IDS ];
 
 		$results = array();
 
@@ -185,12 +185,16 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 	 * Prepares a single search result for response.
 	 *
 	 * @since 5.0.0
+	 * @since 5.6.0 The `$id` parameter can accept a string.
+	 * @since 5.9.0 Renamed `$id` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param int             $id      ID of the item to prepare.
+	 * @param int|string      $item    ID of the item to prepare.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response Response object.
 	 */
-	public function prepare_item_for_response( $id, $request ) {
+	public function prepare_item_for_response( $item, $request ) {
+		// Restores the more descriptive, specific name for use within this method.
+		$item_id = $item;
 		$handler = $this->get_search_handler( $request );
 		if ( is_wp_error( $handler ) ) {
 			return new WP_REST_Response();
@@ -198,7 +202,7 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 
 		$fields = $this->get_fields_for_response( $request );
 
-		$data = $handler->prepare_item( $id, $fields );
+		$data = $handler->prepare_item( $item_id, $fields );
 		$data = $this->add_additional_fields_to_object( $data, $request );
 
 		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
@@ -206,11 +210,13 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 
 		$response = rest_ensure_response( $data );
 
-		$links               = $handler->prepare_item_links( $id );
-		$links['collection'] = array(
-			'href' => rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ),
-		);
-		$response->add_links( $links );
+		if ( rest_is_field_included( '_links', $fields ) || rest_is_field_included( '_embedded', $fields ) ) {
+			$links               = $handler->prepare_item_links( $item_id );
+			$links['collection'] = array(
+				'href' => rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ),
+			);
+			$response->add_links( $links );
+		}
 
 		return $response;
 	}
@@ -245,7 +251,7 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 			'properties' => array(
 				self::PROP_ID      => array(
 					'description' => __( 'Unique identifier for the object.' ),
-					'type'        => 'integer',
+					'type'        => array( 'integer', 'string' ),
 					'context'     => array( 'view', 'embed' ),
 					'readonly'    => true,
 				),
@@ -325,6 +331,24 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 			'sanitize_callback' => array( $this, 'sanitize_subtypes' ),
 		);
 
+		$query_params['exclude'] = array(
+			'description' => __( 'Ensure result set excludes specific IDs.' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+
+		$query_params['include'] = array(
+			'description' => __( 'Limit result set to specific IDs.' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
+
 		return $query_params;
 	}
 
@@ -336,7 +360,7 @@ class WP_REST_Search_Controller extends WP_REST_Controller {
 	 * @param string|array    $subtypes  One or more subtypes.
 	 * @param WP_REST_Request $request   Full details about the request.
 	 * @param string          $parameter Parameter name.
-	 * @return array|WP_Error List of valid subtypes, or WP_Error object on failure.
+	 * @return string[]|WP_Error List of valid subtypes, or WP_Error object on failure.
 	 */
 	public function sanitize_subtypes( $subtypes, $request, $parameter ) {
 		$subtypes = wp_parse_slug_list( $subtypes );

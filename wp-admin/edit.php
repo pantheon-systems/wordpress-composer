@@ -9,6 +9,11 @@
 /** WordPress Administration Bootstrap */
 require_once __DIR__ . '/admin.php';
 
+/**
+ * @global string $typenow The post type of the current screen.
+ */
+global $typenow;
+
 if ( ! $typenow ) {
 	wp_die( __( 'Invalid post type.' ) );
 }
@@ -76,15 +81,22 @@ if ( $doaction ) {
 		$sendback = admin_url( $parent_file );
 	}
 	$sendback = add_query_arg( 'paged', $pagenum, $sendback );
-	if ( strpos( $sendback, 'post.php' ) !== false ) {
+	if ( str_contains( $sendback, 'post.php' ) ) {
 		$sendback = admin_url( $post_new_file );
 	}
+
+	$post_ids = array();
 
 	if ( 'delete_all' === $doaction ) {
 		// Prepare for deletion of all posts with a specified post status (i.e. Empty Trash).
 		$post_status = preg_replace( '/[^a-z0-9_-]+/i', '', $_REQUEST['post_status'] );
 		// Validate the post status exists.
 		if ( get_post_status_object( $post_status ) ) {
+			/**
+			 * @global wpdb $wpdb WordPress database abstraction object.
+			 */
+			global $wpdb;
+
 			$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type=%s AND post_status = %s", $post_type, $post_status ) );
 		}
 		$doaction = 'delete';
@@ -96,7 +108,7 @@ if ( $doaction ) {
 		$post_ids = array_map( 'intval', $_REQUEST['post'] );
 	}
 
-	if ( ! isset( $post_ids ) ) {
+	if ( empty( $post_ids ) ) {
 		wp_redirect( $sendback );
 		exit;
 	}
@@ -126,7 +138,7 @@ if ( $doaction ) {
 			$sendback = add_query_arg(
 				array(
 					'trashed' => $trashed,
-					'ids'     => join( ',', $post_ids ),
+					'ids'     => implode( ',', $post_ids ),
 					'locked'  => $locked,
 				),
 				$sendback
@@ -134,6 +146,11 @@ if ( $doaction ) {
 			break;
 		case 'untrash':
 			$untrashed = 0;
+
+			if ( isset( $_GET['doaction'] ) && ( 'undo' === $_GET['doaction'] ) ) {
+				add_filter( 'wp_untrash_post_status', 'wp_untrash_post_set_previous_status', 10, 3 );
+			}
+
 			foreach ( (array) $post_ids as $post_id ) {
 				if ( ! current_user_can( 'delete_post', $post_id ) ) {
 					wp_die( __( 'Sorry, you are not allowed to restore this item from the Trash.' ) );
@@ -146,6 +163,9 @@ if ( $doaction ) {
 				$untrashed++;
 			}
 			$sendback = add_query_arg( 'untrashed', $untrashed, $sendback );
+
+			remove_filter( 'wp_untrash_post_status', 'wp_untrash_post_set_previous_status', 10 );
+
 			break;
 		case 'delete':
 			$deleted = 0;
@@ -222,6 +242,7 @@ if ( 'wp_block' === $post_type ) {
 	wp_enqueue_style( 'wp-list-reusable-blocks' );
 }
 
+// Used in the HTML title tag.
 $title = $post_type_object->labels->name;
 
 if ( 'post' === $post_type ) {
@@ -273,8 +294,8 @@ if ( 'post' === $post_type ) {
 
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-		'<p>' . __( '<a href="https://wordpress.org/support/article/posts-screen/">Documentation on Managing Posts</a>' ) . '</p>' .
-		'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
+		'<p>' . __( '<a href="https://wordpress.org/documentation/article/posts-screen/">Documentation on Managing Posts</a>' ) . '</p>' .
+		'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 	);
 
 } elseif ( 'page' === $post_type ) {
@@ -298,8 +319,8 @@ if ( 'post' === $post_type ) {
 
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-		'<p>' . __( '<a href="https://wordpress.org/support/article/pages-screen/">Documentation on Managing Pages</a>' ) . '</p>' .
-		'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
+		'<p>' . __( '<a href="https://wordpress.org/documentation/article/pages-screen/">Documentation on Managing Pages</a>' ) . '</p>' .
+		'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 	);
 
 }
@@ -398,8 +419,13 @@ if ( current_user_can( $post_type_object->cap->create_posts ) ) {
 }
 
 if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
-	/* translators: %s: Search query. */
-	printf( ' <span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', get_search_query() );
+	echo '<span class="subtitle">';
+	printf(
+		/* translators: %s: Search query. */
+		__( 'Search results for: %s' ),
+		'<strong>' . get_search_query() . '</strong>'
+	);
+	echo '</span>';
 }
 ?>
 
@@ -416,13 +442,33 @@ foreach ( $bulk_counts as $message => $count ) {
 	}
 
 	if ( 'trashed' === $message && isset( $_REQUEST['ids'] ) ) {
-		$ids        = preg_replace( '/[^0-9,]/', '', $_REQUEST['ids'] );
-		$messages[] = '<a href="' . esc_url( wp_nonce_url( "edit.php?post_type=$post_type&doaction=undo&action=untrash&ids=$ids", 'bulk-posts' ) ) . '">' . __( 'Undo' ) . '</a>';
+		$ids = preg_replace( '/[^0-9,]/', '', $_REQUEST['ids'] );
+
+		$messages[] = sprintf(
+			'<a href="%1$s">%2$s</a>',
+			esc_url( wp_nonce_url( "edit.php?post_type=$post_type&doaction=undo&action=untrash&ids=$ids", 'bulk-posts' ) ),
+			__( 'Undo' )
+		);
+	}
+
+	if ( 'untrashed' === $message && isset( $_REQUEST['ids'] ) ) {
+		$ids = explode( ',', $_REQUEST['ids'] );
+
+		if ( 1 === count( $ids ) && current_user_can( 'edit_post', $ids[0] ) ) {
+			$messages[] = sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( get_edit_post_link( $ids[0] ) ),
+				esc_html( get_post_type_object( get_post_type( $ids[0] ) )->labels->edit_item )
+			);
+		}
 	}
 }
 
 if ( $messages ) {
-	echo '<div id="message" class="updated notice is-dismissible"><p>' . join( ' ', $messages ) . '</p></div>';
+	printf(
+		'<div id="message" class="updated notice is-dismissible"><p>%s</p></div>',
+		implode( ' ', $messages )
+	);
 }
 unset( $messages );
 
@@ -457,7 +503,7 @@ if ( $wp_list_table->has_items() ) {
 ?>
 
 <div id="ajax-response"></div>
-<br class="clear" />
+<div class="clear"></div>
 </div>
 
 <?php

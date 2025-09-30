@@ -44,22 +44,24 @@ wp_enqueue_script( 'post' );
 $_wp_editor_expand   = false;
 $_content_editor_dfw = false;
 
-/**
- * Filters whether to enable the 'expand' functionality in the post editor.
- *
- * @since 4.0.0
- * @since 4.1.0 Added the `$post_type` parameter.
- *
- * @param bool   $expand    Whether to enable the 'expand' functionality. Default true.
- * @param string $post_type Post type.
- */
-if ( post_type_supports( $post_type, 'editor' ) && ! wp_is_mobile() &&
-	! ( $is_IE && preg_match( '/MSIE [5678]/', $_SERVER['HTTP_USER_AGENT'] ) ) &&
-	apply_filters( 'wp_editor_expand', true, $post_type ) ) {
-
-	wp_enqueue_script( 'editor-expand' );
-	$_content_editor_dfw = true;
-	$_wp_editor_expand   = ( 'on' === get_user_setting( 'editor_expand', 'on' ) );
+if ( post_type_supports( $post_type, 'editor' )
+	&& ! wp_is_mobile()
+	&& ! ( $is_IE && preg_match( '/MSIE [5678]/', $_SERVER['HTTP_USER_AGENT'] ) )
+) {
+	/**
+	 * Filters whether to enable the 'expand' functionality in the post editor.
+	 *
+	 * @since 4.0.0
+	 * @since 4.1.0 Added the `$post_type` parameter.
+	 *
+	 * @param bool   $expand    Whether to enable the 'expand' functionality. Default true.
+	 * @param string $post_type Post type.
+	 */
+	if ( apply_filters( 'wp_editor_expand', true, $post_type ) ) {
+		wp_enqueue_script( 'editor-expand' );
+		$_content_editor_dfw = true;
+		$_wp_editor_expand   = ( 'on' === get_user_setting( 'editor_expand', 'on' ) );
+	}
 }
 
 if ( wp_is_mobile() ) {
@@ -76,7 +78,7 @@ $post_ID = isset( $post_ID ) ? (int) $post_ID : 0;
 $user_ID = isset( $user_ID ) ? (int) $user_ID : 0;
 $action  = isset( $action ) ? $action : '';
 
-if ( (int) get_option( 'page_for_posts' ) === $post_ID && empty( $post->post_content ) ) {
+if ( (int) get_option( 'page_for_posts' ) === $post->ID && empty( $post->post_content ) ) {
 	add_action( 'edit_form_after_title', '_wp_posts_page_notice' );
 	remove_post_type_support( $post_type, 'editor' );
 }
@@ -92,7 +94,7 @@ if ( ! $thumbnail_support && 'attachment' === $post_type && $post->post_mime_typ
 
 if ( $thumbnail_support ) {
 	add_thickbox();
-	wp_enqueue_media( array( 'post' => $post_ID ) );
+	wp_enqueue_media( array( 'post' => $post->ID ) );
 }
 
 // Add the local autosave notice HTML.
@@ -101,7 +103,7 @@ add_action( 'admin_footer', '_local_storage_notice' );
 /*
  * @todo Document the $messages array(s).
  */
-$permalink = get_permalink( $post_ID );
+$permalink = get_permalink( $post->ID );
 if ( ! $permalink ) {
 	$permalink = '';
 }
@@ -169,9 +171,9 @@ if ( $viewable ) {
 $scheduled_date = sprintf(
 	/* translators: Publish box date string. 1: Date, 2: Time. */
 	__( '%1$s at %2$s' ),
-	/* translators: Publish box date format, see https://www.php.net/date */
+	/* translators: Publish box date format, see https://www.php.net/manual/datetime.format.php */
 	date_i18n( _x( 'M j, Y', 'publish box date format' ), strtotime( $post->post_date ) ),
-	/* translators: Publish box time format, see https://www.php.net/date */
+	/* translators: Publish box time format, see https://www.php.net/manual/datetime.format.php */
 	date_i18n( _x( 'H:i', 'publish box time format' ), strtotime( $post->post_date ) )
 );
 
@@ -235,12 +237,12 @@ if ( 'auto-draft' === $post->post_status ) {
 	$autosave    = false;
 	$form_extra .= "<input type='hidden' id='auto_draft' name='auto_draft' value='1' />";
 } else {
-	$autosave = wp_get_post_autosave( $post_ID );
+	$autosave = wp_get_post_autosave( $post->ID );
 }
 
 $form_action  = 'editpost';
-$nonce_action = 'update-post_' . $post_ID;
-$form_extra  .= "<input type='hidden' id='post_ID' name='post_ID' value='" . esc_attr( $post_ID ) . "' />";
+$nonce_action = 'update-post_' . $post->ID;
+$form_extra  .= "<input type='hidden' id='post_ID' name='post_ID' value='" . esc_attr( $post->ID ) . "' />";
 
 // Detect if there exists an autosave newer than the post and if that autosave is different than the post.
 if ( $autosave && mysql2date( 'U', $autosave->post_modified_gmt, false ) > mysql2date( 'U', $post->post_modified_gmt, false ) ) {
@@ -295,7 +297,7 @@ if ( 'post' === $post_type ) {
 	$title_and_editor .= '<p>' . __( 'You can enable distraction-free writing mode using the icon to the right. This feature is not available for old browsers or devices with small screens, and requires that the full-height editor be enabled in Screen Options.' ) . '</p>';
 	$title_and_editor .= '<p>' . sprintf(
 		/* translators: %s: Alt + F10 */
-		__( 'Keyboard users: When you&#8217;re working in the visual editor, you can use %s to access the toolbar.' ),
+		__( 'Keyboard users: When you are working in the visual editor, you can use %s to access the toolbar.' ),
 		'<kbd>Alt + F10</kbd>'
 	) . '</p>';
 
@@ -314,8 +316,8 @@ if ( 'post' === $post_type ) {
 			'tools.php'
 		) . '</p>' .
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-			'<p>' . __( '<a href="https://wordpress.org/support/article/wordpress-editor/">Documentation on Writing and Editing Posts</a>' ) . '</p>' .
-			'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
+			'<p>' . __( '<a href="https://wordpress.org/documentation/article/write-posts-classic-editor/">Documentation on Writing and Editing Posts</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 	);
 } elseif ( 'page' === $post_type ) {
 	$about_pages = '<p>' . __( 'Pages are similar to posts in that they have a title, body text, and associated metadata, but they are different in that they are not part of the chronological blog stream, kind of like permanent posts. Pages are not categorized or tagged, but can have a hierarchy. You can nest pages under other pages by making one the &#8220;Parent&#8221; of the other, creating a group of pages.' ) . '</p>' .
@@ -331,9 +333,9 @@ if ( 'post' === $post_type ) {
 
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-			'<p>' . __( '<a href="https://wordpress.org/support/article/pages-add-new-screen/">Documentation on Adding New Pages</a>' ) . '</p>' .
-			'<p>' . __( '<a href="https://wordpress.org/support/article/pages-screen/">Documentation on Editing Pages</a>' ) . '</p>' .
-			'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
+			'<p>' . __( '<a href="https://wordpress.org/documentation/article/pages-add-new-screen/">Documentation on Adding New Pages</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/documentation/article/pages-screen/">Documentation on Editing Pages</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 	);
 } elseif ( 'attachment' === $post_type ) {
 	get_current_screen()->add_help_tab(
@@ -344,20 +346,20 @@ if ( 'post' === $post_type ) {
 				'<p>' . __( 'This screen allows you to edit fields for metadata in a file within the media library.' ) . '</p>' .
 				'<p>' . __( 'For images only, you can click on Edit Image under the thumbnail to expand out an inline image editor with icons for cropping, rotating, or flipping the image as well as for undoing and redoing. The boxes on the right give you more options for scaling the image, for cropping it, and for cropping the thumbnail in a different way than you crop the original image. You can click on Help in those boxes to get more information.' ) . '</p>' .
 				'<p>' . __( 'Note that you crop the image by clicking on it (the Crop icon is already selected) and dragging the cropping frame to select the desired part. Then click Save to retain the cropping.' ) . '</p>' .
-				'<p>' . __( 'Remember to click Update Media to save metadata entered or changed.' ) . '</p>',
+				'<p>' . __( 'Remember to click Update to save metadata entered or changed.' ) . '</p>',
 		)
 	);
 
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-		'<p>' . __( '<a href="https://wordpress.org/support/article/edit-media/">Documentation on Edit Media</a>' ) . '</p>' .
-		'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
+		'<p>' . __( '<a href="https://wordpress.org/documentation/article/edit-media/">Documentation on Edit Media</a>' ) . '</p>' .
+		'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 	);
 }
 
 if ( 'post' === $post_type || 'page' === $post_type ) {
 	$inserting_media  = '<p>' . __( 'You can upload and insert media (images, audio, documents, etc.) by clicking the Add Media button. You can select from the images and files already uploaded to the Media Library, or upload new media to add to your page or post. To create an image gallery, select the images to add and click the &#8220;Create a new gallery&#8221; button.' ) . '</p>';
-	$inserting_media .= '<p>' . __( 'You can also embed media from many popular websites including Twitter, YouTube, Flickr and others by pasting the media URL on its own line into the content of your post/page. <a href="https://wordpress.org/support/article/embeds/">Learn more about embeds</a>.' ) . '</p>';
+	$inserting_media .= '<p>' . __( 'You can also embed media from many popular websites including Twitter, YouTube, Flickr and others by pasting the media URL on its own line into the content of your post/page. <a href="https://wordpress.org/documentation/article/embeds/">Learn more about embeds</a>.' ) . '</p>';
 
 	get_current_screen()->add_help_tab(
 		array(
@@ -375,7 +377,7 @@ if ( 'post' === $post_type ) {
 	'</li>';
 
 	if ( current_theme_supports( 'post-formats' ) && post_type_supports( 'post', 'post-formats' ) ) {
-		$publish_box .= '<li>' . __( '<strong>Format</strong> &mdash; Post Formats designate how your theme will display a specific post. For example, you could have a <em>standard</em> blog post with a title and paragraphs, or a short <em>aside</em> that omits the title and contains a short text blurb. Your theme could enable all or some of 10 possible formats. <a href="https://wordpress.org/support/article/post-formats/#supported-formats">Learn more about each post format</a>.' ) . '</li>';
+		$publish_box .= '<li>' . __( '<strong>Format</strong> &mdash; Post Formats designate how your theme will display a specific post. For example, you could have a <em>standard</em> blog post with a title and paragraphs, or a short <em>aside</em> that omits the title and contains a short text blurb. Your theme could enable all or some of 10 possible formats. <a href="https://wordpress.org/documentation/article/post-formats/#supported-formats">Learn more about each post format</a>.' ) . '</li>';
 	}
 
 	if ( current_theme_supports( 'post-thumbnails' ) && post_type_supports( 'post', 'thumbnail' ) ) {
@@ -445,8 +447,8 @@ if ( isset( $post_new_file ) && current_user_can( $post_type_object->cap->create
 <div id="message" class="updated notice notice-success is-dismissible"><p><?php echo $message; ?></p></div>
 <?php endif; ?>
 <div id="lost-connection-notice" class="error hidden">
-	<p><span class="spinner"></span> <?php _e( '<strong>Connection lost.</strong> Saving has been disabled until you&#8217;re reconnected.' ); ?>
-	<span class="hide-if-no-sessionstorage"><?php _e( 'We&#8217;re backing up this post in your browser, just in case.' ); ?></span>
+	<p><span class="spinner"></span> <?php _e( '<strong>Connection lost.</strong> Saving has been disabled until you are reconnected.' ); ?>
+	<span class="hide-if-no-sessionstorage"><?php _e( 'This post is being backed up in your browser, just in case.' ); ?></span>
 	</p>
 </div>
 <form name="post" action="post.php" method="post" id="post"
@@ -619,7 +621,7 @@ if ( post_type_supports( $post_type, 'editor' ) ) {
 	<?php
 	if ( 'auto-draft' !== $post->post_status ) {
 		echo '<span id="last-edit">';
-		$last_user = get_userdata( get_post_meta( $post_ID, '_edit_last', true ) );
+		$last_user = get_userdata( get_post_meta( $post->ID, '_edit_last', true ) );
 		if ( $last_user ) {
 			/* translators: 1: Name of most recent post author, 2: Post edited date, 3: Post edited time. */
 			printf( __( 'Last edited by %1$s on %2$s at %3$s' ), esc_html( $last_user->display_name ), mysql2date( __( 'F j, Y' ), $post->post_modified ), mysql2date( __( 'g:i a' ), $post->post_modified ) );

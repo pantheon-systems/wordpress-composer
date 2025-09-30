@@ -8,6 +8,7 @@
  * @subpackage Multisite
  */
 
+define( 'MS_FILES_REQUEST', true );
 define( 'SHORTINIT', true );
 require_once dirname( __DIR__ ) . '/wp-load.php';
 
@@ -16,8 +17,6 @@ if ( ! is_multisite() ) {
 }
 
 ms_file_constants();
-
-error_reporting( 0 );
 
 if ( '1' == $current_blog->archived || '1' == $current_blog->spam || '1' == $current_blog->deleted ) {
 	status_header( 404 );
@@ -42,7 +41,7 @@ if ( $mime['type'] ) {
 }
 
 header( 'Content-Type: ' . $mimetype ); // Always send this.
-if ( false === strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) ) {
+if ( ! str_contains( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) ) {
 	header( 'Content-Length: ' . filesize( $file ) );
 }
 

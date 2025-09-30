@@ -67,6 +67,8 @@ function wp_list_widgets() {
  * @since 3.1.0
  * @access private
  *
+ * @param array $a First array.
+ * @param array $b Second array.
  * @return int
  */
 function _sort_name_callback( $a, $b ) {
@@ -162,7 +164,7 @@ function next_widget_id_number( $id_base ) {
 	$number = 1;
 
 	foreach ( $wp_registered_widgets as $widget_id => $widget ) {
-		if ( preg_match( '/' . $id_base . '-([0-9]+)$/', $widget_id, $matches ) ) {
+		if ( preg_match( '/' . preg_quote( $id_base, '/' ) . '-([0-9]+)$/', $widget_id, $matches ) ) {
 			$number = max( $number, $matches[1] );
 		}
 	}
@@ -226,7 +228,7 @@ function wp_widget_control( $sidebar_args ) {
 	if ( isset( $sidebar_args['_display'] ) && 'template' === $sidebar_args['_display'] && $widget_number ) {
 		// number == -1 implies a template where id numbers are replaced by a generic '__i__'.
 		$control['params'][0]['number'] = -1;
-		// With id_base widget id's are constructed like {$id_base}-{$id_number}.
+		// With id_base widget ID's are constructed like {$id_base}-{$id_number}.
 		if ( isset( $control['id_base'] ) ) {
 			$id_format = $control['id_base'] . '-__i__';
 		}
@@ -245,13 +247,13 @@ function wp_widget_control( $sidebar_args ) {
 		<button type="button" class="widget-action hide-if-no-js" aria-expanded="false">
 			<span class="screen-reader-text edit">
 				<?php
-				/* translators: %s: Widget title. */
+				/* translators: Hidden accessibility text. %s: Widget title. */
 				printf( __( 'Edit widget: %s' ), $widget_title );
 				?>
 			</span>
 			<span class="screen-reader-text add">
 				<?php
-				/* translators: %s: Widget title. */
+				/* translators: Hidden accessibility text. %s: Widget title. */
 				printf( __( 'Add widget: %s' ), $widget_title );
 				?>
 			</span>
@@ -294,8 +296,7 @@ function wp_widget_control( $sidebar_args ) {
 		<div class="alignleft">
 			<button type="button" class="button-link button-link-delete widget-control-remove"><?php _e( 'Delete' ); ?></button>
 			<span class="widget-control-close-wrapper">
-				|
-				<button type="button" class="button-link widget-control-close"><?php _e( 'Done' ); ?></button>
+				| <button type="button" class="button-link widget-control-close"><?php _e( 'Done' ); ?></button>
 			</span>
 		</div>
 		<div class="alignright<?php echo $noform_class; ?>">

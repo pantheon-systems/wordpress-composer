@@ -59,7 +59,7 @@ window.addComment = ( function( window ) {
 	 * @since 5.1.1
 	 */
 	function ready() {
-		// Initialise the events.
+		// Initialize the events.
 		init();
 
 		// Set up a MutationObserver to check for comments loaded late.
@@ -202,7 +202,7 @@ window.addComment = ( function( window ) {
 		var replyNode = getElementById( config.commentReplyTitleId );
 		var defaultReplyHeading = replyNode && replyNode.firstChild.textContent;
 		var replyLink = this,
-			commId    = getDataAttribute( replyLink, 'belowelement'),
+			commId    = getDataAttribute( replyLink, 'belowelement' ),
 			parentId  = getDataAttribute( replyLink, 'commentid' ),
 			respondId = getDataAttribute( replyLink, 'respondelement' ),
 			postId    = getDataAttribute( replyLink, 'postid' ),

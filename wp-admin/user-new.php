@@ -34,7 +34,7 @@ if ( isset( $_REQUEST['action'] ) && 'adduser' === $_REQUEST['action'] ) {
 
 	$user_details = null;
 	$user_email   = wp_unslash( $_REQUEST['email'] );
-	if ( false !== strpos( $user_email, '@' ) ) {
+	if ( str_contains( $user_email, '@' ) ) {
 		$user_details = get_user_by( 'email', $user_email );
 	} else {
 		if ( current_user_can( 'manage_network_users' ) ) {
@@ -59,7 +59,7 @@ if ( isset( $_REQUEST['action'] ) && 'adduser' === $_REQUEST['action'] ) {
 	}
 
 	// Adding an existing user to this blog.
-	$new_user_email = $user_details->user_email;
+	$new_user_email = array();
 	$redirect       = 'user-new.php';
 	$username       = $user_details->user_login;
 	$user_id        = $user_details->ID;
@@ -100,7 +100,7 @@ if ( isset( $_REQUEST['action'] ) && 'adduser' === $_REQUEST['action'] ) {
 			$role  = $roles[ $_REQUEST['role'] ];
 
 			/**
-			 * Fires immediately after a user is invited to join a site, but before the notification is sent.
+			 * Fires immediately after an existing user is invited to join the site, but before the notification is sent.
 			 *
 			 * @since 4.4.0
 			 *
@@ -110,7 +110,13 @@ if ( isset( $_REQUEST['action'] ) && 'adduser' === $_REQUEST['action'] ) {
 			 */
 			do_action( 'invite_user', $user_id, $role, $newuser_key );
 
-			$switched_locale = switch_to_locale( get_user_locale( $user_details ) );
+			$switched_locale = switch_to_user_locale( $user_id );
+
+			if ( '' !== get_option( 'blogname' ) ) {
+				$site_title = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+			} else {
+				$site_title = parse_url( home_url(), PHP_URL_HOST );
+			}
 
 			/* translators: 1: Site title, 2: Site URL, 3: User role, 4: Activation URL. */
 			$message = __(
@@ -123,20 +129,46 @@ Please click the following link to confirm the invite:
 %4$s'
 			);
 
+			$new_user_email['to']      = $user_details->user_email;
+			$new_user_email['subject'] = sprintf(
+				/* translators: Joining confirmation notification email subject. %s: Site title. */
+				__( '[%s] Joining Confirmation' ),
+				$site_title
+			);
+			$new_user_email['message'] = sprintf(
+				$message,
+				get_option( 'blogname' ),
+				home_url(),
+				wp_specialchars_decode( translate_user_role( $role['name'] ) ),
+				home_url( "/newbloguser/$newuser_key/" )
+			);
+			$new_user_email['headers'] = '';
+
+			/**
+			 * Filters the contents of the email sent when an existing user is invited to join the site.
+			 *
+			 * @since 5.6.0
+			 *
+			 * @param array $new_user_email {
+			 *     Used to build wp_mail().
+			 *
+			 *     @type string $to      The email address of the invited user.
+			 *     @type string $subject The subject of the email.
+			 *     @type string $message The content of the email.
+			 *     @type string $headers Headers.
+			 * }
+			 * @param int    $user_id     The invited user's ID.
+			 * @param array  $role        Array containing role information for the invited user.
+			 * @param string $newuser_key The key of the invitation.
+			 *
+			 */
+			$new_user_email = apply_filters( 'invited_user_email', $new_user_email, $user_id, $role, $newuser_key );
+
 			wp_mail(
-				$new_user_email,
-				sprintf(
-					/* translators: Joining confirmation notification email subject. %s: Site title. */
-					__( '[%s] Joining Confirmation' ),
-					wp_specialchars_decode( get_option( 'blogname' ) )
-				),
-				sprintf(
-					$message,
-					get_option( 'blogname' ),
-					home_url(),
-					wp_specialchars_decode( translate_user_role( $role['name'] ) ),
-					home_url( "/newbloguser/$newuser_key/" )
-				)
+				$new_user_email['to'],
+				$new_user_email['subject'],
+				$new_user_email['message'],
+				$new_user_email['headers']
 			);
 
 			if ( $switched_locale ) {
@@ -219,6 +251,7 @@ Please click the following link to confirm the invite:
 	}
 }
 
+// Used in the HTML title tag.
 $title       = __( 'Add New User' );
 $parent_file = 'users.php';
 
@@ -231,11 +264,11 @@ $help = '<p>' . __( 'To add a new user to your site, fill in the form on this sc
 
 if ( is_multisite() ) {
 	$help .= '<p>' . __( 'Because this is a multisite installation, you may add accounts that already exist on the Network by specifying a username or email, and defining a role. For more options, such as specifying a password, you have to be a Network Administrator and use the hover link under an existing user&#8217;s name to Edit the user profile under Network Admin > All Users.' ) . '</p>' .
-	'<p>' . __( 'New users will receive an email letting them know they&#8217;ve been added as a user for your site. This email will also contain their password. Check the box if you don&#8217;t want the user to receive a welcome email.' ) . '</p>';
+	'<p>' . __( 'New users will receive an email letting them know they&#8217;ve been added as a user for your site. This email will also contain their password. Check the box if you do not want the user to receive a welcome email.' ) . '</p>';
 } else {
 	$help .= '<p>' . __( 'New users are automatically assigned a password, which they can change after logging in. You can view or edit the assigned password by clicking the Show Password button. The username cannot be changed once the user has been added.' ) . '</p>' .
 
-	'<p>' . __( 'By default, new users will receive an email letting them know they&#8217;ve been added as a user for your site. This email will also contain a password reset link. Uncheck the box if you don&#8217;t want to send the new user a welcome email.' ) . '</p>';
+	'<p>' . __( 'By default, new users will receive an email letting them know they&#8217;ve been added as a user for your site. This email will also contain a password reset link. Uncheck the box if you do not want to send the new user a welcome email.' ) . '</p>';
 }
 
 $help .= '<p>' . __( 'Remember to click the Add New User button at the bottom of this screen when you are finished.' ) . '</p>';
@@ -265,8 +298,8 @@ get_current_screen()->add_help_tab(
 
 get_current_screen()->set_help_sidebar(
 	'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-	'<p>' . __( '<a href="https://wordpress.org/support/article/users-add-new-screen/">Documentation on Adding New Users</a>' ) . '</p>' .
-	'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
+	'<p>' . __( '<a href="https://wordpress.org/documentation/article/users-add-new-screen/">Documentation on Adding New Users</a>' ) . '</p>' .
+	'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 );
 
 wp_enqueue_script( 'wp-ajax-response' );
@@ -409,8 +442,8 @@ if ( is_multisite() && current_user_can( 'promote_users' ) ) {
 
 <table class="form-table" role="presentation">
 	<tr class="form-field form-required">
-		<th scope="row"><label for="adduser-email"><?php echo $label; ?></label></th>
-		<td><input name="email" type="<?php echo $type; ?>" id="adduser-email" class="wp-suggest-user" value="" /></td>
+		<th scope="row"><label for="adduser-email"><?php echo esc_html( $label ); ?></label></th>
+		<td><input name="email" type="<?php echo esc_attr( $type ); ?>" id="adduser-email" class="wp-suggest-user" value="" /></td>
 	</tr>
 	<tr class="form-field">
 		<th scope="row"><label for="adduser-role"><?php _e( 'Role' ); ?></label></th>
@@ -479,7 +512,7 @@ if ( current_user_can( 'create_users' ) ) {
 <table class="form-table" role="presentation">
 	<tr class="form-field form-required">
 		<th scope="row"><label for="user_login"><?php _e( 'Username' ); ?> <span class="description"><?php _e( '(required)' ); ?></span></label></th>
-		<td><input name="user_login" type="text" id="user_login" value="<?php echo esc_attr( $new_user_login ); ?>" aria-required="true" autocapitalize="none" autocorrect="off" maxlength="60" /></td>
+		<td><input name="user_login" type="text" id="user_login" value="<?php echo esc_attr( $new_user_login ); ?>" aria-required="true" autocapitalize="none" autocorrect="off" autocomplete="off" maxlength="60" /></td>
 	</tr>
 	<tr class="form-field form-required">
 		<th scope="row"><label for="email"><?php _e( 'Email' ); ?> <span class="description"><?php _e( '(required)' ); ?></span></label></th>
@@ -533,29 +566,26 @@ if ( current_user_can( 'create_users' ) ) {
 			</label>
 		</th>
 		<td>
-			<input class="hidden" value=" " /><!-- #24364 workaround -->
-			<button type="button" class="button wp-generate-pw hide-if-no-js"><?php _e( 'Show password' ); ?></button>
-			<div class="wp-pwd hide-if-js">
+			<input type="hidden" value=" " /><!-- #24364 workaround -->
+			<button type="button" class="button wp-generate-pw hide-if-no-js"><?php _e( 'Generate password' ); ?></button>
+			<div class="wp-pwd">
 				<?php $initial_password = wp_generate_password( 24 ); ?>
-				<span class="password-input-wrapper">
-					<input type="password" name="pass1" id="pass1" class="regular-text" autocomplete="off" data-reveal="1" data-pw="<?php echo esc_attr( $initial_password ); ?>" aria-describedby="pass-strength-result" />
-				</span>
+				<div class="password-input-wrapper">
+					<input type="password" name="pass1" id="pass1" class="regular-text" autocomplete="new-password" spellcheck="false" data-reveal="1" data-pw="<?php echo esc_attr( $initial_password ); ?>" aria-describedby="pass-strength-result" />
+					<div style="display:none" id="pass-strength-result" aria-live="polite"></div>
+				</div>
 				<button type="button" class="button wp-hide-pw hide-if-no-js" data-toggle="0" aria-label="<?php esc_attr_e( 'Hide password' ); ?>">
 					<span class="dashicons dashicons-hidden" aria-hidden="true"></span>
 					<span class="text"><?php _e( 'Hide' ); ?></span>
 				</button>
-				<button type="button" class="button wp-cancel-pw hide-if-no-js" data-toggle="0" aria-label="<?php esc_attr_e( 'Cancel password change' ); ?>">
-					<span class="dashicons dashicons-no" aria-hidden="true"></span>
-					<span class="text"><?php _e( 'Cancel' ); ?></span>
-				</button>
-				<div style="display:none" id="pass-strength-result" aria-live="polite"></div>
 			</div>
 		</td>
 	</tr>
 	<tr class="form-field form-required user-pass2-wrap hide-if-js">
 		<th scope="row"><label for="pass2"><?php _e( 'Repeat Password' ); ?> <span class="description"><?php _e( '(required)' ); ?></span></label></th>
 		<td>
-		<input name="pass2" type="password" id="pass2" autocomplete="off" />
+		<input type="password" name="pass2" id="pass2" autocomplete="new-password" spellcheck="false" aria-describedby="pass2-desc" />
+		<p class="description" id="pass2-desc"><?php _e( 'Type the password again.' ); ?></p>
 		</td>
 	</tr>
 	<tr class="pw-weak">
@@ -581,7 +611,7 @@ if ( current_user_can( 'create_users' ) ) {
 		<td><select name="role" id="role">
 			<?php
 			if ( ! $new_user_role ) {
-				$new_user_role = ! empty( $current_role ) ? $current_role : get_option( 'default_role' );
+				$new_user_role = get_option( 'default_role' );
 			}
 			wp_dropdown_roles( $new_user_role );
 			?>
