@@ -25,7 +25,6 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 		$widget_ops = array(
 			'description'                 => __( 'A cloud of your most used tags.' ),
 			'customize_selective_refresh' => true,
-			'show_instance_in_rest'       => true,
 		);
 		parent::__construct( 'tag_cloud', __( 'Tag Cloud' ), $widget_ops );
 	}
@@ -52,8 +51,6 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 				$title = $tax->labels->name;
 			}
 		}
-
-		$default_title = $title;
 
 		$show_count = ! empty( $instance['count'] );
 
@@ -93,28 +90,11 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
 
-		$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
-
-		/** This filter is documented in wp-includes/widgets/class-wp-nav-menu-widget.php */
-		$format = apply_filters( 'navigation_widgets_format', $format );
-
-		if ( 'html5' === $format ) {
-			// The title may be filtered: Strip out HTML and make sure the aria-label is never empty.
-			$title      = trim( strip_tags( $title ) );
-			$aria_label = $title ? $title : $default_title;
-			echo '<nav aria-label="' . esc_attr( $aria_label ) . '">';
-		}
-
 		echo '<div class="tagcloud">';
 
 		echo $tag_cloud;
 
 		echo "</div>\n";
-
-		if ( 'html5' === $format ) {
-			echo '</nav>';
-		}
-
 		echo $args['after_widget'];
 	}
 

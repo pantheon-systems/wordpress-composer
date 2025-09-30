@@ -35,10 +35,8 @@ if ( isset( $_GET['h'] ) && '' !== $_GET['h'] && false !== get_option( 'delete_b
 $blog = get_site();
 $user = wp_get_current_user();
 
-// Used in the HTML title tag.
 $title       = __( 'Delete Site' );
 $parent_file = 'tools.php';
-
 require_once ABSPATH . 'wp-admin/admin-header.php';
 
 echo '<div class="wrap">';
@@ -65,19 +63,20 @@ If you really want to delete your site, click the link below. You will not
 be asked to confirm again so only click this link if you are absolutely certain:
 ###URL_DELETE###
 
-If you delete your site, please consider opening a new site here some time in
-the future! (But remember that your current site and username are gone forever.)
+If you delete your site, please consider opening a new site here
+some time in the future! (But remember your current site and username
+are gone forever.)
 
-Thank you for using the site,
+Thanks for using the site,
 All at ###SITENAME###
 ###SITEURL###"
 	);
 	/**
-	 * Filters the text for the email sent to the site admin when a request to delete a site in a Multisite network is submitted.
+	 * Filters the email content sent when a site in a Multisite network is deleted.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $content The email text.
+	 * @param string $content The email content that will be sent to the user who deleted a site in a Multisite network.
 	 */
 	$content = apply_filters( 'delete_site_email_content', $content );
 

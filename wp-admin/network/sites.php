@@ -17,7 +17,6 @@ if ( ! current_user_can( 'manage_sites' ) ) {
 $wp_list_table = _get_list_table( 'WP_MS_Sites_List_Table' );
 $pagenum       = $wp_list_table->get_pagenum();
 
-// Used in the HTML title tag.
 $title       = __( 'Sites' );
 $parent_file = 'sites.php';
 
@@ -43,8 +42,8 @@ get_current_screen()->add_help_tab(
 
 get_current_screen()->set_help_sidebar(
 	'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-	'<p>' . __( '<a href="https://wordpress.org/documentation/article/network-admin-sites-screen/">Documentation on Site Management</a>' ) . '</p>' .
-	'<p>' . __( '<a href="https://wordpress.org/support/forum/multisite/">Support forums</a>' ) . '</p>'
+	'<p>' . __( '<a href="https://wordpress.org/support/article/network-admin-sites-screen/">Documentation on Site Management</a>' ) . '</p>' .
+	'<p>' . __( '<a href="https://wordpress.org/support/forum/multisite/">Support Forums</a>' ) . '</p>'
 );
 
 get_current_screen()->set_screen_reader_content(
@@ -54,7 +53,7 @@ get_current_screen()->set_screen_reader_content(
 	)
 );
 
-$id = isset( $_REQUEST['id'] ) ? (int) $_REQUEST['id'] : 0;
+$id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
 
 if ( isset( $_GET['action'] ) ) {
 	/** This action is documented in wp-admin/network/edit.php */
@@ -102,7 +101,7 @@ if ( isset( $_GET['action'] ) ) {
 			header( 'Content-Type: text/html; charset=utf-8' );
 		}
 
-		if ( is_main_site( $id ) ) {
+		if ( get_network()->site_id == $id ) {
 			wp_die( __( 'Sorry, you are not allowed to change the current site.' ) );
 		}
 
@@ -142,7 +141,7 @@ if ( isset( $_GET['action'] ) ) {
 			}
 
 			$updated_action = 'not_deleted';
-			if ( 0 !== $id && ! is_main_site( $id ) && current_user_can( 'delete_site', $id ) ) {
+			if ( '0' != $id && get_network()->site_id != $id && current_user_can( 'delete_site', $id ) ) {
 				wpmu_delete_blog( $id, true );
 				$updated_action = 'delete';
 			}
@@ -154,7 +153,7 @@ if ( isset( $_GET['action'] ) ) {
 			foreach ( (array) $_POST['site_ids'] as $site_id ) {
 				$site_id = (int) $site_id;
 
-				if ( is_main_site( $site_id ) ) {
+				if ( get_network()->site_id == $site_id ) {
 					continue;
 				}
 
@@ -178,13 +177,11 @@ if ( isset( $_GET['action'] ) ) {
 			break;
 
 		case 'allblogs':
-			if ( isset( $_POST['action'] ) && isset( $_POST['allblogs'] ) ) {
-				$doaction = $_POST['action'];
+			if ( ( isset( $_POST['action'] ) || isset( $_POST['action2'] ) ) && isset( $_POST['allblogs'] ) ) {
+				$doaction = -1 != $_POST['action'] ? $_POST['action'] : $_POST['action2'];
 
-				foreach ( (array) $_POST['allblogs'] as $site_id ) {
-					$site_id = (int) $site_id;
-
-					if ( 0 !== $site_id && ! is_main_site( $site_id ) ) {
+				foreach ( (array) $_POST['allblogs'] as $key => $val ) {
+					if ( '0' != $val && get_network()->site_id != $val ) {
 						switch ( $doaction ) {
 							case 'delete':
 								require_once ABSPATH . 'wp-admin/admin-header.php';
@@ -199,14 +196,12 @@ if ( isset( $_GET['action'] ) ) {
 										<ul class="ul-disc">
 											<?php
 											foreach ( $_POST['allblogs'] as $site_id ) :
-												$site_id = (int) $site_id;
-
 												$site         = get_site( $site_id );
 												$site_address = untrailingslashit( $site->domain . $site->path );
 												?>
 												<li>
 													<?php echo $site_address; ?>
-													<input type="hidden" name="site_ids[]" value="<?php echo esc_attr( $site_id ); ?>" />
+													<input type="hidden" name="site_ids[]" value="<?php echo (int) $site_id; ?>" />
 												</li>
 											<?php endforeach; ?>
 										</ul>
@@ -221,7 +216,7 @@ if ( isset( $_GET['action'] ) ) {
 							case 'spam':
 							case 'notspam':
 								$updated_action = ( 'spam' === $doaction ) ? 'all_spam' : 'all_notspam';
-								update_blog_status( $site_id, 'spam', ( 'spam' === $doaction ) ? '1' : '0' );
+								update_blog_status( $val, 'spam', ( 'spam' === $doaction ) ? '1' : '0' );
 								break;
 						}
 					} else {
@@ -265,7 +260,7 @@ if ( isset( $_GET['action'] ) ) {
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $id The ID of the activated site.
+			 * @param string $id The ID of the activated site.
 			 */
 			do_action( 'activate_blog', $id );
 			break;
@@ -276,7 +271,7 @@ if ( isset( $_GET['action'] ) ) {
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $id The ID of the site being deactivated.
+			 * @param string $id The ID of the site being deactivated.
 			 */
 			do_action( 'deactivate_blog', $id );
 
@@ -358,14 +353,7 @@ if ( isset( $_GET['updated'] ) ) {
 	}
 
 	if ( ! empty( $msg ) ) {
-		$msg = wp_get_admin_notice(
-			$msg,
-			array(
-				'type'        => 'success',
-				'dismissible' => true,
-				'id'          => 'message',
-			)
-		);
+		$msg = '<div id="message" class="updated notice is-dismissible"><p>' . $msg . '</p></div>';
 	}
 }
 
@@ -378,18 +366,13 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 <h1 class="wp-heading-inline"><?php _e( 'Sites' ); ?></h1>
 
 <?php if ( current_user_can( 'create_sites' ) ) : ?>
-	<a href="<?php echo esc_url( network_admin_url( 'site-new.php' ) ); ?>" class="page-title-action"><?php echo esc_html__( 'Add New Site' ); ?></a>
+	<a href="<?php echo network_admin_url( 'site-new.php' ); ?>" class="page-title-action"><?php echo esc_html_x( 'Add New', 'site' ); ?></a>
 <?php endif; ?>
 
 <?php
 if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
-	echo '<span class="subtitle">';
-	printf(
-		/* translators: %s: Search query. */
-		__( 'Search results for: %s' ),
-		'<strong>' . esc_html( $s ) . '</strong>'
-	);
-	echo '</span>';
+	/* translators: %s: Search query. */
+	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( $s ) );
 }
 ?>
 

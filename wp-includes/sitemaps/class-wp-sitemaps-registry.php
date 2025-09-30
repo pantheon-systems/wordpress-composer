@@ -14,7 +14,6 @@
  *
  * @since 5.5.0
  */
-#[AllowDynamicProperties]
 class WP_Sitemaps_Registry {
 	/**
 	 * Registered sitemap providers.
@@ -66,7 +65,7 @@ class WP_Sitemaps_Registry {
 	 * @return WP_Sitemaps_Provider|null Sitemap provider if it exists, null otherwise.
 	 */
 	public function get_provider( $name ) {
-		if ( ! is_string( $name ) || ! isset( $this->providers[ $name ] ) ) {
+		if ( ! isset( $this->providers[ $name ] ) ) {
 			return null;
 		}
 

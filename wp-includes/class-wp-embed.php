@@ -6,7 +6,6 @@
  * @subpackage Embed
  * @since 2.9.0
  */
-#[AllowDynamicProperties]
 class WP_Embed {
 	public $handlers = array();
 	public $post_ID;
@@ -32,7 +31,6 @@ class WP_Embed {
 		// Hack to get the [embed] shortcode to run before wpautop().
 		add_filter( 'the_content', array( $this, 'run_shortcode' ), 8 );
 		add_filter( 'widget_text_content', array( $this, 'run_shortcode' ), 8 );
-		add_filter( 'widget_block_content', array( $this, 'run_shortcode' ), 8 );
 
 		// Shortcode placeholder for strip_shortcodes().
 		add_shortcode( 'embed', '__return_false' );
@@ -40,7 +38,6 @@ class WP_Embed {
 		// Attempts to embed all URLs in a post.
 		add_filter( 'the_content', array( $this, 'autoembed' ), 8 );
 		add_filter( 'widget_text_content', array( $this, 'autoembed' ), 8 );
-		add_filter( 'widget_block_content', array( $this, 'autoembed' ), 8 );
 
 		// After a post is saved, cache oEmbed items via Ajax.
 		add_action( 'edit_form_advanced', array( $this, 'maybe_run_ajax_cache' ) );
@@ -48,7 +45,7 @@ class WP_Embed {
 	}
 
 	/**
-	 * Processes the [embed] shortcode.
+	 * Process the [embed] shortcode.
 	 *
 	 * Since the [embed] shortcode needs to be run earlier than other shortcodes,
 	 * this function removes all existing shortcodes, registers the [embed] shortcode,
@@ -56,8 +53,8 @@ class WP_Embed {
 	 *
 	 * @global array $shortcode_tags
 	 *
-	 * @param string $content Content to parse.
-	 * @return string Content with shortcode parsed.
+	 * @param string $content Content to parse
+	 * @return string Content with shortcode parsed
 	 */
 	public function run_shortcode( $content ) {
 		global $shortcode_tags;
@@ -87,11 +84,12 @@ class WP_Embed {
 		if ( ! $post || empty( $_GET['message'] ) ) {
 			return;
 		}
+
 		?>
 <script type="text/javascript">
-	jQuery( function($) {
-		$.get("<?php echo esc_url( admin_url( 'admin-ajax.php', 'relative' ) ) . '?action=oembed-cache&post=' . $post->ID; ?>");
-	} );
+	jQuery(document).ready(function($){
+		$.get("<?php echo admin_url( 'admin-ajax.php?action=oembed-cache&post=' . $post->ID, 'relative' ); ?>");
+	});
 </script>
 		<?php
 	}
@@ -212,10 +210,8 @@ class WP_Embed {
 
 		$this->last_attr = $attr;
 
-		/*
-		 * KSES converts & into &amp; and we need to undo this.
-		 * See https://core.trac.wordpress.org/ticket/11311
-		 */
+		// KSES converts & into &amp; and we need to undo this.
+		// See https://core.trac.wordpress.org/ticket/11311
 		$url = str_replace( '&amp;', '&', $url );
 
 		// Look for known internal handlers.
@@ -224,11 +220,11 @@ class WP_Embed {
 			return $embed_handler_html;
 		}
 
-		$post_id = ( ! empty( $post->ID ) ) ? $post->ID : null;
+		$post_ID = ( ! empty( $post->ID ) ) ? $post->ID : null;
 
 		// Potentially set by WP_Embed::cache_oembed().
 		if ( ! empty( $this->post_ID ) ) {
-			$post_id = $this->post_ID;
+			$post_ID = $this->post_ID;
 		}
 
 		// Check for a cached result (stored as custom post or in the post meta).
@@ -244,18 +240,18 @@ class WP_Embed {
 		 * @param int    $time    Time to live (in seconds).
 		 * @param string $url     The attempted embed URL.
 		 * @param array  $attr    An array of shortcode attributes.
-		 * @param int    $post_id Post ID.
+		 * @param int    $post_ID Post ID.
 		 */
-		$ttl = apply_filters( 'oembed_ttl', DAY_IN_SECONDS, $url, $attr, $post_id );
+		$ttl = apply_filters( 'oembed_ttl', DAY_IN_SECONDS, $url, $attr, $post_ID );
 
 		$cache      = '';
 		$cache_time = 0;
 
 		$cached_post_id = $this->find_oembed_post_id( $key_suffix );
 
-		if ( $post_id ) {
-			$cache      = get_post_meta( $post_id, $cachekey, true );
-			$cache_time = get_post_meta( $post_id, $cachekey_time, true );
+		if ( $post_ID ) {
+			$cache      = get_post_meta( $post_ID, $cachekey, true );
+			$cache_time = get_post_meta( $post_ID, $cachekey_time, true );
 
 			if ( ! $cache_time ) {
 				$cache_time = 0;
@@ -286,9 +282,9 @@ class WP_Embed {
 				 * @param string|false $cache   The cached HTML result, stored in post meta.
 				 * @param string       $url     The attempted embed URL.
 				 * @param array        $attr    An array of shortcode attributes.
-				 * @param int          $post_id Post ID.
+				 * @param int          $post_ID Post ID.
 				 */
-				return apply_filters( 'embed_oembed_html', $cache, $url, $attr, $post_id );
+				return apply_filters( 'embed_oembed_html', $cache, $url, $attr, $post_ID );
 			}
 		}
 
@@ -307,12 +303,12 @@ class WP_Embed {
 		// Use oEmbed to get the HTML.
 		$html = wp_oembed_get( $url, $attr );
 
-		if ( $post_id ) {
+		if ( $post_ID ) {
 			if ( $html ) {
-				update_post_meta( $post_id, $cachekey, $html );
-				update_post_meta( $post_id, $cachekey_time, time() );
+				update_post_meta( $post_ID, $cachekey, $html );
+				update_post_meta( $post_ID, $cachekey_time, time() );
 			} elseif ( ! $cache ) {
-				update_post_meta( $post_id, $cachekey, '{{unknown}}' );
+				update_post_meta( $post_ID, $cachekey, '{{unknown}}' );
 			}
 		} else {
 			$has_kses = false !== has_filter( 'content_save_pre', 'wp_filter_post_kses' );
@@ -371,7 +367,7 @@ class WP_Embed {
 		// If there was a result, return it.
 		if ( $html ) {
 			/** This filter is documented in wp-includes/class-wp-embed.php */
-			return apply_filters( 'embed_oembed_html', $html, $url, $attr, $post_id );
+			return apply_filters( 'embed_oembed_html', $html, $url, $attr, $post_ID );
 		}
 
 		// Still unknown.
@@ -379,19 +375,19 @@ class WP_Embed {
 	}
 
 	/**
-	 * Deletes all oEmbed caches. Unused by core as of 4.0.0.
+	 * Delete all oEmbed caches. Unused by core as of 4.0.0.
 	 *
-	 * @param int $post_id Post ID to delete the caches for.
+	 * @param int $post_ID Post ID to delete the caches for.
 	 */
-	public function delete_oembed_caches( $post_id ) {
-		$post_metas = get_post_custom_keys( $post_id );
+	public function delete_oembed_caches( $post_ID ) {
+		$post_metas = get_post_custom_keys( $post_ID );
 		if ( empty( $post_metas ) ) {
 			return;
 		}
 
 		foreach ( $post_metas as $post_meta_key ) {
-			if ( str_starts_with( $post_meta_key, '_oembed_' ) ) {
-				delete_post_meta( $post_id, $post_meta_key );
+			if ( '_oembed_' === substr( $post_meta_key, 0, 8 ) ) {
+				delete_post_meta( $post_ID, $post_meta_key );
 			}
 		}
 	}
@@ -399,10 +395,10 @@ class WP_Embed {
 	/**
 	 * Triggers a caching of all oEmbed results.
 	 *
-	 * @param int $post_id Post ID to do the caching for.
+	 * @param int $post_ID Post ID to do the caching for.
 	 */
-	public function cache_oembed( $post_id ) {
-		$post = get_post( $post_id );
+	public function cache_oembed( $post_ID ) {
+		$post = get_post( $post_ID );
 
 		$post_types = get_post_types( array( 'show_ui' => true ) );
 
@@ -457,16 +453,16 @@ class WP_Embed {
 	/**
 	 * Callback function for WP_Embed::autoembed().
 	 *
-	 * @param array $matches A regex match array.
+	 * @param array $match A regex match array.
 	 * @return string The embed HTML on success, otherwise the original URL.
 	 */
-	public function autoembed_callback( $matches ) {
+	public function autoembed_callback( $match ) {
 		$oldval              = $this->linkifunknown;
 		$this->linkifunknown = false;
-		$return              = $this->shortcode( array(), $matches[2] );
+		$return              = $this->shortcode( array(), $match[2] );
 		$this->linkifunknown = $oldval;
 
-		return $matches[1] . $return . $matches[3];
+		return $match[1] . $return . $match[3];
 	}
 
 	/**
@@ -494,7 +490,7 @@ class WP_Embed {
 	}
 
 	/**
-	 * Finds the oEmbed cache post ID for a given cache key.
+	 * Find the oEmbed cache post ID for a given cache key.
 	 *
 	 * @since 4.9.0
 	 *

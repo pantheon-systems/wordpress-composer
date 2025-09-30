@@ -21,7 +21,6 @@
  * @property int $id
  * @property int $site_id
  */
-#[AllowDynamicProperties]
 class WP_Network {
 
 	/**
@@ -83,14 +82,14 @@ class WP_Network {
 	public $site_name = '';
 
 	/**
-	 * Retrieves a network from the database by its ID.
+	 * Retrieve a network from the database by its ID.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
 	 * @param int $network_id The ID of the network to retrieve.
-	 * @return WP_Network|false The network's object if found. False if not.
+	 * @return WP_Network|bool The network's object if found. False if not.
 	 */
 	public static function get_instance( $network_id ) {
 		global $wpdb;
@@ -120,7 +119,7 @@ class WP_Network {
 	}
 
 	/**
-	 * Creates a new WP_Network object.
+	 * Create a new WP_Network object.
 	 *
 	 * Will populate object properties from the object provided and assign other
 	 * default properties based on that information.
@@ -228,7 +227,6 @@ class WP_Network {
 		 * @param WP_Network $network      The network object for which the main site was detected.
 		 */
 		$main_site_id = (int) apply_filters( 'pre_get_main_site_id', null, $this );
-
 		if ( 0 < $main_site_id ) {
 			return $main_site_id;
 		}
@@ -237,10 +235,8 @@ class WP_Network {
 			return (int) $this->blog_id;
 		}
 
-		if ( ( defined( 'DOMAIN_CURRENT_SITE' ) && defined( 'PATH_CURRENT_SITE' )
-			&& DOMAIN_CURRENT_SITE === $this->domain && PATH_CURRENT_SITE === $this->path )
-			|| ( defined( 'SITE_ID_CURRENT_SITE' ) && (int) SITE_ID_CURRENT_SITE === $this->id )
-		) {
+		if ( ( defined( 'DOMAIN_CURRENT_SITE' ) && defined( 'PATH_CURRENT_SITE' ) && DOMAIN_CURRENT_SITE === $this->domain && PATH_CURRENT_SITE === $this->path )
+			|| ( defined( 'SITE_ID_CURRENT_SITE' ) && SITE_ID_CURRENT_SITE == $this->id ) ) {
 			if ( defined( 'BLOG_ID_CURRENT_SITE' ) ) {
 				$this->blog_id = (string) BLOG_ID_CURRENT_SITE;
 
@@ -258,8 +254,9 @@ class WP_Network {
 		if ( $site->domain === $this->domain && $site->path === $this->path ) {
 			$main_site_id = (int) $site->id;
 		} else {
+			$cache_key = 'network:' . $this->id . ':main_site';
 
-			$main_site_id = get_network_option( $this->id, 'main_site' );
+			$main_site_id = wp_cache_get( $cache_key, 'site-options' );
 			if ( false === $main_site_id ) {
 				$_sites       = get_sites(
 					array(
@@ -272,7 +269,7 @@ class WP_Network {
 				);
 				$main_site_id = ! empty( $_sites ) ? array_shift( $_sites ) : 0;
 
-				update_network_option( $this->id, 'main_site', $main_site_id );
+				wp_cache_add( $cache_key, $main_site_id, 'site-options' );
 			}
 		}
 
@@ -282,7 +279,7 @@ class WP_Network {
 	}
 
 	/**
-	 * Sets the site name assigned to the network if one has not been populated.
+	 * Set the site name assigned to the network if one has not been populated.
 	 *
 	 * @since 4.4.0
 	 */
@@ -296,7 +293,7 @@ class WP_Network {
 	}
 
 	/**
-	 * Sets the cookie domain based on the network domain if one has
+	 * Set the cookie domain based on the network domain if one has
 	 * not been populated.
 	 *
 	 * @todo What if the domain of the network doesn't match the current site?
@@ -309,13 +306,13 @@ class WP_Network {
 		}
 
 		$this->cookie_domain = $this->domain;
-		if ( str_starts_with( $this->cookie_domain, 'www.' ) ) {
+		if ( 'www.' === substr( $this->cookie_domain, 0, 4 ) ) {
 			$this->cookie_domain = substr( $this->cookie_domain, 4 );
 		}
 	}
 
 	/**
-	 * Retrieves the closest matching network for a domain and path.
+	 * Retrieve the closest matching network for a domain and path.
 	 *
 	 * This will not necessarily return an exact match for a domain and path. Instead, it
 	 * breaks the domain and path into pieces that are then used to match the closest
@@ -329,7 +326,7 @@ class WP_Network {
 	 * @param string   $domain   Domain to check.
 	 * @param string   $path     Path to check.
 	 * @param int|null $segments Path segments to use. Defaults to null, or the full path.
-	 * @return WP_Network|false Network object if successful. False when no network is found.
+	 * @return WP_Network|bool Network object if successful. False when no network is found.
 	 */
 	public static function get_by_path( $domain = '', $path = '', $segments = null ) {
 		$domains = array( $domain );
@@ -356,13 +353,17 @@ class WP_Network {
 		 */
 		$using_paths = true;
 		if ( wp_using_ext_object_cache() ) {
-			$using_paths = get_networks(
-				array(
-					'number'       => 1,
-					'count'        => true,
-					'path__not_in' => '/',
-				)
-			);
+			$using_paths = wp_cache_get( 'networks_have_paths', 'site-options' );
+			if ( false === $using_paths ) {
+				$using_paths = get_networks(
+					array(
+						'number'       => 1,
+						'count'        => true,
+						'path__not_in' => '/',
+					)
+				);
+				wp_cache_add( 'networks_have_paths', $using_paths, 'site-options' );
+			}
 		}
 
 		$paths = array();
@@ -395,7 +396,7 @@ class WP_Network {
 		}
 
 		/**
-		 * Determines a network by its domain and path.
+		 * Determine a network by its domain and path.
 		 *
 		 * This allows one to short-circuit the default logic, perhaps by
 		 * replacing it with a routine that is more optimal for your setup.
@@ -406,13 +407,13 @@ class WP_Network {
 		 *
 		 * @since 3.9.0
 		 *
-		 * @param null|false|WP_Network $network  Network value to return by path. Default null
-		 *                                        to continue retrieving the network.
-		 * @param string                $domain   The requested domain.
-		 * @param string                $path     The requested path, in full.
-		 * @param int|null              $segments The suggested number of paths to consult.
-		 *                                        Default null, meaning the entire path was to be consulted.
-		 * @param string[]              $paths    Array of paths to search for, based on `$path` and `$segments`.
+		 * @param null|bool|WP_Network $network  Network value to return by path. Default null
+		 *                                       to continue retrieving the network.
+		 * @param string               $domain   The requested domain.
+		 * @param string               $path     The requested path, in full.
+		 * @param int|null             $segments The suggested number of paths to consult.
+		 *                                       Default null, meaning the entire path was to be consulted.
+		 * @param string[]             $paths    Array of paths to search for, based on `$path` and `$segments`.
 		 */
 		$pre = apply_filters( 'pre_get_network_by_path', null, $domain, $path, $segments, $paths );
 		if ( null !== $pre ) {

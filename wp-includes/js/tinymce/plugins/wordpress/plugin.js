@@ -16,8 +16,6 @@ tinymce.PluginManager.add( 'wordpress', function( editor ) {
 		wpTooltips = false;
 
 	if ( $ ) {
-		// Runs as soon as TinyMCE has started initializing, while plugins are loading.
-		// Handlers attached after the `tinymce.init()` call may not get triggered for this instance.
 		$( document ).triggerHandler( 'tinymce-editor-setup', [ editor ] );
 	}
 
@@ -253,7 +251,7 @@ tinymce.PluginManager.add( 'wordpress', function( editor ) {
 
 	editor.addCommand( 'WP_Help', function() {
 		var access = tinymce.Env.mac ? __( 'Ctrl + Alt + letter:' ) : __( 'Shift + Alt + letter:' ),
-			meta = tinymce.Env.mac ? __( '⌘ + letter:' ) : __( 'Ctrl + letter:' ),
+			meta = tinymce.Env.mac ? __( 'Cmd + letter:' ) : __( 'Ctrl + letter:' ),
 			table1 = [],
 			table2 = [],
 			row1 = {},
@@ -542,11 +540,7 @@ tinymce.PluginManager.add( 'wordpress', function( editor ) {
 		});
 
 		if ( $ ) {
-			// Run on DOM ready. Otherwise TinyMCE may initialize earlier and handlers attached
-			// on DOM ready of after the `tinymce.init()` call may not get triggered.
-			$( function() {
-				$( document ).triggerHandler( 'tinymce-editor-init', [editor] );
-			});
+			$( document ).triggerHandler( 'tinymce-editor-init', [editor] );
 		}
 
 		if ( window.tinyMCEPreInit && window.tinyMCEPreInit.dragDropUpload ) {
@@ -758,7 +752,7 @@ tinymce.PluginManager.add( 'wordpress', function( editor ) {
 				tooltip = getTooltip( button.settings.tooltip );
 				button.settings.tooltip = tooltip;
 
-				// Override the aria label with the translated tooltip + shortcut.
+				// Override the aria label wiht the translated tooltip + shortcut.
 				if ( button._aria && button._aria.label ) {
 					button._aria.label = tooltip;
 				}

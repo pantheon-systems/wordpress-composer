@@ -1,77 +1,130 @@
-/******/ (function() { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	// The require scope
-/******/ 	var __webpack_require__ = {};
-/******/ 	
+this["wp"] = this["wp"] || {}; this["wp"]["dataControls"] =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "71Oy");
+/******/ })
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	!function() {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = function(module) {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				function() { return module['default']; } :
-/******/ 				function() { return module; };
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-// ESM COMPAT FLAG
+/******/ ({
+
+/***/ "1ZqX":
+/***/ (function(module, exports) {
+
+(function() { module.exports = this["wp"]["data"]; }());
+
+/***/ }),
+
+/***/ "25BE":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _iterableToArray; });
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+/***/ }),
+
+/***/ "71Oy":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "apiFetch", function() { return apiFetch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "select", function() { return select; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__unstableSyncSelect", function() { return __unstableSyncSelect; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dispatch", function() { return dispatch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "controls", function() { return controls; });
+/* harmony import */ var _babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("KQm4");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("ywyh");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("1ZqX");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
 
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  __unstableAwaitPromise: function() { return /* binding */ __unstableAwaitPromise; },
-  apiFetch: function() { return /* binding */ apiFetch; },
-  controls: function() { return /* binding */ controls; },
-  dispatch: function() { return /* binding */ dispatch; },
-  select: function() { return /* binding */ build_module_select; },
-  syncSelect: function() { return /* binding */ syncSelect; }
-});
 
-;// CONCATENATED MODULE: external ["wp","apiFetch"]
-var external_wp_apiFetch_namespaceObject = window["wp"]["apiFetch"];
-var external_wp_apiFetch_default = /*#__PURE__*/__webpack_require__.n(external_wp_apiFetch_namespaceObject);
-;// CONCATENATED MODULE: external ["wp","data"]
-var external_wp_data_namespaceObject = window["wp"]["data"];
-;// CONCATENATED MODULE: external ["wp","deprecated"]
-var external_wp_deprecated_namespaceObject = window["wp"]["deprecated"];
-var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external_wp_deprecated_namespaceObject);
-;// CONCATENATED MODULE: ./node_modules/@wordpress/data-controls/build-module/index.js
 /**
  * WordPress dependencies
  */
-
 
 
 /**
@@ -93,87 +146,119 @@ var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external
  *
  * @return {Object} The control descriptor.
  */
-function apiFetch(request) {
+
+var apiFetch = function apiFetch(request) {
   return {
     type: 'API_FETCH',
-    request
+    request: request
   };
-}
-
+};
 /**
- * Control for resolving a selector in a registered data store.
- * Alias for the `resolveSelect` built-in control in the `@wordpress/data` package.
+ * Dispatches a control action for triggering a registry select.
  *
- * @param storeNameOrDescriptor The store object or identifier.
- * @param selectorName          The selector name.
- * @param args                  Arguments passed without change to the `@wordpress/data` control.
- */
-function build_module_select(storeNameOrDescriptor, selectorName, ...args) {
-  external_wp_deprecated_default()('`select` control in `@wordpress/data-controls`', {
-    since: '5.7',
-    alternative: 'built-in `resolveSelect` control in `@wordpress/data`'
-  });
-  return external_wp_data_namespaceObject.controls.resolveSelect(storeNameOrDescriptor, selectorName, ...args);
-}
-
-/**
- * Control for calling a selector in a registered data store.
- * Alias for the `select` built-in control in the `@wordpress/data` package.
+ * Note: when this control action is handled, it automatically considers
+ * selectors that may have a resolver. It will await and return the resolved
+ * value when the selector has not been resolved yet.
  *
- * @param storeNameOrDescriptor The store object or identifier.
- * @param selectorName          The selector name.
- * @param args                  Arguments passed without change to the `@wordpress/data` control.
- */
-function syncSelect(storeNameOrDescriptor, selectorName, ...args) {
-  external_wp_deprecated_default()('`syncSelect` control in `@wordpress/data-controls`', {
-    since: '5.7',
-    alternative: 'built-in `select` control in `@wordpress/data`'
-  });
-  return external_wp_data_namespaceObject.controls.select(storeNameOrDescriptor, selectorName, ...args);
-}
-
-/**
- * Control for dispatching an action in a registered data store.
- * Alias for the `dispatch` control in the `@wordpress/data` package.
- *
- * @param storeNameOrDescriptor The store object or identifier.
- * @param actionName            The action name.
- * @param args                  Arguments passed without change to the `@wordpress/data` control.
- */
-function dispatch(storeNameOrDescriptor, actionName, ...args) {
-  external_wp_deprecated_default()('`dispatch` control in `@wordpress/data-controls`', {
-    since: '5.7',
-    alternative: 'built-in `dispatch` control in `@wordpress/data`'
-  });
-  return external_wp_data_namespaceObject.controls.dispatch(storeNameOrDescriptor, actionName, ...args);
-}
-
-/**
- * Dispatches a control action for awaiting on a promise to be resolved.
- *
- * @param {Object} promise Promise to wait for.
+ * @param {string} storeKey      The key for the store the selector belongs to
+ * @param {string} selectorName  The name of the selector
+ * @param {Array}  args          Arguments for the select.
  *
  * @example
  * ```js
- * import { __unstableAwaitPromise } from '@wordpress/data-controls';
+ * import { select } from '@wordpress/data-controls';
  *
- * // Action generator using apiFetch
+ * // Action generator using select
  * export function* myAction() {
- * 	const promise = getItemsAsync();
- * 	const items = yield __unstableAwaitPromise( promise );
- * 	// do something with the items.
+ * 	const isSidebarOpened = yield select( 'core/edit-post', 'isEditorSideBarOpened' );
+ * 	// do stuff with the result from the select.
  * }
  * ```
  *
  * @return {Object} The control descriptor.
  */
-const __unstableAwaitPromise = function (promise) {
-  return {
-    type: 'AWAIT_PROMISE',
-    promise
-  };
-};
 
+function select(storeKey, selectorName) {
+  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
+
+  return {
+    type: 'SELECT',
+    storeKey: storeKey,
+    selectorName: selectorName,
+    args: args
+  };
+}
+/**
+ * Dispatches a control action for triggering a registry select.
+ *
+ * Note: This functions like the `select` control, but does not wait
+ * for resolvers.
+ *
+ * @param {string} storeKey     The key for the store the selector belongs to.
+ * @param {string} selectorName The name of the selector.
+ * @param {Array}  args         Arguments for the select.
+ *
+ * @example
+ * ```js
+ * import { __unstableSyncSelect } from '@wordpress/data-controls';
+ *
+ * // Action generator using `__unstableSyncSelect`.
+ * export function* myAction() {
+ * 	const isEditorSideBarOpened = yield __unstableSyncSelect( 'core/edit-post', 'isEditorSideBarOpened' );
+ * 	// Do stuff with the result from the `__unstableSyncSelect`.
+ * }
+ * ```
+ *
+ * @return {Object} The control descriptor.
+ */
+
+function __unstableSyncSelect(storeKey, selectorName) {
+  for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+    args[_key2 - 2] = arguments[_key2];
+  }
+
+  return {
+    type: 'SYNC_SELECT',
+    storeKey: storeKey,
+    selectorName: selectorName,
+    args: args
+  };
+}
+/**
+ * Dispatches a control action for triggering a registry dispatch.
+ *
+ * @param {string} storeKey    The key for the store the action belongs to
+ * @param {string} actionName  The name of the action to dispatch
+ * @param {Array}  args        Arguments for the dispatch action.
+ *
+ * @example
+ * ```js
+ * import { dispatch } from '@wordpress/data-controls';
+ *
+ * // Action generator using dispatch
+ * export function* myAction() {
+ * 	yield dispatch( 'core/edit-post', 'togglePublishSidebar' );
+ * 	// do some other things.
+ * }
+ * ```
+ *
+ * @return {Object}  The control descriptor.
+ */
+
+function dispatch(storeKey, actionName) {
+  for (var _len3 = arguments.length, args = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+    args[_key3 - 2] = arguments[_key3];
+  }
+
+  return {
+    type: 'DISPATCH',
+    storeKey: storeKey,
+    actionName: actionName,
+    args: args
+  };
+}
 /**
  * The default export is what you use to register the controls with your custom
  * store.
@@ -191,27 +276,135 @@ const __unstableAwaitPromise = function (promise) {
  * import * as resolvers from './resolvers';
  *
  * registerStore( 'my-custom-store', {
- * reducer,
- * controls,
- * actions,
- * selectors,
- * resolvers,
+ * 	reducer,
+ * 	controls,
+ * 	actions,
+ * 	selectors,
+ * 	resolvers,
  * } );
  * ```
+ *
  * @return {Object} An object for registering the default controls with the
- * store.
+ *                  store.
  */
-const controls = {
-  AWAIT_PROMISE: ({
-    promise
-  }) => promise,
-  API_FETCH({
-    request
-  }) {
-    return external_wp_apiFetch_default()(request);
-  }
+
+var controls = {
+  API_FETCH: function API_FETCH(_ref) {
+    var request = _ref.request;
+    return _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_1___default()(request);
+  },
+  SELECT: Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["createRegistryControl"])(function (registry) {
+    return function (_ref2) {
+      var _registry;
+
+      var storeKey = _ref2.storeKey,
+          selectorName = _ref2.selectorName,
+          args = _ref2.args;
+      return (_registry = registry[registry.select(storeKey)[selectorName].hasResolver ? '__experimentalResolveSelect' : 'select'](storeKey))[selectorName].apply(_registry, Object(_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(args));
+    };
+  }),
+  SYNC_SELECT: Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["createRegistryControl"])(function (registry) {
+    return function (_ref3) {
+      var _registry$select;
+
+      var storeKey = _ref3.storeKey,
+          selectorName = _ref3.selectorName,
+          args = _ref3.args;
+      return (_registry$select = registry.select(storeKey))[selectorName].apply(_registry$select, Object(_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(args));
+    };
+  }),
+  DISPATCH: Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__["createRegistryControl"])(function (registry) {
+    return function (_ref4) {
+      var _registry$dispatch;
+
+      var storeKey = _ref4.storeKey,
+          actionName = _ref4.actionName,
+          args = _ref4.args;
+      return (_registry$dispatch = registry.dispatch(storeKey))[actionName].apply(_registry$dispatch, Object(_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(args));
+    };
+  })
 };
 
-(window.wp = window.wp || {}).dataControls = __webpack_exports__;
-/******/ })()
-;
+
+/***/ }),
+
+/***/ "BsWD":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _unsupportedIterableToArray; });
+/* harmony import */ var _arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("a3WO");
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return Object(_arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return Object(_arrayLikeToArray__WEBPACK_IMPORTED_MODULE_0__[/* default */ "a"])(o, minLen);
+}
+
+/***/ }),
+
+/***/ "KQm4":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ _toConsumableArray; });
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js
+var arrayLikeToArray = __webpack_require__("a3WO");
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayWithoutHoles.js
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return Object(arrayLikeToArray["a" /* default */])(arr);
+}
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/iterableToArray.js
+var iterableToArray = __webpack_require__("25BE");
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js
+var unsupportedIterableToArray = __webpack_require__("BsWD");
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/nonIterableSpread.js
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js
+
+
+
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || Object(iterableToArray["a" /* default */])(arr) || Object(unsupportedIterableToArray["a" /* default */])(arr) || _nonIterableSpread();
+}
+
+/***/ }),
+
+/***/ "a3WO":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _arrayLikeToArray; });
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+/***/ }),
+
+/***/ "ywyh":
+/***/ (function(module, exports) {
+
+(function() { module.exports = this["wp"]["apiFetch"]; }());
+
+/***/ })
+
+/******/ });

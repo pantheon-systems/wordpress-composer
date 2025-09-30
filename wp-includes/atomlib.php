@@ -191,8 +191,7 @@ class AtomParser {
 
     function start_element($parser, $name, $attrs) {
 
-        $name_parts = explode(":", $name);
-        $tag        = array_pop($name_parts);
+        $tag = array_pop(explode(":", $name));
 
         switch($name) {
             case $this->NS . ':feed':
@@ -271,8 +270,7 @@ class AtomParser {
 
     function end_element($parser, $name) {
 
-        $name_parts = explode(":", $name);
-        $tag        = array_pop($name_parts);
+        $tag = array_pop(explode(":", $name));
 
         $ccount = count($this->in_content);
 
@@ -388,10 +386,10 @@ class AtomParser {
         return false;
     }
 
-    function xml_escape($content)
+    function xml_escape($string)
     {
              return str_replace(array('&','"',"'",'<','>'),
                 array('&amp;','&quot;','&apos;','&lt;','&gt;'),
-                $content );
+                $string );
     }
 }

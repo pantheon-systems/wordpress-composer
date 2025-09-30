@@ -5,14 +5,13 @@
 /* global pagenow, ajaxurl, postboxes, wpActiveEditor:true, ajaxWidgets */
 /* global ajaxPopulateWidgets, quickPressLoad,  */
 window.wp = window.wp || {};
-window.communityEventsData = window.communityEventsData || {};
 
 /**
  * Initializes the dashboard widget functionality.
  *
  * @since 2.7.0
  */
-jQuery( function($) {
+jQuery(document).ready( function($) {
 	var welcomePanel = $( '#welcome-panel' ),
 		welcomePanelHide = $('#wp_welcome_panel-hide'),
 		updateWelcomePanel;
@@ -40,7 +39,7 @@ jQuery( function($) {
 	}
 
 	// Hide the welcome panel when the dismiss button or close button is clicked.
-	$('.welcome-panel-close, .welcome-panel-dismiss a', welcomePanel).on( 'click', function(e) {
+	$('.welcome-panel-close, .welcome-panel-dismiss a', welcomePanel).click( function(e) {
 		e.preventDefault();
 		welcomePanel.addClass('hidden');
 		updateWelcomePanel( 0 );
@@ -48,7 +47,7 @@ jQuery( function($) {
 	});
 
 	// Set welcome panel visibility based on Welcome Option checkbox value.
-	welcomePanelHide.on( 'click', function() {
+	welcomePanelHide.click( function() {
 		welcomePanel.toggleClass('hidden', ! this.checked );
 		updateWelcomePanel( this.checked ? 1 : 0 );
 	});
@@ -136,7 +135,7 @@ jQuery( function($) {
 		// Enable the submit buttons.
 		$( '#quick-press .submit input[type="submit"], #quick-press .submit input[type="reset"]' ).prop( 'disabled' , false );
 
-		t = $('#quick-press').on( 'submit', function( e ) {
+		t = $('#quick-press').submit( function( e ) {
 			e.preventDefault();
 
 			// Show a spinner.
@@ -154,7 +153,7 @@ jQuery( function($) {
 				highlightLatestPost();
 
 				// Focus the title to allow for quickly drafting another post.
-				$('#title').trigger( 'focus' );
+				$('#title').focus();
 			});
 
 			/**
@@ -172,7 +171,7 @@ jQuery( function($) {
 		} );
 
 		// Change the QuickPost action to the publish value.
-		$('#publish').on( 'click', function() { act.val( 'post-quickpress-publish' ); } );
+		$('#publish').click( function() { act.val( 'post-quickpress-publish' ); } );
 
 		$('#quick-press').on( 'click focusin', function() {
 			wpActiveEditor = 'content';
@@ -266,7 +265,7 @@ jQuery( function($) {
 jQuery( function( $ ) {
 	'use strict';
 
-	var communityEventsData = window.communityEventsData,
+	var communityEventsData = window.communityEventsData || {},
 		dateI18n = wp.date.dateI18n,
 		format = wp.date.format,
 		sprintf = wp.i18n.sprintf,
@@ -328,7 +327,7 @@ jQuery( function( $ ) {
 			 * @return {void}
 			 */
 			$container.on( 'submit', '.community-events-form', function( event ) {
-				var location = $( '#community-events-location' ).val().trim();
+				var location = $.trim( $( '#community-events-location' ).val() );
 
 				event.preventDefault();
 
@@ -391,7 +390,7 @@ jQuery( function( $ ) {
 				 * lose their place.
 				 */
 				if ( $target.hasClass( 'community-events-cancel' ) ) {
-					$toggleButton.trigger( 'focus' );
+					$toggleButton.focus();
 				}
 			} else {
 				$toggleButton.attr( 'aria-expanded', 'true' );
@@ -467,6 +466,7 @@ jQuery( function( $ ) {
 		renderEventsTemplate: function( templateParams, initiatedBy ) {
 			var template,
 				elementVisibility,
+				l10nPlaceholder  = /%(?:\d\$)?s/g, // Match `%s`, `%1$s`, `%2$s`, etc.
 				$toggleButton    = $( '.community-events-toggle-location' ),
 				$locationMessage = $( '#community-events-location-message' ),
 				$results         = $( '.community-events-results' );
@@ -505,7 +505,7 @@ jQuery( function( $ ) {
 				 * If the API determined the location by geolocating an IP, it will
 				 * provide events, but not a specific location.
 				 */
-				$locationMessage.text( __( 'Attend an upcoming event near you.' ) );
+				$locationMessage.text( communityEventsData.l10n.attend_event_near_generic );
 
 				if ( templateParams.events.length ) {
 					template = wp.template( 'community-events-event-list' );
@@ -532,14 +532,7 @@ jQuery( function( $ ) {
 				}
 
 				if ( 'user' === initiatedBy ) {
-					wp.a11y.speak(
-						sprintf(
-							/* translators: %s: The name of a city. */
-							__( 'City updated. Listing events near %s.' ),
-							templateParams.location.description
-						),
-						'assertive'
-					);
+					wp.a11y.speak( communityEventsData.l10n.city_updated.replace( l10nPlaceholder, templateParams.location.description ), 'assertive' );
 				}
 
 				elementVisibility['#community-events-location-message'] = true;
@@ -549,28 +542,7 @@ jQuery( function( $ ) {
 			} else if ( templateParams.unknownCity ) {
 				template = wp.template( 'community-events-could-not-locate' );
 				$( '.community-events-could-not-locate' ).html( template( templateParams ) );
-				wp.a11y.speak(
-					sprintf(
-						/*
-						 * These specific examples were chosen to highlight the fact that a
-						 * state is not needed, even for cities whose name is not unique.
-						 * It would be too cumbersome to include that in the instructions
-						 * to the user, so it's left as an implication.
-						 */
-						/*
-						 * translators: %s is the name of the city we couldn't locate.
-						 * Replace the examples with cities related to your locale. Test that
-						 * they match the expected location and have upcoming events before
-						 * including them. If no cities related to your locale have events,
-						 * then use cities related to your locale that would be recognizable
-						 * to most users. Use only the city name itself, without any region
-						 * or country. Use the endonym (native locale name) instead of the
-						 * English name if possible.
-						 */
-						__( 'We couldn’t locate %s. Please try another nearby city. For example: Kansas City; Springfield; Portland.' ),
-						templateParams.unknownCity
-					)
-				);
+				wp.a11y.speak( communityEventsData.l10n.could_not_locate_city.replace( l10nPlaceholder, templateParams.unknownCity ) );
 
 				elementVisibility['.community-events-errors']           = true;
 				elementVisibility['.community-events-could-not-locate'] = true;
@@ -582,12 +554,12 @@ jQuery( function( $ ) {
 				 * Showing error messages for an event that user isn't aware of
 				 * could be confusing or unnecessarily distracting.
 				 */
-				wp.a11y.speak( __( 'An error occurred. Please try again.' ) );
+				wp.a11y.speak( communityEventsData.l10n.error_occurred_please_try_again );
 
 				elementVisibility['.community-events-errors']         = true;
 				elementVisibility['.community-events-error-occurred'] = true;
 			} else {
-				$locationMessage.text( __( 'Enter your closest city to find nearby events.' ) );
+				$locationMessage.text( communityEventsData.l10n.enter_closest_city );
 
 				elementVisibility['#community-events-location-message'] = true;
 				elementVisibility['.community-events-toggle-location']  = true;
@@ -610,7 +582,7 @@ jQuery( function( $ ) {
 					 * bring the focus back to the toggle button so users relying
 					 * on screen readers don't lose their place.
 					 */
-					$toggleButton.trigger( 'focus' );
+					$toggleButton.focus();
 				}
 			} else {
 				app.toggleLocationForm( 'show' );
@@ -819,21 +791,3 @@ jQuery( function( $ ) {
 		});
 	}
 });
-
-/**
- * Removed in 5.6.0, needed for back-compatibility.
- *
- * @since 4.8.0
- * @deprecated 5.6.0
- *
- * @type {object}
-*/
-window.communityEventsData.l10n = window.communityEventsData.l10n || {
-	enter_closest_city: '',
-	error_occurred_please_try_again: '',
-	attend_event_near_generic: '',
-	could_not_locate_city: '',
-	city_updated: ''
-};
-
-window.communityEventsData.l10n = window.wp.deprecateL10nObject( 'communityEventsData.l10n', window.communityEventsData.l10n, '5.6.0' );

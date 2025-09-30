@@ -1,39 +1,30 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
 	"name": "core/media-text",
-	"title": "Media & Text",
 	"category": "media",
-	"description": "Set media and words side-by-side for a richer layout.",
-	"keywords": [ "image", "video" ],
-	"textdomain": "default",
 	"attributes": {
 		"align": {
 			"type": "string",
-			"default": "none"
+			"default": "wide"
 		},
 		"mediaAlt": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "figure img",
 			"attribute": "alt",
-			"default": "",
-			"__experimentalRole": "content"
+			"default": ""
 		},
 		"mediaPosition": {
 			"type": "string",
 			"default": "left"
 		},
 		"mediaId": {
-			"type": "number",
-			"__experimentalRole": "content"
+			"type": "number"
 		},
 		"mediaUrl": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "figure video,figure img",
-			"attribute": "src",
-			"__experimentalRole": "content"
+			"attribute": "src"
 		},
 		"mediaLink": {
 			"type": "string"
@@ -51,8 +42,7 @@
 			"type": "string",
 			"source": "attribute",
 			"selector": "figure a",
-			"attribute": "href",
-			"__experimentalRole": "content"
+			"attribute": "href"
 		},
 		"rel": {
 			"type": "string",
@@ -67,15 +57,11 @@
 			"attribute": "class"
 		},
 		"mediaType": {
-			"type": "string",
-			"__experimentalRole": "content"
+			"type": "string"
 		},
 		"mediaWidth": {
 			"type": "number",
 			"default": 50
-		},
-		"mediaSizeSlug": {
-			"type": "string"
 		},
 		"isStackedOnMobile": {
 			"type": "boolean",
@@ -89,42 +75,19 @@
 		},
 		"focalPoint": {
 			"type": "object"
-		},
-		"allowedBlocks": {
-			"type": "array"
 		}
 	},
 	"supports": {
 		"anchor": true,
-		"align": [ "wide", "full" ],
+		"align": [
+			"wide",
+			"full"
+		],
 		"html": false,
-		"color": {
+		"lightBlockWrapper": true,
+		"__experimentalColor": {
 			"gradients": true,
-			"heading": true,
-			"link": true,
-			"__experimentalDefaultControls": {
-				"background": true,
-				"text": true
-			}
-		},
-		"spacing": {
-			"margin": true,
-			"padding": true
-		},
-		"typography": {
-			"fontSize": true,
-			"lineHeight": true,
-			"__experimentalFontFamily": true,
-			"__experimentalFontWeight": true,
-			"__experimentalFontStyle": true,
-			"__experimentalTextTransform": true,
-			"__experimentalTextDecoration": true,
-			"__experimentalLetterSpacing": true,
-			"__experimentalDefaultControls": {
-				"fontSize": true
-			}
+			"linkColor": true
 		}
-	},
-	"editorStyle": "wp-block-media-text-editor",
-	"style": "wp-block-media-text"
+	}
 }

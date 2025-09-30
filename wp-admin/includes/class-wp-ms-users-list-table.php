@@ -11,6 +11,7 @@
  * Core class used to implement displaying users in a list table for the network admin.
  *
  * @since 3.1.0
+ * @access private
  *
  * @see WP_List_Table
  */
@@ -136,10 +137,13 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 		$super_admins = get_super_admins();
 		$total_admins = count( $super_admins );
 
-		$role_links        = array();
-		$role_links['all'] = array(
-			'url'     => network_admin_url( 'users.php' ),
-			'label'   => sprintf(
+		$current_link_attributes = 'super' !== $role ? ' class="current" aria-current="page"' : '';
+		$role_links              = array();
+		$role_links['all']       = sprintf(
+			'<a href="%s"%s>%s</a>',
+			network_admin_url( 'users.php' ),
+			$current_link_attributes,
+			sprintf(
 				/* translators: Number of users. */
 				_nx(
 					'All <span class="count">(%s)</span>',
@@ -148,13 +152,14 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 					'users'
 				),
 				number_format_i18n( $total_users )
-			),
-			'current' => 'super' !== $role,
+			)
 		);
-
-		$role_links['super'] = array(
-			'url'     => network_admin_url( 'users.php?role=super' ),
-			'label'   => sprintf(
+		$current_link_attributes = 'super' === $role ? ' class="current" aria-current="page"' : '';
+		$role_links['super']     = sprintf(
+			'<a href="%s"%s>%s</a>',
+			network_admin_url( 'users.php?role=super' ),
+			$current_link_attributes,
+			sprintf(
 				/* translators: Number of users. */
 				_n(
 					'Super Admin <span class="count">(%s)</span>',
@@ -162,11 +167,10 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 					$total_admins
 				),
 				number_format_i18n( $total_admins )
-			),
-			'current' => 'super' === $role,
+			)
 		);
 
-		return $this->get_views_links( $role_links );
+		return $role_links;
 	}
 
 	/**
@@ -185,7 +189,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return array
 	 */
 	public function get_columns() {
 		$users_columns = array(
@@ -212,10 +216,10 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 */
 	protected function get_sortable_columns() {
 		return array(
-			'username'   => array( 'login', false, __( 'Username' ), __( 'Table ordered by Username.' ), 'asc' ),
-			'name'       => array( 'name', false, __( 'Name' ), __( 'Table ordered by Name.' ) ),
-			'email'      => array( 'email', false, __( 'E-mail' ), __( 'Table ordered by E-mail.' ) ),
-			'registered' => array( 'id', false, _x( 'Registered', 'user' ), __( 'Table ordered by User Registered Date.' ) ),
+			'username'   => 'login',
+			'name'       => 'name',
+			'email'      => 'email',
+			'registered' => 'id',
 		);
 	}
 
@@ -223,27 +227,21 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 * Handles the checkbox column output.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$user` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param WP_User $item The current WP_User object.
+	 * @param WP_User $user The current WP_User object.
 	 */
-	public function column_cb( $item ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$user = $item;
-
+	public function column_cb( $user ) {
 		if ( is_super_admin( $user->ID ) ) {
 			return;
 		}
 		?>
-		<input type="checkbox" id="blog_<?php echo $user->ID; ?>" name="allusers[]" value="<?php echo esc_attr( $user->ID ); ?>" />
-		<label for="blog_<?php echo $user->ID; ?>">
-			<span class="screen-reader-text">
+		<label class="screen-reader-text" for="blog_<?php echo $user->ID; ?>">
 			<?php
-			/* translators: Hidden accessibility text. %s: User login. */
+			/* translators: %s: User login. */
 			printf( __( 'Select %s' ), $user->user_login );
 			?>
-			</span>
 		</label>
+		<input type="checkbox" id="blog_<?php echo $user->ID; ?>" name="allusers[]" value="<?php echo esc_attr( $user->ID ); ?>" />
 		<?php
 	}
 
@@ -300,21 +298,13 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 */
 	public function column_name( $user ) {
 		if ( $user->first_name && $user->last_name ) {
-			printf(
-				/* translators: 1: User's first name, 2: Last name. */
-				_x( '%1$s %2$s', 'Display name based on first name and last name' ),
-				$user->first_name,
-				$user->last_name
-			);
+			echo "$user->first_name $user->last_name";
 		} elseif ( $user->first_name ) {
 			echo $user->first_name;
 		} elseif ( $user->last_name ) {
 			echo $user->last_name;
 		} else {
-			echo '<span aria-hidden="true">&#8212;</span><span class="screen-reader-text">' .
-				/* translators: Hidden accessibility text. */
-				_x( 'Unknown', 'name' ) .
-			'</span>';
+			echo '<span aria-hidden="true">&#8212;</span><span class="screen-reader-text">' . _x( 'Unknown', 'name' ) . '</span>';
 		}
 	}
 
@@ -376,13 +366,13 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 			return;
 		}
 
-		foreach ( $blogs as $site ) {
-			if ( ! can_edit_network( $site->site_id ) ) {
+		foreach ( $blogs as $val ) {
+			if ( ! can_edit_network( $val->site_id ) ) {
 				continue;
 			}
 
-			$path         = ( '/' === $site->path ) ? '' : $site->path;
-			$site_classes = array( 'site-' . $site->site_id );
+			$path         = ( '/' === $val->path ) ? '' : $val->path;
+			$site_classes = array( 'site-' . $val->site_id );
 			/**
 			 * Filters the span class for a site listing on the mulisite user list table.
 			 *
@@ -393,33 +383,33 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 			 * @param int      $network_id   Network ID.
 			 * @param WP_User  $user         WP_User object.
 			 */
-			$site_classes = apply_filters( 'ms_user_list_site_class', $site_classes, $site->userblog_id, $site->site_id, $user );
+			$site_classes = apply_filters( 'ms_user_list_site_class', $site_classes, $val->userblog_id, $val->site_id, $user );
 			if ( is_array( $site_classes ) && ! empty( $site_classes ) ) {
 				$site_classes = array_map( 'sanitize_html_class', array_unique( $site_classes ) );
 				echo '<span class="' . esc_attr( implode( ' ', $site_classes ) ) . '">';
 			} else {
 				echo '<span>';
 			}
-			echo '<a href="' . esc_url( network_admin_url( 'site-info.php?id=' . $site->userblog_id ) ) . '">' . str_replace( '.' . get_network()->domain, '', $site->domain . $path ) . '</a>';
+			echo '<a href="' . esc_url( network_admin_url( 'site-info.php?id=' . $val->userblog_id ) ) . '">' . str_replace( '.' . get_network()->domain, '', $val->domain . $path ) . '</a>';
 			echo ' <small class="row-actions">';
 			$actions         = array();
-			$actions['edit'] = '<a href="' . esc_url( network_admin_url( 'site-info.php?id=' . $site->userblog_id ) ) . '">' . __( 'Edit' ) . '</a>';
+			$actions['edit'] = '<a href="' . esc_url( network_admin_url( 'site-info.php?id=' . $val->userblog_id ) ) . '">' . __( 'Edit' ) . '</a>';
 
 			$class = '';
-			if ( 1 === (int) $site->spam ) {
+			if ( 1 == $val->spam ) {
 				$class .= 'site-spammed ';
 			}
-			if ( 1 === (int) $site->mature ) {
+			if ( 1 == $val->mature ) {
 				$class .= 'site-mature ';
 			}
-			if ( 1 === (int) $site->deleted ) {
+			if ( 1 == $val->deleted ) {
 				$class .= 'site-deleted ';
 			}
-			if ( 1 === (int) $site->archived ) {
+			if ( 1 == $val->archived ) {
 				$class .= 'site-archived ';
 			}
 
-			$actions['view'] = '<a class="' . $class . '" href="' . esc_url( get_home_url( $site->userblog_id ) ) . '">' . __( 'View' ) . '</a>';
+			$actions['view'] = '<a class="' . $class . '" href="' . esc_url( get_home_url( $val->userblog_id ) ) . '">' . __( 'View' ) . '</a>';
 
 			/**
 			 * Filters the action links displayed next the sites a user belongs to
@@ -430,7 +420,7 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 			 * @param string[] $actions     An array of action links to be displayed. Default 'Edit', 'View'.
 			 * @param int      $userblog_id The site ID.
 			 */
-			$actions = apply_filters( 'ms_user_list_site_actions', $actions, $site->userblog_id );
+			$actions = apply_filters( 'ms_user_list_site_actions', $actions, $val->userblog_id );
 
 			$action_count = count( $actions );
 
@@ -439,12 +429,12 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 			foreach ( $actions as $action => $link ) {
 				++$i;
 
-				$separator = ( $i < $action_count ) ? ' | ' : '';
+				$sep = ( $i < $action_count ) ? ' | ' : '';
 
-				echo "<span class='$action'>{$link}{$separator}</span>";
+				echo "<span class='$action'>$link$sep</span>";
 			}
 
-			echo '</small></span><br />';
+			echo '</small></span><br/>';
 		}
 	}
 
@@ -452,15 +442,11 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 * Handles the default column output.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$user` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param WP_User $item        The current WP_User object.
+	 * @param WP_User $user        The current WP_User object.
 	 * @param string  $column_name The current column name.
 	 */
-	public function column_default( $item, $column_name ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$user = $item;
-
+	public function column_default( $user, $column_name ) {
 		/** This filter is documented in wp-admin/includes/class-wp-users-list-table.php */
 		echo apply_filters( 'manage_users_custom_column', '', $column_name, $user->ID );
 	}
@@ -503,24 +489,21 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	 * Generates and displays row action links.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$user` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param WP_User $item        User being acted upon.
-	 * @param string  $column_name Current column name.
-	 * @param string  $primary     Primary column name.
+	 * @param object $user        User being acted upon.
+	 * @param string $column_name Current column name.
+	 * @param string $primary     Primary column name.
 	 * @return string Row actions output for users in Multisite, or an empty string
 	 *                if the current column is not the primary column.
 	 */
-	protected function handle_row_actions( $item, $column_name, $primary ) {
+	protected function handle_row_actions( $user, $column_name, $primary ) {
 		if ( $primary !== $column_name ) {
 			return '';
 		}
 
-		// Restores the more descriptive, specific name for use within this method.
-		$user = $item;
-
 		$super_admins = get_super_admins();
-		$actions      = array();
+
+		$actions = array();
 
 		if ( current_user_can( 'edit_user', $user->ID ) ) {
 			$edit_link       = esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $user->ID ) ) );

@@ -12,7 +12,6 @@
  *
  * @since 4.5.0
  */
-#[AllowDynamicProperties]
 final class WP_Customize_Selective_Refresh {
 
 	/**
@@ -172,7 +171,7 @@ final class WP_Customize_Selective_Refresh {
 			}
 		}
 
-		$switched_locale = switch_to_user_locale( get_current_user_id() );
+		$switched_locale = switch_to_locale( get_user_locale() );
 		$l10n            = array(
 			'shiftClickToEdit' => __( 'Shift-click to edit this element.' ),
 			'clickEditMenu'    => __( 'Click to edit this menu.' ),
@@ -193,7 +192,7 @@ final class WP_Customize_Selective_Refresh {
 		);
 
 		// Export data to JS.
-		wp_print_inline_script_tag( sprintf( 'var _customizePartialRefreshExports = %s;', wp_json_encode( $exports ) ) );
+		printf( '<script>var _customizePartialRefreshExports = %s;</script>', wp_json_encode( $exports ) );
 	}
 
 	/**
@@ -282,7 +281,7 @@ final class WP_Customize_Selective_Refresh {
 	 * @param int    $errno   Error number.
 	 * @param string $errstr  Error string.
 	 * @param string $errfile Error file.
-	 * @param int    $errline Error line.
+	 * @param string $errline Error line.
 	 * @return true Always true.
 	 */
 	public function handle_error( $errno, $errstr, $errfile = null, $errline = null ) {
@@ -336,7 +335,7 @@ final class WP_Customize_Selective_Refresh {
 		 *
 		 * @since 4.5.0
 		 *
-		 * @param WP_Customize_Selective_Refresh $refresh  Selective refresh component.
+		 * @param WP_Customize_Selective_Refresh $this     Selective refresh component.
 		 * @param array                          $partials Placements' context data for the partials rendered in the request.
 		 *                                                 The array is keyed by partial ID, with each item being an array of
 		 *                                                 the placements' context data.
@@ -385,7 +384,7 @@ final class WP_Customize_Selective_Refresh {
 		 *
 		 * @since 4.5.0
 		 *
-		 * @param WP_Customize_Selective_Refresh $refresh  Selective refresh component.
+		 * @param WP_Customize_Selective_Refresh $this     Selective refresh component.
 		 * @param array                          $partials Placements' context data for the partials rendered in the request.
 		 *                                                 The array is keyed by partial ID, with each item being an array of
 		 *                                                 the placements' context data.
@@ -429,7 +428,7 @@ final class WP_Customize_Selective_Refresh {
 		 *     @type array $errors   List of errors triggered during rendering of partials, if `WP_DEBUG_DISPLAY`
 		 *                           is enabled.
 		 * }
-		 * @param WP_Customize_Selective_Refresh $refresh  Selective refresh component.
+		 * @param WP_Customize_Selective_Refresh $this     Selective refresh component.
 		 * @param array                          $partials Placements' context data for the partials rendered in the request.
 		 *                                                 The array is keyed by partial ID, with each item being an array of
 		 *                                                 the placements' context data.

@@ -4,11 +4,11 @@
 
 /* global postboxes, deleteUserSetting, setUserSetting, getUserSetting */
 
-jQuery( function($) {
+jQuery(document).ready( function($) {
 
 	var newCat, noSyncChecks = false, syncChecks, catAddAfter;
 
-	$('#link_name').trigger( 'focus' );
+	$('#link_name').focus();
 	// Postboxes.
 	postboxes.add_postbox_toggles('link');
 
@@ -19,7 +19,7 @@ jQuery( function($) {
 	 *
 	 * @return {boolean} Always returns false to prevent the default behavior.
 	 */
-	$('#category-tabs a').on( 'click', function(){
+	$('#category-tabs a').click(function(){
 		var t = $(this).attr('href');
 		$(this).parent().addClass('tabs').siblings('li').removeClass('tabs');
 		$('.tabs-panel').hide();
@@ -31,7 +31,7 @@ jQuery( function($) {
 		return false;
 	});
 	if ( getUserSetting('cats') )
-		$('#category-tabs a[href="#categories-pop"]').trigger( 'click' );
+		$('#category-tabs a[href="#categories-pop"]').click();
 
 	// Ajax Cat.
 	newCat = $('#newcat').one( 'focus', function() { $(this).val( '' ).removeClass( 'form-input-tip' ); } );
@@ -41,7 +41,7 @@ jQuery( function($) {
 	 *
 	 * @return {void}
 	 */
-	$('#link-category-add-submit').on( 'click', function() { newCat.focus(); } );
+	$('#link-category-add-submit').click( function() { newCat.focus(); } );
 
 	/**
 	 * Synchronize category checkboxes.
@@ -81,12 +81,8 @@ jQuery( function($) {
 		$(s.what + ' response_data', r).each( function() {
 			var t = $($(this).text());
 			t.find( 'label' ).each( function() {
-				var th = $(this),
-					val = th.find('input').val(),
-					id = th.find('input')[0].id,
-					name = th.text().trim(),
-					o;
-				$('#' + id).on( 'change', syncChecks );
+				var th = $(this), val = th.find('input').val(), id = th.find('input')[0].id, name = $.trim( th.text() ), o;
+				$('#' + id).change( syncChecks );
 				o = $( '<option value="' +  parseInt( val, 10 ) + '"></option>' ).text( name );
 			} );
 		} );
@@ -112,13 +108,13 @@ jQuery( function($) {
 	} );
 
 	// All categories is the default tab, so we delete the user setting.
-	$('a[href="#categories-all"]').on( 'click', function(){deleteUserSetting('cats');});
+	$('a[href="#categories-all"]').click(function(){deleteUserSetting('cats');});
 
 	// Set a preference for the popular categories to cookies.
-	$('a[href="#categories-pop"]').on( 'click', function(){setUserSetting('cats','pop');});
+	$('a[href="#categories-pop"]').click(function(){setUserSetting('cats','pop');});
 
 	if ( 'pop' == getUserSetting('cats') )
-		$('a[href="#categories-pop"]').trigger( 'click' );
+		$('a[href="#categories-pop"]').click();
 
 	/**
 	 * Adds event handler that shows the interface controls to add a new category.
@@ -129,12 +125,12 @@ jQuery( function($) {
 	 * @return {boolean} Always returns false to prevent regular link
 	 *                   functionality.
 	 */
-	$('#category-add-toggle').on( 'click', function() {
+	$('#category-add-toggle').click( function() {
 		$(this).parents('div:first').toggleClass( 'wp-hidden-children' );
-		$('#category-tabs a[href="#categories-all"]').trigger( 'click' );
-		$('#newcategory').trigger( 'focus' );
+		$('#category-tabs a[href="#categories-all"]').click();
+		$('#newcategory').focus();
 		return false;
 	} );
 
-	$('.categorychecklist :checkbox').on( 'change', syncChecks ).filter( ':checked' ).trigger( 'change' );
+	$('.categorychecklist :checkbox').change( syncChecks ).filter( ':checked' ).change();
 });

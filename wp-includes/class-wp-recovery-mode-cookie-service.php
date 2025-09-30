@@ -11,7 +11,6 @@
  *
  * @since 5.2.0
  */
-#[AllowDynamicProperties]
 final class WP_Recovery_Mode_Cookie_Service {
 
 	/**
@@ -37,14 +36,13 @@ final class WP_Recovery_Mode_Cookie_Service {
 		$value = $this->generate_cookie();
 
 		/**
-		 * Filters the length of time a Recovery Mode cookie is valid for.
+		 * Filter the length of time a Recovery Mode cookie is valid for.
 		 *
 		 * @since 5.2.0
 		 *
 		 * @param int $length Length in seconds.
 		 */
 		$length = apply_filters( 'recovery_mode_cookie_length', WEEK_IN_SECONDS );
-
 		$expire = time() + $length;
 
 		setcookie( RECOVERY_MODE_COOKIE, $value, $expire, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true );
@@ -198,19 +196,7 @@ final class WP_Recovery_Mode_Cookie_Service {
 	 * @return string|false The hashed $data, or false on failure.
 	 */
 	private function recovery_mode_hash( $data ) {
-		$default_keys = array_unique(
-			array(
-				'put your unique phrase here',
-				/*
-				 * translators: This string should only be translated if wp-config-sample.php is localized.
-				 * You can check the localized release package or
-				 * https://i18n.svn.wordpress.org/<locale code>/branches/<wp version>/dist/wp-config-sample.php
-				 */
-				__( 'put your unique phrase here' ),
-			)
-		);
-
-		if ( ! defined( 'AUTH_KEY' ) || in_array( AUTH_KEY, $default_keys, true ) ) {
+		if ( ! defined( 'AUTH_KEY' ) || AUTH_KEY === 'put your unique phrase here' ) {
 			$auth_key = get_site_option( 'recovery_mode_auth_key' );
 
 			if ( ! $auth_key ) {
@@ -225,7 +211,7 @@ final class WP_Recovery_Mode_Cookie_Service {
 			$auth_key = AUTH_KEY;
 		}
 
-		if ( ! defined( 'AUTH_SALT' ) || in_array( AUTH_SALT, $default_keys, true ) || AUTH_SALT === $auth_key ) {
+		if ( ! defined( 'AUTH_SALT' ) || AUTH_SALT === 'put your unique phrase here' || AUTH_SALT === $auth_key ) {
 			$auth_salt = get_site_option( 'recovery_mode_auth_salt' );
 
 			if ( ! $auth_salt ) {

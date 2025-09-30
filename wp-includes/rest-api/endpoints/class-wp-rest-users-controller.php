@@ -37,7 +37,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the routes for users.
+	 * Registers the routes for the objects of the controller.
 	 *
 	 * @since 4.7.0
 	 *
@@ -198,19 +198,10 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			);
 		}
 
-		// Check if capabilities is specified in GET request and if user can list users.
-		if ( ! empty( $request['capabilities'] ) && ! current_user_can( 'list_users' ) ) {
-			return new WP_Error(
-				'rest_user_cannot_view',
-				__( 'Sorry, you are not allowed to filter users by capability.' ),
-				array( 'status' => rest_authorization_required_code() )
-			);
-		}
-
 		if ( 'edit' === $request['context'] && ! current_user_can( 'list_users' ) ) {
 			return new WP_Error(
 				'rest_forbidden_context',
-				__( 'Sorry, you are not allowed to list users.' ),
+				__( 'Sorry, you are not allowed to edit users.' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
 		}
@@ -263,14 +254,13 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		 * present in $registered will be set.
 		 */
 		$parameter_mappings = array(
-			'exclude'      => 'exclude',
-			'include'      => 'include',
-			'order'        => 'order',
-			'per_page'     => 'number',
-			'search'       => 'search',
-			'roles'        => 'role__in',
-			'capabilities' => 'capability__in',
-			'slug'         => 'nicename__in',
+			'exclude'  => 'exclude',
+			'include'  => 'include',
+			'order'    => 'order',
+			'per_page' => 'number',
+			'search'   => 'search',
+			'roles'    => 'role__in',
+			'slug'     => 'nicename__in',
 		);
 
 		$prepared_args = array();
@@ -311,12 +301,6 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			$prepared_args['has_published_posts'] = get_post_types( array( 'show_in_rest' => true ), 'names' );
 		}
 
-		if ( ! empty( $request['has_published_posts'] ) ) {
-			$prepared_args['has_published_posts'] = ( true === $request['has_published_posts'] )
-				? get_post_types( array( 'show_in_rest' => true ), 'names' )
-				: (array) $request['has_published_posts'];
-		}
-
 		if ( ! empty( $prepared_args['search'] ) ) {
 			if ( ! current_user_can( 'list_users' ) ) {
 				$prepared_args['search_columns'] = array( 'ID', 'user_login', 'user_nicename', 'display_name' );
@@ -331,7 +315,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		 * @since 4.7.0
 		 *
 		 * @param array           $prepared_args Array of arguments for WP_User_Query.
-		 * @param WP_REST_Request $request       The REST API request.
+		 * @param WP_REST_Request $request       The current request.
 		 */
 		$prepared_args = apply_filters( 'rest_user_query', $prepared_args, $request );
 
@@ -340,6 +324,10 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		$users = array();
 
 		foreach ( $query->results as $user ) {
+			if ( 'edit' === $request['context'] && ! current_user_can( 'edit_user', $user->ID ) ) {
+				continue;
+			}
+
 			$data    = $this->prepare_item_for_response( $user, $request );
 			$users[] = $this->prepare_response_for_collection( $data );
 		}
@@ -439,13 +427,15 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			return true;
 		}
 
-		if ( 'edit' === $request['context'] && ! current_user_can( 'list_users' ) ) {
+		if ( 'edit' === $request['context'] && ! current_user_can( 'edit_user', $user->ID ) ) {
 			return new WP_Error(
-				'rest_user_cannot_view',
-				__( 'Sorry, you are not allowed to list users.' ),
+				'rest_forbidden_context',
+				__( 'Sorry, you are not allowed to edit this user.' ),
 				array( 'status' => rest_authorization_required_code() )
 			);
-		} elseif ( ! count_user_posts( $user->ID, $types ) && ! current_user_can( 'edit_user', $user->ID ) && ! current_user_can( 'list_users' ) ) {
+		}
+
+		if ( ! current_user_can( 'edit_user', $user->ID ) && ! current_user_can( 'list_users' ) && ! count_user_posts( $user->ID, $types ) ) {
 			return new WP_Error(
 				'rest_user_cannot_view',
 				__( 'Sorry, you are not allowed to list users.' ),
@@ -686,10 +676,8 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 			$request_params = array_keys( $request->get_params() );
 			sort( $request_params );
-			/*
-			 * If only 'id' and 'roles' are specified (we are only trying to
-			 * edit roles), then only the 'promote_user' cap is required.
-			 */
+			// If only 'id' and 'roles' are specified (we are only trying to
+			// edit roles), then only the 'promote_user' cap is required.
 			if ( array( 'id', 'roles' ) === $request_params ) {
 				return true;
 			}
@@ -722,10 +710,15 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		$id = $user->ID;
 
-		$owner_id = false;
-		if ( is_string( $request['email'] ) ) {
-			$owner_id = email_exists( $request['email'] );
+		if ( ! $user ) {
+			return new WP_Error(
+				'rest_user_invalid_id',
+				__( 'Invalid user ID.' ),
+				array( 'status' => 404 )
+			);
 		}
+
+		$owner_id = email_exists( $request['email'] );
 
 		if ( $owner_id && $owner_id !== $id ) {
 			return new WP_Error(
@@ -738,7 +731,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		if ( ! empty( $request['username'] ) && $request['username'] !== $user->user_login ) {
 			return new WP_Error(
 				'rest_user_invalid_argument',
-				__( 'Username is not editable.' ),
+				__( "Username isn't editable." ),
 				array( 'status' => 400 )
 			);
 		}
@@ -979,18 +972,15 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * Prepares a single user output for response.
 	 *
 	 * @since 4.7.0
-	 * @since 5.9.0 Renamed `$user` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param WP_User         $item    User object.
+	 * @param WP_User         $user    User object.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response Response object.
 	 */
-	public function prepare_item_for_response( $item, $request ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$user = $item;
+	public function prepare_item_for_response( $user, $request ) {
 
-		$fields = $this->get_fields_for_response( $request );
 		$data   = array();
+		$fields = $this->get_fields_for_response( $request );
 
 		if ( in_array( 'id', $fields, true ) ) {
 			$data['id'] = $user->ID;
@@ -1040,7 +1030,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			$data['slug'] = $user->user_nicename;
 		}
 
-		if ( in_array( 'roles', $fields, true ) ) {
+		if ( in_array( 'roles', $fields, true ) && ( current_user_can( 'list_users' ) || current_user_can( 'edit_user', $user->ID ) ) ) {
 			// Defensively call array_values() to ensure an array is returned.
 			$data['roles'] = array_values( $user->roles );
 		}
@@ -1073,9 +1063,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 		// Wrap the data in a response object.
 		$response = rest_ensure_response( $data );
 
-		if ( rest_is_field_included( '_links', $fields ) || rest_is_field_included( '_embedded', $fields ) ) {
-			$response->add_links( $this->prepare_links( $user ) );
-		}
+		$response->add_links( $this->prepare_links( $user ) );
 
 		/**
 		 * Filters user data returned from the REST API.
@@ -1094,7 +1082,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_User $user User object.
+	 * @param WP_Post $user User object.
 	 * @return array Links for the given user.
 	 */
 	protected function prepare_links( $user ) {
@@ -1119,7 +1107,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 * @return object User object.
 	 */
 	protected function prepare_item_for_database( $request ) {
-		$prepared_user = new stdClass();
+		$prepared_user = new stdClass;
 
 		$schema = $this->get_item_schema();
 
@@ -1194,10 +1182,8 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @global WP_Roles $wp_roles WordPress role management object.
-	 *
-	 * @param int   $user_id User ID.
-	 * @param array $roles   New user roles.
+	 * @param integer $user_id User ID.
+	 * @param array   $roles   New user roles.
 	 * @return true|WP_Error True if the current user is allowed to make the role change,
 	 *                       otherwise a WP_Error object.
 	 */
@@ -1311,14 +1297,10 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			);
 		}
 
-		if ( str_contains( $password, '\\' ) ) {
+		if ( false !== strpos( $password, '\\' ) ) {
 			return new WP_Error(
 				'rest_user_invalid_password',
-				sprintf(
-					/* translators: %s: The '\' character. */
-					__( 'Passwords cannot contain the "%s" character.' ),
-					'\\'
-				),
+				__( 'Passwords cannot contain the "\\" character.' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -1543,7 +1525,7 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 
 		$query_params['orderby'] = array(
 			'default'     => 'name',
-			'description' => __( 'Sort collection by user attribute.' ),
+			'description' => __( 'Sort collection by object attribute.' ),
 			'enum'        => array(
 				'id',
 				'include',
@@ -1573,14 +1555,6 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			),
 		);
 
-		$query_params['capabilities'] = array(
-			'description' => __( 'Limit result set to users matching at least one specific capability provided. Accepts csv list or single capability.' ),
-			'type'        => 'array',
-			'items'       => array(
-				'type' => 'string',
-			),
-		);
-
 		$query_params['who'] = array(
 			'description' => __( 'Limit result set to users who are considered authors.' ),
 			'type'        => 'string',
@@ -1589,17 +1563,8 @@ class WP_REST_Users_Controller extends WP_REST_Controller {
 			),
 		);
 
-		$query_params['has_published_posts'] = array(
-			'description' => __( 'Limit result set to users who have published posts.' ),
-			'type'        => array( 'boolean', 'array' ),
-			'items'       => array(
-				'type' => 'string',
-				'enum' => get_post_types( array( 'show_in_rest' => true ), 'names' ),
-			),
-		);
-
 		/**
-		 * Filters REST API collection parameters for the users controller.
+		 * Filter collection parameters for the users controller.
 		 *
 		 * This filter registers the collection parameter, but does not map the
 		 * collection parameter to an internal WP_User_Query parameter.  Use the

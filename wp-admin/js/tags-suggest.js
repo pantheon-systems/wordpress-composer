@@ -38,11 +38,6 @@
 		var last;
 		var $element = $( this );
 
-		// Do not initialize if the element doesn't exist.
-		if ( ! $element.length ) {
-			return this;
-		}
-
 		options = options || {};
 
 		var taxonomy = options.taxonomy || $element.attr( 'data-wp-taxonomy' ) || 'post_tag';
@@ -63,8 +58,7 @@
 				$.get( window.ajaxurl, {
 					action: 'ajax-tag-search',
 					tax: taxonomy,
-					q: term,
-					number: 20
+					q: term
 				} ).always( function() {
 					$element.removeClass( 'ui-autocomplete-loading' ); // UI fails to remove this sometimes?
 				} ).done( function( data ) {
@@ -152,16 +146,9 @@
 
 		$element.on( 'keydown', function() {
 			$element.removeAttr( 'aria-activedescendant' );
-		} );
-
-		$element.autocomplete( options );
-
-		// Ensure the autocomplete instance exists.
-		if ( ! $element.autocomplete( 'instance' ) ) {
-			return this;
-		}
-
-		$element.autocomplete( 'instance' )._renderItem = function( ul, item ) {
+		} )
+		.autocomplete( options )
+		.autocomplete( 'instance' )._renderItem = function( ul, item ) {
 			return $( '<li role="option" id="wp-tags-autocomplete-' + item.id + '">' )
 				.text( item.name )
 				.appendTo( ul );
@@ -181,10 +168,9 @@
 			if ( inputValue ) {
 				$element.autocomplete( 'search' );
 			}
-		} );
-
+		} )
 		// Returns a jQuery object containing the menu element.
-		$element.autocomplete( 'widget' )
+		.autocomplete( 'widget' )
 			.addClass( 'wp-tags-autocomplete' )
 			.attr( 'role', 'listbox' )
 			.removeAttr( 'tabindex' ) // Remove the `tabindex=0` attribute added by jQuery UI.

@@ -62,7 +62,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 		 * Avoid messing with VCS installations, at least for now.
 		 * Noted: this is not the ideal way to accomplish this.
 		 */
-		$check_vcs = new WP_Automatic_Updater();
+		$check_vcs = new WP_Automatic_Updater;
 		if ( $check_vcs->is_vcs_checkout( WP_CONTENT_DIR ) ) {
 			return;
 		}
@@ -105,16 +105,16 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Initializes the upgrade strings.
+	 * Initialize the upgrade strings.
 	 *
 	 * @since 3.7.0
 	 */
 	public function upgrade_strings() {
-		$this->strings['starting_upgrade'] = __( 'Some of your translations need updating. Sit tight for a few more seconds while they are updated as well.' );
+		$this->strings['starting_upgrade'] = __( 'Some of your translations need updating. Sit tight for a few more seconds while we update them as well.' );
 		$this->strings['up_to_date']       = __( 'Your translations are all up to date.' );
 		$this->strings['no_package']       = __( 'Update package not available.' );
 		/* translators: %s: Package URL. */
-		$this->strings['downloading_package'] = sprintf( __( 'Downloading translation from %s&#8230;' ), '<span class="code pre">%s</span>' );
+		$this->strings['downloading_package'] = sprintf( __( 'Downloading translation from %s&#8230;' ), '<span class="code">%s</span>' );
 		$this->strings['unpack_package']      = __( 'Unpacking the update&#8230;' );
 		$this->strings['process_failed']      = __( 'Translation update failed.' );
 		$this->strings['process_success']     = __( 'Translation updated successfully.' );
@@ -123,7 +123,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Upgrades a language pack.
+	 * Upgrade a language pack.
 	 *
 	 * @since 3.7.0
 	 *
@@ -147,13 +147,13 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Upgrades several language packs at once.
+	 * Bulk upgrade language packs.
 	 *
 	 * @since 3.7.0
 	 *
 	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
 	 *
-	 * @param object[] $language_updates Optional. Array of language packs to update. See {@see wp_get_translation_updates()}.
+	 * @param object[] $language_updates Optional. Array of language packs to update. @see wp_get_translation_updates().
 	 *                                   Default empty array.
 	 * @param array    $args {
 	 *     Other arguments for upgrading multiple language packs. Default empty array.
@@ -238,7 +238,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 				$destination .= '/themes';
 			}
 
-			++$this->update_current;
+			$this->update_current++;
 
 			$options = array(
 				'package'                     => $language_update->package,
@@ -309,18 +309,17 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Checks that the package source contains .mo and .po files.
+	 * Check the package source to make sure there are .mo and .po files.
 	 *
 	 * Hooked to the {@see 'upgrader_source_selection'} filter by
 	 * Language_Pack_Upgrader::bulk_upgrade().
 	 *
 	 * @since 3.7.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Subclass
 	 *
-	 * @param string|WP_Error $source        The path to the downloaded package source.
-	 * @param string          $remote_source Remote file source location.
-	 * @return string|WP_Error The source as passed, or a WP_Error object on failure.
+	 * @param string|WP_Error $source
+	 * @param string          $remote_source
 	 */
 	public function check_package( $source, $remote_source ) {
 		global $wp_filesystem;
@@ -336,9 +335,9 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 		$po = false;
 		$mo = false;
 		foreach ( (array) $files as $file => $filedata ) {
-			if ( str_ends_with( $file, '.po' ) ) {
+			if ( '.po' === substr( $file, -3 ) ) {
 				$po = true;
-			} elseif ( str_ends_with( $file, '.mo' ) ) {
+			} elseif ( '.mo' === substr( $file, -3 ) ) {
 				$mo = true;
 			}
 		}
@@ -360,7 +359,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Gets the name of an item being updated.
+	 * Get the name of an item being updated.
 	 *
 	 * @since 3.7.0
 	 *

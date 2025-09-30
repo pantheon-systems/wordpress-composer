@@ -55,15 +55,13 @@ function deprecatedProperty( propName, version, replacement ) {
  * Deprecate all properties on an object.
  *
  * @since 5.5.1
- * @since 5.6.0 Added the `version` parameter.
  *
  * @param {string} name       The name of the object, i.e. commonL10n.
  * @param {object} l10nObject The object to deprecate the properties on.
- * @param {string} version    The version of WordPress that deprecated the property.
  *
  * @return {object} The object with all its properties deprecated.
  */
-function deprecateL10nObject( name, l10nObject, version ) {
+function deprecateL10nObject( name, l10nObject ) {
 	var deprecatedObject = {};
 
 	Object.keys( l10nObject ).forEach( function( key ) {
@@ -72,12 +70,12 @@ function deprecateL10nObject( name, l10nObject, version ) {
 
 		if ( 'object' === typeof prop ) {
 			Object.defineProperty( deprecatedObject, key, { get: function() {
-				deprecatedProperty( propName, version, prop.alternative );
+				deprecatedProperty( propName, '5.5.0', prop.alternative );
 				return prop.func();
 			} } );
 		} else {
 			Object.defineProperty( deprecatedObject, key, { get: function() {
-				deprecatedProperty( propName, version, 'wp.i18n' );
+				deprecatedProperty( propName, '5.5.0', 'wp.i18n' );
 				return prop;
 			} } );
 		}
@@ -101,7 +99,7 @@ window.commonL10n = window.commonL10n || {
 	expandMenu: ''
 };
 
-window.commonL10n = deprecateL10nObject( 'commonL10n', window.commonL10n, '5.5.0' );
+window.commonL10n = deprecateL10nObject( 'commonL10n', window.commonL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -113,7 +111,7 @@ window.wpPointerL10n = window.wpPointerL10n || {
 	dismiss: ''
 };
 
-window.wpPointerL10n = deprecateL10nObject( 'wpPointerL10n', window.wpPointerL10n, '5.5.0' );
+window.wpPointerL10n = deprecateL10nObject( 'wpPointerL10n', window.wpPointerL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -131,7 +129,7 @@ window.userProfileL10n = window.userProfileL10n || {
 	ariaHide: ''
 };
 
-window.userProfileL10n = deprecateL10nObject( 'userProfileL10n', window.userProfileL10n, '5.5.0' );
+window.userProfileL10n = deprecateL10nObject( 'userProfileL10n', window.userProfileL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -150,7 +148,7 @@ window.privacyToolsL10n = window.privacyToolsL10n || {
 	exportError: ''
 };
 
-window.privacyToolsL10n = deprecateL10nObject( 'privacyToolsL10n', window.privacyToolsL10n, '5.5.0' );
+window.privacyToolsL10n = deprecateL10nObject( 'privacyToolsL10n', window.privacyToolsL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -162,7 +160,7 @@ window.authcheckL10n = {
 	beforeunload: ''
 };
 
-window.authcheckL10n = window.authcheckL10n || deprecateL10nObject( 'authcheckL10n', window.authcheckL10n, '5.5.0' );
+window.authcheckL10n = window.authcheckL10n || deprecateL10nObject( 'authcheckL10n', window.authcheckL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -175,7 +173,7 @@ window.tagsl10n = {
 	broken: ''
 };
 
-window.tagsl10n = window.tagsl10n || deprecateL10nObject( 'tagsl10n', window.tagsl10n, '5.5.0' );
+window.tagsl10n = window.tagsl10n || deprecateL10nObject( 'tagsl10n', window.tagsl10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -200,7 +198,7 @@ window.adminCommentsL10n = window.adminCommentsL10n || {
 	docTitleCommentsCount: ''
 };
 
-window.adminCommentsL10n = deprecateL10nObject( 'adminCommentsL10n', window.adminCommentsL10n, '5.5.0' );
+window.adminCommentsL10n = deprecateL10nObject( 'adminCommentsL10n', window.adminCommentsL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -216,7 +214,7 @@ window.tagsSuggestL10n = window.tagsSuggestL10n || {
 	termRemoved: ''
 };
 
-window.tagsSuggestL10n = deprecateL10nObject( 'tagsSuggestL10n', window.tagsSuggestL10n, '5.5.0' );
+window.tagsSuggestL10n = deprecateL10nObject( 'tagsSuggestL10n', window.tagsSuggestL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -233,7 +231,7 @@ window.wpColorPickerL10n = window.wpColorPickerL10n || {
 	defaultLabel: ''
 };
 
-window.wpColorPickerL10n = deprecateL10nObject( 'wpColorPickerL10n', window.wpColorPickerL10n, '5.5.0' );
+window.wpColorPickerL10n = deprecateL10nObject( 'wpColorPickerL10n', window.wpColorPickerL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -245,7 +243,7 @@ window.attachMediaBoxL10n = window.attachMediaBoxL10n || {
 	error: ''
 };
 
-window.attachMediaBoxL10n = deprecateL10nObject( 'attachMediaBoxL10n', window.attachMediaBoxL10n, '5.5.0' );
+window.attachMediaBoxL10n = deprecateL10nObject( 'attachMediaBoxL10n', window.attachMediaBoxL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -278,7 +276,7 @@ window.postL10n = window.postL10n || {
 	permalinkSaved: ''
 };
 
-window.postL10n = deprecateL10nObject( 'postL10n', window.postL10n, '5.5.0' );
+window.postL10n = deprecateL10nObject( 'postL10n', window.postL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -294,7 +292,7 @@ window.inlineEditL10n = window.inlineEditL10n || {
 	saved: ''
 };
 
-window.inlineEditL10n = deprecateL10nObject( 'inlineEditL10n', window.inlineEditL10n, '5.5.0' );
+window.inlineEditL10n = deprecateL10nObject( 'inlineEditL10n', window.inlineEditL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -308,7 +306,7 @@ window.plugininstallL10n = window.plugininstallL10n || {
 	ays: ''
 };
 
-window.plugininstallL10n = deprecateL10nObject( 'plugininstallL10n', window.plugininstallL10n, '5.5.0' );
+window.plugininstallL10n = deprecateL10nObject( 'plugininstallL10n', window.plugininstallL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -323,7 +321,7 @@ window.navMenuL10n = window.navMenuL10n || {
 	untitled: ''
 };
 
-window.navMenuL10n = deprecateL10nObject( 'navMenuL10n', window.navMenuL10n, '5.5.0' );
+window.navMenuL10n = deprecateL10nObject( 'navMenuL10n', window.navMenuL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -336,7 +334,7 @@ window.commentL10n = window.commentL10n || {
 	dateFormat: ''
 };
 
-window.commentL10n = deprecateL10nObject( 'commentL10n', window.commentL10n, '5.5.0' );
+window.commentL10n = deprecateL10nObject( 'commentL10n', window.commentL10n );
 
 /**
  * Removed in 5.5.0, needed for back-compatibility.
@@ -351,7 +349,7 @@ window.setPostThumbnailL10n = window.setPostThumbnailL10n || {
 	done: ''
 };
 
-window.setPostThumbnailL10n = deprecateL10nObject( 'setPostThumbnailL10n', window.setPostThumbnailL10n, '5.5.0' );
+window.setPostThumbnailL10n = deprecateL10nObject( 'setPostThumbnailL10n', window.setPostThumbnailL10n );
 
 /**
  * Removed in 3.3.0, needed for back-compatibility.
@@ -382,7 +380,7 @@ window.columns = {
 	 */
 	init : function() {
 		var that = this;
-		$('.hide-column-tog', '#adv-settings').on( 'click', function() {
+		$('.hide-column-tog', '#adv-settings').click( function() {
 			var $t = $(this), column = $t.val();
 			if ( $t.prop('checked') )
 				that.checked(column);
@@ -483,7 +481,7 @@ window.columns = {
 	}
 };
 
-$( function() { columns.init(); } );
+$document.ready(function(){columns.init();});
 
 /**
  * Validates that the required form fields are not empty.
@@ -500,7 +498,7 @@ window.validateForm = function( form ) {
 		.filter( function() { return $( ':input:visible', this ).val() === ''; } )
 		.addClass( 'form-invalid' )
 		.find( ':input:visible' )
-		.on( 'change', function() { $( this ).closest( '.form-invalid' ).removeClass( 'form-invalid' ); } )
+		.change( function() { $( this ).closest( '.form-invalid' ).removeClass( 'form-invalid' ); } )
 		.length;
 };
 
@@ -571,7 +569,7 @@ window.screenMeta = {
 		this.toggles = $( '#screen-meta-links' ).find( '.show-settings' );
 		this.page    = $('#wpcontent');
 
-		this.toggles.on( 'click', this.toggleEvent );
+		this.toggles.click( this.toggleEvent );
 	},
 
 	/**
@@ -617,7 +615,7 @@ window.screenMeta = {
 		 * @return {void}
 		 */
 		panel.slideDown( 'fast', function() {
-			panel.removeClass( 'hidden' ).trigger( 'focus' );
+			panel.focus();
 			button.addClass( 'screen-meta-active' ).attr( 'aria-expanded', true );
 		});
 
@@ -646,7 +644,6 @@ window.screenMeta = {
 			button.removeClass( 'screen-meta-active' ).attr( 'aria-expanded', false );
 			$('.screen-meta-toggle').css('visibility', '');
 			panel.parent().hide();
-			panel.addClass( 'hidden' );
 		});
 
 		$document.trigger( 'screen:options:close' );
@@ -660,7 +657,7 @@ window.screenMeta = {
  *
  * @return {void}
  */
-$('.contextual-help-tabs').on( 'click', 'a', function(e) {
+$('.contextual-help-tabs').delegate('a', 'click', function(e) {
 	var link = $(this),
 		panel;
 
@@ -752,14 +749,8 @@ $availableStructureTags.on( 'click', function() {
 	    selectionStart          = $permalinkStructure[ 0 ].selectionStart,
 	    selectionEnd            = $permalinkStructure[ 0 ].selectionEnd,
 	    textToAppend            = $( this ).text().trim(),
-	    textToAnnounce,
+	    textToAnnounce          = $( this ).attr( 'data-added' ),
 	    newSelectionStart;
-
-	if ( $( this ).hasClass( 'active' ) ) {
-		textToAnnounce = $( this ).attr( 'data-removed' );
-	} else {
-		textToAnnounce = $( this ).attr( 'data-added' );
-	}
 
 	// Remove structure tag if already part of the structure.
 	if ( -1 !== permalinkStructureValue.indexOf( textToAppend ) ) {
@@ -805,11 +796,11 @@ $availableStructureTags.on( 'click', function() {
 	if ( permalinkStructureFocused && $permalinkStructure[0].setSelectionRange ) {
 		newSelectionStart = ( permalinkStructureValue.substr( 0, selectionStart ) + textToAppend ).length;
 		$permalinkStructure[0].setSelectionRange( newSelectionStart, newSelectionStart );
-		$permalinkStructure.trigger( 'focus' );
+		$permalinkStructure.focus();
 	}
 } );
 
-$( function() {
+$document.ready( function() {
 	var checks, first, last, checked, sliced, mobileEvent, transitionTimeout, focusedRowActions,
 		lastClicked = false,
 		pageInput = $('input.current-page'),
@@ -861,7 +852,7 @@ $( function() {
 		// Reset any compensation for submenus near the bottom of the screen.
 		$('#adminmenu div.wp-submenu').css('margin-top', '');
 
-		if ( viewportWidth <= 960 ) {
+		if ( viewportWidth < 960 ) {
 			if ( $body.hasClass('auto-fold') ) {
 				$body.removeClass('auto-fold').removeClass('folded');
 				setUserSetting('unfold', 1);
@@ -938,7 +929,7 @@ $( function() {
 			adjustment = maxtop;
 		}
 
-		if ( adjustment > 1 && $('#wp-admin-bar-menu-toggle').is(':hidden') ) {
+		if ( adjustment > 1 ) {
 			$submenu.css( 'margin-top', '-' + adjustment + 'px' );
 		} else {
 			$submenu.css( 'margin-top', '' );
@@ -1101,10 +1092,6 @@ $( function() {
 			var $el = $( this ),
 				$button = $( '<button type="button" class="notice-dismiss"><span class="screen-reader-text"></span></button>' );
 
-			if ( $el.find( '.notice-dismiss' ).length ) {
-				return;
-			}
-
 			// Ensure plain text.
 			$button.find( '.screen-reader-text' ).text( __( 'Dismiss this notice.' ) );
 			$button.on( 'click.wp-dismiss-notice', function( event ) {
@@ -1227,62 +1214,6 @@ $( function() {
 	});
 
 	/**
-	 * Marries a secondary control to its primary control.
-	 *
-	 * @param {jQuery} topSelector    The top selector element.
-	 * @param {jQuery} topSubmit      The top submit element.
-	 * @param {jQuery} bottomSelector The bottom selector element.
-	 * @param {jQuery} bottomSubmit   The bottom submit element.
-	 * @return {void}
-	 */
-	function marryControls( topSelector, topSubmit, bottomSelector, bottomSubmit ) {
-		/**
-		 * Updates the primary selector when the secondary selector is changed.
-		 *
-		 * @since 5.7.0
-		 *
-		 * @return {void}
-		 */
-		function updateTopSelector() {
-			topSelector.val($(this).val());
-		}
-		bottomSelector.on('change', updateTopSelector);
-
-		/**
-		 * Updates the secondary selector when the primary selector is changed.
-		 *
-		 * @since 5.7.0
-		 *
-		 * @return {void}
-		 */
-		function updateBottomSelector() {
-			bottomSelector.val($(this).val());
-		}
-		topSelector.on('change', updateBottomSelector);
-
-		/**
-		 * Triggers the primary submit when then secondary submit is clicked.
-		 *
-		 * @since 5.7.0
-		 *
-		 * @return {void}
-		 */
-		function triggerSubmitClick(e) {
-			e.preventDefault();
-			e.stopPropagation();
-
-			topSubmit.trigger('click');
-		}
-		bottomSubmit.on('click', triggerSubmitClick);
-	}
-
-	// Marry the secondary "Bulk actions" controls to the primary controls:
-	marryControls( $('#bulk-action-selector-top'), $('#doaction'), $('#bulk-action-selector-bottom'), $('#doaction2') );
-
-	// Marry the secondary "Change role to" controls to the primary controls:
-	marryControls( $('#new_role'), $('#changeit'), $('#new_role2'), $('#changeit2') );
-
-	/**
 	 * Shows row actions on focus of its parent container element or any other elements contained within.
 	 *
 	 * @return {void}
@@ -1302,27 +1233,27 @@ $( function() {
 				focusedRowActions.removeClass( 'visible' );
 			}, 30 );
 		}
-	}, '.table-view-list .has-row-actions' );
+	}, '.has-row-actions' );
 
 	// Toggle list table rows on small screens.
 	$( 'tbody' ).on( 'click', '.toggle-row', function() {
 		$( this ).closest( 'tr' ).toggleClass( 'is-expanded' );
 	});
 
-	$('#default-password-nag-no').on( 'click', function() {
+	$('#default-password-nag-no').click( function() {
 		setUserSetting('default_password_nag', 'hide');
 		$('div.default-password-nag').hide();
 		return false;
 	});
 
 	/**
-	 * Handles tab keypresses in theme and plugin file editor textareas.
+	 * Handles tab keypresses in theme and plugin editor textareas.
 	 *
 	 * @param {Event} e The event object.
 	 *
 	 * @return {void}
 	 */
-	$('#newcontent').on('keydown.wpevent_InsertTab', function(e) {
+	$('#newcontent').bind('keydown.wpevent_InsertTab', function(e) {
 		var el = e.target, selStart, selEnd, val, scroll, sel;
 
 		// After pressing escape key (keyCode: 27), the tab key should tab out of the textarea.
@@ -1381,11 +1312,12 @@ $( function() {
 		 *
 		 * @return {void}
 		 */
-		pageInput.closest('form').on( 'submit', function() {
+		pageInput.closest('form').submit( function() {
 			/*
 			 * action = bulk action dropdown at the top of the table
+			 * action2 = bulk action dropdow at the bottom of the table
 			 */
-			if ( $('select[name="action"]').val() == -1 && pageInput.val() == currentPage )
+			if ( $('select[name="action"]').val() == -1 && $('select[name="action2"]').val() == -1 && pageInput.val() == currentPage )
 				pageInput.val('1');
 		});
 	}
@@ -1395,7 +1327,7 @@ $( function() {
 	 *
 	 * @return {void}
 	 */
-	$('.search-box input[type="search"], .search-box input[type="submit"]').on( 'mousedown', function () {
+	$('.search-box input[type="search"], .search-box input[type="submit"]').mousedown(function () {
 		$('select[name^="action"]').val('-1');
 	});
 
@@ -1407,8 +1339,8 @@ $( function() {
 	 * @return {void}
  	 */
 	$('#contextual-help-link, #show-settings-link').on( 'focus.scroll-into-view', function(e){
-		if ( e.target.scrollIntoViewIfNeeded )
-			e.target.scrollIntoViewIfNeeded(false);
+		if ( e.target.scrollIntoView )
+			e.target.scrollIntoView(false);
 	});
 
 	/**
@@ -1696,51 +1628,11 @@ $( function() {
 				$wpwrap.toggleClass( 'wp-responsive-open' );
 				if ( $wpwrap.hasClass( 'wp-responsive-open' ) ) {
 					$(this).find('a').attr( 'aria-expanded', 'true' );
-					$( '#adminmenu a:first' ).trigger( 'focus' );
+					$( '#adminmenu a:first' ).focus();
 				} else {
 					$(this).find('a').attr( 'aria-expanded', 'false' );
 				}
 			} );
-
-			// Close sidebar when target moves outside of toggle and sidebar.
-			$( document ).on( 'click', function( event ) {
-				if ( ! $wpwrap.hasClass( 'wp-responsive-open' ) || ! document.hasFocus() ) {
-					return;
-				}
-
-				var focusIsInToggle  = $.contains( $( '#wp-admin-bar-menu-toggle' )[0], event.target );
-				var focusIsInSidebar = $.contains( $( '#adminmenuwrap' )[0], event.target );
-
-				if ( ! focusIsInToggle && ! focusIsInSidebar ) {
-					$( '#wp-admin-bar-menu-toggle' ).trigger( 'click.wp-responsive' );
-				}
-			} );
-
-			// Close sidebar when a keypress completes outside of toggle and sidebar.
-			$( document ).on( 'keyup', function( event ) {
-				var toggleButton   = $( '#wp-admin-bar-menu-toggle' )[0];
-				if ( ! $wpwrap.hasClass( 'wp-responsive-open' ) ) {
-				    return;
-				}
-				if ( 27 === event.keyCode ) {
-					$( toggleButton ).trigger( 'click.wp-responsive' );
-					$( toggleButton ).find( 'a' ).trigger( 'focus' );
-				} else {
-					if ( 9 === event.keyCode ) {
-						var sidebar        = $( '#adminmenuwrap' )[0];
-						var focusedElement = event.relatedTarget || document.activeElement;
-						// A brief delay is required to allow focus to switch to another element.
-						setTimeout( function() {
-							var focusIsInToggle  = $.contains( toggleButton, focusedElement );
-							var focusIsInSidebar = $.contains( sidebar, focusedElement );
-							
-							if ( ! focusIsInToggle && ! focusIsInSidebar ) {
-								$( toggleButton ).trigger( 'click.wp-responsive' );
-							}
-						}, 10 );
-					}
-				}
-			});
 
 			// Add menu events.
 			$adminmenu.on( 'click.wp-responsive', 'li.wp-has-submenu > a', function( event ) {
@@ -1749,14 +1641,13 @@ $( function() {
 				}
 
 				$( this ).parent( 'li' ).toggleClass( 'selected' );
-				$( this ).trigger( 'focus' );
 				event.preventDefault();
 			});
 
 			self.trigger();
-			$document.on( 'wp-window-resized.wp-responsive', this.trigger.bind( this ) );
+			$document.on( 'wp-window-resized.wp-responsive', $.proxy( this.trigger, this ) );
 
-			// This needs to run later as UI Sortable may be initialized when the document is ready.
+			// This needs to run later as UI Sortable may be initialized later on $(document).ready().
 			$window.on( 'load.wp-responsive', this.maybeDisableSortables );
 			$document.on( 'postbox-toggled', this.maybeDisableSortables );
 
@@ -1937,7 +1828,7 @@ $( function() {
 		$( '.aria-button-if-js' ).attr( 'role', 'button' );
 	}
 
-	$( document ).on( 'ajaxComplete', function() {
+	$( document ).ajaxComplete( function() {
 		aria_button_if_js();
 	});
 
@@ -2026,7 +1917,7 @@ $( function() {
 	$document.on( 'wp-pin-menu wp-window-resized.pin-menu postboxes-columnchange.pin-menu postbox-toggled.pin-menu wp-collapse-menu.pin-menu wp-scroll-start.pin-menu', setPinMenu );
 
 	// Set initial focus on a specific element.
-	$( '.wp-initial-focus' ).trigger( 'focus' );
+	$( '.wp-initial-focus' ).focus();
 
 	// Toggle update details on update-core.php.
 	$body.on( 'click', '.js-update-details-toggle', function() {
@@ -2056,7 +1947,7 @@ $( function() {
  *
  * @since 5.5.0
  */
-$( function( $ ) {
+$document.ready( function( $ ) {
 	var $overwrite, $warning;
 
 	if ( ! $body.hasClass( 'update-php' ) ) {
@@ -2125,123 +2016,3 @@ $( function( $ ) {
 })();
 
 }( jQuery, window ));
-
-/**
- * Freeze animated plugin icons when reduced motion is enabled.
- *
- * When the user has enabled the 'prefers-reduced-motion' setting, this module
- * stops animations for all GIFs on the page with the class 'plugin-icon' or
- * plugin icon images in the update plugins table.
- *
- * @since 6.4.0
- */
-(function() {
-	// Private variables and methods.
-	var priv = {},
-		pub = {},
-		mediaQuery;
-
-	// Initialize pauseAll to false; it will be set to true if reduced motion is preferred.
-	priv.pauseAll = false;
-	if ( window.matchMedia ) {
-		mediaQuery = window.matchMedia( '(prefers-reduced-motion: reduce)' );
-		if ( ! mediaQuery || mediaQuery.matches ) {
-			priv.pauseAll = true;
-		}
-	}
-
-	// Method to replace animated GIFs with a static frame.
-	priv.freezeAnimatedPluginIcons = function( img ) {
-		var coverImage = function() {
-			var width = img.width;
-			var height = img.height;
-			var canvas = document.createElement( 'canvas' );
-
-			// Set canvas dimensions.
-			canvas.width = width;
-			canvas.height = height;
-
-			// Copy classes from the image to the canvas.
-			canvas.className = img.className;
-
-			// Check if the image is inside a specific table.
-			var isInsideUpdateTable = img.closest( '#update-plugins-table' );
-
-			if ( isInsideUpdateTable ) {
-				// Transfer computed styles from image to canvas.
-				var computedStyles = window.getComputedStyle( img ),
-					i, max;
-				for ( i = 0, max = computedStyles.length; i < max; i++ ) {
-					var propName = computedStyles[ i ];
-					var propValue = computedStyles.getPropertyValue( propName );
-					canvas.style[ propName ] = propValue;
-				}
-			}
-
-			// Draw the image onto the canvas.
-			canvas.getContext( '2d' ).drawImage( img, 0, 0, width, height );
-
-			// Set accessibility attributes on canvas.
-			canvas.setAttribute( 'aria-hidden', 'true' );
-			canvas.setAttribute( 'role', 'presentation' );
-
-			// Insert canvas before the image and set the image to be near-invisible.
-			var parent = img.parentNode;
-			parent.insertBefore( canvas, img );
-			img.style.opacity = 0.01;
-			img.style.width = '0px';
-			img.style.height = '0px';
-		};
-
-		// If the image is already loaded, apply the coverImage function.
-		if ( img.complete ) {
-			coverImage();
-		} else {
-			// Otherwise, wait for the image to load.
-			img.addEventListener( 'load', coverImage, true );
-		}
-	};
-
-	// Public method to freeze all relevant GIFs on the page.
-	pub.freezeAll = function() {
-		var images = document.querySelectorAll( '.plugin-icon, #update-plugins-table img' );
-		for ( var x = 0; x < images.length; x++ ) {
-			if ( /\.gif(?:\?|$)/i.test( images[ x ].src ) ) {
-				priv.freezeAnimatedPluginIcons( images[ x ] );
-			}
-		}
-	};
-
-	// Only run the freezeAll method if the user prefers reduced motion.
-	if ( true === priv.pauseAll ) {
-		pub.freezeAll();
-	}
-
-	// Listen for jQuery AJAX events.
-	( function( $ ) {
-		if ( window.pagenow === 'plugin-install' ) {
-			// Only listen for ajaxComplete if this is the plugin-install.php page.
-			$( document ).ajaxComplete( function( event, xhr, settings ) {
-
-				// Check if this is the 'search-install-plugins' request.
-				if ( settings.data && typeof settings.data === 'string' && settings.data.includes( 'action=search-install-plugins' ) ) {
-					// Recheck if the user prefers reduced motion.
-					if ( window.matchMedia ) {
-						var mediaQuery = window.matchMedia( '(prefers-reduced-motion: reduce)' );
-						if ( mediaQuery.matches ) {
-							pub.freezeAll();
-						}
-					} else {
-						// Fallback for browsers that don't support matchMedia.
-						if ( true === priv.pauseAll ) {
-							pub.freezeAll();
-						}
-					}
-				}
-			} );
-		}
-	} )( jQuery );
-
-	// Expose public methods.
-	return pub;
-})();

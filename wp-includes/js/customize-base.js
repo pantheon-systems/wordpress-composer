@@ -112,8 +112,8 @@ window.wp = window.wp || {};
 	 * @param object staticProps Properties to apply directly to the class.
 	 * @return child The subclass.
 	 */
-	api.Class.extend = function( protoProps, staticProps ) {
-		var child = inherits( this, protoProps, staticProps );
+	api.Class.extend = function( protoProps, classProps ) {
+		var child = inherits( this, protoProps, classProps );
 		child.extend = this.extend;
 		return child;
 	};
@@ -197,7 +197,7 @@ window.wp = window.wp || {};
 
 			$.extend( this, options || {} );
 
-			this.set = this.set.bind( this );
+			this.set = $.proxy( this.set, this );
 		},
 
 		/*
@@ -391,9 +391,8 @@ window.wp = window.wp || {};
 		/**
 		 * Add an item to the collection.
 		 *
-		 * @param {string|wp.customize.Class} item         - The item instance to add, or the ID for the instance to add.
-		 *                                                   When an ID string is supplied, then itemObject must be provided.
-		 * @param {wp.customize.Class}        [itemObject] - The item instance when the first argument is an ID string.
+		 * @param {string|wp.customize.Class} item - The item instance to add, or the ID for the instance to add. When an ID string is supplied, then itemObject must be provided.
+		 * @param {wp.customize.Class}        [itemObject] - The item instance when the first argument is a ID string.
 		 * @return {wp.customize.Class} The new item's instance, or an existing instance if already added.
 		 */
 		add: function( item, itemObject ) {
@@ -502,7 +501,7 @@ window.wp = window.wp || {};
 				dfd  = $.Deferred();
 
 			// If the last argument is a callback, bind it to .done().
-			if ( typeof ids[ ids.length - 1 ] === 'function' ) {
+			if ( $.isFunction( ids[ ids.length - 1 ] ) ) {
 				dfd.done( ids.pop() );
 			}
 
@@ -610,7 +609,7 @@ window.wp = window.wp || {};
 			};
 
 			this.bind( this.update );
-			this.element.on( this.events, this.refresh );
+			this.element.bind( this.events, this.refresh );
 		},
 
 		find: function( selector ) {
@@ -735,7 +734,7 @@ window.wp = window.wp || {};
 			 * This will prevent every Messenger's receive function from being
 			 * unbound when calling $.off( 'message', this.receive );
 			 */
-			this.receive = this.receive.bind( this );
+			this.receive = $.proxy( this.receive, this );
 			this.receive.guid = $.guid++;
 
 			$( window ).on( 'message', this.receive );

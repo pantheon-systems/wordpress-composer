@@ -12,7 +12,6 @@
  *
  * @since 2.0.0
  */
-#[AllowDynamicProperties]
 class WP_Role {
 	/**
 	 * Role name.
@@ -100,4 +99,5 @@ class WP_Role {
 			return false;
 		}
 	}
+
 }

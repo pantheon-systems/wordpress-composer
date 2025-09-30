@@ -98,7 +98,7 @@
 			match = new RegExp( '^(?=.*' + term + ').+', 'i' );
 
 			this.each( function ( data ) {
-				haystack = [ data.get( 'name' ), data.get( 'description' ) ].join( ' ' );
+				haystack = [ data.get( 'name' ), data.get( 'id' ), data.get( 'description' ) ].join( ' ' );
 				data.set( 'search_matched', match.test( haystack ) );
 			} );
 		}
@@ -195,7 +195,7 @@
 
 			// Clear the search results and trigger an `input` event to fire a new search.
 			this.$clearResults.on( 'click', function() {
-				self.$search.val( '' ).trigger( 'focus' ).trigger( 'input' );
+				self.$search.val( '' ).focus().trigger( 'input' );
 			} );
 
 			// Close the panel if the URL in the preview changes.
@@ -365,7 +365,7 @@
 			this.collection.doSearch( '' );
 
 			if ( ! api.settings.browser.mobile ) {
-				this.$search.trigger( 'focus' );
+				this.$search.focus();
 			}
 		},
 
@@ -421,9 +421,9 @@
 				this.select( selected );
 
 				if ( selected ) {
-					selected.trigger( 'focus' );
+					selected.focus();
 				} else {
-					this.$search.trigger( 'focus' );
+					this.$search.focus();
 				}
 
 				return;
@@ -818,7 +818,7 @@
 				if ( event.type === 'keypress' && ( event.which !== 13 && event.which !== 32 ) ) {
 					return;
 				}
-				$( this ).trigger( 'focus' );
+				$( this ).focus();
 
 				if ( $( this ).is( '.move-widget' ) ) {
 					self.toggleWidgetMoveArea();
@@ -839,7 +839,7 @@
 						wp.a11y.speak( l10n.widgetMovedDown );
 					}
 
-					$( this ).trigger( 'focus' ); // Re-focus after the container was moved.
+					$( this ).focus(); // Re-focus after the container was moved.
 				}
 			} );
 
@@ -1103,7 +1103,7 @@
 			if ( input.is( ':radio, :checkbox' ) ) {
 				input.prop( 'checked', state );
 			} else if ( input.is( 'select[multiple]' ) ) {
-				if ( ! Array.isArray( state ) ) {
+				if ( ! $.isArray( state ) ) {
 					state = [];
 				} else {
 					// Make sure all state items are strings since the DOM value is a string.
@@ -1457,7 +1457,7 @@
 				self.container.addClass( 'expanding' );
 			};
 
-			if ( $toggleBtn.attr( 'aria-expanded' ) === 'false' ) {
+			if ( expanded ) {
 				if ( api.section.has( self.section() ) ) {
 					api.section( self.section() ).expand( {
 						completeCallback: expandControl
@@ -2089,7 +2089,7 @@
 				widgetNumber = widget.get( 'multi_number' );
 			}
 
-			controlHtml = $( '#widget-tpl-' + widget.get( 'id' ) ).html().trim();
+			controlHtml = $.trim( $( '#widget-tpl-' + widget.get( 'id' ) ).html() );
 			if ( widget.get( 'is_multi' ) ) {
 				controlHtml = controlHtml.replace( /<[^<>]+>/g, function( m ) {
 					return m.replace( /__i__|%i%/g, widgetNumber );

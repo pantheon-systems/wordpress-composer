@@ -3,9 +3,6 @@
 if (class_exists('ParagonIE_Sodium_Core32_Ed25519', false)) {
     return;
 }
-if (!class_exists('ParagonIE_Sodium_Core32_Curve25519')) {
-    require_once dirname(__FILE__) . '/Curve25519.php';
-}
 
 /**
  * Class ParagonIE_Sodium_Core32_Ed25519
@@ -210,7 +207,6 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
      * @return string
      * @throws SodiumException
      * @throws TypeError
-     * @psalm-suppress PossiblyInvalidArgument
      */
     public static function sign_detached($message, $sk)
     {
@@ -228,8 +224,8 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
         # crypto_hash_sha512_update(&hs, m, mlen);
         # crypto_hash_sha512_final(&hs, nonce);
         $hs = hash_init('sha512');
-        self::hash_update($hs, self::substr($az, 32, 32));
-        self::hash_update($hs, $message);
+        hash_update($hs, self::substr($az, 32, 32));
+        hash_update($hs, $message);
         $nonceHash = hash_final($hs, true);
 
         # memmove(sig + 32, sk + 32, 32);
@@ -248,9 +244,9 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
         # crypto_hash_sha512_update(&hs, m, mlen);
         # crypto_hash_sha512_final(&hs, hram);
         $hs = hash_init('sha512');
-        self::hash_update($hs, self::substr($sig, 0, 32));
-        self::hash_update($hs, self::substr($pk, 0, 32));
-        self::hash_update($hs, $message);
+        hash_update($hs, self::substr($sig, 0, 32));
+        hash_update($hs, self::substr($pk, 0, 32));
+        hash_update($hs, $message);
         $hramHash = hash_final($hs, true);
 
         # sc_reduce(hram);

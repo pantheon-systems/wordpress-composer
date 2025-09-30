@@ -51,7 +51,7 @@ window.wp = window.wp || {};
 		 *
 		 * @return {boolean} The result of revert.
 		 */
-		qeRow.on( 'keyup', function(e){
+		qeRow.keyup(function(e){
 			// Revert changes if Escape key is pressed.
 			if ( e.which === 27 ) {
 				return inlineEditPost.revert();
@@ -63,7 +63,7 @@ window.wp = window.wp || {};
 		 *
 		 * @return {boolean} The result of revert.
 		 */
-		bulkRow.on( 'keyup', function(e){
+		bulkRow.keyup(function(e){
 			// Revert changes if Escape key is pressed.
 			if ( e.which === 27 ) {
 				return inlineEditPost.revert();
@@ -75,7 +75,7 @@ window.wp = window.wp || {};
 		 *
 		 * @return {boolean} The result of revert.
 		 */
-		$( '.cancel', qeRow ).on( 'click', function() {
+		$( '.cancel', qeRow ).click( function() {
 			return inlineEditPost.revert();
 		});
 
@@ -84,7 +84,7 @@ window.wp = window.wp || {};
 		 *
 		 * @return {boolean} The result of save.
 		 */
-		$( '.save', qeRow ).on( 'click', function() {
+		$( '.save', qeRow ).click( function() {
 			return inlineEditPost.save(this);
 		});
 
@@ -93,7 +93,7 @@ window.wp = window.wp || {};
 		 *
 		 * @return {boolean} The result of save.
 		 */
-		$('td', qeRow).on( 'keydown', function(e){
+		$('td', qeRow).keydown(function(e){
 			if ( e.which === 13 && ! $( e.target ).hasClass( 'cancel' ) ) {
 				return inlineEditPost.save(this);
 			}
@@ -104,14 +104,14 @@ window.wp = window.wp || {};
 		 *
 		 * @return {boolean} The result of revert.
 		 */
-		$( '.cancel', bulkRow ).on( 'click', function() {
+		$( '.cancel', bulkRow ).click( function() {
 			return inlineEditPost.revert();
 		});
 
 		/**
 		 * Disables the password input field when the private post checkbox is checked.
 		 */
-		$('#inline-edit .inline-edit-private input[value="private"]').on( 'click', function(){
+		$('#inline-edit .inline-edit-private input[value="private"]').click( function(){
 			var pw = $('input.inline-edit-password-input');
 			if ( $(this).prop('checked') ) {
 				pw.val('').prop('disabled', true);
@@ -131,7 +131,7 @@ window.wp = window.wp || {};
 		$('#bulk-edit').find('fieldset:first').after(
 			$('#inline-edit fieldset.inline-edit-categories').clone()
 		).siblings( 'fieldset:last' ).prepend(
-			$( '#inline-edit .inline-edit-tags-wrap' ).clone()
+			$('#inline-edit label.inline-edit-tags').clone()
 		);
 
 		$('select[name="_status"] option[value="future"]', bulkRow).remove();
@@ -139,7 +139,7 @@ window.wp = window.wp || {};
 		/**
 		 * Adds onclick events to the apply buttons.
 		 */
-		$('#doaction').on( 'click', function(e){
+		$('#doaction, #doaction2').click(function(e){
 			var n;
 
 			t.whichBulkButtonId = $( this ).attr( 'id' );
@@ -197,15 +197,9 @@ window.wp = window.wp || {};
 			// If the checkbox for a post is selected, add the post to the edit list.
 			if ( $(this).prop('checked') ) {
 				c = false;
-				var id = $( this ).val(),
-					theTitle = $( '#inline_' + id + ' .post_title' ).html() || wp.i18n.__( '(no title)' ),
-					buttonVisuallyHiddenText = wp.i18n.sprintf(
-						/* translators: %s: Post title. */
-						wp.i18n.__( 'Remove &#8220;%s&#8221; from Bulk Edit' ),
-						theTitle
-					);
-
-				te += '<li class="ntdelitem"><button type="button" id="_' + id + '" class="button-link ntdelbutton"><span class="screen-reader-text">' + buttonVisuallyHiddenText + '</span></button><span class="ntdeltitle" aria-hidden="true">' + theTitle + '</span></li>';
+				var id = $(this).val(), theTitle;
+				theTitle = $('#inline_'+id+' .post_title').html() || wp.i18n.__( '(no title)' );
+				te += '<div id="ttle'+id+'"><a id="_'+id+'" class="ntdelbutton" title="'+ wp.i18n.__( 'Remove From Bulk Edit' ) +'">X</a>'+theTitle+'</div>';
 			}
 		});
 
@@ -214,34 +208,18 @@ window.wp = window.wp || {};
 			return this.revert();
 		}
 
-		// Populate the list of items to bulk edit.
-		$( '#bulk-titles' ).html( '<ul id="bulk-titles-list" role="list">' + te + '</ul>' );
-
+		// Add onclick events to the delete-icons in the bulk editors the post title list.
+		$('#bulk-titles').html(te);
 		/**
-		 * Binds on click events to handle the list of items to bulk edit.
+		 * Binds on click events to the checkboxes before the posts in the table.
 		 *
 		 * @listens click
 		 */
-		$( '#bulk-titles .ntdelbutton' ).click( function() {
-			var $this = $( this ),
-				id = $this.attr( 'id' ).substr( 1 ),
-				$prev = $this.parent().prev().children( '.ntdelbutton' ),
-				$next = $this.parent().next().children( '.ntdelbutton' );
+		$('#bulk-titles a').click(function(){
+			var id = $(this).attr('id').substr(1);
 
-			$( 'table.widefat input[value="' + id + '"]' ).prop( 'checked', false );
-			$( '#_' + id ).parent().remove();
-			wp.a11y.speak( wp.i18n.__( 'Item removed.' ), 'assertive' );
-
-			// Move focus to a proper place when items are removed.
-			if ( $next.length ) {
-				$next.focus();
-			} else if ( $prev.length ) {
-				$prev.focus();
-			} else {
-				$( '#bulk-titles-list' ).remove();
-				inlineEditPost.revert();
-				wp.a11y.speak( wp.i18n.__( 'All selected items have been removed. Select new items to use Bulk Actions.' ) );
-			}
+			$('table.widefat input[value="' + id + '"]').prop('checked', false);
+			$('#ttle'+id).remove();
 		});
 
 		// Enable auto-complete for tags when editing posts.
@@ -260,8 +238,6 @@ window.wp = window.wp || {};
 			} );
 		}
 
-		// Set initial focus on the Bulk Edit region.
-		$( '#bulk-edit .inline-edit-wrapper' ).attr( 'tabindex', '-1' ).focus();
 		// Scrolls to the top of the table where the editor is rendered.
 		$('html, body').animate( { scrollTop: 0 }, 'fast' );
 	},
@@ -294,10 +270,6 @@ window.wp = window.wp || {};
 		editRow = $('#inline-edit').clone(true);
 		$( 'td', editRow ).attr( 'colspan', $( 'th:visible, td:visible', '.widefat:first thead' ).length );
 
-		// Remove the ID from the copied row and let the `for` attribute reference the hidden ID.
-		$( 'td', editRow ).find('#quick-edit-legend').removeAttr('id');
-		$( 'td', editRow ).find('p[id^="quick-edit-"]').removeAttr('id');
-
 		$(t.what+id).removeClass('is-expanded').hide().after(editRow).after('<tr class="hidden"></tr>');
 
 		// Populate fields in the quick edit window.
@@ -305,7 +277,7 @@ window.wp = window.wp || {};
 		if ( !$(':input[name="post_author"] option[value="' + $('.post_author', rowData).text() + '"]', editRow).val() ) {
 
 			// The post author no longer has edit capabilities, so we need to add them to the list of authors.
-			$(':input[name="post_author"]', editRow).prepend('<option value="' + $('.post_author', rowData).text() + '">' + $('#post-' + id + ' .author').text() + '</option>');
+			$(':input[name="post_author"]', editRow).prepend('<option value="' + $('.post_author', rowData).text() + '">' + $('#' + t.type + '-' + id + ' .author').text() + '</option>');
 		}
 		if ( $( ':input[name="post_author"] option', editRow ).length === 1 ) {
 			$('label.inline-edit-author', editRow).hide();
@@ -357,11 +329,6 @@ window.wp = window.wp || {};
 				textarea = $('textarea.tax_input_' + taxname, editRow),
 				comma = wp.i18n._x( ',', 'tag delimiter' ).trim();
 
-			// Ensure the textarea exists.
-			if ( ! textarea.length ) {
-				return;
-			}
-
 			terms.find( 'img' ).replaceWith( function() { return this.alt; } );
 			terms = terms.text();
 
@@ -376,14 +343,9 @@ window.wp = window.wp || {};
 		});
 
 		// Handle the post status.
-		var post_date_string = $(':input[name="aa"]').val() + '-' + $(':input[name="mm"]').val() + '-' + $(':input[name="jj"]').val();
-		post_date_string += ' ' + $(':input[name="hh"]').val() + ':' + $(':input[name="mn"]').val() + ':' + $(':input[name="ss"]').val();
-		var post_date = new Date( post_date_string );
 		status = $('._status', rowData).text();
-		if ( 'future' !== status && Date.now() > post_date ) {
+		if ( 'future' !== status ) {
 			$('select[name="_status"] option[value="future"]', editRow).remove();
-		} else {
-			$('select[name="_status"] option[value="publish"]', editRow).remove();
 		}
 
 		pw = $( '.inline-edit-password-input' ).prop( 'disabled', false );
@@ -416,7 +378,7 @@ window.wp = window.wp || {};
 		}
 
 		$(editRow).attr('id', 'edit-'+id).addClass('inline-editor').show();
-		$('.ptitle', editRow).trigger( 'focus' );
+		$('.ptitle', editRow).focus();
 
 		return false;
 	},
@@ -458,6 +420,7 @@ window.wp = window.wp || {};
 					$error = $errorNotice.find( '.error' );
 
 				$( 'table.widefat .spinner' ).removeClass( 'is-active' );
+				$( '.ac_results' ).hide();
 
 				if (r) {
 					if ( -1 !== r.indexOf( '<tr' ) ) {
@@ -467,7 +430,7 @@ window.wp = window.wp || {};
 							// Move focus back to the Quick Edit button. $( this ) is the row being animated.
 							$( this ).find( '.editinline' )
 								.attr( 'aria-expanded', 'false' )
-								.trigger( 'focus' );
+								.focus();
 							wp.a11y.speak( wp.i18n.__( 'Changes saved.' ) );
 						});
 					} else {
@@ -503,6 +466,7 @@ window.wp = window.wp || {};
 
 		if ( id ) {
 			$( '.spinner', $tableWideFat ).removeClass( 'is-active' );
+			$( '.ac_results' ).hide();
 
 			if ( 'bulk-edit' === id ) {
 
@@ -514,7 +478,7 @@ window.wp = window.wp || {};
 				$('#inlineedit').append( $('#bulk-edit') );
 
 				// Move focus back to the Bulk Action button that was activated.
-				$( '#' + inlineEditPost.whichBulkButtonId ).trigger( 'focus' );
+				$( '#' + inlineEditPost.whichBulkButtonId ).focus();
 			} else {
 
 				// Remove both the inline-editor and its hidden tr siblings.
@@ -524,7 +488,7 @@ window.wp = window.wp || {};
 				// Show the post row and move focus back to the Quick Edit button.
 				$( this.what + id ).show().find( '.editinline' )
 					.attr( 'aria-expanded', 'false' )
-					.trigger( 'focus' );
+					.focus();
 			}
 		}
 
@@ -549,16 +513,10 @@ window.wp = window.wp || {};
 	}
 };
 
-$( function() { inlineEditPost.init(); } );
+$( document ).ready( function(){ inlineEditPost.init(); } );
 
 // Show/hide locks on posts.
-$( function() {
-
-	// Set the heartbeat interval to 15 seconds.
-	if ( typeof wp !== 'undefined' && wp.heartbeat ) {
-		wp.heartbeat.interval( 15 );
-	}
-}).on( 'heartbeat-tick.wp-check-locked-posts', function( e, data ) {
+$( document ).on( 'heartbeat-tick.wp-check-locked-posts', function( e, data ) {
 	var locked = data['wp-check-locked-posts'] || {};
 
 	$('#the-list tr').each( function(i, el) {
@@ -598,6 +556,12 @@ $( function() {
 
 	if ( check.length ) {
 		data['wp-check-locked-posts'] = check;
+	}
+}).ready( function() {
+
+	// Set the heartbeat interval to 15 seconds.
+	if ( typeof wp !== 'undefined' && wp.heartbeat ) {
+		wp.heartbeat.interval( 15 );
 	}
 });
 

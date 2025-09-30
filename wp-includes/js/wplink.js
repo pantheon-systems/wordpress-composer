@@ -54,14 +54,14 @@
 			inputs.queryNoticeTextHint = inputs.queryNotice.find( '.query-notice-hint' );
 
 			// Bind event handlers.
-			inputs.dialog.on( 'keydown', wpLink.keydown );
-			inputs.dialog.on( 'keyup', wpLink.keyup );
-			inputs.submit.on( 'click', function( event ) {
+			inputs.dialog.keydown( wpLink.keydown );
+			inputs.dialog.keyup( wpLink.keyup );
+			inputs.submit.click( function( event ) {
 				event.preventDefault();
 				wpLink.update();
 			});
 
-			inputs.close.add( inputs.backdrop ).add( '#wp-link-cancel button' ).on( 'click', function( event ) {
+			inputs.close.add( inputs.backdrop ).add( '#wp-link-cancel button' ).click( function( event ) {
 				event.preventDefault();
 				wpLink.close();
 			});
@@ -93,7 +93,7 @@
 
 		// If URL wasn't corrected last time and doesn't start with http:, https:, ? # or /, prepend http://.
 		correctURL: function () {
-			var url = inputs.url.val().trim();
+			var url = $.trim( inputs.url.val() );
 
 			if ( url && correctedURL !== url && ! /^(?:[a-z]+:|#|\?|\.|\/)/.test( url ) ) {
 				inputs.url.val( 'http://' + url );
@@ -181,7 +181,7 @@
 
 			if ( isTouch ) {
 				// Close the onscreen keyboard.
-				inputs.url.trigger( 'focus' ).trigger( 'blur' );
+				inputs.url.focus().blur();
 			} else {
 				/*
 				 * Focus the URL field and highlight its contents.
@@ -190,7 +190,7 @@
 				 */
 				window.setTimeout( function() {
 					inputs.url[0].select();
-					inputs.url.trigger( 'focus' );
+					inputs.url.focus();
 				} );
 			}
 
@@ -238,7 +238,7 @@
 				linkText = linkNode.text();
 				href = linkNode.attr( 'href' );
 
-				if ( ! linkText.trim() ) {
+				if ( ! $.trim( linkText ) ) {
 					linkText = text || '';
 				}
 
@@ -312,7 +312,7 @@
 			wpLink.correctURL();
 
 			return {
-				href: inputs.url.val().trim(),
+				href: $.trim( inputs.url.val() ),
 				target: inputs.openInNewTab.prop( 'checked' ) ? '_blank' : null
 			};
 		},
@@ -425,7 +425,7 @@
 				if ( ! $link.length ) {
 					editor.execCommand( 'mceInsertLink', false, { href: '_wp_link_placeholder', 'data-wp-temp-link': 1 } );
 					$link = editor.$( 'a[data-wp-temp-link="1"]' ).removeAttr( 'data-wp-temp-link' );
-					hasText = $link.text().trim();
+					hasText = $.trim( $link.text() );
 				}
 
 				if ( ! $link.length ) {
@@ -483,8 +483,7 @@
 				}
 			}
 
-			selection = selection || '';
-			selection = selection.trim();
+			selection = $.trim( selection );
 
 			if ( selection && emailRegexp.test( selection ) ) {
 				// Selection is email address.
@@ -558,10 +557,10 @@
 				// wp-link-submit must always be the last focusable element in the dialog.
 				// Following focusable elements will be skipped on keyboard navigation.
 				if ( id === 'wp-link-submit' && ! event.shiftKey ) {
-					inputs.close.trigger( 'focus' );
+					inputs.close.focus();
 					event.preventDefault();
 				} else if ( id === 'wp-link-close' && event.shiftKey ) {
-					inputs.submit.trigger( 'focus' );
+					inputs.submit.focus();
 					event.preventDefault();
 				}
 			}
@@ -626,7 +625,7 @@
 		this.change( search );
 		this.refresh();
 
-		$( '#wp-link .query-results, #wp-link #link-selector' ).on( 'scroll', function() {
+		$( '#wp-link .query-results, #wp-link #link-selector' ).scroll( function() {
 			self.maybeLoad();
 		});
 		element.on( 'click', 'li', function( event ) {
@@ -798,5 +797,5 @@
 		}
 	});
 
-	$( wpLink.init );
+	$( document ).ready( wpLink.init );
 })( jQuery, window.wpLinkL10n, window.wp );

@@ -114,10 +114,8 @@ function wp_insert_site( array $data ) {
 			$meta['WPLANG'] = get_network_option( $new_site->network_id, 'WPLANG' );
 		}
 
-		/*
-		 * Rebuild the data expected by the `wpmu_new_blog` hook prior to 5.1.0 using allowed keys.
-		 * The `$allowed_data_fields` matches the one used in `wpmu_create_blog()`.
-		 */
+		// Rebuild the data expected by the `wpmu_new_blog` hook prior to 5.1.0 using allowed keys.
+		// The `$allowed_data_fields` matches the one used in `wpmu_create_blog()`.
 		$allowed_data_fields = array( 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id' );
 		$meta                = array_merge( array_intersect_key( $data, array_flip( $allowed_data_fields ) ), $meta );
 
@@ -125,7 +123,7 @@ function wp_insert_site( array $data ) {
 		 * Fires immediately after a new site is created.
 		 *
 		 * @since MU (3.0.0)
-		 * @deprecated 5.1.0 Use {@see 'wp_initialize_site'} instead.
+		 * @deprecated 5.1.0 Use {@see 'wp_insert_site'} instead.
 		 *
 		 * @param int    $site_id    Site ID.
 		 * @param int    $user_id    User ID.
@@ -138,7 +136,7 @@ function wp_insert_site( array $data ) {
 			'wpmu_new_blog',
 			array( $new_site->id, $user_id, $new_site->domain, $new_site->path, $new_site->network_id, $meta ),
 			'5.1.0',
-			'wp_initialize_site'
+			'wp_insert_site'
 		);
 	}
 
@@ -341,8 +339,7 @@ function get_site( $site = null ) {
  *
  * @since 4.6.0
  * @since 5.1.0 Introduced the `$update_meta_cache` parameter.
- * @since 6.1.0 This function is no longer marked as "private".
- * @since 6.3.0 Use wp_lazyload_site_meta() for lazy-loading of site meta.
+ * @access private
  *
  * @see update_site_cache()
  * @global wpdb $wpdb WordPress database abstraction object.
@@ -355,29 +352,10 @@ function _prime_site_caches( $ids, $update_meta_cache = true ) {
 
 	$non_cached_ids = _get_non_cached_ids( $ids, 'sites' );
 	if ( ! empty( $non_cached_ids ) ) {
-		$fresh_sites = $wpdb->get_results( sprintf( "SELECT * FROM $wpdb->blogs WHERE blog_id IN (%s)", implode( ',', array_map( 'intval', $non_cached_ids ) ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$fresh_sites = $wpdb->get_results( sprintf( "SELECT * FROM $wpdb->blogs WHERE blog_id IN (%s)", join( ',', array_map( 'intval', $non_cached_ids ) ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
-		update_site_cache( $fresh_sites, false );
+		update_site_cache( $fresh_sites, $update_meta_cache );
 	}
-
-	if ( $update_meta_cache ) {
-		wp_lazyload_site_meta( $ids );
-	}
-}
-
-/**
- * Queue site meta for lazy-loading.
- *
- * @since 6.3.0
- *
- * @param array $site_ids List of site IDs.
- */
-function wp_lazyload_site_meta( array $site_ids ) {
-	if ( empty( $site_ids ) ) {
-		return;
-	}
-	$lazyloader = wp_metadata_lazyloader();
-	$lazyloader->queue_objects( 'blog', $site_ids );
 }
 
 /**
@@ -393,17 +371,12 @@ function update_site_cache( $sites, $update_meta_cache = true ) {
 	if ( ! $sites ) {
 		return;
 	}
-	$site_ids          = array();
-	$site_data         = array();
-	$blog_details_data = array();
+	$site_ids = array();
 	foreach ( $sites as $site ) {
-		$site_ids[]                                    = $site->blog_id;
-		$site_data[ $site->blog_id ]                   = $site;
-		$blog_details_data[ $site->blog_id . 'short' ] = $site;
-
+		$site_ids[] = $site->blog_id;
+		wp_cache_add( $site->blog_id, $site, 'sites' );
+		wp_cache_add( $site->blog_id . 'short', $site, 'blog-details' );
 	}
-	wp_cache_add_multiple( $site_data, 'sites' );
-	wp_cache_add_multiple( $blog_details_data, 'blog-details' );
 
 	if ( $update_meta_cache ) {
 		update_sitemeta_cache( $site_ids );
@@ -437,8 +410,51 @@ function update_sitemeta_cache( $site_ids ) {
  *
  * @see WP_Site_Query::parse_query()
  *
- * @param string|array $args Optional. Array or string of arguments. See WP_Site_Query::__construct()
- *                           for information on accepted arguments. Default empty array.
+ * @param string|array $args {
+ *     Optional. Array or query string of site query parameters. Default empty.
+ *
+ *     @type array        $site__in          Array of site IDs to include. Default empty.
+ *     @type array        $site__not_in      Array of site IDs to exclude. Default empty.
+ *     @type bool         $count             Whether to return a site count (true) or array of site objects.
+ *                                           Default false.
+ *     @type array        $date_query        Date query clauses to limit sites by. See WP_Date_Query.
+ *                                           Default null.
+ *     @type string       $fields            Site fields to return. Accepts 'ids' (returns an array of site IDs)
+ *                                           or empty (returns an array of complete site objects). Default empty.
+ *     @type int          $ID                A site ID to only return that site. Default empty.
+ *     @type int          $number            Maximum number of sites to retrieve. Default 100.
+ *     @type int          $offset            Number of sites to offset the query. Used to build LIMIT clause.
+ *                                           Default 0.
+ *     @type bool         $no_found_rows     Whether to disable the `SQL_CALC_FOUND_ROWS` query. Default true.
+ *     @type string|array $orderby           Site status or array of statuses. Accepts 'id', 'domain', 'path',
+ *                                           'network_id', 'last_updated', 'registered', 'domain_length',
+ *                                           'path_length', 'site__in' and 'network__in'. Also accepts false,
+ *                                           an empty array, or 'none' to disable `ORDER BY` clause.
+ *                                           Default 'id'.
+ *     @type string       $order             How to order retrieved sites. Accepts 'ASC', 'DESC'. Default 'ASC'.
+ *     @type int          $network_id        Limit results to those affiliated with a given network ID. If 0,
+ *                                           include all networks. Default 0.
+ *     @type array        $network__in       Array of network IDs to include affiliated sites for. Default empty.
+ *     @type array        $network__not_in   Array of network IDs to exclude affiliated sites for. Default empty.
+ *     @type string       $domain            Limit results to those affiliated with a given domain. Default empty.
+ *     @type array        $domain__in        Array of domains to include affiliated sites for. Default empty.
+ *     @type array        $domain__not_in    Array of domains to exclude affiliated sites for. Default empty.
+ *     @type string       $path              Limit results to those affiliated with a given path. Default empty.
+ *     @type array        $path__in          Array of paths to include affiliated sites for. Default empty.
+ *     @type array        $path__not_in      Array of paths to exclude affiliated sites for. Default empty.
+ *     @type int          $public            Limit results to public sites. Accepts '1' or '0'. Default empty.
+ *     @type int          $archived          Limit results to archived sites. Accepts '1' or '0'. Default empty.
+ *     @type int          $mature            Limit results to mature sites. Accepts '1' or '0'. Default empty.
+ *     @type int          $spam              Limit results to spam sites. Accepts '1' or '0'. Default empty.
+ *     @type int          $deleted           Limit results to deleted sites. Accepts '1' or '0'. Default empty.
+ *     @type int          $lang_id           Limit results to a language ID. Default empty.
+ *     @type array        $lang__in          Array of language IDs to include affiliated sites for. Default empty.
+ *     @type array        $lang__not_in      Array of language IDs to exclude affiliated sites for. Default empty.
+ *     @type string       $search            Search term(s) to retrieve matching sites for. Default empty.
+ *     @type array        $search_columns    Array of column names to be searched. Accepts 'domain' and 'path'.
+ *                                           Default empty array.
+ *     @type bool         $update_site_cache Whether to prime the cache for found sites. Default true.
+ * }
  * @return array|int List of WP_Site objects, a list of site IDs when 'fields' is set to 'ids',
  *                   or the number of sites when 'count' is passed as a query var.
  */
@@ -652,7 +668,7 @@ function wp_validate_site_data( $errors, $data, $old_site = null ) {
  *     @type array  $meta    Custom site metadata $key => $value pairs to use.
  *                           Default empty array.
  * }
- * @return true|WP_Error True on success, or error object on failure.
+ * @return bool|WP_Error True on success, or error object on failure.
  */
 function wp_initialize_site( $site_id, array $args = array() ) {
 	global $wpdb, $wp_roles;
@@ -783,7 +799,7 @@ function wp_initialize_site( $site_id, array $args = array() ) {
  * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param int|WP_Site $site_id Site ID or object.
- * @return true|WP_Error True on success, or error object on failure.
+ * @return bool|WP_Error True on success, or error object on failure.
  */
 function wp_uninitialize_site( $site_id ) {
 	global $wpdb;
@@ -844,8 +860,8 @@ function wp_uninitialize_site( $site_id ) {
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $basedir Uploads path without subdirectory. See {@see wp_upload_dir()}.
-	 * @param int    $site_id The site ID.
+	 * @param string $uploads['basedir'] Uploads path without subdirectory. @see wp_upload_dir()
+	 * @param int    $site_id            The site ID.
 	 */
 	$dir     = apply_filters( 'wpmu_delete_blog_upload_dir', $uploads['basedir'], $site->id );
 	$dir     = rtrim( $dir, DIRECTORY_SEPARATOR );
@@ -877,12 +893,12 @@ function wp_uninitialize_site( $site_id ) {
 			}
 			@closedir( $dh );
 		}
-		++$index;
+		$index++;
 	}
 
 	$stack = array_reverse( $stack ); // Last added directories are deepest.
 	foreach ( (array) $stack as $dir ) {
-		if ( $dir !== $top_dir ) {
+		if ( $dir != $top_dir ) {
 			@rmdir( $dir );
 		}
 	}
@@ -1004,13 +1020,13 @@ function clean_blog_cache( $blog ) {
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string  $id              Site ID as a numeric string.
+	 * @param int     $id              Blog ID.
 	 * @param WP_Site $blog            Site object.
 	 * @param string  $domain_path_key md5 hash of domain and path.
 	 */
 	do_action( 'clean_site_cache', $blog_id, $blog, $domain_path_key );
 
-	wp_cache_set_sites_last_changed();
+	wp_cache_set( 'last_changed', microtime(), 'sites' );
 
 	/**
 	 * Fires after the blog details cache is cleared.
@@ -1068,12 +1084,10 @@ function delete_site_meta( $site_id, $meta_key, $meta_value = '' ) {
  * @param string $key     Optional. The meta key to retrieve. By default,
  *                        returns data for all keys. Default empty.
  * @param bool   $single  Optional. Whether to return a single value.
- *                        This parameter has no effect if `$key` is not specified.
+ *                        This parameter has no effect if $key is not specified.
  *                        Default false.
- * @return mixed An array of values if `$single` is false.
- *               The value of meta data field if `$single` is true.
- *               False for an invalid `$site_id` (non-numeric, zero, or negative value).
- *               An empty string if a valid but non-existing site ID is passed.
+ * @return mixed An array if $single is false. The value of meta data field
+ *               if $single is true. False for an invalid $site_id.
  */
 function get_site_meta( $site_id, $key = '', $single = false ) {
 	return get_metadata( 'blog', $site_id, $key, $single );
@@ -1130,7 +1144,7 @@ function wp_maybe_update_network_site_counts_on_update( $new_site, $old_site = n
 		return;
 	}
 
-	if ( $new_site->network_id !== $old_site->network_id ) {
+	if ( $new_site->network_id != $old_site->network_id ) {
 		wp_maybe_update_network_site_counts( $new_site->network_id );
 		wp_maybe_update_network_site_counts( $old_site->network_id );
 	}
@@ -1153,8 +1167,8 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		$old_site = new WP_Site( new stdClass() );
 	}
 
-	if ( $new_site->spam !== $old_site->spam ) {
-		if ( '1' === $new_site->spam ) {
+	if ( $new_site->spam != $old_site->spam ) {
+		if ( 1 == $new_site->spam ) {
 
 			/**
 			 * Fires when the 'spam' status is added to a site.
@@ -1177,8 +1191,8 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		}
 	}
 
-	if ( $new_site->mature !== $old_site->mature ) {
-		if ( '1' === $new_site->mature ) {
+	if ( $new_site->mature != $old_site->mature ) {
+		if ( 1 == $new_site->mature ) {
 
 			/**
 			 * Fires when the 'mature' status is added to a site.
@@ -1201,8 +1215,8 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		}
 	}
 
-	if ( $new_site->archived !== $old_site->archived ) {
-		if ( '1' === $new_site->archived ) {
+	if ( $new_site->archived != $old_site->archived ) {
+		if ( 1 == $new_site->archived ) {
 
 			/**
 			 * Fires when the 'archived' status is added to a site.
@@ -1225,8 +1239,8 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		}
 	}
 
-	if ( $new_site->deleted !== $old_site->deleted ) {
-		if ( '1' === $new_site->deleted ) {
+	if ( $new_site->deleted != $old_site->deleted ) {
+		if ( 1 == $new_site->deleted ) {
 
 			/**
 			 * Fires when the 'deleted' status is added to a site.
@@ -1249,16 +1263,15 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		}
 	}
 
-	if ( $new_site->public !== $old_site->public ) {
+	if ( $new_site->public != $old_site->public ) {
 
 		/**
 		 * Fires after the current blog's 'public' setting is updated.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param int    $site_id   Site ID.
-		 * @param string $is_public Whether the site is public. A numeric string,
-		 *                          for compatibility reasons. Accepts '1' or '0'.
+		 * @param int    $site_id Site ID.
+		 * @param string $value   The value of the site status.
 		 */
 		do_action( 'update_blog_public', $site_id, $new_site->public );
 	}
@@ -1270,7 +1283,7 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
  * @since 5.1.0
  *
  * @param WP_Site $new_site The site object after the update.
- * @param WP_Site $old_site The site object prior to the update.
+ * @param WP_Site $old_site The site obejct prior to the update.
  */
 function wp_maybe_clean_new_site_cache_on_update( $new_site, $old_site ) {
 	if ( $old_site->domain !== $new_site->domain || $old_site->path !== $new_site->path ) {
@@ -1283,18 +1296,17 @@ function wp_maybe_clean_new_site_cache_on_update( $new_site, $old_site ) {
  *
  * @since 5.1.0
  *
- * @param int    $site_id   Site ID.
- * @param string $is_public Whether the site is public. A numeric string,
- *                          for compatibility reasons. Accepts '1' or '0'.
+ * @param int    $site_id Site ID.
+ * @param string $public  The value of the site status.
  */
-function wp_update_blog_public_option_on_site_update( $site_id, $is_public ) {
+function wp_update_blog_public_option_on_site_update( $site_id, $public ) {
 
 	// Bail if the site's database tables do not exist (yet).
 	if ( ! wp_is_site_initialized( $site_id ) ) {
 		return;
 	}
 
-	update_blog_option( $site_id, 'blog_public', $is_public );
+	update_blog_option( $site_id, 'blog_public', $public );
 }
 
 /**
@@ -1303,7 +1315,7 @@ function wp_update_blog_public_option_on_site_update( $site_id, $is_public ) {
  * @since 5.1.0
  */
 function wp_cache_set_sites_last_changed() {
-	wp_cache_set_last_changed( 'sites' );
+	wp_cache_set( 'last_changed', microtime(), 'sites' );
 }
 
 /**
