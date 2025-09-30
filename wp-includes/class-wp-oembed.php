@@ -89,7 +89,6 @@ class WP_oEmbed {
 			'#https?://videopress\.com/v/.*#'              => array( 'https://public-api.wordpress.com/oembed/?for=' . $host, true ),
 			'#https?://(www\.)?reddit\.com/r/[^/]+/comments/.*#i' => array( 'https://www.reddit.com/oembed', true ),
 			'#https?://(www\.)?speakerdeck\.com/.*#i'      => array( 'https://speakerdeck.com/oembed.{format}', true ),
-			'#https?://(www\.)?screencast\.com/.*#i'       => array( 'https://api.screencast.com/external/oembed', true ),
 			'#https?://([a-z0-9-]+\.)?amazon\.(com|com\.mx|com\.br|ca)/.*#i' => array( 'https://read.amazon.com/kp/api/oembed', true ),
 			'#https?://([a-z0-9-]+\.)?amazon\.(co\.uk|de|fr|it|es|in|nl|ru)/.*#i' => array( 'https://read.amazon.co.uk/kp/api/oembed', true ),
 			'#https?://([a-z0-9-]+\.)?amazon\.(co\.jp|com\.au)/.*#i' => array( 'https://read.amazon.com.au/kp/api/oembed', true ),
@@ -110,6 +109,7 @@ class WP_oEmbed {
 			'#https?://pca\.st/.+#i'                       => array( 'https://pca.st/oembed.json', true ),
 			'#https?://((play|www)\.)?anghami\.com/.*#i'   => array( 'https://api.anghami.com/rest/v1/oembed.view', true ),
 			'#https?://bsky.app/profile/.*/post/.*#i'      => array( 'https://embed.bsky.app/oembed', true ),
+			'#https?://(www\.)?canva\.com/design/.*/view.*#i' => array( 'https://canva.com/_oembed', true ),
 		);
 
 		if ( ! empty( self::$early_providers['add'] ) ) {
@@ -190,6 +190,7 @@ class WP_oEmbed {
 		 * | Crowdsignal  | crowdsignal.net                           | 6.2.0   |
 		 * | Anghami      | anghami.com                               | 6.3.0   |
 		 * | Bluesky      | bsky.app                                  | 6.6.0   |
+		 * | Canva        | canva.com                                 | 6.8.0   |
 		 *
 		 * No longer supported providers:
 		 *
@@ -214,6 +215,7 @@ class WP_oEmbed {
 		 * | Meetup.com   | meetup.com           | 3.9.0     | 6.0.1     |
 		 * | Meetup.com   | meetu.ps             | 3.9.0     | 6.0.1     |
 		 * | SlideShare   | slideshare.net       | 3.5.0     | 6.6.0     |
+		 * | Screencast   | screencast.com       | 4.8.0     | 6.8.2     |
 		 *
 		 * @see wp_oembed_add_provider()
 		 *

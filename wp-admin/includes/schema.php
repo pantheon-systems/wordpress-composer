@@ -446,7 +446,7 @@ function populate_options( array $options = array() ) {
 		'moderation_keys'                 => '',
 		'active_plugins'                  => array(),
 		'category_base'                   => '',
-		'ping_sites'                      => 'http://rpc.pingomatic.com/',
+		'ping_sites'                      => 'https://rpc.pingomatic.com/',
 		'comment_max_links'               => 2,
 		'gmt_offset'                      => $gmt_offset,
 
@@ -1046,6 +1046,11 @@ function populate_network( $network_id = 1, $domain = '', $email = '', $site_nam
 			'subdomain_install' => $subdomain_install,
 		)
 	);
+
+	// Remove the cron event since Recovery Mode is not used in Multisite.
+	if ( wp_next_scheduled( 'recovery_mode_clean_expired_keys' ) ) {
+		wp_clear_scheduled_hook( 'recovery_mode_clean_expired_keys' );
+	}
 
 	/*
 	 * When upgrading from single to multisite, assume the current site will
