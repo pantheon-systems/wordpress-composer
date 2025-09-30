@@ -8,6 +8,7 @@
   --wp-admin-border-width-focus:2px;
   --wp-block-synced-color:#7a00df;
   --wp-block-synced-color--rgb:122, 0, 223;
+  --wp-bound-block-color:var(--wp-block-synced-color);
 }
 @media (min-resolution:192dpi){
   :root{
@@ -22,14 +23,18 @@
   position:absolute;
 }
 .nux-dot-tip:before{
-  animation:nux-pulse 1.6s cubic-bezier(.17, .67, .92, .62) infinite;
-  background:rgba(0,115,156,.9);
+  background:#00739ce6;
   height:24px;
   left:-12px;
   opacity:.9;
   top:-12px;
   transform:scale(.3333333333);
   width:24px;
+}
+@media not (prefers-reduced-motion){
+  .nux-dot-tip:before{
+    animation:nux-pulse 1.6s cubic-bezier(.17, .67, .92, .62) infinite;
+  }
 }
 .nux-dot-tip:after{
   background:#00739c;
@@ -40,7 +45,7 @@
 }
 @keyframes nux-pulse{
   to{
-    background:rgba(0,115,156,0);
+    background:#00739c00;
     transform:scale(1);
   }
 }

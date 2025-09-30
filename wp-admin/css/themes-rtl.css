@@ -12,6 +12,10 @@
 	overflow-y: scroll;
 }
 
+.themes-php #adminmenuwrap {
+	z-index: 10001; /* above Theme Overlay */
+}
+
 body.js .theme-browser.search-loading {
 	display: none;
 }
@@ -20,23 +24,23 @@ body.js .theme-browser.search-loading {
 	clear: both;
 }
 
-.themes-php:not(.network-admin) .wrap h1 {
-	margin-bottom: 15px;
-}
-
 .themes-php .wrap h1 .button {
 	margin-right: 20px;
 }
 
 /* Search form */
 .themes-php .search-form {
-	display: inline;
+	display: inline-flex;
+	align-items: center;
+	position: relative;
+	top: 0;
+	gap: .5rem;
+	width: 100%;
+	justify-content: end;
 }
 
 .themes-php .wp-filter-search {
 	position: relative;
-	top: -2px;
-	right: 20px;
 	margin: 0;
 	width: 280px;
 }
@@ -177,12 +181,14 @@ body.js .theme-browser.search-loading {
 }
 
 .theme-browser .theme .more-details:focus {
-	box-shadow: 0 0 0 1px #fff, 0 0 0 3px #2271b1;
+	box-shadow: 0 0 0 2px #2271b1;
 }
 
 .theme-browser .theme.focus {
-	border-color: #4f94d4;
-	box-shadow: 0 0 2px rgba(79, 148, 212, 0.8);
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+	/* Only visible in Windows High Contrast mode */
+	outline: 2px solid transparent;
 }
 
 .theme-browser .theme.focus .more-details {
@@ -371,6 +377,7 @@ body.js .theme-browser.search-loading {
 	background: #f0f0f1;
 	background: rgba(240, 240, 241, 0.9);
 	z-index: 10000; /* Over WP Pointers. */
+	min-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
 }
 
 .theme-overlay .theme-header {
@@ -507,10 +514,12 @@ body.folded .theme-browser ~ .theme-overlay .theme-wrap {
 	z-index: 30;
 	box-sizing: border-box;
 	border-top: 1px solid #f0f0f1;
+	display: flex;
+	justify-content: center;
+	gap: 5px;
 }
 
-.theme-overlay .theme-actions a {
-	margin-left: 5px;
+.theme-overlay .theme-actions .button {
 	margin-bottom: 5px;
 }
 
@@ -522,26 +531,21 @@ body.folded .theme-browser ~ .theme-overlay .theme-wrap {
 
 .broken-themes a.delete-theme,
 .theme-overlay .theme-actions .delete-theme {
-	color: #d63638;
+	color: #b32d2e;
 	text-decoration: none;
 	border-color: transparent;
 	box-shadow: none;
 	background: transparent;
 }
 
-.theme-overlay .theme-actions .delete-theme {
-	position: absolute;
-	left: 10px;
-	bottom: 5px;
-}
-
 .broken-themes a.delete-theme:hover,
 .broken-themes a.delete-theme:focus,
 .theme-overlay .theme-actions .delete-theme:hover,
 .theme-overlay .theme-actions .delete-theme:focus {
-	background: #d63638;
+	background: #b32d2e;
 	color: #fff;
-	border-color: #d63638;
+	border-color: #b32d2e;
+	box-shadow: 0 0 0 1px #b32d2e;
 }
 
 .theme-overlay .theme-actions .active-theme,
@@ -917,6 +921,10 @@ body.folded .theme-browser ~ .theme-overlay .theme-wrap {
 		padding-right: 4%;
 		padding-left: 4%;
 	}
+
+	.theme-install-php .wp-filter .filter-count {
+		margin-top: 10px;
+	}
 }
 
 @media only screen and (max-width: 650px) {
@@ -937,6 +945,7 @@ body.folded .theme-browser ~ .theme-overlay .theme-wrap {
 	.theme-overlay .theme-screenshots {
 		width: 100%;
 		float: none;
+		margin: 0;
 	}
 
 	.theme-overlay .theme-info {
@@ -957,9 +966,13 @@ body.folded .theme-browser ~ .theme-overlay .theme-wrap {
 		clear: both;
 		right: 0;
 		left: 0;
-		margin: -5px 0 20px;
 		width: 100%;
 		max-width: 280px;
+	}
+
+	.theme-install-php .wp-filter p.search-box {
+		display: grid;
+		row-gap: .5rem;
 	}
 
 	.theme-browser .theme.add-new-theme span:after {
@@ -1029,6 +1042,13 @@ body.folded .theme-browser ~ .theme-overlay .theme-wrap {
 
 .theme-install-php .wp-filter {
 	padding-right: 20px;
+}
+
+/* Override column gap adjustment in media library. */
+@media only screen and (max-width: 1000px) {
+	.theme-install-php .wp-filter p.search-box {
+		column-gap: .5rem;
+	}
 }
 
 .theme-install-php a.upload,
@@ -1590,9 +1610,9 @@ body.full-overlay-active {
 
 .wp-full-overlay .collapse-sidebar:hover .collapse-sidebar-arrow,
 .wp-full-overlay .collapse-sidebar:focus .collapse-sidebar-arrow {
-	box-shadow:
-		0 0 0 1px #4f94d4,
-		0 0 2px 1px rgba(79, 148, 212, 0.8);
+	box-shadow: 0 0 0 2px #2271b1;
+	/* Only visible in Windows High Contrast mode */
+	outline: 2px solid transparent;
 }
 
 .wp-full-overlay .collapse-sidebar-label {
@@ -1629,12 +1649,14 @@ body.full-overlay-active {
 }
 
 /* Animations */
-.wp-full-overlay,
-.wp-full-overlay-sidebar,
-.wp-full-overlay .collapse-sidebar,
-.wp-full-overlay-main {
-	transition-property: right, left, top, bottom, width, margin;
-	transition-duration: 0.2s;
+@media (prefers-reduced-motion: no-preference) {
+	.wp-full-overlay,
+	.wp-full-overlay-sidebar,
+	.wp-full-overlay .collapse-sidebar,
+	.wp-full-overlay-main {
+		transition-property: right, left, top, bottom, width, margin;
+		transition-duration: 0.2s;
+	}
 }
 
 /* Device/preview size toggles */
