@@ -99,9 +99,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	public function prepare_items() {
 		global $status, $totals, $page, $orderby, $order, $s;
 
-		$orderby = ! empty( $_REQUEST['orderby'] ) ? sanitize_text_field( $_REQUEST['orderby'] ) : '';
-		$order   = ! empty( $_REQUEST['order'] ) ? sanitize_text_field( $_REQUEST['order'] ) : '';
-		$s       = ! empty( $_REQUEST['s'] ) ? sanitize_text_field( $_REQUEST['s'] ) : '';
+		wp_reset_vars( array( 'orderby', 'order', 's' ) );
 
 		$themes = array(
 			/**
@@ -494,9 +492,6 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Generates the list table rows.
-	 *
-	 * @since 3.1.0
 	 */
 	public function display_rows() {
 		foreach ( $this->items as $theme ) {
@@ -704,14 +699,8 @@ class WP_MS_Themes_List_Table extends WP_List_Table {
 		global $status, $totals;
 
 		if ( $theme->errors() ) {
-			$pre = 'broken' === $status ? '<strong class="error-message">' . __( 'Broken Theme:' ) . '</strong> ' : '';
-			wp_admin_notice(
-				$pre . $theme->errors()->get_error_message(),
-				array(
-					'type'               => 'error',
-					'additional_classes' => 'inline',
-				)
-			);
+			$pre = 'broken' === $status ? __( 'Broken Theme:' ) . ' ' : '';
+			echo '<p><strong class="error-message">' . $pre . $theme->errors()->get_error_message() . '</strong></p>';
 		}
 
 		if ( $this->is_site_themes ) {

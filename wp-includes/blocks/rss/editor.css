@@ -2,12 +2,15 @@
   display:inline;
 }
 
-.wp-block-rss__placeholder-form .wp-block-rss__placeholder-input{
-  flex:1 1 auto;
+.wp-block-rss__placeholder-form>*{
+  margin-bottom:8px;
 }
-
-.wp-block-rss .wp-block-rss{
-  all:inherit;
-  margin:0;
-  padding:0;
+@media (min-width:782px){
+  .wp-block-rss__placeholder-form>*{
+    margin-bottom:0;
+  }
+}
+.wp-block-rss__placeholder-form .wp-block-rss__placeholder-input{
+  flex:1;
+  min-width:80%;
 }

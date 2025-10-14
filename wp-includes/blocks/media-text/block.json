@@ -18,7 +18,7 @@
 			"selector": "figure img",
 			"attribute": "alt",
 			"default": "",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"mediaPosition": {
 			"type": "string",
@@ -26,14 +26,14 @@
 		},
 		"mediaId": {
 			"type": "number",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"mediaUrl": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "figure video,figure img",
 			"attribute": "src",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"mediaLink": {
 			"type": "string"
@@ -52,7 +52,7 @@
 			"source": "attribute",
 			"selector": "figure a",
 			"attribute": "href",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"rel": {
 			"type": "string",
@@ -68,7 +68,7 @@
 		},
 		"mediaType": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"mediaWidth": {
 			"type": "number",
@@ -92,29 +92,12 @@
 		},
 		"allowedBlocks": {
 			"type": "array"
-		},
-		"useFeaturedImage": {
-			"type": "boolean",
-			"default": false
 		}
 	},
-	"usesContext": [ "postId", "postType" ],
 	"supports": {
 		"anchor": true,
 		"align": [ "wide", "full" ],
 		"html": false,
-		"__experimentalBorder": {
-			"color": true,
-			"radius": true,
-			"style": true,
-			"width": true,
-			"__experimentalDefaultControls": {
-				"color": true,
-				"radius": true,
-				"style": true,
-				"width": true
-			}
-		},
 		"color": {
 			"gradients": true,
 			"heading": true,

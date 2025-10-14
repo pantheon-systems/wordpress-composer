@@ -113,10 +113,6 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * @return WP_REST_Response Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
-		if ( $request->is_method( 'HEAD' ) ) {
-			// Return early as this handler doesn't add any response headers.
-			return new WP_REST_Response( array() );
-		}
 
 		// Retrieve the list of registered collection query parameters.
 		$registered = $this->get_collection_params();
@@ -153,7 +149,7 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	 * @since 4.7.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
-	 * @return bool|WP_Error True if the request has read access for the item, otherwise false or WP_Error object.
+	 * @return true|WP_Error True if the request has read access for the item, otherwise false or WP_Error object.
 	 */
 	public function get_item_permissions_check( $request ) {
 
@@ -213,12 +209,6 @@ class WP_REST_Taxonomies_Controller extends WP_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		// Restores the more descriptive, specific name for use within this method.
 		$taxonomy = $item;
-
-		// Don't prepare the response body for HEAD requests.
-		if ( $request->is_method( 'HEAD' ) ) {
-			/** This filter is documented in wp-includes/rest-api/endpoints/class-wp-rest-taxonomies-controller.php */
-			return apply_filters( 'rest_prepare_taxonomy', new WP_REST_Response( array() ), $taxonomy, $request );
-		}
 
 		$base = ! empty( $taxonomy->rest_base ) ? $taxonomy->rest_base : $taxonomy->name;
 

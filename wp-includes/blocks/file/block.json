@@ -11,13 +11,8 @@
 		"id": {
 			"type": "number"
 		},
-		"blob": {
-			"type": "string",
-			"role": "local"
-		},
 		"href": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"fileId": {
 			"type": "string",
@@ -28,15 +23,13 @@
 		"fileName": {
 			"type": "rich-text",
 			"source": "rich-text",
-			"selector": "a:not([download])",
-			"role": "content"
+			"selector": "a:not([download])"
 		},
 		"textLinkHref": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "a:not([download])",
-			"attribute": "href",
-			"role": "content"
+			"attribute": "href"
 		},
 		"textLinkTarget": {
 			"type": "string",
@@ -51,8 +44,7 @@
 		"downloadButtonText": {
 			"type": "rich-text",
 			"source": "rich-text",
-			"selector": "a[download]",
-			"role": "content"
+			"selector": "a[download]"
 		},
 		"displayPreview": {
 			"type": "boolean"
@@ -76,18 +68,6 @@
 			"__experimentalDefaultControls": {
 				"background": true,
 				"link": true
-			}
-		},
-		"__experimentalBorder": {
-			"radius": true,
-			"color": true,
-			"width": true,
-			"style": true,
-			"__experimentalDefaultControls": {
-				"radius": true,
-				"color": true,
-				"width": true,
-				"style": true
 			}
 		},
 		"interactivity": true

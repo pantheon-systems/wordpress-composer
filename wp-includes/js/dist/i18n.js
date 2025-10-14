@@ -309,7 +309,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/* global window, exports, define */
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
 // ESM COMPAT FLAG
@@ -332,7 +332,7 @@ __webpack_require__.d(__webpack_exports__, {
   subscribe: () => (/* reexport */ subscribe)
 });
 
-;// ./node_modules/memize/dist/index.js
+;// CONCATENATED MODULE: ./node_modules/memize/dist/index.js
 /**
  * Memize options object.
  *
@@ -497,7 +497,7 @@ function memize(fn, options) {
 // EXTERNAL MODULE: ./node_modules/sprintf-js/src/sprintf.js
 var sprintf = __webpack_require__(2058);
 var sprintf_default = /*#__PURE__*/__webpack_require__.n(sprintf);
-;// ./node_modules/@wordpress/i18n/build-module/sprintf.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/i18n/build-module/sprintf.js
 /**
  * External dependencies
  */
@@ -535,7 +535,7 @@ function sprintf_sprintf(format, ...args) {
   }
 }
 
-;// ./node_modules/@tannin/postfix/index.js
+;// CONCATENATED MODULE: ./node_modules/@tannin/postfix/index.js
 var PRECEDENCE, OPENERS, TERMINATORS, PATTERN;
 
 /**
@@ -661,7 +661,7 @@ function postfix( expression ) {
 	return terms.concat( stack.reverse() );
 }
 
-;// ./node_modules/@tannin/evaluate/index.js
+;// CONCATENATED MODULE: ./node_modules/@tannin/evaluate/index.js
 /**
  * Operator callback functions.
  *
@@ -773,7 +773,7 @@ function evaluate( postfix, variables ) {
 	return stack[ 0 ];
 }
 
-;// ./node_modules/@tannin/compile/index.js
+;// CONCATENATED MODULE: ./node_modules/@tannin/compile/index.js
 
 
 
@@ -804,7 +804,7 @@ function compile( expression ) {
 	};
 }
 
-;// ./node_modules/@tannin/plural-forms/index.js
+;// CONCATENATED MODULE: ./node_modules/@tannin/plural-forms/index.js
 
 
 /**
@@ -824,7 +824,7 @@ function pluralForms( expression ) {
 	};
 }
 
-;// ./node_modules/tannin/index.js
+;// CONCATENATED MODULE: ./node_modules/tannin/index.js
 
 
 /**
@@ -1039,7 +1039,7 @@ Tannin.prototype.dcnpgettext = function( domain, context, singular, plural, n ) 
 	return index === 0 ? singular : plural;
 };
 
-;// ./node_modules/@wordpress/i18n/build-module/create-i18n.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/i18n/build-module/create-i18n.js
 /**
  * External dependencies
  */
@@ -1319,7 +1319,9 @@ const createI18n = (initialData, initialDomain, hooks) => {
      */
     translation = /** @type {string} */
     /** @type {*} */hooks.applyFilters('i18n.gettext', translation, text, domain);
-    return /** @type {string} */ /** @type {*} */hooks.applyFilters('i18n.gettext_' + getFilterDomain(domain), translation, text, domain);
+    return /** @type {string} */(
+      /** @type {*} */hooks.applyFilters('i18n.gettext_' + getFilterDomain(domain), translation, text, domain)
+    );
   };
 
   /** @type {_x} */
@@ -1339,7 +1341,9 @@ const createI18n = (initialData, initialDomain, hooks) => {
      */
     translation = /** @type {string} */
     /** @type {*} */hooks.applyFilters('i18n.gettext_with_context', translation, text, context, domain);
-    return /** @type {string} */ /** @type {*} */hooks.applyFilters('i18n.gettext_with_context_' + getFilterDomain(domain), translation, text, context, domain);
+    return /** @type {string} */(
+      /** @type {*} */hooks.applyFilters('i18n.gettext_with_context_' + getFilterDomain(domain), translation, text, context, domain)
+    );
   };
 
   /** @type {_n} */
@@ -1360,7 +1364,9 @@ const createI18n = (initialData, initialDomain, hooks) => {
      */
     translation = /** @type {string} */
     /** @type {*} */hooks.applyFilters('i18n.ngettext', translation, single, plural, number, domain);
-    return /** @type {string} */ /** @type {*} */hooks.applyFilters('i18n.ngettext_' + getFilterDomain(domain), translation, single, plural, number, domain);
+    return /** @type {string} */(
+      /** @type {*} */hooks.applyFilters('i18n.ngettext_' + getFilterDomain(domain), translation, single, plural, number, domain)
+    );
   };
 
   /** @type {_nx} */
@@ -1382,7 +1388,9 @@ const createI18n = (initialData, initialDomain, hooks) => {
      */
     translation = /** @type {string} */
     /** @type {*} */hooks.applyFilters('i18n.ngettext_with_context', translation, single, plural, number, context, domain);
-    return /** @type {string} */ /** @type {*} */hooks.applyFilters('i18n.ngettext_with_context_' + getFilterDomain(domain), translation, single, plural, number, context, domain);
+    return /** @type {string} */(
+      /** @type {*} */hooks.applyFilters('i18n.ngettext_with_context_' + getFilterDomain(domain), translation, single, plural, number, context, domain)
+    );
   };
 
   /** @type {IsRtl} */
@@ -1440,9 +1448,9 @@ const createI18n = (initialData, initialDomain, hooks) => {
   };
 };
 
-;// external ["wp","hooks"]
+;// CONCATENATED MODULE: external ["wp","hooks"]
 const external_wp_hooks_namespaceObject = window["wp"]["hooks"];
-;// ./node_modules/@wordpress/i18n/build-module/default-i18n.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/i18n/build-module/default-i18n.js
 /**
  * Internal dependencies
  */
@@ -1590,7 +1598,7 @@ const isRTL = i18n.isRTL.bind(i18n);
  */
 const hasTranslation = i18n.hasTranslation.bind(i18n);
 
-;// ./node_modules/@wordpress/i18n/build-module/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/i18n/build-module/index.js
 
 
 

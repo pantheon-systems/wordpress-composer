@@ -749,13 +749,7 @@ class wpdb {
 	 * @param string $dbname     Database name.
 	 * @param string $dbhost     Database host.
 	 */
-	public function __construct(
-		$dbuser,
-		#[\SensitiveParameter]
-		$dbpassword,
-		$dbname,
-		$dbhost
-	) {
+	public function __construct( $dbuser, $dbpassword, $dbname, $dbhost ) {
 		if ( WP_DEBUG && WP_DEBUG_DISPLAY ) {
 			$this->show_errors();
 		}
@@ -884,8 +878,13 @@ class wpdb {
 			return compact( 'charset', 'collate' );
 		}
 
-		if ( 'utf8' === $charset ) {
+		if ( 'utf8' === $charset && $this->has_cap( 'utf8mb4' ) ) {
 			$charset = 'utf8mb4';
+		}
+
+		if ( 'utf8mb4' === $charset && ! $this->has_cap( 'utf8mb4' ) ) {
+			$charset = 'utf8';
+			$collate = str_replace( 'utf8mb4_', 'utf8_', $collate );
 		}
 
 		if ( 'utf8mb4' === $charset ) {
@@ -2120,8 +2119,7 @@ class wpdb {
 	 * @return bool|void True if the connection is up.
 	 */
 	public function check_connection( $allow_bail = true ) {
-		// Check if the connection is alive.
-		if ( ! empty( $this->dbh ) && mysqli_query( $this->dbh, 'DO 1' ) !== false ) {
+		if ( ! empty( $this->dbh ) && mysqli_ping( $this->dbh ) ) {
 			return true;
 		}
 
@@ -2412,10 +2410,12 @@ class wpdb {
 		static $placeholder;
 
 		if ( ! $placeholder ) {
+			// If ext/hash is not present, compat.php's hash_hmac() does not support sha256.
+			$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
 			// Old WP installs may not have AUTH_SALT defined.
 			$salt = defined( 'AUTH_SALT' ) && AUTH_SALT ? AUTH_SALT : (string) rand();
 
-			$placeholder = '{' . hash_hmac( 'sha256', uniqid( $salt, true ), $salt ) . '}';
+			$placeholder = '{' . hash_hmac( $algo, uniqid( $salt, true ), $salt ) . '}';
 		}
 
 		/*
@@ -3242,6 +3242,11 @@ class wpdb {
 			if ( ! empty( $column->Collation ) ) {
 				list( $charset ) = explode( '_', $column->Collation );
 
+				// If the current connection can't support utf8mb4 characters, let's only send 3-byte utf8 characters.
+				if ( 'utf8mb4' === $charset && ! $this->has_cap( 'utf8mb4' ) ) {
+					$charset = 'utf8';
+				}
+
 				$charsets[ strtolower( $charset ) ] = true;
 			}
 
@@ -3987,13 +3992,12 @@ class wpdb {
 	 *
 	 * @since 2.5.0
 	 *
+	 * @global string $wp_version             The WordPress version string.
 	 * @global string $required_mysql_version The required MySQL version string.
 	 * @return void|WP_Error
 	 */
 	public function check_database_version() {
-		global $required_mysql_version;
-		$wp_version = wp_get_wp_version();
-
+		global $wp_version, $required_mysql_version;
 		// Make sure the server has the required MySQL version.
 		if ( version_compare( $this->db_version(), $required_mysql_version, '<' ) ) {
 			/* translators: 1: WordPress version number, 2: Minimum required MySQL version number. */
@@ -4053,7 +4057,6 @@ class wpdb {
 	 * @since 4.1.0 Added support for the 'utf8mb4' feature.
 	 * @since 4.6.0 Added support for the 'utf8mb4_520' feature.
 	 * @since 6.2.0 Added support for the 'identifier_placeholders' feature.
-	 * @since 6.6.0 The `utf8mb4` feature now always returns true.
 	 *
 	 * @see wpdb::db_version()
 	 *
@@ -4089,7 +4092,26 @@ class wpdb {
 			case 'set_charset':
 				return version_compare( $db_version, '5.0.7', '>=' );
 			case 'utf8mb4':      // @since 4.1.0
-				return true;
+				if ( version_compare( $db_version, '5.5.3', '<' ) ) {
+					return false;
+				}
+
+				$client_version = mysqli_get_client_info();
+
+				/*
+				 * libmysql has supported utf8mb4 since 5.5.3, same as the MySQL server.
+				 * mysqlnd has supported utf8mb4 since 5.0.9.
+				 *
+				 * Note: str_contains() is not used here, as this file can be included
+				 * directly outside of WordPress core, e.g. by HyperDB, in which case
+				 * the polyfills from wp-includes/compat.php are not loaded.
+				 */
+				if ( false !== strpos( $client_version, 'mysqlnd' ) ) {
+					$client_version = preg_replace( '/^\D+([\d.]+).*/', '$1', $client_version );
+					return version_compare( $client_version, '5.0.9', '>=' );
+				} else {
+					return version_compare( $client_version, '5.5.3', '>=' );
+				}
 			case 'utf8mb4_520': // @since 4.6.0
 				return version_compare( $db_version, '5.6', '>=' );
 			case 'identifier_placeholders': // @since 6.2.0

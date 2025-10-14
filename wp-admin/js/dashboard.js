@@ -27,17 +27,11 @@ jQuery( function($) {
 	 * @return {void}
 	 */
 	updateWelcomePanel = function( visible ) {
-		$.post(
-			ajaxurl,
-			{
-				action: 'update-welcome-panel',
-				visible: visible,
-				welcomepanelnonce: $( '#welcomepanelnonce' ).val()
-			},
-			function() {
-				wp.a11y.speak( wp.i18n.__( 'Screen Options updated.' ) );
-			}
-		);
+		$.post( ajaxurl, {
+			action: 'update-welcome-panel',
+			visible: visible,
+			welcomepanelnonce: $( '#welcomepanelnonce' ).val()
+		});
 	};
 
 	// Unhide the welcome panel if the Welcome Option checkbox is checked.
@@ -98,7 +92,7 @@ jQuery( function($) {
 				setTimeout( function(){
 					// Request the widget content.
 					p.load( ajaxurl + '?action=dashboard-widgets&widget=' + id + '&pagenow=' + pagenow, '', function() {
-						// Hide the parent and slide it out for visual fanciness.
+						// Hide the parent and slide it out for visual fancyness.
 						p.hide().slideDown('normal', function(){
 							$(this).css('display', '');
 						});

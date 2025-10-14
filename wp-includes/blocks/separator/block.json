@@ -11,11 +11,6 @@
 		"opacity": {
 			"type": "string",
 			"default": "alpha-channel"
-		},
-		"tagName": {
-			"type": "string",
-			"enum": [ "hr", "div" ],
-			"default": "hr"
 		}
 	},
 	"supports": {

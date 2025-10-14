@@ -15,14 +15,11 @@
 			"type": "rich-text",
 			"source": "rich-text",
 			"selector": "h1,h2,h3,h4,h5,h6",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"level": {
 			"type": "number",
 			"default": 2
-		},
-		"levelOptions": {
-			"type": "array"
 		},
 		"placeholder": {
 			"type": "string"
@@ -32,13 +29,6 @@
 		"align": [ "wide", "full" ],
 		"anchor": true,
 		"className": true,
-		"splitting": true,
-		"__experimentalBorder": {
-			"color": true,
-			"radius": true,
-			"style": true,
-			"width": true
-		},
 		"color": {
 			"gradients": true,
 			"link": true,

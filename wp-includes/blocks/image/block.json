@@ -4,28 +4,17 @@
 	"name": "core/image",
 	"title": "Image",
 	"category": "media",
-	"usesContext": [
-		"allowResize",
-		"imageCrop",
-		"fixedHeight",
-		"postId",
-		"postType",
-		"queryId"
-	],
+	"usesContext": [ "allowResize", "imageCrop", "fixedHeight" ],
 	"description": "Insert an image to make a visual statement.",
 	"keywords": [ "img", "photo", "picture" ],
 	"textdomain": "default",
 	"attributes": {
-		"blob": {
-			"type": "string",
-			"role": "local"
-		},
 		"url": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "img",
 			"attribute": "src",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"alt": {
 			"type": "string",
@@ -33,13 +22,13 @@
 			"selector": "img",
 			"attribute": "alt",
 			"default": "",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"caption": {
 			"type": "rich-text",
 			"source": "rich-text",
 			"selector": "figcaption",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"lightbox": {
 			"type": "object",
@@ -52,14 +41,14 @@
 			"source": "attribute",
 			"selector": "img",
 			"attribute": "title",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"href": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "figure > a",
 			"attribute": "href",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"rel": {
 			"type": "string",
@@ -75,7 +64,7 @@
 		},
 		"id": {
 			"type": "number",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"width": {
 			"type": "string"
@@ -112,9 +101,6 @@
 		},
 		"filter": {
 			"duotone": true
-		},
-		"spacing": {
-			"margin": true
 		},
 		"__experimentalBorder": {
 			"color": true,

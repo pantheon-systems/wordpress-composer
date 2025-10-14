@@ -78,9 +78,6 @@
 		"tagName": {
 			"type": "string",
 			"default": "div"
-		},
-		"sizeSlug": {
-			"type": "string"
 		}
 	},
 	"usesContext": [ "postId", "postType" ],
@@ -88,7 +85,6 @@
 		"anchor": true,
 		"align": true,
 		"html": false,
-		"shadow": true,
 		"spacing": {
 			"padding": true,
 			"margin": [ "top", "bottom" ],

@@ -209,10 +209,12 @@
 div[data-type="core/freeform"]:before{
   border:1px solid #ddd;
   outline:1px solid #0000;
+  transition:border-color .1s linear,box-shadow .1s linear;
 }
-@media not (prefers-reduced-motion){
+@media (prefers-reduced-motion:reduce){
   div[data-type="core/freeform"]:before{
-    transition:border-color .1s linear,box-shadow .1s linear;
+    transition-delay:0s;
+    transition-duration:0s;
   }
 }
 div[data-type="core/freeform"].is-selected:before{

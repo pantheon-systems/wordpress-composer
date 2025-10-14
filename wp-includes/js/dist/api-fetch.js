@@ -29,9 +29,9 @@ __webpack_require__.d(__webpack_exports__, {
   "default": () => (/* binding */ build_module)
 });
 
-;// external ["wp","i18n"]
+;// CONCATENATED MODULE: external ["wp","i18n"]
 const external_wp_i18n_namespaceObject = window["wp"]["i18n"];
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/nonce.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/nonce.js
 /**
  * @param {string} nonce
  * @return {import('../types').APIFetchMiddleware & { nonce: string }} A middleware to enhance a request with a nonce.
@@ -65,7 +65,7 @@ function createNonceMiddleware(nonce) {
 }
 /* harmony default export */ const nonce = (createNonceMiddleware);
 
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/namespace-endpoint.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/namespace-endpoint.js
 /**
  * @type {import('../types').APIFetchMiddleware}
  */
@@ -90,7 +90,7 @@ const namespaceAndEndpointMiddleware = (options, next) => {
 };
 /* harmony default export */ const namespace_endpoint = (namespaceAndEndpointMiddleware);
 
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/root-url.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/root-url.js
 /**
  * Internal dependencies
  */
@@ -127,9 +127,9 @@ const createRootURLMiddleware = rootURL => (options, next) => {
 };
 /* harmony default export */ const root_url = (createRootURLMiddleware);
 
-;// external ["wp","url"]
+;// CONCATENATED MODULE: external ["wp","url"]
 const external_wp_url_namespaceObject = window["wp"]["url"];
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/preloading.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/preloading.js
 /**
  * WordPress dependencies
  */
@@ -186,32 +186,15 @@ function createPreloadingMiddleware(preloadedData) {
  * @return {Promise<any>} Promise with the response.
  */
 function prepareResponse(responseData, parse) {
-  if (parse) {
-    return Promise.resolve(responseData.body);
-  }
-  try {
-    return Promise.resolve(new window.Response(JSON.stringify(responseData.body), {
-      status: 200,
-      statusText: 'OK',
-      headers: responseData.headers
-    }));
-  } catch {
-    // See: https://github.com/WordPress/gutenberg/issues/67358#issuecomment-2621163926.
-    Object.entries(responseData.headers).forEach(([key, value]) => {
-      if (key.toLowerCase() === 'link') {
-        responseData.headers[key] = value.replace(/<([^>]+)>/, (/** @type {any} */_, /** @type {string} */url) => `<${encodeURI(url)}>`);
-      }
-    });
-    return Promise.resolve(parse ? responseData.body : new window.Response(JSON.stringify(responseData.body), {
-      status: 200,
-      statusText: 'OK',
-      headers: responseData.headers
-    }));
-  }
+  return Promise.resolve(parse ? responseData.body : new window.Response(JSON.stringify(responseData.body), {
+    status: 200,
+    statusText: 'OK',
+    headers: responseData.headers
+  }));
 }
 /* harmony default export */ const preloading = (createPreloadingMiddleware);
 
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/fetch-all-middleware.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/fetch-all-middleware.js
 /**
  * WordPress dependencies
  */
@@ -337,7 +320,7 @@ const fetchAllMiddleware = async (options, next) => {
 };
 /* harmony default export */ const fetch_all_middleware = (fetchAllMiddleware);
 
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/http-v1.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/http-v1.js
 /**
  * Set of HTTP methods which are eligible to be overridden.
  *
@@ -382,7 +365,7 @@ const httpV1Middleware = (options, next) => {
 };
 /* harmony default export */ const http_v1 = (httpV1Middleware);
 
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/user-locale.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/user-locale.js
 /**
  * WordPress dependencies
  */
@@ -406,7 +389,7 @@ const userLocaleMiddleware = (options, next) => {
 };
 /* harmony default export */ const user_locale = (userLocaleMiddleware);
 
-;// ./node_modules/@wordpress/api-fetch/build-module/utils/response.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/utils/response.js
 /**
  * WordPress dependencies
  */
@@ -482,7 +465,7 @@ function parseAndThrowError(response, shouldParseResponse = true) {
   });
 }
 
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/media-upload.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/media-upload.js
 /**
  * WordPress dependencies
  */
@@ -543,10 +526,6 @@ const mediaUploadMiddleware = (options, next) => {
     ...options,
     parse: false
   }).catch(response => {
-    // `response` could actually be an error thrown by `defaultFetchHandler`.
-    if (!response.headers) {
-      return Promise.reject(response);
-    }
     const attachmentId = response.headers.get('x-wp-upload-attachment-id');
     if (response.status >= 500 && response.status < 600 && attachmentId) {
       return postProcess(attachmentId).catch(() => {
@@ -564,7 +543,7 @@ const mediaUploadMiddleware = (options, next) => {
 };
 /* harmony default export */ const media_upload = (mediaUploadMiddleware);
 
-;// ./node_modules/@wordpress/api-fetch/build-module/middlewares/theme-preview.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/middlewares/theme-preview.js
 /**
  * WordPress dependencies
  */
@@ -605,7 +584,7 @@ const createThemePreviewMiddleware = themePath => (options, next) => {
 };
 /* harmony default export */ const theme_preview = (createThemePreviewMiddleware);
 
-;// ./node_modules/@wordpress/api-fetch/build-module/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/api-fetch/build-module/index.js
 /**
  * WordPress dependencies
  */
@@ -756,7 +735,7 @@ function apiFetch(options) {
   // ```
   // opts1 => m1( opts1, opts2 => m2( opts2, opts3 => m3( opts3, fetchHandler ) ) );
   // ```
-  const enhancedHandler = middlewares.reduceRight((/** @type {FetchHandler} */next, middleware) => {
+  const enhancedHandler = middlewares.reduceRight(( /** @type {FetchHandler} */next, middleware) => {
     return workingOptions => middleware(workingOptions, next);
   }, fetchHandler);
   return enhancedHandler(options).catch(error => {

@@ -10,7 +10,7 @@
 	"attributes": {
 		"label": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"showLabel": {
 			"type": "boolean",
@@ -19,7 +19,7 @@
 		"placeholder": {
 			"type": "string",
 			"default": "",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"width": {
 			"type": "number"
@@ -29,7 +29,7 @@
 		},
 		"buttonText": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"buttonPosition": {
 			"type": "string",
@@ -84,9 +84,6 @@
 				"radius": true,
 				"width": true
 			}
-		},
-		"spacing": {
-			"margin": true
 		},
 		"html": false
 	},

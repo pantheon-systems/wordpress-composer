@@ -260,24 +260,24 @@ class Text_Diff {
     function _check($from_lines, $to_lines)
     {
         if (serialize($from_lines) != serialize($this->getOriginal())) {
-            throw new Text_Exception("Reconstructed original does not match");
+            trigger_error("Reconstructed original does not match", E_USER_ERROR);
         }
         if (serialize($to_lines) != serialize($this->getFinal())) {
-            throw new Text_Exception("Reconstructed final does not match");
+            trigger_error("Reconstructed final does not match", E_USER_ERROR);
         }
 
         $rev = $this->reverse();
         if (serialize($to_lines) != serialize($rev->getOriginal())) {
-            throw new Text_Exception("Reversed original does not match");
+            trigger_error("Reversed original does not match", E_USER_ERROR);
         }
         if (serialize($from_lines) != serialize($rev->getFinal())) {
-            throw new Text_Exception("Reversed final does not match");
+            trigger_error("Reversed final does not match", E_USER_ERROR);
         }
 
         $prevtype = null;
         foreach ($this->_edits as $edit) {
-            if ($prevtype !== null && $edit instanceof $prevtype) {
-                throw new Text_Exception("Edit sequence is non-optimal");
+            if ($edit instanceof $prevtype) {
+                trigger_error("Edit sequence is non-optimal", E_USER_ERROR);
             }
             $prevtype = get_class($edit);
         }
@@ -350,12 +350,15 @@ class Text_MappedDiff extends Text_Diff {
  *
  * @access private
  */
-abstract class Text_Diff_Op {
+class Text_Diff_Op {
 
     var $orig;
     var $final;
 
-    abstract function &reverse();
+    function &reverse()
+    {
+        trigger_error('Abstract method', E_USER_ERROR);
+    }
 
     function norig()
     {

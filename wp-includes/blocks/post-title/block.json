@@ -15,28 +15,19 @@
 			"type": "number",
 			"default": 2
 		},
-		"levelOptions": {
-			"type": "array"
-		},
 		"isLink": {
 			"type": "boolean",
-			"default": false,
-			"role": "content"
+			"default": false
 		},
 		"rel": {
 			"type": "string",
 			"attribute": "rel",
-			"default": "",
-			"role": "content"
+			"default": ""
 		},
 		"linkTarget": {
 			"type": "string",
-			"default": "_self",
-			"role": "content"
+			"default": "_self"
 		}
-	},
-	"example": {
-		"viewportWidth": 350
 	},
 	"supports": {
 		"align": [ "wide", "full" ],
@@ -69,18 +60,6 @@
 		},
 		"interactivity": {
 			"clientNavigation": true
-		},
-		"__experimentalBorder": {
-			"radius": true,
-			"color": true,
-			"width": true,
-			"style": true,
-			"__experimentalDefaultControls": {
-				"radius": true,
-				"color": true,
-				"width": true,
-				"style": true
-			}
 		}
 	},
 	"style": "wp-block-post-title"

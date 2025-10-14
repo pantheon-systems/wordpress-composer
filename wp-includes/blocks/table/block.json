@@ -9,7 +9,7 @@
 	"attributes": {
 		"hasFixedLayout": {
 			"type": "boolean",
-			"default": true
+			"default": false
 		},
 		"caption": {
 			"type": "rich-text",
@@ -195,13 +195,10 @@
 				"width": true
 			}
 		},
+		"__experimentalSelector": ".wp-block-table > table",
 		"interactivity": {
 			"clientNavigation": true
 		}
-	},
-	"selectors": {
-		"root": ".wp-block-table > table",
-		"spacing": ".wp-block-table"
 	},
 	"styles": [
 		{

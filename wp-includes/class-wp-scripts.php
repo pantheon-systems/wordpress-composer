@@ -289,12 +289,12 @@ class WP_Scripts extends WP_Dependencies {
 			$ver = $ver ? $ver . '&amp;' . $this->args[ $handle ] : $this->args[ $handle ];
 		}
 
-		$src                   = $obj->src;
-		$strategy              = $this->get_eligible_loading_strategy( $handle );
-		$intended_strategy     = (string) $this->get_data( $handle, 'strategy' );
-		$ie_conditional_prefix = '';
-		$ie_conditional_suffix = '';
-		$conditional           = isset( $obj->extra['conditional'] ) ? $obj->extra['conditional'] : '';
+		$src               = $obj->src;
+		$strategy          = $this->get_eligible_loading_strategy( $handle );
+		$intended_strategy = (string) $this->get_data( $handle, 'strategy' );
+		$cond_before       = '';
+		$cond_after        = '';
+		$conditional       = isset( $obj->extra['conditional'] ) ? $obj->extra['conditional'] : '';
 
 		if ( ! $this->is_delayed_strategy( $intended_strategy ) ) {
 			$intended_strategy = '';
@@ -320,15 +320,15 @@ class WP_Scripts extends WP_Dependencies {
 		}
 
 		if ( $conditional ) {
-			$ie_conditional_prefix = "<!--[if {$conditional}]>\n";
-			$ie_conditional_suffix = "<![endif]-->\n";
+			$cond_before = "<!--[if {$conditional}]>\n";
+			$cond_after  = "<![endif]-->\n";
 		}
 
 		$before_script = $this->get_inline_script_tag( $handle, 'before' );
 		$after_script  = $this->get_inline_script_tag( $handle, 'after' );
 
 		if ( $before_script || $after_script ) {
-			$inline_script_tag = $ie_conditional_prefix . $before_script . $after_script . $ie_conditional_suffix;
+			$inline_script_tag = $cond_before . $before_script . $after_script . $cond_after;
 		} else {
 			$inline_script_tag = '';
 		}
@@ -353,10 +353,10 @@ class WP_Scripts extends WP_Dependencies {
 			 * @param string $src    Script loader source path.
 			 * @param string $handle Script handle.
 			 */
-			$filtered_src = apply_filters( 'script_loader_src', $src, $handle );
+			$srce = apply_filters( 'script_loader_src', $src, $handle );
 
 			if (
-				$this->in_default_dir( $filtered_src )
+				$this->in_default_dir( $srce )
 				&& ( $before_script || $after_script || $translations_stop_concat || $this->is_delayed_strategy( $strategy ) )
 			) {
 				$this->do_concat = false;
@@ -364,7 +364,7 @@ class WP_Scripts extends WP_Dependencies {
 				// Have to print the so-far concatenated scripts right away to maintain the right order.
 				_print_scripts();
 				$this->reset();
-			} elseif ( $this->in_default_dir( $filtered_src ) && ! $conditional ) {
+			} elseif ( $this->in_default_dir( $srce ) && ! $conditional ) {
 				$this->print_code     .= $this->print_extra_script( $handle, false );
 				$this->concat         .= "$handle,";
 				$this->concat_version .= "$handle$ver";
@@ -378,13 +378,13 @@ class WP_Scripts extends WP_Dependencies {
 		$has_conditional_data = $conditional && $this->get_data( $handle, 'data' );
 
 		if ( $has_conditional_data ) {
-			echo $ie_conditional_prefix;
+			echo $cond_before;
 		}
 
 		$this->print_extra_script( $handle );
 
 		if ( $has_conditional_data ) {
-			echo $ie_conditional_suffix;
+			echo $cond_after;
 		}
 
 		// A single item may alias a set of items, by having dependencies, but no source.
@@ -425,9 +425,9 @@ class WP_Scripts extends WP_Dependencies {
 		if ( $intended_strategy ) {
 			$attr['data-wp-strategy'] = $intended_strategy;
 		}
-		$tag  = $translations . $ie_conditional_prefix . $before_script;
+		$tag  = $translations . $cond_before . $before_script;
 		$tag .= wp_get_script_tag( $attr );
-		$tag .= $after_script . $ie_conditional_suffix;
+		$tag .= $after_script . $cond_after;
 
 		/**
 		 * Filters the HTML script tag of an enqueued script.
@@ -626,16 +626,16 @@ class WP_Scripts extends WP_Dependencies {
 	 */
 	public function set_group( $handle, $recursion, $group = false ) {
 		if ( isset( $this->registered[ $handle ]->args ) && 1 === $this->registered[ $handle ]->args ) {
-			$calculated_group = 1;
+			$grp = 1;
 		} else {
-			$calculated_group = (int) $this->get_data( $handle, 'group' );
+			$grp = (int) $this->get_data( $handle, 'group' );
 		}
 
-		if ( false !== $group && $calculated_group > $group ) {
-			$calculated_group = $group;
+		if ( false !== $group && $grp > $group ) {
+			$grp = $group;
 		}
 
-		return parent::set_group( $handle, $recursion, $calculated_group );
+		return parent::set_group( $handle, $recursion, $grp );
 	}
 
 	/**
@@ -723,7 +723,7 @@ JS;
 	 * @return bool True on success, false on failure.
 	 */
 	public function all_deps( $handles, $recursion = false, $group = false ) {
-		$result = parent::all_deps( $handles, $recursion, $group );
+		$r = parent::all_deps( $handles, $recursion, $group );
 		if ( ! $recursion ) {
 			/**
 			 * Filters the list of script dependencies left to print.
@@ -734,7 +734,7 @@ JS;
 			 */
 			$this->to_do = apply_filters( 'print_scripts_array', $this->to_do );
 		}
-		return $result;
+		return $r;
 	}
 
 	/**
@@ -889,10 +889,10 @@ JS;
 	 * @return string The best eligible loading strategy.
 	 */
 	private function get_eligible_loading_strategy( $handle ) {
-		$intended_strategy = (string) $this->get_data( $handle, 'strategy' );
+		$intended = (string) $this->get_data( $handle, 'strategy' );
 
 		// Bail early if there is no intended strategy.
-		if ( ! $intended_strategy ) {
+		if ( ! $intended ) {
 			return '';
 		}
 
@@ -900,16 +900,16 @@ JS;
 		 * If the intended strategy is 'defer', limit the initial list of eligible
 		 * strategies, since 'async' can fallback to 'defer', but not vice-versa.
 		 */
-		$initial_strategy = ( 'defer' === $intended_strategy ) ? array( 'defer' ) : null;
+		$initial = ( 'defer' === $intended ) ? array( 'defer' ) : null;
 
-		$eligible_strategies = $this->filter_eligible_strategies( $handle, $initial_strategy );
+		$eligible = $this->filter_eligible_strategies( $handle, $initial );
 
 		// Return early once we know the eligible strategy is blocking.
-		if ( empty( $eligible_strategies ) ) {
+		if ( empty( $eligible ) ) {
 			return '';
 		}
 
-		return in_array( 'async', $eligible_strategies, true ) ? 'async' : 'defer';
+		return in_array( 'async', $eligible, true ) ? 'async' : 'defer';
 	}
 
 	/**
@@ -917,20 +917,20 @@ JS;
 	 *
 	 * @since 6.3.0
 	 *
-	 * @param string              $handle              The script handle.
-	 * @param string[]|null       $eligible_strategies Optional. The list of strategies to filter. Default null.
-	 * @param array<string, true> $checked             Optional. An array of already checked script handles, used to avoid recursive loops.
+	 * @param string              $handle   The script handle.
+	 * @param string[]|null       $eligible Optional. The list of strategies to filter. Default null.
+	 * @param array<string, true> $checked  Optional. An array of already checked script handles, used to avoid recursive loops.
 	 * @return string[] A list of eligible loading strategies that could be used.
 	 */
-	private function filter_eligible_strategies( $handle, $eligible_strategies = null, $checked = array() ) {
+	private function filter_eligible_strategies( $handle, $eligible = null, $checked = array() ) {
 		// If no strategies are being passed, all strategies are eligible.
-		if ( null === $eligible_strategies ) {
-			$eligible_strategies = $this->delayed_strategies;
+		if ( null === $eligible ) {
+			$eligible = $this->delayed_strategies;
 		}
 
 		// If this handle was already checked, return early.
 		if ( isset( $checked[ $handle ] ) ) {
-			return $eligible_strategies;
+			return $eligible;
 		}
 
 		// Mark this handle as checked.
@@ -938,12 +938,12 @@ JS;
 
 		// If this handle isn't registered, don't filter anything and return.
 		if ( ! isset( $this->registered[ $handle ] ) ) {
-			return $eligible_strategies;
+			return $eligible;
 		}
 
 		// If the handle is not enqueued, don't filter anything and return.
 		if ( ! $this->query( $handle, 'enqueued' ) ) {
-			return $eligible_strategies;
+			return $eligible;
 		}
 
 		$is_alias          = (bool) ! $this->registered[ $handle ]->src;
@@ -961,7 +961,7 @@ JS;
 
 		// If the intended strategy is 'defer', filter out 'async'.
 		if ( 'defer' === $intended_strategy ) {
-			$eligible_strategies = array( 'defer' );
+			$eligible = array( 'defer' );
 		}
 
 		$dependents = $this->get_dependents( $handle );
@@ -969,14 +969,14 @@ JS;
 		// Recursively filter eligible strategies for dependents.
 		foreach ( $dependents as $dependent ) {
 			// Bail early once we know the eligible strategy is blocking.
-			if ( empty( $eligible_strategies ) ) {
+			if ( empty( $eligible ) ) {
 				return array();
 			}
 
-			$eligible_strategies = $this->filter_eligible_strategies( $dependent, $eligible_strategies, $checked );
+			$eligible = $this->filter_eligible_strategies( $dependent, $eligible, $checked );
 		}
 
-		return $eligible_strategies;
+		return $eligible;
 	}
 
 	/**

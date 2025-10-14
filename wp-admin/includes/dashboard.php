@@ -726,20 +726,18 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			'view'      => '',
 		);
 
-		$approve_nonce = esc_html( '_wpnonce=' . wp_create_nonce( 'approve-comment_' . $comment->comment_ID ) );
-		$del_nonce     = esc_html( '_wpnonce=' . wp_create_nonce( 'delete-comment_' . $comment->comment_ID ) );
+		$del_nonce     = esc_html( '_wpnonce=' . wp_create_nonce( "delete-comment_$comment->comment_ID" ) );
+		$approve_nonce = esc_html( '_wpnonce=' . wp_create_nonce( "approve-comment_$comment->comment_ID" ) );
 
-		$action_string = 'comment.php?action=%s&p=' . $comment->comment_post_ID . '&c=' . $comment->comment_ID . '&%s';
-
-		$approve_url   = sprintf( $action_string, 'approvecomment', $approve_nonce );
-		$unapprove_url = sprintf( $action_string, 'unapprovecomment', $approve_nonce );
-		$spam_url      = sprintf( $action_string, 'spamcomment', $del_nonce );
-		$trash_url     = sprintf( $action_string, 'trashcomment', $del_nonce );
-		$delete_url    = sprintf( $action_string, 'deletecomment', $del_nonce );
+		$approve_url   = esc_url( "comment.php?action=approvecomment&p=$comment->comment_post_ID&c=$comment->comment_ID&$approve_nonce" );
+		$unapprove_url = esc_url( "comment.php?action=unapprovecomment&p=$comment->comment_post_ID&c=$comment->comment_ID&$approve_nonce" );
+		$spam_url      = esc_url( "comment.php?action=spamcomment&p=$comment->comment_post_ID&c=$comment->comment_ID&$del_nonce" );
+		$trash_url     = esc_url( "comment.php?action=trashcomment&p=$comment->comment_post_ID&c=$comment->comment_ID&$del_nonce" );
+		$delete_url    = esc_url( "comment.php?action=deletecomment&p=$comment->comment_post_ID&c=$comment->comment_ID&$del_nonce" );
 
 		$actions['approve'] = sprintf(
 			'<a href="%s" data-wp-lists="%s" class="vim-a aria-button-if-js" aria-label="%s">%s</a>',
-			esc_url( $approve_url ),
+			$approve_url,
 			"dim:the-comment-list:comment-{$comment->comment_ID}:unapproved:e7e7d3:e7e7d3:new=approved",
 			esc_attr__( 'Approve this comment' ),
 			__( 'Approve' )
@@ -747,7 +745,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 
 		$actions['unapprove'] = sprintf(
 			'<a href="%s" data-wp-lists="%s" class="vim-u aria-button-if-js" aria-label="%s">%s</a>',
-			esc_url( $unapprove_url ),
+			$unapprove_url,
 			"dim:the-comment-list:comment-{$comment->comment_ID}:unapproved:e7e7d3:e7e7d3:new=unapproved",
 			esc_attr__( 'Unapprove this comment' ),
 			__( 'Unapprove' )
@@ -770,7 +768,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 
 		$actions['spam'] = sprintf(
 			'<a href="%s" data-wp-lists="%s" class="vim-s vim-destructive aria-button-if-js" aria-label="%s">%s</a>',
-			esc_url( $spam_url ),
+			$spam_url,
 			"delete:the-comment-list:comment-{$comment->comment_ID}::spam=1",
 			esc_attr__( 'Mark this comment as spam' ),
 			/* translators: "Mark as spam" link. */
@@ -780,7 +778,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 		if ( ! EMPTY_TRASH_DAYS ) {
 			$actions['delete'] = sprintf(
 				'<a href="%s" data-wp-lists="%s" class="delete vim-d vim-destructive aria-button-if-js" aria-label="%s">%s</a>',
-				esc_url( $delete_url ),
+				$delete_url,
 				"delete:the-comment-list:comment-{$comment->comment_ID}::trash=1",
 				esc_attr__( 'Delete this comment permanently' ),
 				__( 'Delete Permanently' )
@@ -788,7 +786,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 		} else {
 			$actions['trash'] = sprintf(
 				'<a href="%s" data-wp-lists="%s" class="delete vim-d vim-destructive aria-button-if-js" aria-label="%s">%s</a>',
-				esc_url( $trash_url ),
+				$trash_url,
 				"delete:the-comment-list:comment-{$comment->comment_ID}::trash=1",
 				esc_attr__( 'Move this comment to the Trash' ),
 				_x( 'Trash', 'verb' )
@@ -802,7 +800,17 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			__( 'View' )
 		);
 
-		/** This filter is documented in wp-admin/includes/class-wp-comments-list-table.php */
+		/**
+		 * Filters the action links displayed for each comment in the 'Recent Comments'
+		 * dashboard widget.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param string[]   $actions An array of comment actions. Default actions include:
+		 *                            'Approve', 'Unapprove', 'Edit', 'Reply', 'Spam',
+		 *                            'Delete', and 'Trash'.
+		 * @param WP_Comment $comment The comment object.
+		 */
 		$actions = apply_filters( 'comment_row_actions', array_filter( $actions ), $comment );
 
 		$i = 0;
@@ -1279,7 +1287,7 @@ function wp_dashboard_rss_control( $widget_id, $form_inputs = array() ) {
 			}
 		}
 
-		update_option( 'dashboard_widget_options', $widget_options, false );
+		update_option( 'dashboard_widget_options', $widget_options );
 
 		$locale    = get_user_locale();
 		$cache_key = 'dash_v2_' . md5( $widget_id . '_' . $locale );
@@ -1811,10 +1819,13 @@ function wp_check_browser_version() {
 	$response = get_site_transient( 'browser_' . $key );
 
 	if ( false === $response ) {
+		// Include an unmodified $wp_version.
+		require ABSPATH . WPINC . '/version.php';
+
 		$url     = 'http://api.wordpress.org/core/browse-happy/1.1/';
 		$options = array(
 			'body'       => array( 'useragent' => $_SERVER['HTTP_USER_AGENT'] ),
-			'user-agent' => 'WordPress/' . wp_get_wp_version() . '; ' . home_url( '/' ),
+			'user-agent' => 'WordPress/' . $wp_version . '; ' . home_url( '/' ),
 		);
 
 		if ( wp_http_supports( array( 'ssl' ) ) ) {
@@ -1912,7 +1923,7 @@ function wp_dashboard_php_nag() {
 	<p class="button-container">
 		<?php
 		printf(
-			'<a class="button button-primary" href="%1$s" target="_blank">%2$s<span class="screen-reader-text"> %3$s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>',
+			'<a class="button button-primary" href="%1$s" target="_blank" rel="noopener">%2$s<span class="screen-reader-text"> %3$s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a>',
 			esc_url( wp_get_update_php_url() ),
 			__( 'Learn more about updating PHP' ),
 			/* translators: Hidden accessibility text. */
@@ -2056,7 +2067,7 @@ function wp_dashboard_empty() {}
  * @since 5.9.0 Send users to the Site Editor if the active theme is block-based.
  */
 function wp_welcome_panel() {
-	list( $display_version ) = explode( '-', wp_get_wp_version() );
+	list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );
 	$can_customize           = current_user_can( 'customize' );
 	$is_block_theme          = wp_is_block_theme();
 	?>
@@ -2070,7 +2081,7 @@ function wp_welcome_panel() {
 			<a href="<?php echo esc_url( admin_url( 'about.php' ) ); ?>">
 			<?php
 				/* translators: %s: Current WordPress version. */
-				printf( __( 'Learn more about the %s version.' ), esc_html( $display_version ) );
+				printf( __( 'Learn more about the %s version.' ), $display_version );
 			?>
 			</a>
 		</p>

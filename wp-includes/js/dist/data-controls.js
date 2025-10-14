@@ -59,15 +59,15 @@ __webpack_require__.d(__webpack_exports__, {
   syncSelect: () => (/* binding */ syncSelect)
 });
 
-;// external ["wp","apiFetch"]
+;// CONCATENATED MODULE: external ["wp","apiFetch"]
 const external_wp_apiFetch_namespaceObject = window["wp"]["apiFetch"];
 var external_wp_apiFetch_default = /*#__PURE__*/__webpack_require__.n(external_wp_apiFetch_namespaceObject);
-;// external ["wp","data"]
+;// CONCATENATED MODULE: external ["wp","data"]
 const external_wp_data_namespaceObject = window["wp"]["data"];
-;// external ["wp","deprecated"]
+;// CONCATENATED MODULE: external ["wp","deprecated"]
 const external_wp_deprecated_namespaceObject = window["wp"]["deprecated"];
 var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external_wp_deprecated_namespaceObject);
-;// ./node_modules/@wordpress/data-controls/build-module/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/data-controls/build-module/index.js
 /**
  * WordPress dependencies
  */
@@ -202,11 +202,9 @@ const __unstableAwaitPromise = function (promise) {
  * store.
  */
 const controls = {
-  AWAIT_PROMISE({
+  AWAIT_PROMISE: ({
     promise
-  }) {
-    return promise;
-  },
+  }) => promise,
   API_FETCH({
     request
   }) {

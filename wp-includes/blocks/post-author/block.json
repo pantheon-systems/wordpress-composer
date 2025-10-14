@@ -26,13 +26,11 @@
 		},
 		"isLink": {
 			"type": "boolean",
-			"default": false,
-			"role": "content"
+			"default": false
 		},
 		"linkTarget": {
 			"type": "string",
-			"default": "_self",
-			"role": "content"
+			"default": "_self"
 		}
 	},
 	"usesContext": [ "postType", "postId", "queryId" ],
@@ -66,20 +64,7 @@
 		},
 		"interactivity": {
 			"clientNavigation": true
-		},
-		"__experimentalBorder": {
-			"radius": true,
-			"color": true,
-			"width": true,
-			"style": true,
-			"__experimentalDefaultControls": {
-				"radius": true,
-				"color": true,
-				"width": true,
-				"style": true
-			}
 		}
 	},
-	"editorStyle": "wp-block-post-author-editor",
 	"style": "wp-block-post-author"
 }

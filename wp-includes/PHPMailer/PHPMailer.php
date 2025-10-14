@@ -13,7 +13,7 @@
  * @copyright 2012 - 2020 Marcus Bointon
  * @copyright 2010 - 2012 Jim Jagielski
  * @copyright 2004 - 2009 Andy Prevost
- * @license   https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html GNU Lesser General Public License
+ * @license   http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  * @note      This program is distributed in the hope that it will be useful - WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.
@@ -152,7 +152,8 @@ class PHPMailer
      * Only supported in simple alt or alt_inline message types
      * To generate iCal event structures, use classes like EasyPeasyICS or iCalcreator.
      *
-     * @see https://kigkonsult.se/iCalcreator/
+     * @see http://sprain.ch/blog/downloads/php-class-easypeasyics-create-ical-files-with-php/
+     * @see http://kigkonsult.se/iCalcreator/
      *
      * @var string
      */
@@ -253,7 +254,7 @@ class PHPMailer
      * You can set your own, but it must be in the format "<id@domain>",
      * as defined in RFC5322 section 3.6.4 or it will be ignored.
      *
-     * @see https://www.rfc-editor.org/rfc/rfc5322#section-3.6.4
+     * @see https://tools.ietf.org/html/rfc5322#section-3.6.4
      *
      * @var string
      */
@@ -357,7 +358,7 @@ class PHPMailer
     public $AuthType = '';
 
     /**
-     * SMTP SMTPXClient command attributes
+     * SMTP SMTPXClient command attibutes
      *
      * @var array
      */
@@ -387,7 +388,7 @@ class PHPMailer
      * 'DELAY'   will notify you if there is an unusual delay in delivery, but the actual
      *           delivery's outcome (success or failure) is not yet decided.
      *
-     * @see https://www.rfc-editor.org/rfc/rfc3461.html#section-4.1 for more information about NOTIFY
+     * @see https://tools.ietf.org/html/rfc3461 See section 4.1 for more information about NOTIFY
      */
     public $dsn = '';
 
@@ -467,7 +468,7 @@ class PHPMailer
      * Only applicable when sending via SMTP.
      *
      * @see https://en.wikipedia.org/wiki/Variable_envelope_return_path
-     * @see https://www.postfix.org/VERP_README.html Postfix VERP info
+     * @see http://www.postfix.org/VERP_README.html Postfix VERP info
      *
      * @var bool
      */
@@ -550,10 +551,10 @@ class PHPMailer
      * The function that handles the result of the send email action.
      * It is called out by send() for each email sent.
      *
-     * Value can be any php callable: https://www.php.net/is_callable
+     * Value can be any php callable: http://www.php.net/is_callable
      *
      * Parameters:
-     *   bool $result           result of the send action
+     *   bool $result        result of the send action
      *   array   $to            email addresses of the recipients
      *   array   $cc            cc email addresses
      *   array   $bcc           bcc email addresses
@@ -756,7 +757,7 @@ class PHPMailer
      *
      * @var string
      */
-    const VERSION = '6.9.3';
+    const VERSION = '6.9.1';
 
     /**
      * Error severity: message only, continue processing.
@@ -902,7 +903,7 @@ class PHPMailer
         }
         //Is this a PSR-3 logger?
         if ($this->Debugoutput instanceof \Psr\Log\LoggerInterface) {
-            $this->Debugoutput->debug(rtrim($str, "\r\n"));
+            $this->Debugoutput->debug($str);
 
             return;
         }
@@ -1071,7 +1072,7 @@ class PHPMailer
      * be modified after calling this function), addition of such addresses is delayed until send().
      * Addresses that have been added already return false, but do not throw exceptions.
      *
-     * @param string $kind    One of 'to', 'cc', 'bcc', or 'Reply-To'
+     * @param string $kind    One of 'to', 'cc', 'bcc', or 'ReplyTo'
      * @param string $address The email address
      * @param string $name    An optional username associated with the address
      *
@@ -1211,7 +1212,7 @@ class PHPMailer
      * Uses the imap_rfc822_parse_adrlist function if the IMAP extension is available.
      * Note that quotes in the name part are removed.
      *
-     * @see https://www.andrew.cmu.edu/user/agreen1/testing/mrbs/web/Mail/RFC822.php A more careful implementation
+     * @see http://www.andrew.cmu.edu/user/agreen1/testing/mrbs/web/Mail/RFC822.php A more careful implementation
      *
      * @param string $addrstr The address list string
      * @param bool   $useimap Whether to use the IMAP extension to parse the list
@@ -1406,6 +1407,7 @@ class PHPMailer
                  *  * IPv6 literals: 'first.last@[IPv6:a1::]'
                  * Not all of these will necessarily work for sending!
                  *
+                 * @see       http://squiloople.com/2009/12/20/email-address-validation/
                  * @copyright 2009-2010 Michael Rushton
                  * Feel free to use and redistribute this code. But please keep this copyright notice.
                  */
@@ -1734,8 +1736,9 @@ class PHPMailer
         //This sets the SMTP envelope sender which gets turned into a return-path header by the receiver
         //A space after `-f` is optional, but there is a long history of its presence
         //causing problems, so we don't use one
-        //Exim docs: https://www.exim.org/exim-html-current/doc/html/spec_html/ch-the_exim_command_line.html
-        //Sendmail docs: https://www.sendmail.org/~ca/email/man/sendmail.html
+        //Exim docs: http://www.exim.org/exim-html-current/doc/html/spec_html/ch-the_exim_command_line.html
+        //Sendmail docs: http://www.sendmail.org/~ca/email/man/sendmail.html
+        //Qmail docs: http://www.qmail.org/man/man8/qmail-inject.html
         //Example problem: https://www.drupal.org/node/1057954
 
         //PHP 5.6 workaround
@@ -1873,7 +1876,7 @@ class PHPMailer
      */
     protected static function isPermittedPath($path)
     {
-        //Matches scheme definition from https://www.rfc-editor.org/rfc/rfc3986#section-3.1
+        //Matches scheme definition from https://tools.ietf.org/html/rfc3986#section-3.1
         return !preg_match('#^[a-z][a-z\d+.-]*://#i', $path);
     }
 
@@ -1900,7 +1903,7 @@ class PHPMailer
     /**
      * Send mail using the PHP mail() function.
      *
-     * @see https://www.php.net/manual/en/book.mail.php
+     * @see http://www.php.net/manual/en/book.mail.php
      *
      * @param string $header The message headers
      * @param string $body   The message body
@@ -1930,8 +1933,9 @@ class PHPMailer
         //This sets the SMTP envelope sender which gets turned into a return-path header by the receiver
         //A space after `-f` is optional, but there is a long history of its presence
         //causing problems, so we don't use one
-        //Exim docs: https://www.exim.org/exim-html-current/doc/html/spec_html/ch-the_exim_command_line.html
-        //Sendmail docs: https://www.sendmail.org/~ca/email/man/sendmail.html
+        //Exim docs: http://www.exim.org/exim-html-current/doc/html/spec_html/ch-the_exim_command_line.html
+        //Sendmail docs: http://www.sendmail.org/~ca/email/man/sendmail.html
+        //Qmail docs: http://www.qmail.org/man/man8/qmail-inject.html
         //Example problem: https://www.drupal.org/node/1057954
         //CVE-2016-10033, CVE-2016-10045: Don't pass -f if characters will be escaped.
 
@@ -2707,7 +2711,7 @@ class PHPMailer
         }
 
         //Only allow a custom message ID if it conforms to RFC 5322 section 3.6.4
-        //https://www.rfc-editor.org/rfc/rfc5322#section-3.6.4
+        //https://tools.ietf.org/html/rfc5322#section-3.6.4
         if (
             '' !== $this->MessageID &&
             preg_match(
@@ -3632,7 +3636,7 @@ class PHPMailer
      * without breaking lines within a character.
      * Adapted from a function by paravoid.
      *
-     * @see https://www.php.net/manual/en/function.mb-encode-mimeheader.php#60283
+     * @see http://www.php.net/manual/en/function.mb-encode-mimeheader.php#60283
      *
      * @param string $str       multi-byte text to wrap encode
      * @param string $linebreak string to use as linefeed/end-of-line
@@ -3688,7 +3692,7 @@ class PHPMailer
     /**
      * Encode a string using Q encoding.
      *
-     * @see https://www.rfc-editor.org/rfc/rfc2047#section-4.2
+     * @see http://tools.ietf.org/html/rfc2047#section-4.2
      *
      * @param string $str      the text to encode
      * @param string $position Where the text is going to be used, see the RFC for what that means
@@ -4226,7 +4230,7 @@ class PHPMailer
             $result = $_SERVER['SERVER_NAME'];
         } elseif (function_exists('gethostname') && gethostname() !== false) {
             $result = gethostname();
-        } elseif (php_uname('n') !== '') {
+        } elseif (php_uname('n') !== false) {
             $result = php_uname('n');
         }
         if (!static::isValidHost($result)) {
@@ -4251,7 +4255,7 @@ class PHPMailer
             empty($host)
             || !is_string($host)
             || strlen($host) > 256
-            || !preg_match('/^([a-z\d.-]*|\[[a-f\d:]+\])$/i', $host)
+            || !preg_match('/^([a-zA-Z\d.-]*|\[[a-fA-F\d:]+\])$/', $host)
         ) {
             return false;
         }
@@ -4265,8 +4269,8 @@ class PHPMailer
             //Is it a valid IPv4 address?
             return filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
         }
-        //Is it a syntactically valid hostname (when embedded in a URL)?
-        return filter_var('https://' . $host, FILTER_VALIDATE_URL) !== false;
+        //Is it a syntactically valid hostname (when embeded in a URL)?
+        return filter_var('http://' . $host, FILTER_VALIDATE_URL) !== false;
     }
 
     /**
@@ -4677,7 +4681,7 @@ class PHPMailer
      * Multi-byte-safe pathinfo replacement.
      * Drop-in replacement for pathinfo(), but multibyte- and cross-platform-safe.
      *
-     * @see https://www.php.net/manual/en/function.pathinfo.php#107461
+     * @see http://www.php.net/manual/en/function.pathinfo.php#107461
      *
      * @param string     $path    A filename or path, does not need to exist as a file
      * @param int|string $options Either a PATHINFO_* constant,
@@ -4912,7 +4916,7 @@ class PHPMailer
      * Uses the 'relaxed' algorithm from RFC6376 section 3.4.2.
      * Canonicalized headers should *always* use CRLF, regardless of mailer setting.
      *
-     * @see https://www.rfc-editor.org/rfc/rfc6376#section-3.4.2
+     * @see https://tools.ietf.org/html/rfc6376#section-3.4.2
      *
      * @param string $signHeader Header
      *
@@ -4924,7 +4928,7 @@ class PHPMailer
         $signHeader = static::normalizeBreaks($signHeader, self::CRLF);
         //Unfold header lines
         //Note PCRE \s is too broad a definition of whitespace; RFC5322 defines it as `[ \t]`
-        //@see https://www.rfc-editor.org/rfc/rfc5322#section-2.2
+        //@see https://tools.ietf.org/html/rfc5322#section-2.2
         //That means this may break if you do something daft like put vertical tabs in your headers.
         $signHeader = preg_replace('/\r\n[ \t]+/', ' ', $signHeader);
         //Break headers out into an array
@@ -4956,7 +4960,7 @@ class PHPMailer
      * Uses the 'simple' algorithm from RFC6376 section 3.4.3.
      * Canonicalized bodies should *always* use CRLF, regardless of mailer setting.
      *
-     * @see https://www.rfc-editor.org/rfc/rfc6376#section-3.4.3
+     * @see https://tools.ietf.org/html/rfc6376#section-3.4.3
      *
      * @param string $body Message Body
      *
@@ -4992,7 +4996,7 @@ class PHPMailer
         $DKIMquery = 'dns/txt'; //Query method
         $DKIMtime = time();
         //Always sign these headers without being asked
-        //Recommended list from https://www.rfc-editor.org/rfc/rfc6376#section-5.4.1
+        //Recommended list from https://tools.ietf.org/html/rfc6376#section-5.4.1
         $autoSignHeaders = [
             'from',
             'to',
@@ -5098,7 +5102,7 @@ class PHPMailer
         }
         //The DKIM-Signature header is included in the signature *except for* the value of the `b` tag
         //which is appended after calculating the signature
-        //https://www.rfc-editor.org/rfc/rfc6376#section-3.5
+        //https://tools.ietf.org/html/rfc6376#section-3.5
         $dkimSignatureHeader = 'DKIM-Signature: v=1;' .
             ' d=' . $this->DKIM_domain . ';' .
             ' s=' . $this->DKIM_selector . ';' . static::$LE .

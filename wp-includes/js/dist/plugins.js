@@ -60,7 +60,9 @@ __webpack_require__.d(__webpack_exports__, {
   withPluginContext: () => (/* reexport */ withPluginContext)
 });
 
-;// ./node_modules/memize/dist/index.js
+;// CONCATENATED MODULE: external "React"
+const external_React_namespaceObject = window["React"];
+;// CONCATENATED MODULE: ./node_modules/memize/dist/index.js
 /**
  * Memize options object.
  *
@@ -222,25 +224,20 @@ function memize(fn, options) {
 
 
 
-;// external ["wp","element"]
+;// CONCATENATED MODULE: external ["wp","element"]
 const external_wp_element_namespaceObject = window["wp"]["element"];
-;// external ["wp","hooks"]
+;// CONCATENATED MODULE: external ["wp","hooks"]
 const external_wp_hooks_namespaceObject = window["wp"]["hooks"];
-;// external ["wp","isShallowEqual"]
+;// CONCATENATED MODULE: external ["wp","isShallowEqual"]
 const external_wp_isShallowEqual_namespaceObject = window["wp"]["isShallowEqual"];
 var external_wp_isShallowEqual_default = /*#__PURE__*/__webpack_require__.n(external_wp_isShallowEqual_namespaceObject);
-;// external ["wp","compose"]
+;// CONCATENATED MODULE: external ["wp","compose"]
 const external_wp_compose_namespaceObject = window["wp"]["compose"];
-;// external ["wp","deprecated"]
-const external_wp_deprecated_namespaceObject = window["wp"]["deprecated"];
-var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external_wp_deprecated_namespaceObject);
-;// external "ReactJSXRuntime"
-const external_ReactJSXRuntime_namespaceObject = window["ReactJSXRuntime"];
-;// ./node_modules/@wordpress/plugins/build-module/components/plugin-context/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/plugins/build-module/components/plugin-context/index.js
+
 /**
  * WordPress dependencies
  */
-
 
 
 
@@ -267,8 +264,6 @@ function usePluginContext() {
  * A Higher Order Component used to inject Plugin context to the
  * wrapped component.
  *
- * @deprecated 6.8.0 Use `usePluginContext` hook instead.
- *
  * @param  mapContextToProps Function called on every context change,
  *                           expected to return object of props to
  *                           merge with the component's own props.
@@ -276,19 +271,13 @@ function usePluginContext() {
  * @return {Component} Enhanced component with injected context as props.
  */
 const withPluginContext = mapContextToProps => (0,external_wp_compose_namespaceObject.createHigherOrderComponent)(OriginalComponent => {
-  external_wp_deprecated_default()('wp.plugins.withPluginContext', {
-    since: '6.8.0',
-    alternative: 'wp.plugins.usePluginContext'
-  });
-  return props => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(Context.Consumer, {
-    children: context => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(OriginalComponent, {
-      ...props,
-      ...mapContextToProps(context, props)
-    })
-  });
+  return props => (0,external_React_namespaceObject.createElement)(Context.Consumer, null, context => (0,external_React_namespaceObject.createElement)(OriginalComponent, {
+    ...props,
+    ...mapContextToProps(context, props)
+  }));
 }, 'withPluginContext');
 
-;// ./node_modules/@wordpress/plugins/build-module/components/plugin-error-boundary/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/plugins/build-module/components/plugin-error-boundary/index.js
 /**
  * WordPress dependencies
  */
@@ -329,24 +318,23 @@ class PluginErrorBoundary extends external_wp_element_namespaceObject.Component 
   }
 }
 
-;// external ["wp","primitives"]
+;// CONCATENATED MODULE: external ["wp","primitives"]
 const external_wp_primitives_namespaceObject = window["wp"]["primitives"];
-;// ./node_modules/@wordpress/icons/build-module/library/plugins.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/icons/build-module/library/plugins.js
+
 /**
  * WordPress dependencies
  */
 
-
-const plugins = /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_primitives_namespaceObject.SVG, {
+const plugins = (0,external_React_namespaceObject.createElement)(external_wp_primitives_namespaceObject.SVG, {
   xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 24 24",
-  children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_primitives_namespaceObject.Path, {
-    d: "M10.5 4v4h3V4H15v4h1.5a1 1 0 011 1v4l-3 4v2a1 1 0 01-1 1h-3a1 1 0 01-1-1v-2l-3-4V9a1 1 0 011-1H9V4h1.5zm.5 12.5v2h2v-2l3-4v-3H8v3l3 4z"
-  })
-});
+  viewBox: "0 0 24 24"
+}, (0,external_React_namespaceObject.createElement)(external_wp_primitives_namespaceObject.Path, {
+  d: "M10.5 4v4h3V4H15v4h1.5a1 1 0 011 1v4l-3 4v2a1 1 0 01-1 1h-3a1 1 0 01-1-1v-2l-3-4V9a1 1 0 011-1H9V4h1.5zm.5 12.5v2h2v-2l3-4v-3H8v3l3 4z"
+}));
 /* harmony default export */ const library_plugins = (plugins);
 
-;// ./node_modules/@wordpress/plugins/build-module/api/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/plugins/build-module/api/index.js
 /* eslint no-console: [ 'error', { allow: [ 'error' ] } ] */
 /**
  * External dependencies
@@ -356,11 +344,6 @@ const plugins = /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(ex
  * WordPress dependencies
  */
 
-
-
-/**
- * Defined behavior of a plugin type.
- */
 
 /**
  * Plugin definitions keyed by plugin name.
@@ -379,8 +362,8 @@ const api_plugins = {};
  * // Using ES5 syntax
  * var el = React.createElement;
  * var Fragment = wp.element.Fragment;
- * var PluginSidebar = wp.editor.PluginSidebar;
- * var PluginSidebarMoreMenuItem = wp.editor.PluginSidebarMoreMenuItem;
+ * var PluginSidebar = wp.editPost.PluginSidebar;
+ * var PluginSidebarMoreMenuItem = wp.editPost.PluginSidebarMoreMenuItem;
  * var registerPlugin = wp.plugins.registerPlugin;
  * var moreIcon = React.createElement( 'svg' ); //... svg element.
  *
@@ -415,7 +398,7 @@ const api_plugins = {};
  * @example
  * ```js
  * // Using ESNext syntax
- * import { PluginSidebar, PluginSidebarMoreMenuItem } from '@wordpress/editor';
+ * import { PluginSidebar, PluginSidebarMoreMenuItem } from '@wordpress/edit-post';
  * import { registerPlugin } from '@wordpress/plugins';
  * import { more } from '@wordpress/icons';
  *
@@ -546,7 +529,8 @@ function getPlugins(scope) {
   return Object.values(api_plugins).filter(plugin => plugin.scope === scope);
 }
 
-;// ./node_modules/@wordpress/plugins/build-module/components/plugin-area/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/plugins/build-module/components/plugin-area/index.js
+
 /**
  * External dependencies
  */
@@ -562,7 +546,6 @@ function getPlugins(scope) {
 /**
  * Internal dependencies
  */
-
 
 
 
@@ -632,32 +615,30 @@ function PluginArea({
       }
     };
   }, [scope]);
-  const plugins = (0,external_wp_element_namespaceObject.useSyncExternalStore)(store.subscribe, store.getValue, store.getValue);
-  return /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)("div", {
+  const plugins = (0,external_wp_element_namespaceObject.useSyncExternalStore)(store.subscribe, store.getValue);
+  return (0,external_React_namespaceObject.createElement)("div", {
     style: {
       display: 'none'
-    },
-    children: plugins.map(({
-      icon,
-      name,
-      render: Plugin
-    }) => /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(PluginContextProvider, {
-      value: getPluginContext(icon, name),
-      children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(PluginErrorBoundary, {
-        name: name,
-        onError: onError,
-        children: /*#__PURE__*/(0,external_ReactJSXRuntime_namespaceObject.jsx)(Plugin, {})
-      })
-    }, name))
-  });
+    }
+  }, plugins.map(({
+    icon,
+    name,
+    render: Plugin
+  }) => (0,external_React_namespaceObject.createElement)(PluginContextProvider, {
+    key: name,
+    value: getPluginContext(icon, name)
+  }, (0,external_React_namespaceObject.createElement)(PluginErrorBoundary, {
+    name: name,
+    onError: onError
+  }, (0,external_React_namespaceObject.createElement)(Plugin, null)))));
 }
 /* harmony default export */ const plugin_area = (PluginArea);
 
-;// ./node_modules/@wordpress/plugins/build-module/components/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/plugins/build-module/components/index.js
 
 
 
-;// ./node_modules/@wordpress/plugins/build-module/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/plugins/build-module/index.js
 
 
 

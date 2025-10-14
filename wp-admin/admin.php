@@ -31,7 +31,6 @@ if ( isset( $_GET['import'] ) && ! defined( 'WP_LOAD_IMPORTERS' ) ) {
 	define( 'WP_LOAD_IMPORTERS', true );
 }
 
-/** Load WordPress Bootstrap */
 require_once dirname( __DIR__ ) . '/wp-load.php';
 
 nocache_headers();
@@ -39,7 +38,7 @@ nocache_headers();
 if ( get_option( 'db_upgraded' ) ) {
 
 	flush_rewrite_rules();
-	update_option( 'db_upgraded', false, true );
+	update_option( 'db_upgraded', false );
 
 	/**
 	 * Fires on the next page load after a successful DB upgrade.

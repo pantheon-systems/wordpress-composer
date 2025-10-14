@@ -128,16 +128,8 @@ window.wp = window.wp || {};
 			inlineEditPost.edit( this );
 		});
 
-		// Clone quick edit categories for the bulk editor.
-		var beCategories = $( '#inline-edit fieldset.inline-edit-categories' ).clone();
-
-		// Make "id" attributes globally unique.
-		beCategories.find( '*[id]' ).each( function() {
-			this.id = 'bulk-edit-' + this.id;
-		});
-
 		$('#bulk-edit').find('fieldset:first').after(
-			beCategories
+			$('#inline-edit fieldset.inline-edit-categories').clone()
 		).siblings( 'fieldset:last' ).prepend(
 			$( '#inline-edit .inline-edit-tags-wrap' ).clone()
 		);
@@ -148,12 +140,7 @@ window.wp = window.wp || {};
 		 * Adds onclick events to the apply buttons.
 		 */
 		$('#doaction').on( 'click', function(e){
-			var n,
-				$itemsSelected = $( '#posts-filter .check-column input[type="checkbox"]:checked' );
-
-			if ( $itemsSelected.length < 1 ) {
-				return;
-			}
+			var n;
 
 			t.whichBulkButtonId = $( this ).attr( 'id' );
 			n = t.whichBulkButtonId.substr( 2 );
@@ -255,7 +242,7 @@ window.wp = window.wp || {};
 				if ( ! $( this ).parent().find( 'input[name="indeterminate_post_category[]"]' ).length ) {
 					// Get the term label text.
 					var label = $( this ).parent().text();
-					// Set indeterminate states for the backend. Add accessible text for indeterminate inputs.
+					// Set indeterminate states for the backend. Add accessible text for indeterminate inputs. 
 					$( this ).after( '<input type="hidden" name="indeterminate_post_category[]" value="' + $( this ).val() + '">' ).attr( 'aria-label', label.trim() + ': ' + wp.i18n.__( 'Some selected posts have this category' ) );
 				}
 			}
@@ -608,9 +595,9 @@ $( function() { inlineEditPost.init(); } );
 // Show/hide locks on posts.
 $( function() {
 
-	// Set the heartbeat interval to 10 seconds.
+	// Set the heartbeat interval to 15 seconds.
 	if ( typeof wp !== 'undefined' && wp.heartbeat ) {
-		wp.heartbeat.interval( 10 );
+		wp.heartbeat.interval( 15 );
 	}
 }).on( 'heartbeat-tick.wp-check-locked-posts', function( e, data ) {
 	var locked = data['wp-check-locked-posts'] || {};

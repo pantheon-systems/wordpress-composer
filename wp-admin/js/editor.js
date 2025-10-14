@@ -22,7 +22,7 @@ window.wp = window.wp || {};
 				$$ = tinymce.$;
 
 				/**
-				 * Handles onclick events for the Visual/Code tabs.
+				 * Handles onclick events for the Visual/Text tabs.
 				 *
 				 * @since 4.3.0
 				 *
@@ -62,7 +62,7 @@ window.wp = window.wp || {};
 		}
 
 		/**
-		 * Switches the editor between Visual and Code mode.
+		 * Switches the editor between Visual and Text mode.
 		 *
 		 * @since 2.5.0
 		 *
@@ -79,8 +79,6 @@ window.wp = window.wp || {};
 			var editorHeight, toolbarHeight, iframe,
 				editor = tinymce.get( id ),
 				wrap = $$( '#wp-' + id + '-wrap' ),
-				htmlSwitch = wrap.find( '.switch-tmce' ),
-				tmceSwitch = wrap.find( '.switch-html' ),
 				$textarea = $$( '#' + id ),
 				textarea = $textarea[0];
 
@@ -105,7 +103,18 @@ window.wp = window.wp || {};
 
 				editorHeight = parseInt( textarea.style.height, 10 ) || 0;
 
-				addHTMLBookmarkInTextAreaContent( $textarea );
+				var keepSelection = false;
+				if ( editor ) {
+					keepSelection = editor.getParam( 'wp_keep_scroll_position' );
+				} else {
+					keepSelection = window.tinyMCEPreInit.mceInit[ id ] &&
+									window.tinyMCEPreInit.mceInit[ id ].wp_keep_scroll_position;
+				}
+
+				if ( keepSelection ) {
+					// Save the selection.
+					addHTMLBookmarkInTextAreaContent( $textarea );
+				}
 
 				if ( editor ) {
 					editor.show();
@@ -121,14 +130,15 @@ window.wp = window.wp || {};
 						}
 					}
 
-					focusHTMLBookmarkInVisualEditor( editor );
+					if ( editor.getParam( 'wp_keep_scroll_position' ) ) {
+						// Restore the selection.
+						focusHTMLBookmarkInVisualEditor( editor );
+					}
 				} else {
 					tinymce.init( window.tinyMCEPreInit.mceInit[ id ] );
 				}
 
 				wrap.removeClass( 'html-active' ).addClass( 'tmce-active' );
-				tmceSwitch.attr( 'aria-pressed', false );
-				htmlSwitch.attr( 'aria-pressed', true );
 				$textarea.attr( 'aria-hidden', true );
 				window.setUserSetting( 'editor', 'tinymce' );
 
@@ -158,7 +168,9 @@ window.wp = window.wp || {};
 
 					var selectionRange = null;
 
-					selectionRange = findBookmarkedPosition( editor );
+					if ( editor.getParam( 'wp_keep_scroll_position' ) ) {
+						selectionRange = findBookmarkedPosition( editor );
+					}
 
 					editor.hide();
 
@@ -172,8 +184,6 @@ window.wp = window.wp || {};
 				}
 
 				wrap.removeClass( 'tmce-active' ).addClass( 'html-active' );
-				tmceSwitch.attr( 'aria-pressed', true );
-				htmlSwitch.attr( 'aria-pressed', false );
 				$textarea.attr( 'aria-hidden', false );
 				window.setUserSetting( 'editor', 'html' );
 			}
@@ -255,7 +265,7 @@ window.wp = window.wp || {};
 		}
 
 		/**
-		 * Gets a list of unique shortcodes or shortcode-lookalikes in the content.
+		 * Gets a list of unique shortcodes or shortcode-look-alikes in the content.
 		 *
 		 * @param {string} content The content we want to scan for shortcodes.
 		 */
@@ -510,7 +520,7 @@ window.wp = window.wp || {};
 		 * Focuses the selection markers in Visual mode.
 		 *
 		 * The method checks for existing selection markers inside the editor DOM (Visual mode)
-		 * and create a selection between the two nodes using the DOM `createRange` selection API.
+		 * and create a selection between the two nodes using the DOM `createRange` selection API
 		 *
 		 * If there is only a single node, select only the single node through TinyMCE's selection API
 		 *
@@ -535,7 +545,9 @@ window.wp = window.wp || {};
 				}
 			}
 
-			scrollVisualModeToStartElement( editor, startNode );
+			if ( editor.getParam( 'wp_keep_scroll_position' ) ) {
+				scrollVisualModeToStartElement( editor, startNode );
+			}
 
 			removeSelectionMarker( startNode );
 			removeSelectionMarker( endNode );
@@ -549,7 +561,7 @@ window.wp = window.wp || {};
 		 * By default TinyMCE wraps loose inline tags in a `<p>`.
 		 * When removing selection markers an empty `<p>` may be left behind, remove it.
 		 *
-		 * @param {Object} $marker The marker to be removed from the editor DOM, wrapped in an instance of `editor.$`
+		 * @param {Object} $marker The marker to be removed from the editor DOM, wrapped in an instnce of `editor.$`
 		 */
 		function removeSelectionMarker( $marker ) {
 			var $markerParent = $marker.parent();
@@ -838,7 +850,7 @@ window.wp = window.wp || {};
 			}
 		}
 
-		// Restore the selection when the editor is initialized. Needed when the Code editor is the default.
+		// Restore the selection when the editor is initialized. Needed when the Text editor is the default.
 		$( document ).on( 'tinymce-editor-init.keep-scroll-position', function( event, editor ) {
 			if ( editor.$( '.mce_SELRES_start' ).length ) {
 				focusHTMLBookmarkInVisualEditor( editor );
@@ -1203,7 +1215,7 @@ window.wp = window.wp || {};
 	/**
 	 * Initialize TinyMCE and/or Quicktags. For use with wp_enqueue_editor() (PHP).
 	 *
-	 * Intended for use with an existing textarea that will become the Code editor tab.
+	 * Intended for use with an existing textarea that will become the Text editor tab.
 	 * The editor width will be the width of the textarea container, height will be adjustable.
 	 *
 	 * Settings for both TinyMCE and Quicktags can be passed on initialization, and are "filtered"
@@ -1246,7 +1258,7 @@ window.wp = window.wp || {};
 			};
 		}
 
-		// Add wrap and the Visual|Code tabs.
+		// Add wrap and the Visual|Text tabs.
 		if ( settings.tinymce && settings.quicktags ) {
 			var $textarea = $( '#' + id );
 
@@ -1293,7 +1305,7 @@ window.wp = window.wp || {};
 						.append( $button.attr({
 							id: id + '-html',
 							'class': 'wp-switch-editor switch-html'
-						}).text( window.tinymce.translate( 'Code|tab' ) ) )
+						}).text( window.tinymce.translate( 'Text' ) ) )
 					).append( $editorContainer )
 			);
 

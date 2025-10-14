@@ -12,13 +12,11 @@
 		},
 		"isLink": {
 			"type": "boolean",
-			"default": true,
-			"role": "content"
+			"default": true
 		},
 		"linkTarget": {
 			"type": "string",
-			"default": "_self",
-			"role": "content"
+			"default": "_self"
 		},
 		"shouldSyncIcon": {
 			"type": "boolean"

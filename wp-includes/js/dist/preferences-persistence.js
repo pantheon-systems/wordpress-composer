@@ -55,10 +55,10 @@ __webpack_require__.d(__webpack_exports__, {
   create: () => (/* reexport */ create)
 });
 
-;// external ["wp","apiFetch"]
+;// CONCATENATED MODULE: external ["wp","apiFetch"]
 const external_wp_apiFetch_namespaceObject = window["wp"]["apiFetch"];
 var external_wp_apiFetch_default = /*#__PURE__*/__webpack_require__.n(external_wp_apiFetch_namespaceObject);
-;// ./node_modules/@wordpress/preferences-persistence/build-module/create/debounce-async.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/create/debounce-async.js
 /**
  * Performs a leading edge debounce of async functions.
  *
@@ -127,7 +127,7 @@ function debounceAsync(func, delayMS) {
   };
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/create/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/create/index.js
 /**
  * WordPress dependencies
  */
@@ -229,7 +229,7 @@ function create({
   };
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/move-feature-preferences.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/move-feature-preferences.js
 /**
  * Move the 'features' object in local storage from the sourceStoreName to the
  * preferences store data structure.
@@ -354,7 +354,7 @@ function moveFeaturePreferences(state, sourceStoreName) {
   };
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/move-third-party-feature-preferences.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/move-third-party-feature-preferences.js
 /**
  * The interface package previously had a public API that could be used by
  * plugins to set persisted boolean 'feature' preferences.
@@ -440,7 +440,7 @@ function moveThirdPartyFeaturePreferencesToPreferences(state) {
   }, state);
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/move-individual-preference.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/move-individual-preference.js
 const identity = arg => arg;
 
 /**
@@ -526,7 +526,7 @@ function moveIndividualPreferenceToPreferences(state, {
   };
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/move-interface-enable-items.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/move-interface-enable-items.js
 /**
  * Migrates interface 'enableItems' data to the preferences store.
  *
@@ -636,7 +636,7 @@ function moveInterfaceEnableItems(state) {
   };
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/convert-edit-post-panels.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/convert-edit-post-panels.js
 /**
  * Convert the post editor's panels state from:
  * ```
@@ -686,7 +686,7 @@ function convertEditPostPanels(preferences) {
   });
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/legacy-local-storage-data/index.js
 /**
  * Internal dependencies
  */
@@ -750,14 +750,14 @@ function convertLegacyData(data) {
   data = moveIndividualPreferenceToPreferences(data, {
     from: 'core/edit-post',
     to: 'core/edit-post'
+  }, 'preferredStyleVariations');
+  data = moveIndividualPreferenceToPreferences(data, {
+    from: 'core/edit-post',
+    to: 'core/edit-post'
   }, 'panels', convertEditPostPanels);
   data = moveIndividualPreferenceToPreferences(data, {
     from: 'core/editor',
-    to: 'core'
-  }, 'isPublishSidebarEnabled');
-  data = moveIndividualPreferenceToPreferences(data, {
-    from: 'core/edit-post',
-    to: 'core'
+    to: 'core/edit-post'
   }, 'isPublishSidebarEnabled');
   data = moveIndividualPreferenceToPreferences(data, {
     from: 'core/edit-site',
@@ -783,7 +783,7 @@ function convertLegacyLocalStorageData(userId) {
   return convertLegacyData(data);
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/preferences-package-data/convert-complementary-areas.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/preferences-package-data/convert-complementary-areas.js
 function convertComplementaryAreas(state) {
   return Object.keys(state).reduce((stateAccumulator, scope) => {
     const scopeData = state[scope];
@@ -802,7 +802,7 @@ function convertComplementaryAreas(state) {
   }, state);
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/preferences-package-data/convert-editor-settings.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/preferences-package-data/convert-editor-settings.js
 /**
  * Internal dependencies
  */
@@ -810,7 +810,7 @@ function convertComplementaryAreas(state) {
 function convertEditorSettings(data) {
   var _newData$coreEditPo, _newData$coreEditSi;
   let newData = data;
-  const settingsToMoveToCore = ['allowRightClickOverrides', 'distractionFree', 'editorMode', 'fixedToolbar', 'focusMode', 'hiddenBlockTypes', 'inactivePanels', 'keepCaretInsideBlock', 'mostUsedBlocks', 'openPanels', 'showBlockBreadcrumbs', 'showIconLabels', 'showListViewByDefault', 'isPublishSidebarEnabled', 'isComplementaryAreaVisible', 'pinnedItems'];
+  const settingsToMoveToCore = ['allowRightClickOverrides', 'distractionFree', 'editorMode', 'fixedToolbar', 'focusMode', 'hiddenBlockTypes', 'inactivePanels', 'keepCaretInsideBlock', 'mostUsedBlocks', 'openPanels', 'showBlockBreadcrumbs', 'showIconLabels', 'showListViewByDefault'];
   settingsToMoveToCore.forEach(setting => {
     if (data?.['core/edit-post']?.[setting] !== undefined) {
       newData = {
@@ -835,7 +835,7 @@ function convertEditorSettings(data) {
   return newData;
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/migrations/preferences-package-data/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/migrations/preferences-package-data/index.js
 /**
  * Internal dependencies
  */
@@ -847,7 +847,7 @@ function convertPreferencesPackageData(data) {
   return newData;
 }
 
-;// ./node_modules/@wordpress/preferences-persistence/build-module/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/preferences-persistence/build-module/index.js
 /**
  * Internal dependencies
  */

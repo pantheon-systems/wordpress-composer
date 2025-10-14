@@ -33,9 +33,8 @@ function network_domain_check() {
  * @return bool Whether subdomain installation is allowed
  */
 function allow_subdomain_install() {
-	$home   = get_option( 'home' );
-	$domain = parse_url( $home, PHP_URL_HOST );
-	if ( parse_url( $home, PHP_URL_PATH ) || 'localhost' === $domain || preg_match( '|^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|', $domain ) ) {
+	$domain = preg_replace( '|https?://([^/]+)|', '$1', get_option( 'home' ) );
+	if ( parse_url( get_option( 'home' ), PHP_URL_PATH ) || 'localhost' === $domain || preg_match( '|^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|', $domain ) ) {
 		return false;
 	}
 
@@ -149,8 +148,26 @@ function network_step1( $errors = false ) {
 		die();
 	}
 
-	// Strip standard port from hostname.
-	$hostname = preg_replace( '/(?::80|:443)$/', '', get_clean_basedomain() );
+	$hostname  = get_clean_basedomain();
+	$has_ports = strstr( $hostname, ':' );
+	if ( ( false !== $has_ports && ! in_array( $has_ports, array( ':80', ':443' ), true ) ) ) {
+		wp_admin_notice(
+			'<strong>' . __( 'Error:' ) . '</strong> ' . __( 'You cannot install a network of sites with your server address.' ),
+			array(
+				'additional_classes' => array( 'error' ),
+			)
+		);
+
+		echo '<p>' . sprintf(
+			/* translators: %s: Port number. */
+			__( 'You cannot use port numbers such as %s.' ),
+			'<code>' . $has_ports . '</code>'
+		) . '</p>';
+		echo '<a href="' . esc_url( admin_url() ) . '">' . __( 'Go to Dashboard' ) . '</a>';
+		echo '</div>';
+		require_once ABSPATH . 'wp-admin/admin-footer.php';
+		die();
+	}
 
 	echo '<form method="post">';
 
@@ -158,7 +175,7 @@ function network_step1( $errors = false ) {
 
 	$error_codes = array();
 	if ( is_wp_error( $errors ) ) {
-		$network_created_error_message = '<p><strong>' . __( 'Error:' ) . '</strong> ' . __( 'The network could not be created.' ) . '</p>';
+		$network_created_error_message = '<p><strong>' . __( 'Error: The network could not be created.' ) . '</strong></p>';
 		foreach ( $errors->get_error_messages() as $error ) {
 			$network_created_error_message .= "<p>$error</p>";
 		}
@@ -677,7 +694,7 @@ define( 'BLOG_ID_CURRENT_SITE', 1 );
 		printf(
 			/* translators: %s: Documentation URL. */
 			__( 'It seems your network is running with Nginx web server. <a href="%s">Learn more about further configuration</a>.' ),
-			__( 'https://developer.wordpress.org/advanced-administration/server/web-server/nginx/' )
+			__( 'https://wordpress.org/documentation/article/nginx/' )
 		);
 		echo '</p></li>';
 

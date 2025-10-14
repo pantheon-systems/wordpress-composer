@@ -13,8 +13,11 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 	define( 'WP_ADMIN', true );
 }
 
-/** Load WordPress Bootstrap */
-require_once dirname( __DIR__ ) . '/wp-load.php';
+if ( defined( 'ABSPATH' ) ) {
+	require_once ABSPATH . 'wp-load.php';
+} else {
+	require_once dirname( __DIR__ ) . '/wp-load.php';
+}
 
 /** Allow for cross-domain requests (from the front end). */
 send_origin_headers();
@@ -26,7 +29,7 @@ nocache_headers();
 /** This action is documented in wp-admin/admin.php */
 do_action( 'admin_init' );
 
-$action = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
+$action = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
 
 // Reject invalid parameters.
 if ( ! is_scalar( $action ) ) {

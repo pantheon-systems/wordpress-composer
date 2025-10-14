@@ -92,7 +92,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 
 		global $tabs, $tab, $paged, $type, $term;
 
-		$tab = ! empty( $_REQUEST['tab'] ) ? sanitize_text_field( $_REQUEST['tab'] ) : '';
+		wp_reset_vars( array( 'tab' ) );
 
 		$paged = $this->get_pagenum();
 
@@ -464,11 +464,6 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		}
 	}
 
-	/**
-	 * Generates the list table rows.
-	 *
-	 * @since 3.1.0
-	 */
 	public function display_rows() {
 		$plugins_allowedtags = array(
 			'a'       => array(
@@ -631,7 +626,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 				} elseif ( ! $compatible_wp ) {
 					$incompatible_notice_message .= __( 'This plugin does not work with your version of WordPress.' );
 					if ( current_user_can( 'update_core' ) ) {
-						$incompatible_notice_message .= sprintf(
+						$incompatible_notice_message .= printf(
 							/* translators: %s: URL to WordPress Updates screen. */
 							' ' . __( '<a href="%s">Please update WordPress</a>.' ),
 							self_admin_url( 'update-core.php' )

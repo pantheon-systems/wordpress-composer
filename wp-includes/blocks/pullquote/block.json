@@ -11,13 +11,13 @@
 			"type": "rich-text",
 			"source": "rich-text",
 			"selector": "p",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"citation": {
 			"type": "rich-text",
 			"source": "rich-text",
 			"selector": "cite",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"textAlign": {
 			"type": "string"
@@ -26,13 +26,6 @@
 	"supports": {
 		"anchor": true,
 		"align": [ "left", "right", "wide", "full" ],
-		"background": {
-			"backgroundImage": true,
-			"backgroundSize": true,
-			"__experimentalDefaultControls": {
-				"backgroundImage": true
-			}
-		},
 		"color": {
 			"gradients": true,
 			"background": true,
@@ -40,12 +33,6 @@
 			"__experimentalDefaultControls": {
 				"background": true,
 				"text": true
-			}
-		},
-		"dimensions": {
-			"minHeight": true,
-			"__experimentalDefaultControls": {
-				"minHeight": false
 			}
 		},
 		"spacing": {

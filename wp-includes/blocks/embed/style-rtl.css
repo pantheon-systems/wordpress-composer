@@ -14,7 +14,7 @@
 .wp-block-embed{
   overflow-wrap:break-word;
 }
-.wp-block-embed :where(figcaption){
+.wp-block-embed figcaption{
   margin-bottom:1em;
   margin-top:.5em;
 }

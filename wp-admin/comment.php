@@ -16,8 +16,7 @@ $submenu_file = 'edit-comments.php';
  * @global string $action
  */
 global $action;
-
-$action = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
+wp_reset_vars( array( 'action' ) );
 
 if ( isset( $_POST['deletecomment'] ) ) {
 	$action = 'deletecomment';

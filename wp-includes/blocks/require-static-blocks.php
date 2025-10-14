@@ -4,6 +4,7 @@
 // Returns folder names for static blocks necessary for core blocks registration.
 return array(
 	'audio',
+	'button',
 	'buttons',
 	'code',
 	'column',
@@ -13,7 +14,9 @@ return array(
 	'freeform',
 	'group',
 	'html',
+	'list',
 	'list-item',
+	'media-text',
 	'missing',
 	'more',
 	'nextpage',

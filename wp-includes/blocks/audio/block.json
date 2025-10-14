@@ -8,26 +8,22 @@
 	"keywords": [ "music", "sound", "podcast", "recording" ],
 	"textdomain": "default",
 	"attributes": {
-		"blob": {
-			"type": "string",
-			"role": "local"
-		},
 		"src": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "audio",
 			"attribute": "src",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"caption": {
 			"type": "rich-text",
 			"source": "rich-text",
 			"selector": "figcaption",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"id": {
 			"type": "number",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"autoplay": {
 			"type": "boolean",

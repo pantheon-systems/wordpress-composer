@@ -14,47 +14,21 @@
 			"selector": "blockquote",
 			"multiline": "p",
 			"default": "",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"citation": {
 			"type": "rich-text",
 			"source": "rich-text",
 			"selector": "cite",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
-		"textAlign": {
+		"align": {
 			"type": "string"
 		}
 	},
 	"supports": {
 		"anchor": true,
-		"align": [ "left", "right", "wide", "full" ],
 		"html": false,
-		"background": {
-			"backgroundImage": true,
-			"backgroundSize": true,
-			"__experimentalDefaultControls": {
-				"backgroundImage": true
-			}
-		},
-		"__experimentalBorder": {
-			"color": true,
-			"radius": true,
-			"style": true,
-			"width": true,
-			"__experimentalDefaultControls": {
-				"color": true,
-				"radius": true,
-				"style": true,
-				"width": true
-			}
-		},
-		"dimensions": {
-			"minHeight": true,
-			"__experimentalDefaultControls": {
-				"minHeight": false
-			}
-		},
 		"__experimentalOnEnter": true,
 		"__experimentalOnMerge": true,
 		"typography": {
@@ -83,9 +57,7 @@
 			"allowEditing": false
 		},
 		"spacing": {
-			"blockGap": true,
-			"padding": true,
-			"margin": true
+			"blockGap": true
 		},
 		"interactivity": {
 			"clientNavigation": true

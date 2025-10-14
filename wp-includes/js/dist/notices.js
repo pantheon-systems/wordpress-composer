@@ -63,9 +63,9 @@ __webpack_require__.d(selectors_namespaceObject, {
   getNotices: () => (getNotices)
 });
 
-;// external ["wp","data"]
+;// CONCATENATED MODULE: external ["wp","data"]
 const external_wp_data_namespaceObject = window["wp"]["data"];
-;// ./node_modules/@wordpress/notices/build-module/store/utils/on-sub-key.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/notices/build-module/store/utils/on-sub-key.js
 /**
  * Higher-order reducer creator which creates a combined reducer object, keyed
  * by a property on the action object.
@@ -95,7 +95,7 @@ const onSubKey = actionProperty => reducer => (state = {}, action) => {
 };
 /* harmony default export */ const on_sub_key = (onSubKey);
 
-;// ./node_modules/@wordpress/notices/build-module/store/reducer.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/notices/build-module/store/reducer.js
 /**
  * Internal dependencies
  */
@@ -134,7 +134,7 @@ const notices = on_sub_key('context')((state = [], action) => {
 });
 /* harmony default export */ const reducer = (notices);
 
-;// ./node_modules/@wordpress/notices/build-module/store/constants.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/notices/build-module/store/constants.js
 /**
  * Default context to use for notice grouping when not otherwise specified. Its
  * specific value doesn't hold much meaning, but it must be reasonably unique
@@ -151,7 +151,7 @@ const DEFAULT_CONTEXT = 'global';
  */
 const DEFAULT_STATUS = 'info';
 
-;// ./node_modules/@wordpress/notices/build-module/store/actions.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/notices/build-module/store/actions.js
 /**
  * Internal dependencies
  */
@@ -566,7 +566,7 @@ function removeNotices(ids, context = DEFAULT_CONTEXT) {
   };
 }
 
-;// ./node_modules/@wordpress/notices/build-module/store/selectors.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/notices/build-module/store/selectors.js
 /**
  * Internal dependencies
  */
@@ -641,7 +641,7 @@ function getNotices(state, context = DEFAULT_CONTEXT) {
   return state[context] || DEFAULT_NOTICES;
 }
 
-;// ./node_modules/@wordpress/notices/build-module/store/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/notices/build-module/store/index.js
 /**
  * WordPress dependencies
  */
@@ -666,7 +666,7 @@ const store = (0,external_wp_data_namespaceObject.createReduxStore)('core/notice
 });
 (0,external_wp_data_namespaceObject.register)(store);
 
-;// ./node_modules/@wordpress/notices/build-module/index.js
+;// CONCATENATED MODULE: ./node_modules/@wordpress/notices/build-module/index.js
 
 
 (window.wp = window.wp || {}).notices = __webpack_exports__;

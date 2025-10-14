@@ -20,10 +20,8 @@ if (!is_callable('\\Sodium\\bin2hex')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function bin2hex(
-        #[\SensitiveParameter]
-        $string
-    ) {
+    function bin2hex($string)
+    {
         return ParagonIE_Sodium_Compat::bin2hex($string);
     }
 }
@@ -36,12 +34,8 @@ if (!is_callable('\\Sodium\\compare')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function compare(
-        #[\SensitiveParameter]
-        $a,
-        #[\SensitiveParameter]
-        $b
-    ) {
+    function compare($a, $b)
+    {
         return ParagonIE_Sodium_Compat::compare($a, $b);
     }
 }
@@ -54,13 +48,8 @@ if (!is_callable('\\Sodium\\crypto_aead_aes256gcm_decrypt')) {
      * @param string $key
      * @return string|bool
      */
-    function crypto_aead_aes256gcm_decrypt(
-        $message,
-        $assocData,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_aead_aes256gcm_decrypt($message, $assocData, $nonce, $key)
+    {
         try {
             return ParagonIE_Sodium_Compat::crypto_aead_aes256gcm_decrypt($message, $assocData, $nonce, $key);
         } catch (\TypeError $ex) {
@@ -81,14 +70,8 @@ if (!is_callable('\\Sodium\\crypto_aead_aes256gcm_encrypt')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_aead_aes256gcm_encrypt(
-        #[\SensitiveParameter]
-        $message,
-        $assocData,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_aead_aes256gcm_encrypt($message, $assocData, $nonce, $key)
+    {
         return ParagonIE_Sodium_Compat::crypto_aead_aes256gcm_encrypt($message, $assocData, $nonce, $key);
     }
 }
@@ -111,13 +94,8 @@ if (!is_callable('\\Sodium\\crypto_aead_chacha20poly1305_decrypt')) {
      * @param string $key
      * @return string|bool
      */
-    function crypto_aead_chacha20poly1305_decrypt(
-        $message,
-        $assocData,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_aead_chacha20poly1305_decrypt($message, $assocData, $nonce, $key)
+    {
         try {
             return ParagonIE_Sodium_Compat::crypto_aead_chacha20poly1305_decrypt($message, $assocData, $nonce, $key);
         } catch (\TypeError $ex) {
@@ -138,14 +116,8 @@ if (!is_callable('\\Sodium\\crypto_aead_chacha20poly1305_encrypt')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_aead_chacha20poly1305_encrypt(
-        #[\SensitiveParameter]
-        $message,
-        $assocData,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_aead_chacha20poly1305_encrypt($message, $assocData, $nonce, $key)
+    {
         return ParagonIE_Sodium_Compat::crypto_aead_chacha20poly1305_encrypt($message, $assocData, $nonce, $key);
     }
 }
@@ -158,13 +130,8 @@ if (!is_callable('\\Sodium\\crypto_aead_chacha20poly1305_ietf_decrypt')) {
      * @param string $key
      * @return string|bool
      */
-    function crypto_aead_chacha20poly1305_ietf_decrypt(
-        $message,
-        $assocData,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_aead_chacha20poly1305_ietf_decrypt($message, $assocData, $nonce, $key)
+    {
         try {
             return ParagonIE_Sodium_Compat::crypto_aead_chacha20poly1305_ietf_decrypt($message, $assocData, $nonce, $key);
         } catch (\TypeError $ex) {
@@ -185,14 +152,8 @@ if (!is_callable('\\Sodium\\crypto_aead_chacha20poly1305_ietf_encrypt')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_aead_chacha20poly1305_ietf_encrypt(
-        #[\SensitiveParameter]
-        $message,
-        $assocData,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_aead_chacha20poly1305_ietf_encrypt($message, $assocData, $nonce, $key)
+    {
         return ParagonIE_Sodium_Compat::crypto_aead_chacha20poly1305_ietf_encrypt($message, $assocData, $nonce, $key);
     }
 }
@@ -205,11 +166,8 @@ if (!is_callable('\\Sodium\\crypto_auth')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_auth(
-        $message,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_auth($message, $key)
+    {
         return ParagonIE_Sodium_Compat::crypto_auth($message, $key);
     }
 }
@@ -223,12 +181,8 @@ if (!is_callable('\\Sodium\\crypto_auth_verify')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_auth_verify(
-        $mac,
-        $message,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_auth_verify($mac, $message, $key)
+    {
         return ParagonIE_Sodium_Compat::crypto_auth_verify($mac, $message, $key);
     }
 }
@@ -242,13 +196,8 @@ if (!is_callable('\\Sodium\\crypto_box')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_box(
-        #[\SensitiveParameter]
-        $message,
-        $nonce,
-        #[\SensitiveParameter]
-        $kp
-    ) {
+    function crypto_box($message, $nonce, $kp)
+    {
         return ParagonIE_Sodium_Compat::crypto_box($message, $nonce, $kp);
     }
 }
@@ -273,11 +222,8 @@ if (!is_callable('\\Sodium\\crypto_box_keypair_from_secretkey_and_publickey')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_box_keypair_from_secretkey_and_publickey(
-        #[\SensitiveParameter]
-        $sk,
-        $pk
-    ) {
+    function crypto_box_keypair_from_secretkey_and_publickey($sk, $pk)
+    {
         return ParagonIE_Sodium_Compat::crypto_box_keypair_from_secretkey_and_publickey($sk, $pk);
     }
 }
@@ -289,13 +235,8 @@ if (!is_callable('\\Sodium\\crypto_box_open')) {
      * @param string $kp
      * @return string|bool
      */
-    function crypto_box_open(
-        #[\SensitiveParameter]
-        $message,
-        $nonce,
-        #[\SensitiveParameter]
-        $kp
-    ) {
+    function crypto_box_open($message, $nonce, $kp)
+    {
         try {
             return ParagonIE_Sodium_Compat::crypto_box_open($message, $nonce, $kp);
         } catch (\TypeError $ex) {
@@ -313,10 +254,8 @@ if (!is_callable('\\Sodium\\crypto_box_publickey')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_box_publickey(
-        #[\SensitiveParameter]
-        $keypair
-    ) {
+    function crypto_box_publickey($keypair)
+    {
         return ParagonIE_Sodium_Compat::crypto_box_publickey($keypair);
     }
 }
@@ -328,10 +267,8 @@ if (!is_callable('\\Sodium\\crypto_box_publickey_from_secretkey')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_box_publickey_from_secretkey(
-        #[\SensitiveParameter]
-        $sk
-    ) {
+    function crypto_box_publickey_from_secretkey($sk)
+    {
         return ParagonIE_Sodium_Compat::crypto_box_publickey_from_secretkey($sk);
     }
 }
@@ -344,11 +281,8 @@ if (!is_callable('\\Sodium\\crypto_box_seal')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_box_seal(
-        #[\SensitiveParameter]
-        $message,
-        $publicKey
-    ) {
+    function crypto_box_seal($message, $publicKey)
+    {
         return ParagonIE_Sodium_Compat::crypto_box_seal($message, $publicKey);
     }
 }
@@ -359,11 +293,8 @@ if (!is_callable('\\Sodium\\crypto_box_seal_open')) {
      * @param string $kp
      * @return string|bool
      */
-    function crypto_box_seal_open(
-        $message,
-        #[\SensitiveParameter]
-        $kp
-    ) {
+    function crypto_box_seal_open($message, $kp)
+    {
         try {
             return ParagonIE_Sodium_Compat::crypto_box_seal_open($message, $kp);
         } catch (\TypeError $ex) {
@@ -381,10 +312,8 @@ if (!is_callable('\\Sodium\\crypto_box_secretkey')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_box_secretkey(
-        #[\SensitiveParameter]
-        $keypair
-    ) {
+    function crypto_box_secretkey($keypair)
+    {
         return ParagonIE_Sodium_Compat::crypto_box_secretkey($keypair);
     }
 }
@@ -398,12 +327,8 @@ if (!is_callable('\\Sodium\\crypto_generichash')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_generichash(
-        $message,
-        #[\SensitiveParameter]
-        $key = null,
-        $outLen = 32
-    ) {
+    function crypto_generichash($message, $key = null, $outLen = 32)
+    {
         return ParagonIE_Sodium_Compat::crypto_generichash($message, $key, $outLen);
     }
 }
@@ -416,11 +341,8 @@ if (!is_callable('\\Sodium\\crypto_generichash_final')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_generichash_final(
-        #[\SensitiveParameter]
-        &$ctx,
-        $outputLength = 32
-    ) {
+    function crypto_generichash_final(&$ctx, $outputLength = 32)
+    {
         return ParagonIE_Sodium_Compat::crypto_generichash_final($ctx, $outputLength);
     }
 }
@@ -433,11 +355,8 @@ if (!is_callable('\\Sodium\\crypto_generichash_init')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_generichash_init(
-        #[\SensitiveParameter]
-        $key = null,
-        $outLen = 32
-    ) {
+    function crypto_generichash_init($key = null, $outLen = 32)
+    {
         return ParagonIE_Sodium_Compat::crypto_generichash_init($key, $outLen);
     }
 }
@@ -450,11 +369,8 @@ if (!is_callable('\\Sodium\\crypto_generichash_update')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_generichash_update(
-        #[\SensitiveParameter]
-        &$ctx,
-        $message = ''
-    ) {
+    function crypto_generichash_update(&$ctx, $message = '')
+    {
         ParagonIE_Sodium_Compat::crypto_generichash_update($ctx, $message);
     }
 }
@@ -469,13 +385,8 @@ if (!is_callable('\\Sodium\\crypto_kx')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_kx(
-        #[\SensitiveParameter]
-        $my_secret,
-        $their_public,
-        $client_public,
-        $server_public
-    ) {
+    function crypto_kx($my_secret, $their_public, $client_public, $server_public)
+    {
         return ParagonIE_Sodium_Compat::crypto_kx(
             $my_secret,
             $their_public,
@@ -497,14 +408,8 @@ if (!is_callable('\\Sodium\\crypto_pwhash')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_pwhash(
-        $outlen,
-        #[\SensitiveParameter]
-        $passwd,
-        $salt,
-        $opslimit,
-        $memlimit
-    ) {
+    function crypto_pwhash($outlen, $passwd, $salt, $opslimit, $memlimit)
+    {
         return ParagonIE_Sodium_Compat::crypto_pwhash($outlen, $passwd, $salt, $opslimit, $memlimit);
     }
 }
@@ -518,12 +423,8 @@ if (!is_callable('\\Sodium\\crypto_pwhash_str')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_pwhash_str(
-        #[\SensitiveParameter]
-        $passwd,
-        $opslimit,
-        $memlimit
-    ) {
+    function crypto_pwhash_str($passwd, $opslimit, $memlimit)
+    {
         return ParagonIE_Sodium_Compat::crypto_pwhash_str($passwd, $opslimit, $memlimit);
     }
 }
@@ -536,12 +437,8 @@ if (!is_callable('\\Sodium\\crypto_pwhash_str_verify')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_pwhash_str_verify(
-        #[\SensitiveParameter]
-        $passwd,
-        #[\SensitiveParameter]
-        $hash
-    ) {
+    function crypto_pwhash_str_verify($passwd, $hash)
+    {
         return ParagonIE_Sodium_Compat::crypto_pwhash_str_verify($passwd, $hash);
     }
 }
@@ -557,15 +454,8 @@ if (!is_callable('\\Sodium\\crypto_pwhash_scryptsalsa208sha256')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_pwhash_scryptsalsa208sha256(
-        $outlen,
-        #[\SensitiveParameter]
-        $passwd,
-        #[\SensitiveParameter]
-        $salt,
-        $opslimit,
-        $memlimit
-    ) {
+    function crypto_pwhash_scryptsalsa208sha256($outlen, $passwd, $salt, $opslimit, $memlimit)
+    {
         return ParagonIE_Sodium_Compat::crypto_pwhash_scryptsalsa208sha256($outlen, $passwd, $salt, $opslimit, $memlimit);
     }
 }
@@ -579,12 +469,8 @@ if (!is_callable('\\Sodium\\crypto_pwhash_scryptsalsa208sha256_str')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_pwhash_scryptsalsa208sha256_str(
-        #[\SensitiveParameter]
-        $passwd,
-        $opslimit,
-        $memlimit
-    ) {
+    function crypto_pwhash_scryptsalsa208sha256_str($passwd, $opslimit, $memlimit)
+    {
         return ParagonIE_Sodium_Compat::crypto_pwhash_scryptsalsa208sha256_str($passwd, $opslimit, $memlimit);
     }
 }
@@ -597,12 +483,8 @@ if (!is_callable('\\Sodium\\crypto_pwhash_scryptsalsa208sha256_str_verify')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_pwhash_scryptsalsa208sha256_str_verify(
-        #[\SensitiveParameter]
-        $passwd,
-        #[\SensitiveParameter]
-        $hash
-    ) {
+    function crypto_pwhash_scryptsalsa208sha256_str_verify($passwd, $hash)
+    {
         return ParagonIE_Sodium_Compat::crypto_pwhash_scryptsalsa208sha256_str_verify($passwd, $hash);
     }
 }
@@ -615,11 +497,8 @@ if (!is_callable('\\Sodium\\crypto_scalarmult')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_scalarmult(
-        #[\SensitiveParameter]
-        $n,
-        $p
-    ) {
+    function crypto_scalarmult($n, $p)
+    {
         return ParagonIE_Sodium_Compat::crypto_scalarmult($n, $p);
     }
 }
@@ -631,10 +510,8 @@ if (!is_callable('\\Sodium\\crypto_scalarmult_base')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_scalarmult_base(
-        #[\SensitiveParameter]
-        $n
-    ) {
+    function crypto_scalarmult_base($n)
+    {
         return ParagonIE_Sodium_Compat::crypto_scalarmult_base($n);
     }
 }
@@ -648,13 +525,8 @@ if (!is_callable('\\Sodium\\crypto_secretbox')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_secretbox(
-        #[\SensitiveParameter]
-        $message,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_secretbox($message, $nonce, $key)
+    {
         return ParagonIE_Sodium_Compat::crypto_secretbox($message, $nonce, $key);
     }
 }
@@ -666,12 +538,8 @@ if (!is_callable('\\Sodium\\crypto_secretbox_open')) {
      * @param string $key
      * @return string|bool
      */
-    function crypto_secretbox_open(
-        $message,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_secretbox_open($message, $nonce, $key)
+    {
         try {
             return ParagonIE_Sodium_Compat::crypto_secretbox_open($message, $nonce, $key);
         } catch (\TypeError $ex) {
@@ -690,11 +558,8 @@ if (!is_callable('\\Sodium\\crypto_shorthash')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_shorthash(
-        $message,
-        #[\SensitiveParameter]
-        $key = ''
-    ) {
+    function crypto_shorthash($message, $key = '')
+    {
         return ParagonIE_Sodium_Compat::crypto_shorthash($message, $key);
     }
 }
@@ -707,11 +572,8 @@ if (!is_callable('\\Sodium\\crypto_sign')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_sign(
-        $message,
-        #[\SensitiveParameter]
-        $sk
-    ) {
+    function crypto_sign($message, $sk)
+    {
         return ParagonIE_Sodium_Compat::crypto_sign($message, $sk);
     }
 }
@@ -724,11 +586,8 @@ if (!is_callable('\\Sodium\\crypto_sign_detached')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_sign_detached(
-        $message,
-        #[\SensitiveParameter]
-        $sk
-    ) {
+    function crypto_sign_detached($message, $sk)
+    {
         return ParagonIE_Sodium_Compat::crypto_sign_detached($message, $sk);
     }
 }
@@ -770,10 +629,8 @@ if (!is_callable('\\Sodium\\crypto_sign_publickey')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_sign_publickey(
-        #[\SensitiveParameter]
-        $keypair
-    ) {
+    function crypto_sign_publickey($keypair)
+    {
         return ParagonIE_Sodium_Compat::crypto_sign_publickey($keypair);
     }
 }
@@ -785,10 +642,8 @@ if (!is_callable('\\Sodium\\crypto_sign_publickey_from_secretkey')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_sign_publickey_from_secretkey(
-        #[\SensitiveParameter]
-        $sk
-    ) {
+    function crypto_sign_publickey_from_secretkey($sk)
+    {
         return ParagonIE_Sodium_Compat::crypto_sign_publickey_from_secretkey($sk);
     }
 }
@@ -800,10 +655,8 @@ if (!is_callable('\\Sodium\\crypto_sign_secretkey')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_sign_secretkey(
-        #[\SensitiveParameter]
-        $keypair
-    ) {
+    function crypto_sign_secretkey($keypair)
+    {
         return ParagonIE_Sodium_Compat::crypto_sign_secretkey($keypair);
     }
 }
@@ -815,10 +668,8 @@ if (!is_callable('\\Sodium\\crypto_sign_seed_keypair')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_sign_seed_keypair(
-        #[\SensitiveParameter]
-        $seed
-    ) {
+    function crypto_sign_seed_keypair($seed)
+    {
         return ParagonIE_Sodium_Compat::crypto_sign_seed_keypair($seed);
     }
 }
@@ -858,10 +709,8 @@ if (!is_callable('\\Sodium\\crypto_sign_ed25519_sk_to_curve25519')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_sign_ed25519_sk_to_curve25519(
-        #[\SensitiveParameter]
-        $sk
-    ) {
+    function crypto_sign_ed25519_sk_to_curve25519($sk)
+    {
         return ParagonIE_Sodium_Compat::crypto_sign_ed25519_sk_to_curve25519($sk);
     }
 }
@@ -875,12 +724,8 @@ if (!is_callable('\\Sodium\\crypto_stream')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_stream(
-        $len,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_stream($len, $nonce, $key)
+    {
         return ParagonIE_Sodium_Compat::crypto_stream($len, $nonce, $key);
     }
 }
@@ -894,13 +739,8 @@ if (!is_callable('\\Sodium\\crypto_stream_xor')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function crypto_stream_xor(
-        #[\SensitiveParameter]
-        $message,
-        $nonce,
-        #[\SensitiveParameter]
-        $key
-    ) {
+    function crypto_stream_xor($message, $nonce, $key)
+    {
         return ParagonIE_Sodium_Compat::crypto_stream_xor($message, $nonce, $key);
     }
 }
@@ -912,10 +752,8 @@ if (!is_callable('\\Sodium\\hex2bin')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function hex2bin(
-        #[\SensitiveParameter]
-        $string
-    ) {
+    function hex2bin($string)
+    {
         return ParagonIE_Sodium_Compat::hex2bin($string);
     }
 }
@@ -928,12 +766,8 @@ if (!is_callable('\\Sodium\\memcmp')) {
      * @throws \SodiumException
      * @throws \TypeError
      */
-    function memcmp(
-        #[\SensitiveParameter]
-        $a,
-        #[\SensitiveParameter]
-        $b
-    ) {
+    function memcmp($a, $b)
+    {
         return ParagonIE_Sodium_Compat::memcmp($a, $b);
     }
 }
@@ -949,10 +783,8 @@ if (!is_callable('\\Sodium\\memzero')) {
      * @psalm-suppress MissingReturnType
      * @psalm-suppress ReferenceConstraintViolation
      */
-    function memzero(
-        #[\SensitiveParameter]
-        &$str
-    ) {
+    function memzero(&$str)
+    {
         ParagonIE_Sodium_Compat::memzero($str);
     }
 }

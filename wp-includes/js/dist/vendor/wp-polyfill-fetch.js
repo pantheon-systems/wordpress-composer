@@ -499,7 +499,6 @@
 
   Response.error = function() {
     var response = new Response(null, {status: 200, statusText: ''});
-    response.ok = false;
     response.status = 0;
     response.type = 'error';
     return response
@@ -545,16 +544,10 @@
 
       xhr.onload = function() {
         var options = {
+          status: xhr.status,
           statusText: xhr.statusText,
           headers: parseHeaders(xhr.getAllResponseHeaders() || '')
         };
-        // This check if specifically for when a user fetches a file locally from the file system
-        // Only if the status is out of a normal range
-        if (request.url.indexOf('file://') === 0 && (xhr.status < 200 || xhr.status > 599)) {
-          options.status = 200;
-        } else {
-          options.status = xhr.status;
-        }
         options.url = 'responseURL' in xhr ? xhr.responseURL : options.headers.get('X-Request-URL');
         var body = 'response' in xhr ? xhr.response : xhr.responseText;
         setTimeout(function() {
@@ -570,7 +563,7 @@
 
       xhr.ontimeout = function() {
         setTimeout(function() {
-          reject(new TypeError('Network request timed out'));
+          reject(new TypeError('Network request failed'));
         }, 0);
       };
 

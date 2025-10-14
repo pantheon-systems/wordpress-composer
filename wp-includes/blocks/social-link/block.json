@@ -5,19 +5,17 @@
 	"title": "Social Icon",
 	"category": "widgets",
 	"parent": [ "core/social-links" ],
-	"description": "Display an icon linking to a social profile or site.",
+	"description": "Display an icon linking to a social media profile or site.",
 	"textdomain": "default",
 	"attributes": {
 		"url": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"service": {
 			"type": "string"
 		},
 		"label": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"rel": {
 			"type": "string"

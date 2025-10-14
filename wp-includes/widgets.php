@@ -3,7 +3,7 @@
  * Core Widgets API
  *
  * This API is used for creating dynamic sidebar without hardcoding functionality into
- * themes.
+ * themes
  *
  * Includes both internal WordPress routines and theme-use routines.
  *
@@ -28,35 +28,27 @@ global $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_co
 /**
  * Stores the sidebars, since many themes can have more than one.
  *
- * @since 2.2.0
- *
  * @global array $wp_registered_sidebars The registered sidebars.
+ * @since 2.2.0
  */
 $wp_registered_sidebars = array();
 
 /**
  * Stores the registered widgets.
  *
- * @since 2.2.0
- *
  * @global array $wp_registered_widgets The registered widgets.
+ * @since 2.2.0
  */
 $wp_registered_widgets = array();
 
 /**
  * Stores the registered widget controls (options).
  *
- * @since 2.2.0
- *
  * @global array $wp_registered_widget_controls The registered widget controls.
+ * @since 2.2.0
  */
 $wp_registered_widget_controls = array();
-
 /**
- * Stores the registered widget updates.
- *
- * @since 2.8.0
- *
  * @global array $wp_registered_widget_updates The registered widget updates.
  */
 $wp_registered_widget_updates = array();
@@ -103,7 +95,7 @@ $GLOBALS['_wp_deprecated_widgets_callbacks'] = array(
 //
 
 /**
- * Registers a widget.
+ * Register a widget
  *
  * Registers a WP_Widget widget
  *
@@ -226,7 +218,7 @@ function register_sidebars( $number = 1, $args = array() ) {
  * on what other plugins and themes are installed.
  *
  * If theme support for 'widgets' has not yet been added when this function is
- * called, it will be automatically enabled through the use of add_theme_support().
+ * called, it will be automatically enabled through the use of add_theme_support()
  *
  * @since 2.2.0
  * @since 5.6.0 Added the `before_sidebar` and `after_sidebar` arguments.
@@ -361,7 +353,7 @@ function is_registered_sidebar( $sidebar_id ) {
 }
 
 /**
- * Registers an instance of a widget.
+ * Register an instance of a widget.
  *
  * The default widget option is 'classname' that can be overridden.
  *
@@ -435,7 +427,7 @@ function wp_register_sidebar_widget( $id, $name, $output_callback, $options = ar
 }
 
 /**
- * Retrieves description for widget.
+ * Retrieve description for widget.
  *
  * When registering widgets, the options can also include 'description' that
  * describes the widget for display on the widget administration panel or
@@ -461,7 +453,7 @@ function wp_widget_description( $id ) {
 }
 
 /**
- * Retrieves description for a sidebar.
+ * Retrieve description for a sidebar.
  *
  * When registering sidebars a 'description' parameter can be included that
  * describes the sidebar for display on the widget administration panel.
@@ -669,7 +661,7 @@ function _register_widget_form_callback( $id, $name, $form_callback, $options = 
 }
 
 /**
- * Removes control callback for widget.
+ * Remove control callback for widget.
  *
  * @since 2.2.0
  *
@@ -680,7 +672,7 @@ function wp_unregister_widget_control( $id ) {
 }
 
 /**
- * Displays dynamic sidebar.
+ * Display dynamic sidebar.
  *
  * By default this displays the default sidebar or 'sidebar-1'. If your theme specifies the 'id' or
  * 'name' parameter for its registered sidebars you can pass an ID or name as the $index parameter.
@@ -883,8 +875,8 @@ function dynamic_sidebar( $index = 1 ) {
 /**
  * Determines whether a given widget is displayed on the front end.
  *
- * Either $callback or $id_base can be used.
- * $id_base is the first argument when extending WP_Widget class.
+ * Either $callback or $id_base can be used
+ * $id_base is the first argument when extending WP_Widget class
  * Without the optional $widget_id parameter, returns the ID of the first sidebar
  * in which the first instance of the widget with the given callback or $id_base is found.
  * With the $widget_id parameter, returns the ID of the sidebar where
@@ -1002,7 +994,7 @@ function is_active_sidebar( $index ) {
 //
 
 /**
- * Retrieves the full list of sidebars and their widget instance IDs.
+ * Retrieve full list of sidebars and their widget instance IDs.
  *
  * Will upgrade sidebar widget list, if needed. Will also save updated list, if
  * needed.
@@ -1081,7 +1073,7 @@ function wp_get_sidebar( $id ) {
 }
 
 /**
- * Sets the sidebar widget option to update sidebars.
+ * Set the sidebar widget option to update sidebars.
  *
  * @since 2.2.0
  * @access private
@@ -1103,7 +1095,7 @@ function wp_set_sidebars_widgets( $sidebars_widgets ) {
 }
 
 /**
- * Retrieves default registered sidebars list.
+ * Retrieve default registered sidebars list.
  *
  * @since 2.2.0
  * @access private
@@ -1194,7 +1186,7 @@ function wp_convert_widget_settings( $base_name, $option_name, $settings ) {
 }
 
 /**
- * Outputs an arbitrary widget as a template tag.
+ * Output an arbitrary widget as a template tag.
  *
  * @since 2.8.0
  *
@@ -1282,7 +1274,7 @@ function _get_widget_id_base( $id ) {
 }
 
 /**
- * Handles sidebars config after theme change.
+ * Handle sidebars config after theme change
  *
  * @access private
  * @since 3.3.0
@@ -1575,7 +1567,7 @@ function _wp_remove_unregistered_widgets( $sidebars_widgets, $allowed_widget_ids
 }
 
 /**
- * Displays the RSS entries in a list.
+ * Display the RSS entries in a list.
  *
  * @since 2.5.0
  *
@@ -1682,7 +1674,7 @@ function wp_widget_rss_output( $rss, $args = array() ) {
 }
 
 /**
- * Displays RSS widget options form.
+ * Display RSS widget options form.
  *
  * The options for what fields are displayed for the RSS form are all booleans
  * and are as follows: 'url', 'title', 'items', 'show_summary', 'show_author',
@@ -1746,7 +1738,7 @@ function wp_widget_rss_form( $args, $inputs = null ) {
 		<input id="rss-show-author-<?php echo $esc_number; ?>" name="widget-rss[<?php echo $esc_number; ?>][show_author]" type="checkbox" value="1" <?php checked( $args['show_author'] ); ?> />
 		<label for="rss-show-author-<?php echo $esc_number; ?>"><?php _e( 'Display item author if available?' ); ?></label><br />
 	<?php endif; if ( $inputs['show_date'] ) : ?>
-		<input id="rss-show-date-<?php echo $esc_number; ?>" name="widget-rss[<?php echo $esc_number; ?>][show_date]" type="checkbox" value="1" <?php checked( $args['show_date'] ); ?> />
+		<input id="rss-show-date-<?php echo $esc_number; ?>" name="widget-rss[<?php echo $esc_number; ?>][show_date]" type="checkbox" value="1" <?php checked( $args['show_date'] ); ?>/>
 		<label for="rss-show-date-<?php echo $esc_number; ?>"><?php _e( 'Display item date?' ); ?></label><br />
 	<?php endif; ?>
 	</p>
@@ -1763,7 +1755,7 @@ foreach ( array_keys( $default_inputs ) as $input ) :
 }
 
 /**
- * Processes RSS feed widget data and optionally retrieve feed items.
+ * Process RSS feed widget data and optionally retrieve feed items.
  *
  * The feed widget can not have more than 20 items or it will reset back to the
  * default, which is 10.
@@ -1883,9 +1875,9 @@ function wp_setup_widgets_block_editor() {
 }
 
 /**
- * Determines whether or not to use the block editor to manage widgets.
- * Defaults to true unless a theme has removed support for widgets-block-editor
- * or a plugin has filtered the return value of this function.
+ * Whether or not to use the block editor to manage widgets. Defaults to true
+ * unless a theme has removed support for widgets-block-editor or a plugin has
+ * filtered the return value of this function.
  *
  * @since 5.8.0
  *

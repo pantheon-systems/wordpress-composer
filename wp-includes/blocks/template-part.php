@@ -8,10 +8,6 @@
 /**
  * Renders the `core/template-part` block on the server.
  *
- * @since 5.9.0
- *
- * @global WP_Embed $wp_embed WordPress Embed object.
- *
  * @param array $attributes The block attributes.
  *
  * @return string The render.
@@ -70,9 +66,7 @@ function render_block_core_template_part( $attributes ) {
 			if ( 0 === validate_file( $attributes['slug'] ) ) {
 				$block_template = get_block_file_template( $template_part_id, 'wp_template_part' );
 
-				if ( isset( $block_template->content ) ) {
-					$content = $block_template->content;
-				}
+				$content = $block_template->content;
 				if ( isset( $block_template->area ) ) {
 					$area = $block_template->area;
 				}
@@ -180,8 +174,6 @@ function render_block_core_template_part( $attributes ) {
 /**
  * Returns an array of area variation objects for the template part block.
  *
- * @since 6.1.0
- *
  * @param array $instance_variations The variations for instances.
  *
  * @return array Array containing the block variation objects.
@@ -219,8 +211,6 @@ function build_template_part_block_area_variations( $instance_variations ) {
 
 /**
  * Returns an array of instance variation objects for the template part block
- *
- * @since 6.1.0
  *
  * @return array Array containing the block variation objects.
  */
@@ -276,8 +266,6 @@ function build_template_part_block_instance_variations() {
 /**
  * Returns an array of all template part block variations.
  *
- * @since 5.9.0
- *
  * @return array Array containing the block variation objects.
  */
 function build_template_part_block_variations() {
@@ -288,8 +276,6 @@ function build_template_part_block_variations() {
 
 /**
  * Registers the `core/template-part` block on the server.
- *
- * @since 5.9.0
  */
 function register_block_core_template_part() {
 	register_block_type_from_metadata(

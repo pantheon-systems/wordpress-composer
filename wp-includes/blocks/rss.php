@@ -8,8 +8,6 @@
 /**
  * Renders the `core/rss` block on server.
  *
- * @since 5.2.0
- *
  * @param array $attributes The block attributes.
  *
  * @return string Returns the block content with received rss items.
@@ -61,20 +59,17 @@ function render_block_core_rss( $attributes ) {
 			$author = $item->get_author();
 			if ( is_object( $author ) ) {
 				$author = $author->get_name();
-				if ( ! empty( $author ) ) {
-					$author = '<span class="wp-block-rss__item-author">' . sprintf(
-						/* translators: byline. %s: author. */
-						__( 'by %s' ),
-						esc_html( strip_tags( $author ) )
-					) . '</span>';
-				}
+				$author = '<span class="wp-block-rss__item-author">' . sprintf(
+					/* translators: %s: the author. */
+					__( 'by %s' ),
+					esc_html( strip_tags( $author ) )
+				) . '</span>';
 			}
 		}
 
-		$excerpt     = '';
-		$description = $item->get_description();
-		if ( $attributes['displayExcerpt'] && ! empty( $description ) ) {
-			$excerpt = html_entity_decode( $description, ENT_QUOTES, get_option( 'blog_charset' ) );
+		$excerpt = '';
+		if ( $attributes['displayExcerpt'] ) {
+			$excerpt = html_entity_decode( $item->get_description(), ENT_QUOTES, get_option( 'blog_charset' ) );
 			$excerpt = esc_attr( wp_trim_words( $excerpt, $attributes['excerptLength'], ' [&hellip;]' ) );
 
 			// Change existing [...] to [&hellip;].
@@ -112,8 +107,6 @@ function render_block_core_rss( $attributes ) {
 
 /**
  * Registers the `core/rss` block on server.
- *
- * @since 5.2.0
  */
 function register_block_core_rss() {
 	register_block_type_from_metadata(

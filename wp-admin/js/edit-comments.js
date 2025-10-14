@@ -1020,8 +1020,7 @@ window.commentReply = {
 
 		setTimeout(function() {
 			var rtop, rbottom, scrollTop, vp, scrollBottom,
-				isComposing = false,
-				isContextMenuOpen = false;
+				isComposing = false;
 
 			rtop = $('#replyrow').offset().top;
 			rbottom = rtop + $('#replyrow').height();
@@ -1036,20 +1035,9 @@ window.commentReply = {
 
 			$( '#replycontent' )
 				.trigger( 'focus' )
-				.on( 'contextmenu keydown', function ( e ) {
-					// Check if the context menu is open and set state.
-					if ( e.type === 'contextmenu' ) {
-						isContextMenuOpen = true;
-					}
-
-					// Update the context menu state if the Escape key is pressed.
-					if ( e.type === 'keydown' && e.which === 27 && isContextMenuOpen ) {
-						isContextMenuOpen = false;
-					}
-				} )
 				.on( 'keyup', function( e ) {
-					// Close on Escape unless Input Method Editors (IMEs) are in use or the context menu is open.
-					if ( e.which === 27 && ! isComposing && ! isContextMenuOpen ) {
+					// Close on Escape except when Input Method Editors (IMEs) are in use.
+					if ( e.which === 27 && ! isComposing ) {
 						commentReply.revert();
 					}
 				} )
@@ -1200,7 +1188,6 @@ window.commentReply = {
 		if ( er ) {
 			$errorNotice.removeClass( 'hidden' );
 			$error.html( er );
-			wp.a11y.speak( er );
 		}
 	},
 

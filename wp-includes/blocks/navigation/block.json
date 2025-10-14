@@ -137,6 +137,15 @@
 				"type": "flex"
 			}
 		},
+		"__experimentalStyle": {
+			"elements": {
+				"link": {
+					"color": {
+						"text": "inherit"
+					}
+				}
+			}
+		},
 		"interactivity": true,
 		"renaming": false
 	},
