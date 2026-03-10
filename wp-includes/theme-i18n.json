@@ -52,13 +52,6 @@
 				}
 			]
 		},
-		"border": {
-			"radiusSizes": [
-				{
-					"name": "Border radius size name"
-				}
-			]
-		},
 		"blocks": {
 			"*": {
 				"typography": {
@@ -101,13 +94,6 @@
 					"spacingSizes": [
 						{
 							"name": "Space size name"
-						}
-					]
-				},
-				"border": {
-					"radiusSizes": [
-						{
-							"name": "Border radius size name"
 						}
 					]
 				}

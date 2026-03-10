@@ -29,14 +29,8 @@ class WP_Importer {
 		// Grab all posts in chunks.
 		do {
 			$meta_key = $importer_name . '_' . $blog_id . '_permalink';
-			$results  = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = %s LIMIT %d,%d",
-					$meta_key,
-					$offset,
-					$limit
-				)
-			);
+			$sql      = $wpdb->prepare( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = %s LIMIT %d,%d", $meta_key, $offset, $limit );
+			$results  = $wpdb->get_results( $sql );
 
 			// Increment offset.
 			$offset = ( $limit + $offset );
@@ -68,12 +62,9 @@ class WP_Importer {
 
 		// Get count of permalinks.
 		$meta_key = $importer_name . '_' . $blog_id . '_permalink';
-		$result   = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT COUNT( post_id ) AS cnt FROM $wpdb->postmeta WHERE meta_key = %s",
-				$meta_key
-			)
-		);
+		$sql      = $wpdb->prepare( "SELECT COUNT( post_id ) AS cnt FROM $wpdb->postmeta WHERE meta_key = %s", $meta_key );
+
+		$result = $wpdb->get_results( $sql );
 
 		if ( ! empty( $result ) ) {
 			$count = (int) $result[0]->cnt;
@@ -100,13 +91,8 @@ class WP_Importer {
 
 		// Grab all comments in chunks.
 		do {
-			$results = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT comment_ID, comment_agent FROM $wpdb->comments LIMIT %d,%d",
-					$offset,
-					$limit
-				)
-			);
+			$sql     = $wpdb->prepare( "SELECT comment_ID, comment_agent FROM $wpdb->comments LIMIT %d,%d", $offset, $limit );
+			$results = $wpdb->get_results( $sql );
 
 			// Increment offset.
 			$offset = ( $limit + $offset );

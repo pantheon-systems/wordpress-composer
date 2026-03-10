@@ -197,10 +197,9 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 			)
 		);
 
-		if ( is_wp_error( $r ) ) {
+		if ( $r instanceof WP_Error ) {
 			return false;
 		}
-
 		$post_id = $r->ID;
 
 		// Cache post ID in theme mod for performance to avoid additional DB query.

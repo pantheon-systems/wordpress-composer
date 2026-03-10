@@ -93,10 +93,7 @@ class MagpieRSS {
 			}
 		}
 
-		if ( PHP_VERSION_ID < 80000 ) { // xml_parser_free() has no effect as of PHP 8.0.
-			xml_parser_free( $this->parser );
-		}
-
+		xml_parser_free( $this->parser );
 		unset( $this->parser );
 
 		$this->normalize();

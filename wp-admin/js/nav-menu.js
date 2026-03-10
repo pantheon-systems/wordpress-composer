@@ -1406,25 +1406,14 @@
 
 		updateQuickSearchResults : function(input) {
 			var panel, params,
-				minSearchLength = 1,
-				q = input.val(),
-				pageSearchChecklist = $( '#page-search-checklist' );
+				minSearchLength = 2,
+				q = input.val();
 
 			/*
-			 * Avoid a new Ajax search when the pressed key (e.g. arrows)
-			 * doesn't change the searched term.
+			 * Minimum characters for a search. Also avoid a new Ajax search when
+			 * the pressed key (e.g. arrows) doesn't change the searched term.
 			 */
-			if ( api.lastSearch == q ) {
-				return;
-			}
-
-			/*
-			 * Reset results when search is less than or equal to 
-			 * minimum characters for searched term.
-			 */
-			if ( q.length <= minSearchLength ) {
-				pageSearchChecklist.empty();
-				wp.a11y.speak( wp.i18n.__( 'Search results cleared' ) );
+			if ( q.length < minSearchLength || api.lastSearch == q ) {
 				return;
 			}
 
@@ -1781,14 +1770,12 @@
 			$item;
 
 			if( ! $items.length ) {
-				let noResults = wp.i18n.__( 'No results found.' );
 				const li = $( '<li>' );
-				const p = $( '<p>', { text: noResults } );
+				const p = $( '<p>', { text: wp.i18n.__( 'No results found.' ) } );
 				li.append( p );
 				$('.categorychecklist', panel).empty().append( li );
 				$( '.spinner', panel ).removeClass( 'is-active' );
 				wrapper.addClass( 'has-no-menu-item' );
-				wp.a11y.speak( noResults, 'assertive' );
 				return;
 			}
 
@@ -1815,7 +1802,6 @@
 			});
 
 			$('.categorychecklist', panel).html( $items );
-			wp.a11y.speak( wp.i18n.sprintf( wp.i18n.__( '%d Search Results Found' ), $items.length ), 'assertive' );
 			$( '.spinner', panel ).removeClass( 'is-active' );
 			wrapper.removeClass( 'has-no-menu-item' );
 

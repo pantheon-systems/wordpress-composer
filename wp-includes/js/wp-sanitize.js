@@ -2,8 +2,6 @@
  * @output wp-includes/js/wp-sanitize.js
  */
 
-/* eslint-env es6 */
-
 ( function () {
 
 	window.wp = window.wp || {};
@@ -18,24 +16,24 @@
 		/**
 		 * Strip HTML tags.
 		 *
-		 * @param {string} text - Text to strip the HTML tags from.
+		 * @param {string} text Text to strip the HTML tags from.
 		 *
-		 * @return {string} Stripped text.
+		 * @return  Stripped text.
 		 */
 		stripTags: function( text ) {
-			let _text = text || '';
+			text = text || '';
 
-			// Do the search-replace until there is nothing to be replaced.
-			do {
-				// Keep pre-replace text for comparison.
-				text = _text;
-
-				// Do the replacement.
-				_text = text
+			// Do the replacement.
+			var _text = text
 					.replace( /<!--[\s\S]*?(-->|$)/g, '' )
 					.replace( /<(script|style)[^>]*>[\s\S]*?(<\/\1>|$)/ig, '' )
 					.replace( /<\/?[a-z][\s\S]*?(>|$)/ig, '' );
-			} while ( _text !== text );
+
+			// If the initial text is not equal to the modified text,
+			// do the search-replace again, until there is nothing to be replaced.
+			if ( _text !== text ) {
+				return wp.sanitize.stripTags( _text );
+			}
 
 			// Return the text with stripped tags.
 			return _text;
@@ -44,12 +42,12 @@
 		/**
 		 * Strip HTML tags and convert HTML entities.
 		 *
-		 * @param {string} text - Text to strip tags and convert HTML entities.
+		 * @param {string} text Text to strip tags and convert HTML entities.
 		 *
-		 * @return {string} Sanitized text.
+		 * @return Sanitized text. False on failure.
 		 */
 		stripTagsAndEncodeText: function( text ) {
-			let _text = wp.sanitize.stripTags( text ),
+			var _text = wp.sanitize.stripTags( text ),
 				textarea = document.createElement( 'textarea' );
 
 			try {

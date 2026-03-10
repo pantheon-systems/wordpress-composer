@@ -10,8 +10,7 @@
 	"attributes": {
 		"customText": {
 			"type": "string",
-			"default": "",
-			"role": "content"
+			"default": ""
 		},
 		"noTeaser": {
 			"type": "boolean",

@@ -165,7 +165,7 @@ class WP_Meta_Query {
 	 *     }
 	 * }
 	 */
-	public function __construct( $meta_query = array() ) {
+	public function __construct( $meta_query = false ) {
 		if ( ! $meta_query ) {
 			return;
 		}

@@ -105,7 +105,7 @@ $tagline_description = sprintf(
 	wp_enqueue_media();
 	wp_enqueue_script( 'site-icon' );
 
-	$classes_for_upload_button = 'upload-button button-hero button';
+	$classes_for_upload_button = 'upload-button button-add-media button-add-site-icon';
 	$classes_for_update_button = 'button';
 	$classes_for_wrapper       = '';
 
@@ -289,13 +289,16 @@ if ( $new_admin_email && get_option( 'admin_email' ) !== $new_admin_email ) {
 </td>
 </tr>
 
-<?php
-if ( ! is_multisite() ) {
-	$membership_title = __( 'Membership' );
-	?>
+<?php if ( ! is_multisite() ) { ?>
+
 <tr>
-<th scope="row"><?php echo $membership_title; ?></th>
-<td><fieldset><legend class="screen-reader-text"><span><?php echo $membership_title; ?></span></legend><label for="users_can_register">
+<th scope="row"><?php _e( 'Membership' ); ?></th>
+<td> <fieldset><legend class="screen-reader-text"><span>
+	<?php
+	/* translators: Hidden accessibility text. */
+	_e( 'Membership' );
+	?>
+</span></legend><label for="users_can_register">
 <input name="users_can_register" type="checkbox" id="users_can_register" value="1" <?php checked( '1', get_option( 'users_can_register' ) ); ?> />
 	<?php _e( 'Anyone can register' ); ?></label>
 </fieldset></td>
@@ -445,8 +448,7 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 				__( 'Standard time begins on: %s.' );
 			printf(
 				$message,
-				/* translators: Localized date and time format, see https://www.php.net/manual/datetime.format.php */
-				'<code>' . wp_date( __( 'F j, Y g:i a' ), $transitions[1]['ts'] ) . '</code>'
+				'<code>' . wp_date( __( 'F j, Y' ) . ' ' . __( 'g:i a' ), $transitions[1]['ts'] ) . '</code>'
 			);
 		} else {
 			_e( 'This timezone does not observe daylight saving time.' );
@@ -457,13 +459,17 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 </p>
 <?php endif; ?>
 </td>
-</tr>
 
-<?php $date_format_title = __( 'Date Format' ); ?>
+</tr>
 <tr>
-<th scope="row"><?php echo $date_format_title; ?></th>
+<th scope="row"><?php _e( 'Date Format' ); ?></th>
 <td>
-	<fieldset><legend class="screen-reader-text"><span><?php echo $date_format_title; ?></span></legend>
+	<fieldset><legend class="screen-reader-text"><span>
+		<?php
+		/* translators: Hidden accessibility text. */
+		_e( 'Date Format' );
+		?>
+	</span></legend>
 <?php
 	/**
 	 * Filters the default date formats.
@@ -505,12 +511,15 @@ foreach ( $date_formats as $format ) {
 	</fieldset>
 </td>
 </tr>
-
-<?php $time_format_title = __( 'Time Format' ); ?>
 <tr>
-<th scope="row"><?php echo $time_format_title; ?></th>
+<th scope="row"><?php _e( 'Time Format' ); ?></th>
 <td>
-	<fieldset><legend class="screen-reader-text"><span><?php echo $time_format_title; ?></span></legend>
+	<fieldset><legend class="screen-reader-text"><span>
+		<?php
+		/* translators: Hidden accessibility text. */
+		_e( 'Time Format' );
+		?>
+	</span></legend>
 <?php
 	/**
 	 * Filters the default time formats.

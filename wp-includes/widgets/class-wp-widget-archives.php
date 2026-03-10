@@ -109,35 +109,18 @@ class WP_Widget_Archives extends WP_Widget {
 
 			<?php ob_start(); ?>
 <script>
-( ( dropdownId ) => {
-	const dropdown = document.getElementById( dropdownId );
+(function() {
+	var dropdown = document.getElementById( "<?php echo esc_js( $dropdown_id ); ?>" );
 	function onSelectChange() {
-		setTimeout( () => {
-			if ( 'escape' === dropdown.dataset.lastkey ) {
-				return;
-			}
-			if ( dropdown.value ) {
-				document.location.href = dropdown.value;
-			}
-		}, 250 );
-	}
-	function onKeyUp( event ) {
-		if ( 'Escape' === event.key ) {
-			dropdown.dataset.lastkey = 'escape';
-		} else {
-			delete dropdown.dataset.lastkey;
+		if ( dropdown.options[ dropdown.selectedIndex ].value !== '' ) {
+			document.location.href = this.options[ this.selectedIndex ].value;
 		}
 	}
-	function onClick() {
-		delete dropdown.dataset.lastkey;
-	}
-	dropdown.addEventListener( 'keyup', onKeyUp );
-	dropdown.addEventListener( 'click', onClick );
-	dropdown.addEventListener( 'change', onSelectChange );
-})( <?php echo wp_json_encode( $dropdown_id, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ); ?> );
+	dropdown.onchange = onSelectChange;
+})();
 </script>
 			<?php
-			wp_print_inline_script_tag( wp_remove_surrounding_empty_script_tags( ob_get_clean() ) . "\n//# sourceURL=" . rawurlencode( __METHOD__ ) );
+			wp_print_inline_script_tag( wp_remove_surrounding_empty_script_tags( ob_get_clean() ) );
 		} else {
 			$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
 

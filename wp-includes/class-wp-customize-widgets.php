@@ -554,7 +554,6 @@ final class WP_Customize_Widgets {
 	 * @see WP_Customize_Panel::$active_callback
 	 *
 	 * @global array $wp_registered_sidebars
-	 *
 	 * @return bool Active.
 	 */
 	public function is_panel_active() {
@@ -833,7 +832,7 @@ final class WP_Customize_Widgets {
 		$wp_scripts->add_data(
 			'customize-widgets',
 			'data',
-			sprintf( 'var _wpCustomizeWidgetsSettings = %s;', wp_json_encode( $settings, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ) )
+			sprintf( 'var _wpCustomizeWidgetsSettings = %s;', wp_json_encode( $settings ) )
 		);
 
 		/*
@@ -860,14 +859,14 @@ final class WP_Customize_Widgets {
 					'wp.domReady( function() {
 					   wp.customizeWidgets.initialize( "widgets-customizer", %s );
 					} );',
-					wp_json_encode( $editor_settings, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES )
+					wp_json_encode( $editor_settings )
 				)
 			);
 
 			// Preload server-registered block schemas.
 			wp_add_inline_script(
 				'wp-blocks',
-				'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( get_block_editor_server_block_settings(), JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ) . ');'
+				'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( get_block_editor_server_block_settings() ) . ');'
 			);
 
 			// Preload server-registered block bindings sources.
@@ -881,7 +880,7 @@ final class WP_Customize_Widgets {
 						'usesContext' => $source->uses_context,
 					);
 				}
-				$script = sprintf( 'for ( const source of %s ) { wp.blocks.registerBlockBindingsSource( source ); }', wp_json_encode( $filtered_sources, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ) );
+				$script = sprintf( 'for ( const source of %s ) { wp.blocks.registerBlockBindingsSource( source ); }', wp_json_encode( $filtered_sources ) );
 				wp_add_inline_script(
 					'wp-blocks',
 					$script
@@ -890,7 +889,7 @@ final class WP_Customize_Widgets {
 
 			wp_add_inline_script(
 				'wp-blocks',
-				sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( get_block_categories( $block_editor_context ), JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ) ),
+				sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( get_block_categories( $block_editor_context ) ) ),
 				'after'
 			);
 
@@ -922,12 +921,10 @@ final class WP_Customize_Widgets {
 				</button>
 				<h3>
 					<span class="customize-action">
-						<?php
-						$panel       = $this->manager->get_panel( 'widgets' );
-						$panel_title = isset( $panel->title ) ? $panel->title : __( 'Widgets' );
+					<?php
 						/* translators: &#9656; is the unicode right-pointing triangle. %s: Section title in the Customizer. */
-						printf( __( 'Customizing &#9656; %s' ), esc_html( $panel_title ) );
-						?>
+						printf( __( 'Customizing &#9656; %s' ), esc_html( $this->manager->get_panel( 'widgets' )->title ) );
+					?>
 					</span>
 					<?php _e( 'Add a Widget' ); ?>
 				</h3>
@@ -1335,7 +1332,7 @@ final class WP_Customize_Widgets {
 			unset( $registered_widget['callback'] ); // May not be JSON-serializable.
 		}
 		wp_print_inline_script_tag(
-			sprintf( 'var _wpWidgetCustomizerPreviewSettings = %s;', wp_json_encode( $settings, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ) ) . "\n//# sourceURL=" . rawurlencode( __METHOD__ )
+			sprintf( 'var _wpWidgetCustomizerPreviewSettings = %s;', wp_json_encode( $settings ) )
 		);
 	}
 
@@ -1808,14 +1805,14 @@ final class WP_Customize_Widgets {
 	 *
 	 * @since 4.5.0
 	 *
-	 * @see WP_Customize_Nav_Menus::filter_wp_nav_menu_args()
-	 *
 	 * @param array $params {
 	 *     Dynamic sidebar params.
 	 *
 	 *     @type array $args        Sidebar args.
 	 *     @type array $widget_args Widget args.
 	 * }
+	 * @see WP_Customize_Nav_Menus::filter_wp_nav_menu_args()
+	 *
 	 * @return array Params.
 	 */
 	public function filter_dynamic_sidebar_params( $params ) {

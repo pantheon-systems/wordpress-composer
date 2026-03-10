@@ -11,8 +11,7 @@
 			"type": "rich-text",
 			"source": "rich-text",
 			"selector": "code",
-			"__unstablePreserveWhiteSpace": true,
-			"role": "content"
+			"__unstablePreserveWhiteSpace": true
 		}
 	},
 	"supports": {

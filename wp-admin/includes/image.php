@@ -827,13 +827,7 @@ function wp_read_image_metadata( $file ) {
 		return false;
 	}
 
-	$image_size = wp_getimagesize( $file );
-
-	if ( false === $image_size ) {
-		return false;
-	}
-
-	list( , , $image_type ) = $image_size;
+	list( , , $image_type ) = wp_getimagesize( $file );
 
 	/*
 	 * EXIF contains a bunch of data we'll probably never need formatted in ways
@@ -973,7 +967,7 @@ function wp_read_image_metadata( $file ) {
 			}
 
 			// If both user comments and description are present.
-			if ( empty( $meta['caption'] ) && $exif_usercomment ) {
+			if ( empty( $meta['caption'] ) && $exif_description && $exif_usercomment ) {
 				if ( ! empty( $meta['title'] ) && $exif_description === $meta['title'] ) {
 					$caption = $exif_usercomment;
 				} else {
@@ -1045,13 +1039,13 @@ function wp_read_image_metadata( $file ) {
 	}
 
 	foreach ( array( 'title', 'caption', 'credit', 'copyright', 'camera', 'iso' ) as $key ) {
-		if ( $meta[ $key ] && ! wp_is_valid_utf8( $meta[ $key ] ) ) {
+		if ( $meta[ $key ] && ! seems_utf8( $meta[ $key ] ) ) {
 			$meta[ $key ] = utf8_encode( $meta[ $key ] );
 		}
 	}
 
 	foreach ( $meta['keywords'] as $key => $keyword ) {
-		if ( ! wp_is_valid_utf8( $keyword ) ) {
+		if ( ! seems_utf8( $keyword ) ) {
 			$meta['keywords'][ $key ] = utf8_encode( $keyword );
 		}
 	}

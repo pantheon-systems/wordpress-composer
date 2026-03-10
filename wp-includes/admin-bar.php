@@ -260,7 +260,9 @@ function wp_admin_bar_sidebar_toggle( $wp_admin_bar ) {
  * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
  */
 function wp_admin_bar_my_account_item( $wp_admin_bar ) {
-	$user_id = get_current_user_id();
+	$user_id      = get_current_user_id();
+	$current_user = wp_get_current_user();
+
 	if ( ! $user_id ) {
 		return;
 	}
@@ -273,10 +275,11 @@ function wp_admin_bar_my_account_item( $wp_admin_bar ) {
 		$profile_url = false;
 	}
 
-	/* translators: %s: Current user's display name. */
-	$howdy = sprintf( __( 'Howdy, %s' ), '<span class="display-name">' . wp_get_current_user()->display_name . '</span>' );
-
 	$avatar = get_avatar( $user_id, 26 );
+	/* translators: %s: Current user's display name. */
+	$howdy = sprintf( __( 'Howdy, %s' ), '<span class="display-name">' . $current_user->display_name . '</span>' );
+	$class = empty( $avatar ) ? '' : 'with-avatar';
+
 	$wp_admin_bar->add_node(
 		array(
 			'id'     => 'my-account',
@@ -284,8 +287,9 @@ function wp_admin_bar_my_account_item( $wp_admin_bar ) {
 			'title'  => $howdy . $avatar,
 			'href'   => $profile_url,
 			'meta'   => array(
-				'class'      => empty( $avatar ) ? '' : 'with-avatar',
-				'menu_title' => wp_strip_all_tags( $howdy ),
+				'class'      => $class,
+				/* translators: %s: Current user's display name. */
+				'menu_title' => sprintf( __( 'Howdy, %s' ), $current_user->display_name ),
 				'tabindex'   => ( false !== $profile_url ) ? '' : 0,
 			),
 		)
@@ -373,7 +377,7 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 	$blogname = get_bloginfo( 'name' );
 
 	if ( ! $blogname ) {
-		$blogname = preg_replace( '#^(https?://)?(www\.)?#', '', get_home_url() );
+		$blogname = preg_replace( '#^(https?://)?(www.)?#', '', get_home_url() );
 	}
 
 	if ( is_network_admin() ) {
@@ -694,7 +698,7 @@ function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 		$blogname = $blog->blogname;
 
 		if ( ! $blogname ) {
-			$blogname = preg_replace( '#^(https?://)?(www\.)?#', '', get_home_url() );
+			$blogname = preg_replace( '#^(https?://)?(www.)?#', '', get_home_url() );
 		}
 
 		$menu_id = 'blog-' . $blog->userblog_id;

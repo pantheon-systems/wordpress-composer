@@ -181,8 +181,6 @@ abstract class ParagonIE_Sodium_Core_Util
             $len = max($leftLen, $rightLen);
             $left = str_pad($left, $len, "\x00", STR_PAD_RIGHT);
             $right = str_pad($right, $len, "\x00", STR_PAD_RIGHT);
-        } elseif ($leftLen !== $rightLen) {
-            throw new SodiumException("Argument #1 and argument #2 must have the same length");
         }
 
         $gt = 0;
@@ -338,8 +336,7 @@ abstract class ParagonIE_Sodium_Core_Util
      * @param string $ignore
      * @param bool $strictPadding
      * @return string (raw binary)
-     *
-     * @throws SodiumException
+     * @throws RangeException
      * @throws TypeError
      */
     public static function hex2bin($hexString, $ignore = '', $strictPadding = false)
@@ -357,6 +354,16 @@ abstract class ParagonIE_Sodium_Core_Util
         $c_acc = 0;
         $hex_len = self::strlen($hexString);
         $state = 0;
+        if (($hex_len & 1) !== 0) {
+            if ($strictPadding) {
+                throw new RangeException(
+                    'Expected an even number of hexadecimal characters'
+                );
+            } else {
+                $hexString = '0' . $hexString;
+                ++$hex_len;
+            }
+        }
 
         $chunk = unpack('C*', $hexString);
         while ($hex_pos < $hex_len) {
@@ -382,11 +389,6 @@ abstract class ParagonIE_Sodium_Core_Util
                 $bin .= pack('C', $c_acc | $c_val);
             }
             $state ^= 1;
-        }
-        if ($strictPadding && $state !== 0) {
-            throw new SodiumException(
-                'Expected an even number of hexadecimal characters'
-            );
         }
         return $bin;
     }
@@ -532,8 +534,10 @@ abstract class ParagonIE_Sodium_Core_Util
      */
     public static function memcmp($left, $right)
     {
-        $e = (int) !self::hashEquals($left, $right);
-        return 0 - $e;
+        if (self::hashEquals($left, $right)) {
+            return 0;
+        }
+        return -1;
     }
 
     /**

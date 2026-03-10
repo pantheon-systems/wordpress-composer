@@ -446,8 +446,6 @@ function get_comment_count( $post_id = 0 ) {
 /**
  * Adds meta data field to a comment.
  *
- * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
- *
  * @since 2.9.0
  *
  * @link https://developer.wordpress.org/reference/functions/add_comment_meta/
@@ -475,8 +473,6 @@ function add_comment_meta( $comment_id, $meta_key, $meta_value, $unique = false 
  * You can match based on the key, or key and value. Removing based on key and
  * value, will keep from removing duplicate metadata with the same key. It also
  * allows removing all metadata matching key, if needed.
- *
- * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
  *
  * @since 2.9.0
  *
@@ -543,8 +539,6 @@ function wp_lazyload_comment_meta( array $comment_ids ) {
  * same key and comment ID.
  *
  * If the meta field for the comment does not exist, it will be added.
- *
- * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
  *
  * @since 2.9.0
  *
@@ -932,8 +926,8 @@ function wp_check_comment_flood( $is_flood, $ip, $email, $date, $avoid_die = fal
  *
  * @since 2.7.0
  *
- * @param WP_Comment[] $comments Array of comments.
- * @return array<string, WP_Comment[]> Array of comments keyed by comment type.
+ * @param WP_Comment[] $comments Array of comments
+ * @return WP_Comment[] Array of comments keyed by comment_type.
  */
 function separate_comments( &$comments ) {
 	$comments_by_type = array(
@@ -1050,7 +1044,7 @@ function get_page_of_comment( $comment_id, $args = array() ) {
 
 	$comment = get_comment( $comment_id );
 	if ( ! $comment ) {
-		return null;
+		return;
 	}
 
 	$defaults      = array(
@@ -1574,38 +1568,13 @@ function wp_delete_comment( $comment_id, $force_delete = false ) {
  * If Trash is disabled, comment is permanently deleted.
  *
  * @since 2.9.0
- * @since 6.9.0 Any child notes are deleted when deleting a note.
  *
  * @param int|WP_Comment $comment_id Comment ID or WP_Comment object.
  * @return bool True on success, false on failure.
  */
 function wp_trash_comment( $comment_id ) {
 	if ( ! EMPTY_TRASH_DAYS ) {
-		$comment = get_comment( $comment_id );
-		$success = wp_delete_comment( $comment_id, true );
-
-		if ( ! $success ) {
-			return false;
-		}
-
-		// Also delete children of top level 'note' type comments.
-		if ( $comment && 'note' === $comment->comment_type && 0 === (int) $comment->comment_parent ) {
-			$children = $comment->get_children(
-				array(
-					'fields' => 'ids',
-					'status' => 'all',
-					'type'   => 'note',
-				)
-			);
-
-			foreach ( $children as $child_id ) {
-				if ( ! wp_delete_comment( $child_id, true ) ) {
-					$success = false;
-				}
-			}
-		}
-
-		return $success;
+		return wp_delete_comment( $comment_id, true );
 	}
 
 	$comment = get_comment( $comment_id );
@@ -1640,25 +1609,6 @@ function wp_trash_comment( $comment_id ) {
 		 * @param WP_Comment $comment    The trashed comment.
 		 */
 		do_action( 'trashed_comment', $comment->comment_ID, $comment );
-
-		// For top level 'note' type comments, also trash children.
-		if ( 'note' === $comment->comment_type && 0 === (int) $comment->comment_parent ) {
-			$children = $comment->get_children(
-				array(
-					'fields' => 'ids',
-					'status' => 'all',
-					'type'   => 'note',
-				)
-			);
-
-			$success = true;
-			foreach ( $children as $child_id ) {
-				if ( ! wp_trash_comment( $child_id ) ) {
-					$success = false;
-				}
-			}
-			return $success;
-		}
 
 		return true;
 	}
@@ -2369,7 +2319,7 @@ function wp_new_comment( $commentdata, $wp_error = false ) {
 	}
 
 	if ( empty( $commentdata['comment_date_gmt'] ) ) {
-		$commentdata['comment_date_gmt'] = current_time( 'mysql', true );
+		$commentdata['comment_date_gmt'] = current_time( 'mysql', 1 );
 	}
 
 	if ( empty( $commentdata['comment_type'] ) ) {
@@ -2469,9 +2419,8 @@ function wp_new_comment_notify_moderator( $comment_id ) {
  */
 function wp_new_comment_notify_postauthor( $comment_id ) {
 	$comment = get_comment( $comment_id );
-	$is_note = ( $comment && 'note' === $comment->comment_type );
 
-	$maybe_notify = $is_note ? get_option( 'wp_notes_notify', 1 ) : get_option( 'comments_notify' );
+	$maybe_notify = get_option( 'comments_notify' );
 
 	/**
 	 * Filters whether to send the post author new comment notification emails,
@@ -2492,27 +2441,12 @@ function wp_new_comment_notify_postauthor( $comment_id ) {
 		return false;
 	}
 
-	// Send notifications for approved comments and all notes.
-	if (
-		! isset( $comment->comment_approved ) ||
-		( '1' !== $comment->comment_approved && ! $is_note ) ) {
-			return false;
+	// Only send notifications for approved comments.
+	if ( ! isset( $comment->comment_approved ) || '1' !== $comment->comment_approved ) {
+		return false;
 	}
 
 	return wp_notify_postauthor( $comment_id );
-}
-
-/**
- * Send a notification to the post author when a new note is added via the REST API.
- *
- * @since 6.9.0
- *
- * @param WP_Comment $comment The comment object.
- */
-function wp_new_comment_via_rest_notify_postauthor( $comment ) {
-	if ( $comment instanceof WP_Comment && 'note' === $comment->comment_type ) {
-		wp_new_comment_notify_postauthor( (int) $comment->comment_ID );
-	}
 }
 
 /**
@@ -2872,7 +2806,7 @@ function wp_update_comment_count_now( $post_id ) {
 	$new = apply_filters( 'pre_wp_update_comment_count_now', null, $old, $post_id );
 
 	if ( is_null( $new ) ) {
-		$new = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved = '1' AND comment_type != 'note'", $post_id ) );
+		$new = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved = '1'", $post_id ) );
 	} else {
 		$new = (int) $new;
 	}
@@ -3120,19 +3054,22 @@ function do_trackbacks( $post ) {
 	$post_title = apply_filters( 'the_title', $post->post_title, $post->ID );
 	$post_title = strip_tags( $post_title );
 
-	foreach ( (array) $to_ping as $tb_ping ) {
-		$tb_ping = trim( $tb_ping );
-		if ( ! in_array( $tb_ping, $pinged, true ) ) {
-			trackback( $tb_ping, $post_title, $excerpt, $post->ID );
-			$pinged[] = $tb_ping;
-		} else {
-			$wpdb->query(
-				$wpdb->prepare(
-					"UPDATE $wpdb->posts SET to_ping = TRIM(REPLACE(to_ping, %s, '')) WHERE ID = %d",
-					$tb_ping,
-					$post->ID
-				)
-			);
+	if ( $to_ping ) {
+		foreach ( (array) $to_ping as $tb_ping ) {
+			$tb_ping = trim( $tb_ping );
+			if ( ! in_array( $tb_ping, $pinged, true ) ) {
+				trackback( $tb_ping, $post_title, $excerpt, $post->ID );
+				$pinged[] = $tb_ping;
+			} else {
+				$wpdb->query(
+					$wpdb->prepare(
+						"UPDATE $wpdb->posts SET to_ping = TRIM(REPLACE(to_ping, %s,
+					'')) WHERE ID = %d",
+						$tb_ping,
+						$post->ID
+					)
+				);
+			}
 		}
 	}
 }
@@ -3493,9 +3430,9 @@ function _prime_comment_caches( $comment_ids, $update_meta_cache = true ) {
  * @since 2.7.0
  * @access private
  *
- * @param WP_Post[] $posts Array of post objects.
- * @param WP_Query  $query Query object.
- * @return WP_Post[]
+ * @param WP_Post  $posts Post data object.
+ * @param WP_Query $query Query object.
+ * @return array
  */
 function _close_comments_for_old_posts( $posts, $query ) {
 	if ( empty( $posts ) || ! $query->is_singular() || ! get_option( 'close_comments_for_old_posts' ) ) {
@@ -4162,30 +4099,4 @@ function _wp_check_for_scheduled_update_comment_type() {
 	if ( ! get_option( 'finished_updating_comment_type' ) && ! wp_next_scheduled( 'wp_update_comment_type_batch' ) ) {
 		wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'wp_update_comment_type_batch' );
 	}
-}
-
-/**
- * Register initial note status meta.
- *
- * @since 6.9.0
- */
-function wp_create_initial_comment_meta() {
-	register_meta(
-		'comment',
-		'_wp_note_status',
-		array(
-			'type'          => 'string',
-			'description'   => __( 'Note resolution status' ),
-			'single'        => true,
-			'show_in_rest'  => array(
-				'schema' => array(
-					'type' => 'string',
-					'enum' => array( 'resolved', 'reopen' ),
-				),
-			),
-			'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
-				return current_user_can( 'edit_comment', $object_id );
-			},
-		)
-	);
 }

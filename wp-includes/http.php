@@ -33,8 +33,6 @@ function _wp_http_get_object() {
  * URL. The URL, and every URL it redirects to, are validated with wp_http_validate_url()
  * to avoid Server Side Request Forgery attacks (SSRF).
  *
- * The only supported protocols are `http` and `https`.
- *
  * @since 3.6.0
  *
  * @see wp_remote_request() For more information on the response array format.
@@ -61,8 +59,6 @@ function wp_safe_remote_request( $url, $args = array() ) {
  * This function is ideal when the HTTP request is being made to an arbitrary
  * URL. The URL, and every URL it redirects to, are validated with wp_http_validate_url()
  * to avoid Server Side Request Forgery attacks (SSRF).
- *
- * The only supported protocols are `http` and `https`.
  *
  * @since 3.6.0
  *
@@ -91,8 +87,6 @@ function wp_safe_remote_get( $url, $args = array() ) {
  * URL. The URL, and every URL it redirects to, are validated with wp_http_validate_url()
  * to avoid Server Side Request Forgery attacks (SSRF).
  *
- * The only supported protocols are `http` and `https`.
- *
  * @since 3.6.0
  *
  * @see wp_remote_request() For more information on the response array format.
@@ -119,8 +113,6 @@ function wp_safe_remote_post( $url, $args = array() ) {
  * This function is ideal when the HTTP request is being made to an arbitrary
  * URL. The URL, and every URL it redirects to, are validated with wp_http_validate_url()
  * to avoid Server Side Request Forgery attacks (SSRF).
- *
- * The only supported protocols are `http` and `https`.
  *
  * @since 3.6.0
  *
@@ -151,8 +143,6 @@ function wp_safe_remote_head( $url, $args = array() ) {
  *  - Default 'POST' for wp_remote_post()
  *  - Default 'HEAD' for wp_remote_head()
  *
- * Important: If the URL is user-controlled, use `wp_safe_remote_request()` instead.
- *
  * @since 2.7.0
  *
  * @see WP_Http::request() For information on default arguments.
@@ -170,8 +160,6 @@ function wp_remote_request( $url, $args = array() ) {
 
 /**
  * Performs an HTTP request using the GET method and returns its response.
- *
- * Important: If the URL is user-controlled, use `wp_safe_remote_get()` instead.
  *
  * @since 2.7.0
  *
@@ -192,8 +180,6 @@ function wp_remote_get( $url, $args = array() ) {
 /**
  * Performs an HTTP request using the POST method and returns its response.
  *
- * Important: If the URL is user-controlled, use `wp_safe_remote_post()` instead.
- *
  * @since 2.7.0
  *
  * @see wp_remote_request() For more information on the response array format.
@@ -212,8 +198,6 @@ function wp_remote_post( $url, $args = array() ) {
 
 /**
  * Performs an HTTP request using the HEAD method and returns its response.
- *
- * Important: If the URL is user-controlled, use `wp_safe_remote_head()` instead.
  *
  * @since 2.7.0
  *
@@ -437,7 +421,7 @@ function get_http_origin() {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $origin The HTTP origin for the request.
+	 * @param string $origin The original origin for the request.
 	 */
 	return apply_filters( 'http_origin', $origin );
 }
@@ -468,7 +452,14 @@ function get_allowed_http_origins() {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string[] $allowed_origins Array of allowed HTTP origins.
+	 * @param string[] $allowed_origins {
+	 *     Array of default allowed HTTP origins.
+	 *
+	 *     @type string $0 Non-secure URL for admin origin.
+	 *     @type string $1 Secure URL for admin origin.
+	 *     @type string $2 Non-secure URL for home origin.
+	 *     @type string $3 Secure URL for home origin.
+	 * }
 	 */
 	return apply_filters( 'allowed_http_origins', $allowed_origins );
 }
@@ -537,28 +528,26 @@ function send_origin_headers() {
 }
 
 /**
- * Validates a URL as safe for use in the HTTP API.
- *
- * The only supported protocols are `http` and `https`.
+ * Validates a URL for safe use in the HTTP API.
  *
  * Examples of URLs that are considered unsafe:
  *
- * - `ftp://example.com/caniload.php` - Invalid protocol - only http and https are allowed.
- * - `http:///example.com/caniload.php` - Malformed URL.
- * - `http://user:pass@example.com/caniload.php` - Login information.
- * - `http://example.invalid/caniload.php` - Invalid hostname, as the IP cannot be looked up in DNS.
+ * - ftp://example.com/caniload.php - Invalid protocol - only http and https are allowed.
+ * - http:///example.com/caniload.php - Malformed URL.
+ * - http://user:pass@example.com/caniload.php - Login information.
+ * - http://example.invalid/caniload.php - Invalid hostname, as the IP cannot be looked up in DNS.
  *
- * Examples of URLs that are considered unsafe by default but can be allowed with filters:
+ * Examples of URLs that are considered unsafe by default:
  *
- * - `http://192.168.0.1/caniload.php` - IP address from LAN network.
+ * - http://192.168.0.1/caniload.php - IPs from LAN networks.
  *   This can be changed with the {@see 'http_request_host_is_external'} filter.
- * - `http://198.143.164.252:81/caniload.php` - By default, only ports 80, 443, and 8080 are allowed.
+ * - http://198.143.164.252:81/caniload.php - By default, only 80, 443, and 8080 ports are allowed.
  *   This can be changed with the {@see 'http_allowed_safe_ports'} filter.
  *
  * @since 3.5.2
  *
  * @param string $url Request URL.
- * @return string|false Returns false if the URL is not safe, or the original URL if it is safe.
+ * @return string|false URL or false on failure.
  */
 function wp_http_validate_url( $url ) {
 	if ( ! is_string( $url ) || '' === $url || is_numeric( $url ) ) {
@@ -635,8 +624,7 @@ function wp_http_validate_url( $url ) {
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param int[]  $allowed_ports Array of integers for valid ports. Default allowed ports
-	 *                              are 80, 443, and 8080.
+	 * @param int[]  $allowed_ports Array of integers for valid ports.
 	 * @param string $host          Host name of the requested URL.
 	 * @param string $url           Requested URL.
 	 */

@@ -2,7 +2,6 @@
   box-sizing:border-box;
 }
 .wp-block-video video{
-  height:auto;
   vertical-align:middle;
   width:100%;
 }

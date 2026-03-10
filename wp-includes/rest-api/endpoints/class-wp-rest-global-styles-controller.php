@@ -88,7 +88,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 		// Lists/updates a single global style variation based on the given id.
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<id>[\/\d+]+)',
+			'/' . $this->rest_base . '/(?P<id>[\/\w-]+)',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
@@ -96,8 +96,9 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 					'args'                => array(
 						'id' => array(
-							'description' => __( 'ID of global styles config.' ),
-							'type'        => 'integer',
+							'description'       => __( 'The id of a template' ),
+							'type'              => 'string',
+							'sanitize_callback' => array( $this, '_sanitize_global_styles_callback' ),
 						),
 					),
 				),
@@ -114,17 +115,17 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Sanitize the global styles stylesheet to decode endpoint.
+	 * Sanitize the global styles ID or stylesheet to decode endpoint.
 	 * For example, `wp/v2/global-styles/twentytwentytwo%200.4.0`
 	 * would be decoded to `twentytwentytwo 0.4.0`.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string $stylesheet Global styles stylesheet.
-	 * @return string Sanitized global styles stylesheet.
+	 * @param string $id_or_stylesheet Global styles ID or stylesheet.
+	 * @return string Sanitized global styles ID or stylesheet.
 	 */
-	public function _sanitize_global_styles_callback( $stylesheet ) {
-		return urldecode( $stylesheet );
+	public function _sanitize_global_styles_callback( $id_or_stylesheet ) {
+		return urldecode( $id_or_stylesheet );
 	}
 
 	/**
@@ -138,7 +139,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	protected function get_post( $id ) {
 		$error = new WP_Error(
 			'rest_global_styles_not_found',
-			__( 'No global styles config exists with that ID.' ),
+			__( 'No global styles config exist with that id.' ),
 			array( 'status' => 404 )
 		);
 
@@ -463,7 +464,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 			'properties' => array(
 				'id'       => array(
 					'description' => __( 'ID of global styles config.' ),
-					'type'        => 'integer',
+					'type'        => 'string',
 					'context'     => array( 'embed', 'view', 'edit' ),
 					'readonly'    => true,
 				),

@@ -482,24 +482,16 @@ class WP_Date_Query {
 		global $wpdb;
 
 		$valid_columns = array(
-			'post_date',         // Part of $wpdb->posts.
-			'post_date_gmt',     // Part of $wpdb->posts.
-			'post_modified',     // Part of $wpdb->posts.
-			'post_modified_gmt', // Part of $wpdb->posts.
-			'comment_date',      // Part of $wpdb->comments.
-			'comment_date_gmt',  // Part of $wpdb->comments.
-			'user_registered',   // Part of $wpdb->users.
+			'post_date',
+			'post_date_gmt',
+			'post_modified',
+			'post_modified_gmt',
+			'comment_date',
+			'comment_date_gmt',
+			'user_registered',
+			'registered',
+			'last_updated',
 		);
-
-		if ( is_multisite() ) {
-			$valid_columns = array_merge(
-				$valid_columns,
-				array(
-					'registered',   // Part of $wpdb->blogs.
-					'last_updated', // Part of $wpdb->blogs.
-				)
-			);
-		}
 
 		// Attempt to detect a table prefix.
 		if ( ! str_contains( $column, '.' ) ) {
@@ -533,14 +525,11 @@ class WP_Date_Query {
 				$wpdb->users    => array(
 					'user_registered',
 				),
-			);
-
-			if ( is_multisite() ) {
-				$known_columns[ $wpdb->blogs ] = array(
+				$wpdb->blogs    => array(
 					'registered',
 					'last_updated',
-				);
-			}
+				),
+			);
 
 			// If it's a known column name, add the appropriate table prefix.
 			foreach ( $known_columns as $table_name => $table_columns ) {

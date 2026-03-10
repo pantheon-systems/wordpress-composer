@@ -20,24 +20,6 @@ function render_block_core_post_excerpt( $attributes, $content, $block ) {
 		return '';
 	}
 
-	$more_text           = ! empty( $attributes['moreText'] ) ? '<a class="wp-block-post-excerpt__more-link" href="' . esc_url( get_the_permalink( $block->context['postId'] ) ) . '">' . wp_kses_post( $attributes['moreText'] ) . '</a>' : '';
-	$filter_excerpt_more = static function ( $more ) use ( $more_text ) {
-		return empty( $more_text ) ? $more : '';
-	};
-	/**
-	 * Some themes might use `excerpt_more` filter to handle the
-	 * `more` link displayed after a trimmed excerpt. Since the
-	 * block has a `more text` attribute we have to check and
-	 * override if needed the return value from this filter.
-	 * So if the block's attribute is not empty override the
-	 * `excerpt_more` filter and return nothing. This will
-	 * result in showing only one `read more` link at a time.
-	 *
-	 * This hook needs to be applied before the excerpt is retrieved with get_the_excerpt.
-	 * Otherwise, the read more link filter from the theme is not removed.
-	 */
-	add_filter( 'excerpt_more', $filter_excerpt_more );
-
 	/*
 	* The purpose of the excerpt length setting is to limit the length of both
 	* automatically generated and user-created excerpts.
@@ -50,6 +32,20 @@ function render_block_core_post_excerpt( $attributes, $content, $block ) {
 		$excerpt = wp_trim_words( $excerpt, $excerpt_length );
 	}
 
+	$more_text           = ! empty( $attributes['moreText'] ) ? '<a class="wp-block-post-excerpt__more-link" href="' . esc_url( get_the_permalink( $block->context['postId'] ) ) . '">' . wp_kses_post( $attributes['moreText'] ) . '</a>' : '';
+	$filter_excerpt_more = static function ( $more ) use ( $more_text ) {
+		return empty( $more_text ) ? $more : '';
+	};
+	/**
+	 * Some themes might use `excerpt_more` filter to handle the
+	 * `more` link displayed after a trimmed excerpt. Since the
+	 * block has a `more text` attribute we have to check and
+	 * override if needed the return value from this filter.
+	 * So if the block's attribute is not empty override the
+	 * `excerpt_more` filter and return nothing. This will
+	 * result in showing only one `read more` link at a time.
+	 */
+	add_filter( 'excerpt_more', $filter_excerpt_more );
 	$classes = array();
 	if ( isset( $attributes['textAlign'] ) ) {
 		$classes[] = 'has-text-align-' . $attributes['textAlign'];

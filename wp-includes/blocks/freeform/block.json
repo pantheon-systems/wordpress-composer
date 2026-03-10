@@ -15,10 +15,7 @@
 	"supports": {
 		"className": false,
 		"customClassName": false,
-		"lock": false,
-		"reusable": false,
-		"renaming": false,
-		"visibility": false
+		"reusable": false
 	},
 	"editorStyle": "wp-block-freeform-editor"
 }

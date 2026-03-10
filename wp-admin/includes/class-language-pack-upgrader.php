@@ -383,7 +383,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			case 'theme':
 				$theme = wp_get_theme( $update->slug );
 				if ( $theme->exists() ) {
-					return $theme->get( 'Name' );
+					return $theme->Get( 'Name' );
 				}
 				break;
 			case 'plugin':

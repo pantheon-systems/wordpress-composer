@@ -23,10 +23,8 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 
 	public function __destruct() {
 		if ( $this->image ) {
-			if ( PHP_VERSION_ID < 80000 ) { // imagedestroy() has no effect as of PHP 8.0.
-				// We don't need the original in memory anymore.
-				imagedestroy( $this->image );
-			}
+			// We don't need the original in memory anymore.
+			imagedestroy( $this->image );
 		}
 	}
 
@@ -190,12 +188,8 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 		$resized = $this->_resize( $max_w, $max_h, $crop );
 
 		if ( is_gd_image( $resized ) ) {
-			if ( PHP_VERSION_ID < 80000 ) { // imagedestroy() has no effect as of PHP 8.0.
-				imagedestroy( $this->image );
-			}
-
+			imagedestroy( $this->image );
 			$this->image = $resized;
-
 			return true;
 
 		} elseif ( is_wp_error( $resized ) ) {
@@ -330,10 +324,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 			$saved = $resized;
 		} else {
 			$saved = $this->_save( $resized );
-
-			if ( PHP_VERSION_ID < 80000 ) { // imagedestroy() has no effect as of PHP 8.0.
-				imagedestroy( $resized );
-			}
+			imagedestroy( $resized );
 		}
 
 		$this->size = $orig_size;
@@ -391,13 +382,9 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 		imagecopyresampled( $dst, $this->image, 0, 0, (int) $src_x, (int) $src_y, (int) $dst_w, (int) $dst_h, (int) $src_w, (int) $src_h );
 
 		if ( is_gd_image( $dst ) ) {
-			if ( PHP_VERSION_ID < 80000 ) { // imagedestroy() has no effect as of PHP 8.0.
-				imagedestroy( $this->image );
-			}
-
+			imagedestroy( $this->image );
 			$this->image = $dst;
 			$this->update_size();
-
 			return true;
 		}
 
@@ -421,14 +408,9 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 			if ( is_gd_image( $rotated ) ) {
 				imagealphablending( $rotated, true );
 				imagesavealpha( $rotated, true );
-
-				if ( PHP_VERSION_ID < 80000 ) { // imagedestroy() has no effect as of PHP 8.0.
-					imagedestroy( $this->image );
-				}
-
+				imagedestroy( $this->image );
 				$this->image = $rotated;
 				$this->update_size();
-
 				return true;
 			}
 		}
@@ -457,12 +439,8 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 			$sh = $horz ? -$h : $h;
 
 			if ( imagecopyresampled( $dst, $this->image, 0, 0, $sx, $sy, $w, $h, $sw, $sh ) ) {
-				if ( PHP_VERSION_ID < 80000 ) { // imagedestroy() has no effect as of PHP 8.0.
-					imagedestroy( $this->image );
-				}
-
+				imagedestroy( $this->image );
 				$this->image = $dst;
-
 				return true;
 			}
 		}
