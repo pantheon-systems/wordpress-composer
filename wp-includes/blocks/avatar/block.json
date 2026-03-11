@@ -48,20 +48,15 @@
 		},
 		"color": {
 			"text": false,
-			"background": false
-		},
-		"filter": {
-			"duotone": true
+			"background": false,
+			"__experimentalDuotone": "img"
 		},
 		"interactivity": {
 			"clientNavigation": true
 		}
 	},
 	"selectors": {
-		"border": ".wp-block-avatar img",
-		"filter": {
-			"duotone": ".wp-block-avatar img"
-		}
+		"border": ".wp-block-avatar img"
 	},
 	"editorStyle": "wp-block-avatar-editor",
 	"style": "wp-block-avatar"

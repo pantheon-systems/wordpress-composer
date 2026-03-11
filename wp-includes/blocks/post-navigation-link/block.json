@@ -15,8 +15,7 @@
 			"default": "next"
 		},
 		"label": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"showTitle": {
 			"type": "boolean",

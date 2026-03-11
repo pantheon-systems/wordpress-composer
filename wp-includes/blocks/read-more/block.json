@@ -8,8 +8,7 @@
 	"textdomain": "default",
 	"attributes": {
 		"content": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"linkTarget": {
 			"type": "string",

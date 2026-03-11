@@ -96,9 +96,6 @@ if ( ! xml_parse( $xml_parser, $opml, true ) ) {
 	);
 }
 
-if ( PHP_VERSION_ID < 80000 ) { // xml_parser_free() has no effect as of PHP 8.0.
-	// Free up memory used by the XML parser.
-	xml_parser_free( $xml_parser );
-}
-
+// Free up memory used by the XML parser.
+xml_parser_free( $xml_parser );
 unset( $xml_parser );

@@ -14,8 +14,7 @@
 	"textdomain": "default",
 	"attributes": {
 		"label": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"type": {
 			"type": "string"

@@ -33,8 +33,8 @@ get_current_screen()->add_help_tab(
 			'<p>' . __( 'Hovering over each site reveals seven options (three for the primary site):' ) . '</p>' .
 			'<ul><li>' . __( 'An Edit link to a separate Edit Site screen.' ) . '</li>' .
 			'<li>' . __( 'Dashboard leads to the Dashboard for that site.' ) . '</li>' .
-			'<li>' . __( 'Flag for Deletion, Archive, and Spam which lead to confirmation screens. These actions can be reversed later.' ) . '</li>' .
-			'<li>' . __( 'Delete Permanently which is a permanent action after the confirmation screen.' ) . '</li>' .
+			'<li>' . __( 'Deactivate, Archive, and Spam which lead to confirmation screens. These actions can be reversed later.' ) . '</li>' .
+			'<li>' . __( 'Delete which is a permanent action after the confirmation screen.' ) . '</li>' .
 			'<li>' . __( 'Visit to go to the front-end of the live site.' ) . '</li></ul>',
 	)
 );
@@ -61,9 +61,9 @@ if ( isset( $_GET['action'] ) ) {
 	// A list of valid actions and their associated messaging for confirmation output.
 	$manage_actions = array(
 		/* translators: %s: Site URL. */
-		'activateblog'   => __( 'You are about to remove the deletion flag from the site %s.' ),
+		'activateblog'   => __( 'You are about to activate the site %s.' ),
 		/* translators: %s: Site URL. */
-		'deactivateblog' => __( 'You are about to flag the site %s for deletion.' ),
+		'deactivateblog' => __( 'You are about to deactivate the site %s.' ),
 		/* translators: %s: Site URL. */
 		'unarchiveblog'  => __( 'You are about to unarchive the site %s.' ),
 		/* translators: %s: Site URL. */
@@ -106,7 +106,6 @@ if ( isset( $_GET['action'] ) ) {
 
 		$site_details = get_site( $id );
 		$site_address = untrailingslashit( $site_details->domain . $site_details->path );
-		$submit       = __( 'Confirm' );
 
 		require_once ABSPATH . 'wp-admin/admin-header.php';
 		?>
@@ -125,18 +124,8 @@ if ( isset( $_GET['action'] ) ) {
 							<p><?php _e( 'Deleting a site is a permanent action that cannot be undone. This will delete the entire site and its uploads directory.' ); ?>
 						</div>
 						<?php
-					} elseif ( 'archiveblog' === $site_action ) {
-						?>
-						<div class="notice notice-warning inline">
-							<p><?php _e( 'Archiving a site makes the site unavailable to its users and visitors. This is a reversible action.' ); ?>
-						</div>
-						<?php
-					} elseif ( 'deactivateblog' === $site_action ) {
-						?>
-						<div class="notice notice-warning inline">
-							<p><?php _e( 'Flagging a site for deletion makes the site unavailable to its users and visitors. This is a reversible action. A super admin can permanently delete the site at a later date.' ); ?>
-						</div>
-						<?php
+					} else {
+						$submit = __( 'Confirm' );
 					}
 					?>
 					<p><?php printf( $manage_actions[ $site_action ], "<strong>{$site_address}</strong>" ); ?></p>
@@ -216,9 +205,6 @@ if ( isset( $_GET['action'] ) ) {
 										<input type="hidden" name="action" value="delete_sites" />
 										<input type="hidden" name="_wp_http_referer" value="<?php echo esc_attr( wp_get_referer() ); ?>" />
 										<?php wp_nonce_field( 'ms-delete-sites', '_wpnonce', false ); ?>
-										<div class="notice notice-warning inline">
-											<p><?php _e( 'Deleting a site is a permanent action that cannot be undone. This will delete the entire site and its uploads directory.' ); ?>
-										</div>
 										<p><?php _e( 'You are about to delete the following sites:' ); ?></p>
 										<ul class="ul-disc">
 											<?php
@@ -234,7 +220,7 @@ if ( isset( $_GET['action'] ) ) {
 												</li>
 											<?php endforeach; ?>
 										</ul>
-										<?php submit_button( __( 'Delete these sites permanently' ), 'primary' ); ?>
+										<?php submit_button( __( 'Confirm' ), 'primary' ); ?>
 									</form>
 								</div>
 								<?php
@@ -285,22 +271,22 @@ if ( isset( $_GET['action'] ) ) {
 			update_blog_status( $id, 'deleted', '0' );
 
 			/**
-			 * Fires after a network site has its deletion flag removed.
+			 * Fires after a network site is activated.
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $id The ID of the reactivated site.
+			 * @param int $id The ID of the activated site.
 			 */
 			do_action( 'activate_blog', $id );
 			break;
 
 		case 'deactivateblog':
 			/**
-			 * Fires before a network site is flagged for deletion.
+			 * Fires before a network site is deactivated.
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $id The ID of the site being flagged for deletion.
+			 * @param int $id The ID of the site being deactivated.
 			 */
 			do_action( 'deactivate_blog', $id );
 
@@ -340,10 +326,10 @@ if ( isset( $_GET['updated'] ) ) {
 			$msg = __( 'Sites marked as spam.' );
 			break;
 		case 'all_delete':
-			$msg = __( 'Sites permanently deleted.' );
+			$msg = __( 'Sites deleted.' );
 			break;
 		case 'delete':
-			$msg = __( 'Site permanently deleted.' );
+			$msg = __( 'Site deleted.' );
 			break;
 		case 'not_deleted':
 			$msg = __( 'Sorry, you are not allowed to delete that site.' );
@@ -355,10 +341,10 @@ if ( isset( $_GET['updated'] ) ) {
 			$msg = __( 'Site unarchived.' );
 			break;
 		case 'activateblog':
-			$msg = __( 'Site deletion flag removed.' );
+			$msg = __( 'Site activated.' );
 			break;
 		case 'deactivateblog':
-			$msg = __( 'Site flagged for deletion.' );
+			$msg = __( 'Site deactivated.' );
 			break;
 		case 'unspamblog':
 			$msg = __( 'Site removed from spam.' );

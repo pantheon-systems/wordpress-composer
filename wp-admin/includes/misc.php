@@ -205,7 +205,7 @@ Any changes to the directives between these markers will be overwritten.'
 
 		if ( ! $found_marker ) {
 			$pre_lines[] = $line;
-		} elseif ( $found_end_marker ) {
+		} elseif ( $found_marker && $found_end_marker ) {
 			$post_lines[] = $line;
 		} else {
 			$existing_lines[] = $line;
@@ -263,7 +263,7 @@ function save_mod_rewrite_rules() {
 	global $wp_rewrite;
 
 	if ( is_multisite() ) {
-		return null;
+		return;
 	}
 
 	// Ensure get_home_path() is declared.
@@ -303,7 +303,7 @@ function iis7_save_url_rewrite_rules() {
 	global $wp_rewrite;
 
 	if ( is_multisite() ) {
-		return null;
+		return;
 	}
 
 	// Ensure get_home_path() is declared.
@@ -988,7 +988,7 @@ function saveDomDocument( $doc, $filename ) { // phpcs:ignore WordPress.NamingCo
 }
 
 /**
- * Displays the default administration color scheme picker (Used in user-edit.php).
+ * Displays the default admin color scheme picker (Used in user-edit.php).
  *
  * @since 3.0.0
  *
@@ -1022,7 +1022,12 @@ function admin_color_scheme_picker( $user_id ) {
 	}
 	?>
 	<fieldset id="color-picker" class="scheme-list">
-		<legend class="screen-reader-text"><span><?php _e( 'Administration Color Scheme' ); ?></span></legend>
+		<legend class="screen-reader-text"><span>
+			<?php
+			/* translators: Hidden accessibility text. */
+			_e( 'Admin Color Scheme' );
+			?>
+		</span></legend>
 		<?php
 		wp_nonce_field( 'save-color-scheme', 'color-nonce', false );
 		foreach ( $_wp_admin_css_colors as $color => $color_info ) :
@@ -1053,8 +1058,6 @@ function admin_color_scheme_picker( $user_id ) {
 
 /**
  *
- * @since 3.8.0
- *
  * @global array $_wp_admin_css_colors
  */
 function wp_color_scheme_settings() {
@@ -1080,7 +1083,7 @@ function wp_color_scheme_settings() {
 		);
 	}
 
-	echo '<script type="text/javascript">var _wpColorScheme = ' . wp_json_encode( array( 'icons' => $icon_colors ), JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ) . ";</script>\n";
+	echo '<script type="text/javascript">var _wpColorScheme = ' . wp_json_encode( array( 'icons' => $icon_colors ) ) . ";</script>\n";
 }
 
 /**
@@ -1480,12 +1483,11 @@ All at ###SITENAME###
 	 * Filters the text of the email sent when a change of site admin email address is attempted.
 	 *
 	 * The following strings have a special meaning and will get replaced dynamically:
-	 *
-	 *  - `###USERNAME###`  The current user's username.
-	 *  - `###ADMIN_URL###` The link to click on to confirm the email change.
-	 *  - `###EMAIL###`     The proposed new site admin email address.
-	 *  - `###SITENAME###`  The name of the site.
-	 *  - `###SITEURL###`   The URL to the site.
+	 *  - ###USERNAME###  The current user's username.
+	 *  - ###ADMIN_URL### The link to click on to confirm the email change.
+	 *  - ###EMAIL###     The proposed new site admin email address.
+	 *  - ###SITENAME###  The name of the site.
+	 *  - ###SITEURL###   The URL to the site.
 	 *
 	 * @since MU (3.0.0)
 	 * @since 4.9.0 This filter is no longer Multisite specific.

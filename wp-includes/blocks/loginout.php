@@ -16,23 +16,17 @@
  */
 function render_block_core_loginout( $attributes ) {
 
-	/*
-	 * Build the redirect URL. This current url fetching logic matches with the core.
-	 *
-	 * @see https://github.com/WordPress/wordpress-develop/blob/6bf62e58d21739938f3bb3f9e16ba702baf9c2cc/src/wp-includes/general-template.php#L528.
-	 */
+	// Build the redirect URL.
 	$current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-	$user_logged_in = is_user_logged_in();
-
-	$classes  = $user_logged_in ? 'logged-in' : 'logged-out';
+	$classes  = is_user_logged_in() ? 'logged-in' : 'logged-out';
 	$contents = wp_loginout(
 		isset( $attributes['redirectToCurrent'] ) && $attributes['redirectToCurrent'] ? $current_url : '',
 		false
 	);
 
 	// If logged-out and displayLoginAsForm is true, show the login form.
-	if ( ! $user_logged_in && ! empty( $attributes['displayLoginAsForm'] ) ) {
+	if ( ! is_user_logged_in() && ! empty( $attributes['displayLoginAsForm'] ) ) {
 		// Add a class.
 		$classes .= ' has-login-form';
 

@@ -10,6 +10,7 @@
  * Converts a Classic Menu to Block Menu blocks.
  *
  * @since 6.3.0
+ * @access public
  */
 class WP_Classic_To_Block_Menu_Converter {
 

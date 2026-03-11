@@ -1615,7 +1615,6 @@
 				} else {
 					expand = function() {
 						section._animateChangeExpanded( function() {
-							backBtn.attr( 'tabindex', '0' );
 							backBtn.trigger( 'focus' );
 							content.css( 'top', '' );
 							container.scrollTop( 0 );
@@ -1661,7 +1660,7 @@
 					}
 				}
 				section._animateChangeExpanded( function() {
-					backBtn.attr( 'tabindex', '-1' );
+
 					sectionTitle.trigger( 'focus' );
 					content.css( 'top', '' );
 
@@ -2715,7 +2714,6 @@
 				} else {
 					expand = function() {
 						section._animateChangeExpanded( function() {
-							backBtn.attr( 'tabindex', '0' );
 							backBtn.trigger( 'focus' );
 							content.css( 'top', '' );
 							container.scrollTop( 0 );
@@ -2746,7 +2744,7 @@
 					}
 				}
 				section._animateChangeExpanded( function() {
-					backBtn.attr( 'tabindex', '-1' );
+
 					sectionTitle.trigger( 'focus' );
 					content.css( 'top', '' );
 
@@ -2966,7 +2964,6 @@
 					} );
 				} else {
 					panel._animateChangeExpanded( function() {
-						backBtn.attr( 'tabindex', '0' );
 						backBtn.trigger( 'focus' );
 						accordionSection.css( 'top', '' );
 						container.scrollTop( 0 );
@@ -4066,7 +4063,7 @@
 		 * @return {void}
 		 */
 		addNewPage: function () {
-			var control = this, promise, toggle, container, input, inputError, title, select;
+			var control = this, promise, toggle, container, input, title, select;
 
 			if ( 'dropdown-pages' !== control.params.type || ! control.params.allow_addition || ! api.Menus ) {
 				return;
@@ -4075,23 +4072,15 @@
 			toggle = control.container.find( '.add-new-toggle' );
 			container = control.container.find( '.new-content-item-wrapper' );
 			input = control.container.find( '.create-item-input' );
-			inputError = control.container.find('.create-item-error');
 			title = input.val();
 			select = control.container.find( 'select' );
 
 			if ( ! title ) {
-				container.addClass( 'form-invalid' );
-				input.attr('aria-invalid', 'true');
-				input.attr('aria-describedby', inputError.attr('id'));
-				inputError.slideDown( 'fast' );
-				wp.a11y.speak( inputError.text() );
+				input.addClass( 'invalid' );
 				return;
 			}
 
-			container.removeClass( 'form-invalid' );
-			input.attr('aria-invalid', 'false');
-			input.removeAttr('aria-describedby');
-			inputError.hide();
+			input.removeClass( 'invalid' );
 			input.attr( 'disabled', 'disabled' );
 
 			// The menus functions add the page, publish when appropriate,
@@ -4726,19 +4715,10 @@
 		 * @param {Object} attachment
 		 */
 		setImageFromAttachment: function( attachment ) {
-			var control = this;
 			this.params.attachment = attachment;
 
 			// Set the Customizer setting; the callback takes care of rendering.
 			this.setting( attachment.id );
-
-			// Set focus to the first relevant button after the icon.
-			_.defer( function() {
-				var firstButton = control.container.find( '.actions .button' ).first();
-				if ( firstButton.length ) {
-					firstButton.focus();
-				}
-			} );
 		}
 	});
 
@@ -4821,8 +4801,7 @@
 		 * @param {Object} attachment
 		 */
 		setImageFromAttachment: function( attachment ) {
-			var control = this,
-				sizes = [ 'site_icon-32', 'thumbnail', 'full' ], link,
+			var sizes = [ 'site_icon-32', 'thumbnail', 'full' ], link,
 				icon;
 
 			_.each( sizes, function( size ) {
@@ -4843,14 +4822,6 @@
 			// Update the icon in-browser.
 			link = $( 'link[rel="icon"][sizes="32x32"]' );
 			link.attr( 'href', icon.url );
-
-			// Set focus to the first relevant button after the icon.
-			_.defer( function() {
-				var firstButton = control.container.find( '.actions .button' ).first();
-				if ( firstButton.length ) {
-					firstButton.focus();
-				}
-			} );
 		},
 
 		/**

@@ -9,8 +9,7 @@
 	"attributes": {
 		"text": {
 			"type": "string",
-			"source": "raw",
-			"role": "content"
+			"source": "raw"
 		}
 	},
 	"supports": {

@@ -69,7 +69,6 @@ class WP_REST_Font_Collections_Controller extends WP_REST_Controller {
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {

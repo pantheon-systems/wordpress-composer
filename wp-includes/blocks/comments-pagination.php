@@ -25,15 +25,10 @@ function render_block_core_comments_pagination( $attributes, $content ) {
 	}
 
 	$classes            = ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) ? 'has-link-color' : '';
-	$wrapper_attributes = get_block_wrapper_attributes(
-		array(
-			'aria-label' => __( 'Comments pagination' ),
-			'class'      => $classes,
-		)
-	);
+	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classes ) );
 
 	return sprintf(
-		'<nav %1$s>%2$s</nav>',
+		'<div %1$s>%2$s</div>',
 		$wrapper_attributes,
 		$content
 	);

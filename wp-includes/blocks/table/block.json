@@ -14,8 +14,7 @@
 		"caption": {
 			"type": "rich-text",
 			"source": "rich-text",
-			"selector": "figcaption",
-			"role": "content"
+			"selector": "figcaption"
 		},
 		"head": {
 			"type": "array",
@@ -31,8 +30,7 @@
 					"query": {
 						"content": {
 							"type": "rich-text",
-							"source": "rich-text",
-							"role": "content"
+							"source": "rich-text"
 						},
 						"tag": {
 							"type": "string",
@@ -77,8 +75,7 @@
 					"query": {
 						"content": {
 							"type": "rich-text",
-							"source": "rich-text",
-							"role": "content"
+							"source": "rich-text"
 						},
 						"tag": {
 							"type": "string",
@@ -123,8 +120,7 @@
 					"query": {
 						"content": {
 							"type": "rich-text",
-							"source": "rich-text",
-							"role": "content"
+							"source": "rich-text"
 						},
 						"tag": {
 							"type": "string",

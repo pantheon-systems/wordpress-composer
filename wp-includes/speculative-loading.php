@@ -247,8 +247,7 @@ function wp_print_speculation_rules(): void {
 
 	wp_print_inline_script_tag(
 		(string) wp_json_encode(
-			$speculation_rules,
-			JSON_HEX_TAG | JSON_UNESCAPED_SLASHES
+			$speculation_rules
 		),
 		array( 'type' => 'speculationrules' )
 	);

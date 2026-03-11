@@ -11,8 +11,7 @@
 			"type": "string"
 		},
 		"moreText": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"showMoreOnNewLine": {
 			"type": "boolean",

@@ -70,12 +70,12 @@ function mysql2date( $format, $date, $translate = true ) {
  * @since 1.0.0
  * @since 5.3.0 Now returns an integer if `$type` is 'U'. Previously a string was returned.
  *
- * @param string $type Type of time to retrieve. Accepts 'mysql', 'timestamp', 'U',
- *                     or PHP date format string (e.g. 'Y-m-d').
- * @param bool   $gmt  Optional. Whether to use GMT timezone. Default false.
+ * @param string   $type Type of time to retrieve. Accepts 'mysql', 'timestamp', 'U',
+ *                       or PHP date format string (e.g. 'Y-m-d').
+ * @param int|bool $gmt  Optional. Whether to use GMT timezone. Default false.
  * @return int|string Integer if `$type` is 'timestamp' or 'U', string otherwise.
  */
-function current_time( $type, $gmt = false ) {
+function current_time( $type, $gmt = 0 ) {
 	// Don't use non-GMT timestamp, unless you know the difference and really need to.
 	if ( 'timestamp' === $type || 'U' === $type ) {
 		return $gmt ? time() : time() + (int) ( (float) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
@@ -216,6 +216,7 @@ function date_i18n( $format, $timestamp_with_offset = false, $gmt = false ) {
 	 * @param int    $timestamp A sum of Unix timestamp and timezone offset in seconds.
 	 *                          Might be without offset if input omitted timestamp but requested GMT.
 	 * @param bool   $gmt       Whether to use GMT timezone. Only applies if timestamp was not provided.
+	 *                          Default false.
 	 */
 	$date = apply_filters( 'date_i18n', $date, $format, $timestamp, $gmt );
 
@@ -234,10 +235,10 @@ function date_i18n( $format, $timestamp_with_offset = false, $gmt = false ) {
  *
  * @global WP_Locale $wp_locale WordPress date and time locale object.
  *
- * @param string            $format    PHP date format.
- * @param int|null          $timestamp Optional. Unix timestamp. Defaults to current time.
- * @param DateTimeZone|null $timezone  Optional. Timezone to output result in. Defaults to timezone
- *                                     from site settings.
+ * @param string       $format    PHP date format.
+ * @param int          $timestamp Optional. Unix timestamp. Defaults to current time.
+ * @param DateTimeZone $timezone  Optional. Timezone to output result in. Defaults to timezone
+ *                                from site settings.
  * @return string|false The date, translated if locale specifies it. False on invalid timestamp input.
  */
 function wp_date( $format, $timestamp = null, $timezone = null ) {
@@ -760,17 +761,17 @@ function is_serialized_string( $data ) {
 }
 
 /**
- * Retrieves post title from XML-RPC XML.
+ * Retrieves post title from XMLRPC XML.
  *
- * If the `title` element is not found in the XML, the default post title
- * from the `$post_default_title` global will be used instead.
+ * If the title element is not part of the XML, then the default post title from
+ * the $post_default_title will be used instead.
  *
  * @since 0.71
  *
  * @global string $post_default_title Default XML-RPC post title.
  *
- * @param string $content XML-RPC XML Request content.
- * @return string Post title.
+ * @param string $content XMLRPC XML Request content
+ * @return string Post title
  */
 function xmlrpc_getposttitle( $content ) {
 	global $post_default_title;
@@ -783,20 +784,18 @@ function xmlrpc_getposttitle( $content ) {
 }
 
 /**
- * Retrieves the post category or categories from XML-RPC XML.
+ * Retrieves the post category or categories from XMLRPC XML.
  *
- * If the `category` element is not found in the XML, the default post category
- * from the `$post_default_category` global will be used instead.
- * The return type will then be a string.
- *
- * If the `category` element is found, the return type will be an array.
+ * If the category element is not found, then the default post category will be
+ * used. The return type then would be what $post_default_category. If the
+ * category is found, then it will always be an array.
  *
  * @since 0.71
  *
  * @global string $post_default_category Default XML-RPC post category.
  *
- * @param string $content XML-RPC XML Request content.
- * @return string[]|string An array of category names or default category name.
+ * @param string $content XMLRPC XML Request content
+ * @return string|array List of categories or category name.
  */
 function xmlrpc_getpostcategory( $content ) {
 	global $post_default_category;
@@ -810,12 +809,12 @@ function xmlrpc_getpostcategory( $content ) {
 }
 
 /**
- * XML-RPC XML content without title and category elements.
+ * XMLRPC XML content without title and category elements.
  *
  * @since 0.71
  *
  * @param string $content XML-RPC XML Request content.
- * @return string XML-RPC XML Request content without title and category elements.
+ * @return string XMLRPC XML Request content without title and category elements.
  */
 function xmlrpc_removepostdata( $content ) {
 	$content = preg_replace( '/<title>(.+?)<\/title>/si', '', $content );
@@ -1026,10 +1025,10 @@ function is_new_day() {
 }
 
 /**
- * Builds a URL query based on an associative or indexed array.
+ * Builds URL query based on an associative and, or indexed array.
  *
- * This is a convenient function for easily building URL queries.
- * It sets the separator to '&' and uses the _http_build_query() function.
+ * This is a convenient function for easily building url queries. It sets the
+ * separator to '&' and uses _http_build_query() function.
  *
  * @since 2.3.0
  *
@@ -2209,14 +2208,12 @@ function wp_normalize_path( $path ) {
 /**
  * Determines a writable directory for temporary files.
  *
- * Function's preference is the return value of `sys_get_temp_dir()`,
- * followed by the `upload_tmp_dir` value from `php.ini`, followed by `WP_CONTENT_DIR`,
- * before finally defaulting to `/tmp/`.
- *
- * Note that `sys_get_temp_dir()` honors the `TMPDIR` environment variable.
+ * Function's preference is the return value of sys_get_temp_dir(),
+ * followed by your PHP temporary upload directory, followed by WP_CONTENT_DIR,
+ * before finally defaulting to /tmp/
  *
  * In the event that this function does not find a writable location,
- * it may be overridden by the `WP_TEMP_DIR` constant in your `wp-config.php` file.
+ * It may be overridden by the WP_TEMP_DIR constant in your wp-config.php file.
  *
  * @since 2.5.0
  *
@@ -3009,13 +3006,14 @@ function wp_ext2type( $ext ) {
 }
 
 /**
- * Returns the first matched extension for the mime type, as mapped from wp_get_mime_types().
+ * Returns first matched extension for the mime-type,
+ * as mapped from wp_get_mime_types().
  *
  * @since 5.8.1
  *
- * @param string $mime_type The mime type to search.
- * @return string|false The first matching file extension, or false if no extensions are found
- *                      for the given mime type.
+ * @param string $mime_type
+ *
+ * @return string|false
  */
 function wp_get_default_extension_for_mime_type( $mime_type ) {
 	$extensions = explode( '|', array_search( $mime_type, wp_get_mime_types(), true ) );
@@ -3174,10 +3172,7 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 	if ( $type && ! $real_mime && extension_loaded( 'fileinfo' ) ) {
 		$finfo     = finfo_open( FILEINFO_MIME_TYPE );
 		$real_mime = finfo_file( $finfo, $file );
-
-		if ( PHP_VERSION_ID < 80100 ) { // finfo_close() has no effect as of PHP 8.1.
-			finfo_close( $finfo );
-		}
+		finfo_close( $finfo );
 
 		$google_docs_types = array(
 			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -3406,10 +3401,7 @@ function wp_get_image_mime( $file ) {
 				if ( extension_loaded( 'fileinfo' ) ) {
 					$fileinfo  = finfo_open( FILEINFO_MIME_TYPE );
 					$mime_type = finfo_file( $fileinfo, $file );
-
-					if ( PHP_VERSION_ID < 80100 ) { // finfo_close() has no effect as of PHP 8.1.
-						finfo_close( $fileinfo );
-					}
+					finfo_close( $fileinfo );
 
 					if ( wp_is_heic_image_mime_type( $mime_type ) ) {
 						$mime = $mime_type;
@@ -4175,7 +4167,7 @@ function _jsonp_wp_die_handler( $message, $title = '', $args = array() ) {
 /**
  * Kills WordPress execution and displays XML response with an error message.
  *
- * This is the handler for wp_die() when processing XML-RPC requests.
+ * This is the handler for wp_die() when processing XMLRPC requests.
  *
  * @since 3.2.0
  * @access private
@@ -5101,7 +5093,7 @@ function _wp_array_get( $input_array, $path, $default_value = null ) {
 			 * We check with `isset()` first, as it is a lot faster
 			 * than `array_key_exists()`.
 			 */
-			if ( isset( $path_element, $input_array[ $path_element ] ) ) {
+			if ( isset( $input_array[ $path_element ] ) ) {
 				$input_array = $input_array[ $path_element ];
 				continue;
 			}
@@ -5110,7 +5102,7 @@ function _wp_array_get( $input_array, $path, $default_value = null ) {
 			 * If `isset()` returns false, we check with `array_key_exists()`,
 			 * which also checks for `null` values.
 			 */
-			if ( isset( $path_element ) && array_key_exists( $path_element, $input_array ) ) {
+			if ( array_key_exists( $path_element, $input_array ) ) {
 				$input_array = $input_array[ $path_element ];
 				continue;
 			}
@@ -5206,8 +5198,6 @@ function _wp_array_set( &$input_array, $path, $value = null ) {
  *
  * Changes to this function should follow updates in the client
  * with the same logic.
- *
- * @since 5.8.0
  *
  * @link https://github.com/lodash/lodash/blob/4.17/dist/lodash.js#L14369
  * @link https://github.com/lodash/lodash/blob/4.17/dist/lodash.js#L278
@@ -7148,14 +7138,10 @@ function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = ar
  *
  * @since 3.1.3
  *
- * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options
- * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
  */
 function send_frame_options_header() {
-	if ( ! headers_sent() ) {
-		header( 'X-Frame-Options: SAMEORIGIN' );
-		header( "Content-Security-Policy: frame-ancestors 'self';" );
-	}
+	header( 'X-Frame-Options: SAMEORIGIN' );
 }
 
 /**
@@ -7173,7 +7159,7 @@ function wp_admin_headers() {
 	 * @since 4.9.0
 	 * @since 4.9.5 The default value was changed to 'strict-origin-when-cross-origin'.
 	 *
-	 * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy
+	 * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
 	 *
 	 * @param string $policy The admin referrer policy header value. Default 'strict-origin-when-cross-origin'.
 	 */
@@ -7397,11 +7383,6 @@ function wp_is_stream( $path ) {
  * @return bool True if valid date, false if not valid date.
  */
 function wp_checkdate( $month, $day, $year, $source_date ) {
-	$checkdate = false;
-	if ( is_numeric( $month ) && is_numeric( $day ) && is_numeric( $year ) ) {
-		$checkdate = checkdate( (int) $month, (int) $day, (int) $year );
-	}
-
 	/**
 	 * Filters whether the given date is valid for the Gregorian calendar.
 	 *
@@ -7410,7 +7391,7 @@ function wp_checkdate( $month, $day, $year, $source_date ) {
 	 * @param bool   $checkdate   Whether the given date is valid.
 	 * @param string $source_date Date to check.
 	 */
-	return apply_filters( 'wp_checkdate', $checkdate, $source_date );
+	return apply_filters( 'wp_checkdate', checkdate( $month, $day, $year ), $source_date );
 }
 
 /**
@@ -7802,7 +7783,6 @@ function wp_post_preview_js() {
 			window.addEventListener( 'pagehide', function() { window.name = ''; } );
 		}
 	}());
-	//# sourceURL=<?php echo rawurlencode( __FUNCTION__ ); ?>
 	</script>
 	<?php
 	wp_print_inline_script_tag( wp_remove_surrounding_empty_script_tags( ob_get_clean() ) );
@@ -8051,38 +8031,6 @@ function wp_unique_prefixed_id( $prefix = '' ) {
 }
 
 /**
- * Generates a unique ID based on the structure and values of a given array.
- *
- * This function serializes the array into a JSON string and generates a hash
- * that serves as a unique identifier. Optionally, a prefix can be added to
- * the generated ID for context or categorization.
- *
- * @since 6.8.0
- *
- * @param array  $data   The input array to generate an ID from.
- * @param string $prefix Optional. A prefix to prepend to the generated ID. Default empty string.
- * @return string The generated unique ID for the array.
- */
-function wp_unique_id_from_values( array $data, string $prefix = '' ): string {
-	if ( empty( $data ) ) {
-		_doing_it_wrong(
-			__FUNCTION__,
-			sprintf(
-				/* translators: %s: The parameter name. */
-				__( 'The %s parameter must not be empty.' ),
-				'$data'
-			),
-			'6.8.0'
-		);
-	}
-
-	$serialized = wp_json_encode( $data );
-	$hash       = substr( md5( $serialized ), 0, 8 );
-
-	return $prefix . $hash;
-}
-
-/**
  * Gets last changed date for the specified cache group.
  *
  * @since 4.7.0
@@ -8143,8 +8091,8 @@ function wp_cache_set_last_changed( $group ) {
 function wp_site_admin_email_change_notification( $old_email, $new_email, $option_name ) {
 	$send = true;
 
-	// Don't send the notification for an empty email address or the default 'admin_email' value.
-	if ( empty( $old_email ) || 'you@example.com' === $old_email ) {
+	// Don't send the notification to the default 'admin_email' value.
+	if ( 'you@example.com' === $old_email ) {
 		$send = false;
 	}
 
@@ -8201,10 +8149,10 @@ All at ###SITENAME###
 	 *     @type string $subject The subject of the email.
 	 *     @type string $message The content of the email.
 	 *         The following strings have a special meaning and will get replaced dynamically:
-	 *          - `###OLD_EMAIL###` The old site admin email address.
-	 *          - `###NEW_EMAIL###` The new site admin email address.
-	 *          - `###SITENAME###`  The name of the site.
-	 *          - `###SITEURL###`   The URL to the site.
+	 *         - ###OLD_EMAIL### The old site admin email address.
+	 *         - ###NEW_EMAIL### The new site admin email address.
+	 *         - ###SITENAME###  The name of the site.
+	 *         - ###SITEURL###   The URL to the site.
 	 *     @type string $headers Headers.
 	 * }
 	 * @param string $old_email The old site admin email address.
@@ -9225,4 +9173,35 @@ function wp_verify_fast_hash(
 	}
 
 	return hash_equals( $hash, wp_fast_hash( $message ) );
+}
+
+/**
+ * Generates a unique ID based on the structure and values of a given array.
+ *
+ * This function serializes the array into a JSON string and generates a hash
+ * that serves as a unique identifier. Optionally, a prefix can be added to
+ * the generated ID for context or categorization.
+ *
+ * @since 6.8.0
+ *
+ * @param array  $data   The input array to generate an ID from.
+ * @param string $prefix Optional. A prefix to prepend to the generated ID. Default ''.
+ *
+ * @return string The generated unique ID for the array.
+ */
+function wp_unique_id_from_values( array $data, string $prefix = '' ): string {
+	if ( empty( $data ) ) {
+		_doing_it_wrong(
+			__FUNCTION__,
+			sprintf(
+				/* translators: %s: parameter name. */
+				__( 'The %s argument must not be empty.' ),
+				'$data'
+			),
+			'6.8.0'
+		);
+	}
+	$serialized = wp_json_encode( $data );
+	$hash       = substr( md5( $serialized ), 0, 8 );
+	return $prefix . $hash;
 }

@@ -166,8 +166,8 @@ class WP_REST_Server {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return WP_Error|null|true WP_Error if authentication error occurred, null if authentication
-	 *                            method wasn't used, true if authentication succeeded.
+	 * @return WP_Error|null|true WP_Error indicates unsuccessful login, null indicates successful
+	 *                            or no authentication provided
 	 */
 	public function check_authentication() {
 		/**
@@ -191,7 +191,7 @@ class WP_REST_Server {
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param WP_Error|null|true $errors WP_Error if authentication error occurred, null if authentication
+		 * @param WP_Error|null|true $errors WP_Error if authentication error, null if authentication
 		 *                                   method wasn't used, true if authentication succeeded.
 		 */
 		return apply_filters( 'rest_authentication_errors', null );
@@ -224,10 +224,10 @@ class WP_REST_Server {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string   $code    WP_Error-style code.
-	 * @param string   $message Human-readable message.
-	 * @param int|null $status  Optional. HTTP status code to send. Default null.
-	 * @return string JSON representation of the error.
+	 * @param string $code    WP_Error-style code.
+	 * @param string $message Human-readable message.
+	 * @param int    $status  Optional. HTTP status code to send. Default null.
+	 * @return string JSON representation of the error
 	 */
 	protected function json_error( $code, $message, $status = null ) {
 		if ( $status ) {
@@ -278,8 +278,8 @@ class WP_REST_Server {
 	 *
 	 * @global WP_User $current_user The currently authenticated user.
 	 *
-	 * @param string|null $path Optional. The request route. If not set, `$_SERVER['PATH_INFO']` will be used.
-	 *                          Default null.
+	 * @param string $path Optional. The request route. If not set, `$_SERVER['PATH_INFO']` will be used.
+	 *                     Default null.
 	 * @return null|false Null if not served and a HEAD request, false otherwise.
 	 */
 	public function serve_request( $path = null ) {
@@ -655,11 +655,12 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Gets the target hints for a REST API Link.
+	 * Gets the target links for a REST API Link.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param array $link The link to get target hints for.
+	 * @param array $link
+	 *
 	 * @return array|null
 	 */
 	protected static function get_target_hints_for_link( $link ) {
@@ -763,7 +764,6 @@ class WP_REST_Server {
 	 *
 	 * @param array         $data  Data from the request.
 	 * @param bool|string[] $embed Whether to embed all links or a filtered list of link relations.
-	 *                             Default true.
 	 * @return array {
 	 *     Data with sub-requests embedded.
 	 *
@@ -1339,7 +1339,9 @@ class WP_REST_Server {
 	 * @return false|string Boolean false or string error message.
 	 */
 	protected function get_json_last_error() {
-		if ( JSON_ERROR_NONE === json_last_error() ) {
+		$last_error_code = json_last_error();
+
+		if ( JSON_ERROR_NONE === $last_error_code || empty( $last_error_code ) ) {
 			return false;
 		}
 
@@ -1353,7 +1355,11 @@ class WP_REST_Server {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_REST_Request $request Request data.
+	 * @param array $request {
+	 *     Request.
+	 *
+	 *     @type string $context Context.
+	 * }
 	 * @return WP_REST_Response The API root index data.
 	 */
 	public function get_index( $request ) {
@@ -1747,12 +1753,6 @@ class WP_REST_Server {
 		$has_error  = false;
 
 		foreach ( $requests as $single_request ) {
-			if ( is_wp_error( $single_request ) ) {
-				$has_error    = true;
-				$validation[] = $single_request;
-				continue;
-			}
-
 			$match     = $this->match_request_to_handler( $single_request );
 			$matches[] = $match;
 			$error     = null;
@@ -1823,12 +1823,6 @@ class WP_REST_Server {
 		}
 
 		foreach ( $requests as $i => $single_request ) {
-			if ( is_wp_error( $single_request ) ) {
-				$result      = $this->error_to_response( $single_request );
-				$responses[] = $this->envelope_response( $result, false )->get_data();
-				continue;
-			}
-
 			$clean_request = clone $single_request;
 			$clean_request->set_url_params( array() );
 			$clean_request->set_attributes( array() );

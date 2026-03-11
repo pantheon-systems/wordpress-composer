@@ -34,7 +34,6 @@
 			"type": "search"
 		}
 	},
-	"usesContext": [ "query" ],
 	"supports": {
 		"align": [ "wide", "full" ],
 		"html": false,

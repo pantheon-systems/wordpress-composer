@@ -40,15 +40,14 @@ if ( ! is_multisite() || current_user_can( 'update_core' ) ) {
 
 if ( ! is_multisite() ) {
 	if ( current_user_can( 'update_core' ) ) {
-		$capability = 'update_core';
+		$cap = 'update_core';
 	} elseif ( current_user_can( 'update_plugins' ) ) {
-		$capability = 'update_plugins';
+		$cap = 'update_plugins';
 	} elseif ( current_user_can( 'update_themes' ) ) {
-		$capability = 'update_themes';
+		$cap = 'update_themes';
 	} else {
-		$capability = 'update_languages';
+		$cap = 'update_languages';
 	}
-
 	$submenu['index.php'][10] = array(
 		sprintf(
 			/* translators: %s: Number of pending updates. */
@@ -59,35 +58,30 @@ if ( ! is_multisite() ) {
 				number_format_i18n( $update_data['counts']['total'] )
 			)
 		),
-		$capability,
+		$cap,
 		'update-core.php',
 	);
-
-	unset( $capability );
+	unset( $cap );
 }
 
 $menu[4] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
 // $menu[5] = Posts.
 
-$menu[10] = array( __( 'Media' ), 'upload_files', 'upload.php', '', 'menu-top menu-icon-media', 'menu-media', 'dashicons-admin-media' );
-
+$menu[10]                      = array( __( 'Media' ), 'upload_files', 'upload.php', '', 'menu-top menu-icon-media', 'menu-media', 'dashicons-admin-media' );
 	$submenu['upload.php'][5]  = array( __( 'Library' ), 'upload_files', 'upload.php' );
 	$submenu['upload.php'][10] = array( __( 'Add Media File' ), 'upload_files', 'media-new.php' );
-	$submenu_index             = 15;
-
-foreach ( get_taxonomies_for_attachments( 'objects' ) as $taxonomy ) {
-	if ( ! $taxonomy->show_ui || ! $taxonomy->show_in_menu ) {
-			continue;
+	$i                         = 15;
+foreach ( get_taxonomies_for_attachments( 'objects' ) as $tax ) {
+	if ( ! $tax->show_ui || ! $tax->show_in_menu ) {
+		continue;
 	}
 
-	$submenu['upload.php'][ $submenu_index++ ] = array( esc_attr( $taxonomy->labels->menu_name ), $taxonomy->cap->manage_terms, 'edit-tags.php?taxonomy=' . $taxonomy->name . '&amp;post_type=attachment' );
+	$submenu['upload.php'][ $i++ ] = array( esc_attr( $tax->labels->menu_name ), $tax->cap->manage_terms, 'edit-tags.php?taxonomy=' . $tax->name . '&amp;post_type=attachment' );
 }
+	unset( $tax, $i );
 
-	unset( $taxonomy, $submenu_index );
-
-$menu[15] = array( __( 'Links' ), 'manage_links', 'link-manager.php', '', 'menu-top menu-icon-links', 'menu-links', 'dashicons-admin-links' );
-
+$menu[15]                            = array( __( 'Links' ), 'manage_links', 'link-manager.php', '', 'menu-top menu-icon-links', 'menu-links', 'dashicons-admin-links' );
 	$submenu['link-manager.php'][5]  = array( _x( 'All Links', 'admin menu' ), 'manage_links', 'link-manager.php' );
 	$submenu['link-manager.php'][10] = array( __( 'Add Link' ), 'manage_links', 'link-add.php' );
 	$submenu['link-manager.php'][15] = array( __( 'Link Categories' ), 'manage_categories', 'edit-tags.php?taxonomy=link_category' );
@@ -96,15 +90,15 @@ $menu[15] = array( __( 'Links' ), 'manage_links', 'link-manager.php', '', 'menu-
 
 // Avoid the comment count query for users who cannot edit_posts.
 if ( current_user_can( 'edit_posts' ) ) {
-	$awaiting_moderation      = wp_count_comments();
-	$awaiting_moderation      = $awaiting_moderation->moderated;
-	$awaiting_moderation_i18n = number_format_i18n( $awaiting_moderation );
+	$awaiting_mod      = wp_count_comments();
+	$awaiting_mod      = $awaiting_mod->moderated;
+	$awaiting_mod_i18n = number_format_i18n( $awaiting_mod );
 	/* translators: %s: Number of comments. */
-	$awaiting_moderation_text = sprintf( _n( '%s Comment in moderation', '%s Comments in moderation', $awaiting_moderation ), $awaiting_moderation_i18n );
+	$awaiting_mod_text = sprintf( _n( '%s Comment in moderation', '%s Comments in moderation', $awaiting_mod ), $awaiting_mod_i18n );
 
 	$menu[25] = array(
 		/* translators: %s: Number of comments. */
-		sprintf( __( 'Comments %s' ), '<span class="awaiting-mod count-' . absint( $awaiting_moderation ) . '"><span class="pending-count" aria-hidden="true">' . $awaiting_moderation_i18n . '</span><span class="comments-in-moderation-text screen-reader-text">' . $awaiting_moderation_text . '</span></span>' ),
+		sprintf( __( 'Comments %s' ), '<span class="awaiting-mod count-' . absint( $awaiting_mod ) . '"><span class="pending-count" aria-hidden="true">' . $awaiting_mod_i18n . '</span><span class="comments-in-moderation-text screen-reader-text">' . $awaiting_mod_text . '</span></span>' ),
 		'edit_posts',
 		'edit-comments.php',
 		'',
@@ -112,108 +106,98 @@ if ( current_user_can( 'edit_posts' ) ) {
 		'menu-comments',
 		'dashicons-admin-comments',
 	);
-
-	unset( $awaiting_moderation );
+	unset( $awaiting_mod );
 }
 
 $submenu['edit-comments.php'][0] = array( __( 'All Comments' ), 'edit_posts', 'edit-comments.php' );
 
 $_wp_last_object_menu = 25; // The index of the last top-level menu in the object menu group.
 
-$post_types = (array) get_post_types(
+$types   = (array) get_post_types(
 	array(
 		'show_ui'      => true,
 		'_builtin'     => false,
 		'show_in_menu' => true,
 	)
 );
-$builtin    = array( 'post', 'page' );
-
-foreach ( array_merge( $builtin, $post_types ) as $post_type ) {
-	$post_type_obj = get_post_type_object( $post_type );
-
+$builtin = array( 'post', 'page' );
+foreach ( array_merge( $builtin, $types ) as $ptype ) {
+	$ptype_obj = get_post_type_object( $ptype );
 	// Check if it should be a submenu.
-	if ( true !== $post_type_obj->show_in_menu ) {
+	if ( true !== $ptype_obj->show_in_menu ) {
 		continue;
 	}
-
-	$post_type_menu_position = is_int( $post_type_obj->menu_position )
-		? $post_type_obj->menu_position
-		: ++$_wp_last_object_menu; // If we're to use $_wp_last_object_menu, increment it first.
-	$post_type_for_id        = sanitize_html_class( $post_type );
+	$ptype_menu_position = is_int( $ptype_obj->menu_position ) ? $ptype_obj->menu_position : ++$_wp_last_object_menu; // If we're to use $_wp_last_object_menu, increment it first.
+	$ptype_for_id        = sanitize_html_class( $ptype );
 
 	$menu_icon = 'dashicons-admin-post';
-	if ( is_string( $post_type_obj->menu_icon ) ) {
+	if ( is_string( $ptype_obj->menu_icon ) ) {
 		// Special handling for an empty div.wp-menu-image, data:image/svg+xml, and Dashicons.
-		if ( 'none' === $post_type_obj->menu_icon || 'div' === $post_type_obj->menu_icon
-			|| str_starts_with( $post_type_obj->menu_icon, 'data:image/svg+xml;base64,' )
-			|| str_starts_with( $post_type_obj->menu_icon, 'dashicons-' )
+		if ( 'none' === $ptype_obj->menu_icon || 'div' === $ptype_obj->menu_icon
+			|| str_starts_with( $ptype_obj->menu_icon, 'data:image/svg+xml;base64,' )
+			|| str_starts_with( $ptype_obj->menu_icon, 'dashicons-' )
 		) {
-			$menu_icon = $post_type_obj->menu_icon;
+			$menu_icon = $ptype_obj->menu_icon;
 		} else {
-			$menu_icon = esc_url( $post_type_obj->menu_icon );
+			$menu_icon = esc_url( $ptype_obj->menu_icon );
 		}
-	} elseif ( in_array( $post_type, $builtin, true ) ) {
-		$menu_icon = 'dashicons-admin-' . $post_type;
+	} elseif ( in_array( $ptype, $builtin, true ) ) {
+		$menu_icon = 'dashicons-admin-' . $ptype;
 	}
 
-	$menu_class = 'menu-top menu-icon-' . $post_type_for_id;
+	$menu_class = 'menu-top menu-icon-' . $ptype_for_id;
 	// 'post' special case.
-	if ( 'post' === $post_type ) {
+	if ( 'post' === $ptype ) {
 		$menu_class    .= ' open-if-no-js';
-		$post_type_file = 'edit.php';
+		$ptype_file     = 'edit.php';
 		$post_new_file  = 'post-new.php';
 		$edit_tags_file = 'edit-tags.php?taxonomy=%s';
 	} else {
-		$post_type_file = "edit.php?post_type=$post_type";
-		$post_new_file  = "post-new.php?post_type=$post_type";
-		$edit_tags_file = "edit-tags.php?taxonomy=%s&amp;post_type=$post_type";
+		$ptype_file     = "edit.php?post_type=$ptype";
+		$post_new_file  = "post-new.php?post_type=$ptype";
+		$edit_tags_file = "edit-tags.php?taxonomy=%s&amp;post_type=$ptype";
 	}
 
-	if ( in_array( $post_type, $builtin, true ) ) {
-		$post_type_menu_id = 'menu-' . $post_type_for_id . 's';
+	if ( in_array( $ptype, $builtin, true ) ) {
+		$ptype_menu_id = 'menu-' . $ptype_for_id . 's';
 	} else {
-		$post_type_menu_id = 'menu-posts-' . $post_type_for_id;
+		$ptype_menu_id = 'menu-posts-' . $ptype_for_id;
 	}
-
 	/*
-	 * If $post_type_menu_position is already populated or will be populated
+	 * If $ptype_menu_position is already populated or will be populated
 	 * by a hard-coded value below, increment the position.
 	 */
 	$core_menu_positions = array( 59, 60, 65, 70, 75, 80, 85, 99 );
-	while ( isset( $menu[ $post_type_menu_position ] ) || in_array( $post_type_menu_position, $core_menu_positions, true ) ) {
-		++$post_type_menu_position;
+	while ( isset( $menu[ $ptype_menu_position ] ) || in_array( $ptype_menu_position, $core_menu_positions, true ) ) {
+		++$ptype_menu_position;
 	}
 
-	$menu[ $post_type_menu_position ] = array( esc_attr( $post_type_obj->labels->menu_name ), $post_type_obj->cap->edit_posts, $post_type_file, '', $menu_class, $post_type_menu_id, $menu_icon );
-	$submenu[ $post_type_file ][5]    = array( $post_type_obj->labels->all_items, $post_type_obj->cap->edit_posts, $post_type_file );
-	$submenu[ $post_type_file ][10]   = array( $post_type_obj->labels->add_new_item, $post_type_obj->cap->create_posts, $post_new_file );
+	$menu[ $ptype_menu_position ] = array( esc_attr( $ptype_obj->labels->menu_name ), $ptype_obj->cap->edit_posts, $ptype_file, '', $menu_class, $ptype_menu_id, $menu_icon );
+	$submenu[ $ptype_file ][5]    = array( $ptype_obj->labels->all_items, $ptype_obj->cap->edit_posts, $ptype_file );
+	$submenu[ $ptype_file ][10]   = array( $ptype_obj->labels->add_new_item, $ptype_obj->cap->create_posts, $post_new_file );
 
-	$submenu_index = 15;
-
-	foreach ( get_taxonomies( array(), 'objects' ) as $taxonomy ) {
-		if ( ! $taxonomy->show_ui || ! $taxonomy->show_in_menu || ! in_array( $post_type, (array) $taxonomy->object_type, true ) ) {
+	$i = 15;
+	foreach ( get_taxonomies( array(), 'objects' ) as $tax ) {
+		if ( ! $tax->show_ui || ! $tax->show_in_menu || ! in_array( $ptype, (array) $tax->object_type, true ) ) {
 			continue;
 		}
 
-		$submenu[ $post_type_file ][ $submenu_index++ ] = array( esc_attr( $taxonomy->labels->menu_name ), $taxonomy->cap->manage_terms, sprintf( $edit_tags_file, $taxonomy->name ) );
+		$submenu[ $ptype_file ][ $i++ ] = array( esc_attr( $tax->labels->menu_name ), $tax->cap->manage_terms, sprintf( $edit_tags_file, $tax->name ) );
 	}
 }
-
-unset( $post_type, $post_type_obj, $post_type_for_id, $post_type_menu_position, $menu_icon, $submenu_index, $taxonomy, $post_new_file );
+unset( $ptype, $ptype_obj, $ptype_for_id, $ptype_menu_position, $menu_icon, $i, $tax, $post_new_file );
 
 $menu[59] = array( '', 'read', 'separator2', '', 'wp-menu-separator' );
 
-$appearance_capability = current_user_can( 'switch_themes' ) ? 'switch_themes' : 'edit_theme_options';
+$appearance_cap = current_user_can( 'switch_themes' ) ? 'switch_themes' : 'edit_theme_options';
 
-$menu[60] = array( __( 'Appearance' ), $appearance_capability, 'themes.php', '', 'menu-top menu-icon-appearance', 'menu-appearance', 'dashicons-admin-appearance' );
+$menu[60] = array( __( 'Appearance' ), $appearance_cap, 'themes.php', '', 'menu-top menu-icon-appearance', 'menu-appearance', 'dashicons-admin-appearance' );
 
 $count = '';
 if ( ! is_multisite() && current_user_can( 'update_themes' ) ) {
 	if ( ! isset( $update_data ) ) {
 		$update_data = wp_get_update_data();
 	}
-
 	$count = sprintf(
 		'<span class="update-plugins count-%s"><span class="theme-count">%s</span></span>',
 		$update_data['counts']['themes'],
@@ -222,7 +206,7 @@ if ( ! is_multisite() && current_user_can( 'update_themes' ) ) {
 }
 
 	/* translators: %s: Number of available theme updates. */
-	$submenu['themes.php'][5] = array( sprintf( __( 'Themes %s' ), $count ), $appearance_capability, 'themes.php' );
+	$submenu['themes.php'][5] = array( sprintf( __( 'Themes %s' ), $count ), $appearance_cap, 'themes.php' );
 
 if ( wp_is_block_theme() ) {
 	$submenu['themes.php'][6] = array( _x( 'Editor', 'site editor menu item' ), 'edit_theme_options', 'site-editor.php' );
@@ -250,15 +234,17 @@ if ( current_theme_supports( 'menus' ) || current_theme_supports( 'widgets' ) ) 
 
 if ( current_theme_supports( 'custom-header' ) && current_user_can( 'customize' ) ) {
 	$customize_header_url      = add_query_arg( array( 'autofocus' => array( 'control' => 'header_image' ) ), $customize_url );
-	$submenu['themes.php'][15] = array( _x( 'Header', 'custom image header' ), $appearance_capability, esc_url( $customize_header_url ), '', 'hide-if-no-customize' );
+	$submenu['themes.php'][15] = array( _x( 'Header', 'custom image header' ), $appearance_cap, esc_url( $customize_header_url ), '', 'hide-if-no-customize' );
 }
 
 if ( current_theme_supports( 'custom-background' ) && current_user_can( 'customize' ) ) {
 	$customize_background_url  = add_query_arg( array( 'autofocus' => array( 'control' => 'background_image' ) ), $customize_url );
-	$submenu['themes.php'][20] = array( _x( 'Background', 'custom background' ), $appearance_capability, esc_url( $customize_background_url ), '', 'hide-if-no-customize' );
+	$submenu['themes.php'][20] = array( _x( 'Background', 'custom background' ), $appearance_cap, esc_url( $customize_background_url ), '', 'hide-if-no-customize' );
 }
 
-unset( $customize_url, $appearance_capability );
+unset( $customize_url );
+
+unset( $appearance_cap );
 
 // Add 'Theme File Editor' to the bottom of the Appearance (non-block themes) or Tools (block themes) menu.
 if ( ! is_multisite() ) {
@@ -392,7 +378,7 @@ $menu[75]                     = array( __( 'Tools' ), 'edit_posts', 'tools.php',
 	$submenu['tools.php'][20] = array( sprintf( __( 'Site Health %s' ), $site_health_count ), 'view_site_health_checks', 'site-health.php' );
 	$submenu['tools.php'][25] = array( __( 'Export Personal Data' ), 'export_others_personal_data', 'export-personal-data.php' );
 	$submenu['tools.php'][30] = array( __( 'Erase Personal Data' ), 'erase_others_personal_data', 'erase-personal-data.php' );
-if ( is_multisite() && ! is_main_site() && '1' !== get_site()->deleted ) {
+if ( is_multisite() && ! is_main_site() ) {
 	$submenu['tools.php'][35] = array( __( 'Delete Site' ), 'delete_site', 'ms-delete-site.php' );
 }
 if ( ! is_multisite() && defined( 'WP_ALLOW_MULTISITE' ) && WP_ALLOW_MULTISITE ) {
