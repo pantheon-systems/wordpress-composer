@@ -182,6 +182,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 				throw new Exception( "Supplied nav_menu_item value missing property: $missing" );
 			}
 		}
+
 	}
 
 	/**
@@ -886,6 +887,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 				}
 			}
 		}
+
 	}
 
 	/**

@@ -11,9 +11,9 @@
 /**
  * Initializes $wp_styles if it has not been set.
  *
- * @since 4.2.0
- *
  * @global WP_Styles $wp_styles
+ *
+ * @since 4.2.0
  *
  * @return WP_Styles WP_Styles instance.
  */
@@ -34,9 +34,9 @@ function wp_styles() {
  * passing an array with one string prints that style,
  * and passing an array of strings prints those styles.
  *
- * @since 2.6.0
- *
  * @global WP_Styles $wp_styles The WP_Styles object for printing styles.
+ *
+ * @since 2.6.0
  *
  * @param string|bool|array $handles Styles to be printed. Default 'false'.
  * @return string[] On success, an array of handles of processed WP_Dependencies items; otherwise, an empty array.
@@ -220,6 +220,7 @@ function wp_style_is( $handle, $status = 'enqueued' ) {
  * Works only if the stylesheet has already been registered.
  *
  * Possible values for $key and $value:
+ * 'conditional' string      Comments for IE 6, lte IE 7 etc.
  * 'rtl'         bool|string To declare an RTL stylesheet.
  * 'suffix'      string      Optional suffix, used in combination with RTL.
  * 'alt'         bool        For rel="alternate stylesheet".
@@ -232,12 +233,10 @@ function wp_style_is( $handle, $status = 'enqueued' ) {
  * @since 3.6.0
  * @since 5.8.0 Added 'path' as an official value for $key.
  *              See {@see wp_maybe_inline_styles()}.
- * @since 6.9.0 'conditional' value changed. If the 'conditional' parameter is present
- *              the stylesheet will be ignored.
  *
  * @param string $handle Name of the stylesheet.
  * @param string $key    Name of data point for which we're storing a value.
- *                       Accepts 'rtl' and 'suffix', 'alt', 'title' and 'path'.
+ *                       Accepts 'conditional', 'rtl' and 'suffix', 'alt', 'title' and 'path'.
  * @param mixed  $value  String containing the CSS data to be added.
  * @return bool True on success, false on failure.
  */

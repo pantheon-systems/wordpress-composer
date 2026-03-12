@@ -317,7 +317,7 @@ class WP_Date_Query {
 				$_year = $date_query['year'];
 			}
 
-			$max_days_of_year = (int) gmdate( 'z', mktime( 0, 0, 0, 12, 31, $_year ) ) + 1;
+			$max_days_of_year = gmdate( 'z', mktime( 0, 0, 0, 12, 31, $_year ) ) + 1;
 		} else {
 			// Otherwise we use the max of 366 (leap-year).
 			$max_days_of_year = 366;
@@ -482,24 +482,16 @@ class WP_Date_Query {
 		global $wpdb;
 
 		$valid_columns = array(
-			'post_date',         // Part of $wpdb->posts.
-			'post_date_gmt',     // Part of $wpdb->posts.
-			'post_modified',     // Part of $wpdb->posts.
-			'post_modified_gmt', // Part of $wpdb->posts.
-			'comment_date',      // Part of $wpdb->comments.
-			'comment_date_gmt',  // Part of $wpdb->comments.
-			'user_registered',   // Part of $wpdb->users.
+			'post_date',
+			'post_date_gmt',
+			'post_modified',
+			'post_modified_gmt',
+			'comment_date',
+			'comment_date_gmt',
+			'user_registered',
+			'registered',
+			'last_updated',
 		);
-
-		if ( is_multisite() ) {
-			$valid_columns = array_merge(
-				$valid_columns,
-				array(
-					'registered',   // Part of $wpdb->blogs.
-					'last_updated', // Part of $wpdb->blogs.
-				)
-			);
-		}
 
 		// Attempt to detect a table prefix.
 		if ( ! str_contains( $column, '.' ) ) {
@@ -533,14 +525,11 @@ class WP_Date_Query {
 				$wpdb->users    => array(
 					'user_registered',
 				),
-			);
-
-			if ( is_multisite() ) {
-				$known_columns[ $wpdb->blogs ] = array(
+				$wpdb->blogs    => array(
 					'registered',
 					'last_updated',
-				);
-			}
+				),
+			);
 
 			// If it's a known column name, add the appropriate table prefix.
 			foreach ( $known_columns as $table_name => $table_columns ) {
@@ -877,7 +866,7 @@ class WP_Date_Query {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param string|array $datetime       An array of parameters or a strtotime() string.
+	 * @param string|array $datetime       An array of parameters or a strotime() string.
 	 * @param bool         $default_to_max Whether to round up incomplete dates. Supported by values
 	 *                                     of $datetime that are arrays, or string values that are a
 	 *                                     subset of MySQL date format ('Y', 'Y-m', 'Y-m-d', 'Y-m-d H:i').
@@ -1068,7 +1057,7 @@ class WP_Date_Query {
 	 * @since 6.0.3
 	 *
 	 * @param string $relation Raw relation key from the query argument.
-	 * @return string Sanitized relation. Either 'AND' or 'OR'.
+	 * @return string Sanitized relation ('AND' or 'OR').
 	 */
 	public function sanitize_relation( $relation ) {
 		if ( 'OR' === strtoupper( $relation ) ) {

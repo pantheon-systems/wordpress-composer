@@ -11,13 +11,8 @@
 		"id": {
 			"type": "number"
 		},
-		"blob": {
-			"type": "string",
-			"role": "local"
-		},
 		"href": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"fileId": {
 			"type": "string",
@@ -26,17 +21,15 @@
 			"attribute": "id"
 		},
 		"fileName": {
-			"type": "rich-text",
-			"source": "rich-text",
-			"selector": "a:not([download])",
-			"role": "content"
+			"type": "string",
+			"source": "html",
+			"selector": "a:not([download])"
 		},
 		"textLinkHref": {
 			"type": "string",
 			"source": "attribute",
 			"selector": "a:not([download])",
-			"attribute": "href",
-			"role": "content"
+			"attribute": "href"
 		},
 		"textLinkTarget": {
 			"type": "string",
@@ -49,10 +42,9 @@
 			"default": true
 		},
 		"downloadButtonText": {
-			"type": "rich-text",
-			"source": "rich-text",
-			"selector": "a[download]",
-			"role": "content"
+			"type": "string",
+			"source": "html",
+			"selector": "a[download]"
 		},
 		"displayPreview": {
 			"type": "boolean"
@@ -65,10 +57,6 @@
 	"supports": {
 		"anchor": true,
 		"align": true,
-		"spacing": {
-			"margin": true,
-			"padding": true
-		},
 		"color": {
 			"gradients": true,
 			"link": true,
@@ -77,21 +65,9 @@
 				"background": true,
 				"link": true
 			}
-		},
-		"__experimentalBorder": {
-			"radius": true,
-			"color": true,
-			"width": true,
-			"style": true,
-			"__experimentalDefaultControls": {
-				"radius": true,
-				"color": true,
-				"width": true,
-				"style": true
-			}
-		},
-		"interactivity": true
+		}
 	},
+	"viewScript": "file:./view.min.js",
 	"editorStyle": "wp-block-file-editor",
 	"style": "wp-block-file"
 }

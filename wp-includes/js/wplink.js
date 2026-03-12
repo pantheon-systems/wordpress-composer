@@ -105,7 +105,6 @@
 			var ed,
 				$body = $( document.body );
 
-			$( '#wpwrap' ).attr( 'aria-hidden', 'true' );
 			$body.addClass( 'modal-open' );
 			wpLink.modalOpen = true;
 
@@ -162,7 +161,7 @@
 			if ( wpLink.isMCE() ) {
 				wpLink.mceRefresh( url, text );
 			} else {
-				// For the Code editor the "Link text" field is always shown.
+				// For the Text editor the "Link text" field is always shown.
 				if ( ! inputs.wrap.hasClass( 'has-text-field' ) ) {
 					inputs.wrap.addClass( 'has-text-field' );
 				}
@@ -282,7 +281,6 @@
 
 		close: function( reset ) {
 			$( document.body ).removeClass( 'modal-open' );
-			$( '#wpwrap' ).removeAttr( 'aria-hidden' );
 			wpLink.modalOpen = false;
 
 			if ( reset !== 'noReset' ) {
@@ -323,7 +321,7 @@
 			var html = '<a href="' + attrs.href + '"';
 
 			if ( attrs.target ) {
-				html += ' target="' + attrs.target + '"';
+				html += ' rel="noopener" target="' + attrs.target + '"';
 			}
 
 			return html + '>';

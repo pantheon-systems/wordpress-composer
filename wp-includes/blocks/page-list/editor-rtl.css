@@ -1,3 +1,6 @@
+.wp-block-navigation .wp-block-page-list,.wp-block-navigation .wp-block-page-list>div{
+  background-color:inherit;
+}
 .wp-block-navigation.items-justified-space-between .wp-block-page-list,.wp-block-navigation.items-justified-space-between .wp-block-page-list>div{
   display:contents;
   flex:1;
@@ -32,6 +35,10 @@
   opacity:1;
   visibility:visible;
   width:auto;
+}
+
+.wp-block-page-list .components-notice{
+  margin-right:0;
 }
 
 .wp-block-page-list__loading-indicator-container{

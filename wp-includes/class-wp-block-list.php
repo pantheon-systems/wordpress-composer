@@ -19,6 +19,7 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable {
 	 *
 	 * @since 5.5.0
 	 * @var array[]|WP_Block[]
+	 * @access protected
 	 */
 	protected $blocks;
 
@@ -27,6 +28,7 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable {
 	 *
 	 * @since 5.5.0
 	 * @var array
+	 * @access protected
 	 */
 	protected $available_context;
 
@@ -35,6 +37,7 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable {
 	 *
 	 * @since 5.5.0
 	 * @var WP_Block_Type_Registry
+	 * @access protected
 	 */
 	protected $registry;
 
@@ -60,60 +63,59 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable {
 	}
 
 	/**
-	 * Returns true if a block exists by the specified block offset, or false
+	 * Returns true if a block exists by the specified block index, or false
 	 * otherwise.
 	 *
 	 * @since 5.5.0
 	 *
 	 * @link https://www.php.net/manual/en/arrayaccess.offsetexists.php
 	 *
-	 * @param int $offset Offset of block to check for.
+	 * @param string $index Index of block to check.
 	 * @return bool Whether block exists.
 	 */
 	#[ReturnTypeWillChange]
-	public function offsetExists( $offset ) {
-		return isset( $this->blocks[ $offset ] );
+	public function offsetExists( $index ) {
+		return isset( $this->blocks[ $index ] );
 	}
 
 	/**
-	 * Returns the value by the specified block offset.
+	 * Returns the value by the specified block index.
 	 *
 	 * @since 5.5.0
 	 *
 	 * @link https://www.php.net/manual/en/arrayaccess.offsetget.php
 	 *
-	 * @param int $offset Offset of block value to retrieve.
-	 * @return WP_Block|null Block value if exists, or null.
+	 * @param string $index Index of block value to retrieve.
+	 * @return mixed|null Block value if exists, or null.
 	 */
 	#[ReturnTypeWillChange]
-	public function offsetGet( $offset ) {
-		$block = $this->blocks[ $offset ];
+	public function offsetGet( $index ) {
+		$block = $this->blocks[ $index ];
 
 		if ( isset( $block ) && is_array( $block ) ) {
-			$block = new WP_Block( $block, $this->available_context, $this->registry );
-
-			$this->blocks[ $offset ] = $block;
+			$block                  = new WP_Block( $block, $this->available_context, $this->registry );
+			$this->blocks[ $index ] = $block;
 		}
 
 		return $block;
 	}
 
 	/**
-	 * Assign a block value by the specified block offset.
+	 * Assign a block value by the specified block index.
 	 *
 	 * @since 5.5.0
 	 *
 	 * @link https://www.php.net/manual/en/arrayaccess.offsetset.php
 	 *
-	 * @param int            $offset Offset of block value to set.
-	 * @param array|WP_Block $value  Block value.
+	 * @param string $index Index of block value to set.
+	 * @param mixed  $value Block value.
 	 */
 	#[ReturnTypeWillChange]
-	public function offsetSet( $offset, $value ) {
-		if ( is_null( $offset ) ) {
+	public function offsetSet( $index, $value ) {
+		if ( is_null( $index ) ) {
 			$this->blocks[] = $value;
 		} else {
-			$this->blocks[ $offset ] = $value;
+			$this->blocks[ $index ] = $value;
 		}
 	}
 
@@ -124,11 +126,11 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable {
 	 *
 	 * @link https://www.php.net/manual/en/arrayaccess.offsetunset.php
 	 *
-	 * @param int $offset Offset of block value to unset.
+	 * @param string $index Index of block value to unset.
 	 */
 	#[ReturnTypeWillChange]
-	public function offsetUnset( $offset ) {
-		unset( $this->blocks[ $offset ] );
+	public function offsetUnset( $index ) {
+		unset( $this->blocks[ $index ] );
 	}
 
 	/**
@@ -150,7 +152,7 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable {
 	 *
 	 * @link https://www.php.net/manual/en/iterator.current.php
 	 *
-	 * @return WP_Block|null Current element.
+	 * @return mixed Current element.
 	 */
 	#[ReturnTypeWillChange]
 	public function current() {
@@ -164,7 +166,7 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable {
 	 *
 	 * @link https://www.php.net/manual/en/iterator.key.php
 	 *
-	 * @return int|null Key of the current element.
+	 * @return mixed Key of the current element.
 	 */
 	#[ReturnTypeWillChange]
 	public function key() {
@@ -208,4 +210,5 @@ class WP_Block_List implements Iterator, ArrayAccess, Countable {
 	public function count() {
 		return count( $this->blocks );
 	}
+
 }

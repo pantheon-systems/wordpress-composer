@@ -8,16 +8,17 @@
 	"textdomain": "default",
 	"attributes": {
 		"value": {
-			"type": "rich-text",
-			"source": "rich-text",
+			"type": "string",
+			"source": "html",
 			"selector": "p",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"citation": {
-			"type": "rich-text",
-			"source": "rich-text",
+			"type": "string",
+			"source": "html",
 			"selector": "cite",
-			"role": "content"
+			"default": "",
+			"__experimentalRole": "content"
 		},
 		"textAlign": {
 			"type": "string"
@@ -26,13 +27,6 @@
 	"supports": {
 		"anchor": true,
 		"align": [ "left", "right", "wide", "full" ],
-		"background": {
-			"backgroundImage": true,
-			"backgroundSize": true,
-			"__experimentalDefaultControls": {
-				"backgroundImage": true
-			}
-		},
 		"color": {
 			"gradients": true,
 			"background": true,
@@ -41,16 +35,6 @@
 				"background": true,
 				"text": true
 			}
-		},
-		"dimensions": {
-			"minHeight": true,
-			"__experimentalDefaultControls": {
-				"minHeight": false
-			}
-		},
-		"spacing": {
-			"margin": true,
-			"padding": true
 		},
 		"typography": {
 			"fontSize": true,
@@ -62,7 +46,8 @@
 			"__experimentalTextDecoration": true,
 			"__experimentalLetterSpacing": true,
 			"__experimentalDefaultControls": {
-				"fontSize": true
+				"fontSize": true,
+				"fontAppearance": true
 			}
 		},
 		"__experimentalBorder": {
@@ -82,9 +67,6 @@
 				"fontSize": "1.5em",
 				"lineHeight": "1.6"
 			}
-		},
-		"interactivity": {
-			"clientNavigation": true
 		}
 	},
 	"editorStyle": "wp-block-pullquote-editor",

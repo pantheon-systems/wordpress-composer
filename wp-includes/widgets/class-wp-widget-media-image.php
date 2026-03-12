@@ -240,11 +240,12 @@ class WP_Widget_Media_Image extends WP_Widget_Media {
 			}
 
 			$attr = array(
-				'class'  => $classes,
-				'src'    => $instance['url'],
-				'alt'    => $instance['alt'],
-				'width'  => $instance['width'],
-				'height' => $instance['height'],
+				'class'    => $classes,
+				'src'      => $instance['url'],
+				'alt'      => $instance['alt'],
+				'width'    => $instance['width'],
+				'height'   => $instance['height'],
+				'decoding' => 'async',
 			);
 
 			$loading_optimization_attr = wp_get_loading_optimization_attributes(
@@ -288,7 +289,7 @@ class WP_Widget_Media_Image extends WP_Widget_Media {
 			$link .= '>';
 			$link .= $image;
 			$link .= '</a>';
-			$image = $link;
+			$image = wp_targeted_link_rel( $link );
 		}
 
 		if ( $caption ) {
@@ -323,8 +324,8 @@ class WP_Widget_Media_Image extends WP_Widget_Media {
 			$handle,
 			sprintf(
 				'wp.mediaWidgets.modelConstructors[ %s ].prototype.schema = %s;',
-				wp_json_encode( $this->id_base, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ),
-				wp_json_encode( $exported_schema, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES )
+				wp_json_encode( $this->id_base ),
+				wp_json_encode( $exported_schema )
 			)
 		);
 
@@ -335,9 +336,9 @@ class WP_Widget_Media_Image extends WP_Widget_Media {
 					wp.mediaWidgets.controlConstructors[ %1$s ].prototype.mime_type = %2$s;
 					wp.mediaWidgets.controlConstructors[ %1$s ].prototype.l10n = _.extend( {}, wp.mediaWidgets.controlConstructors[ %1$s ].prototype.l10n, %3$s );
 				',
-				wp_json_encode( $this->id_base, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ),
-				wp_json_encode( $this->widget_options['mime_type'], JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ),
-				wp_json_encode( $this->l10n, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES )
+				wp_json_encode( $this->id_base ),
+				wp_json_encode( $this->widget_options['mime_type'] ),
+				wp_json_encode( $this->l10n )
 			)
 		);
 	}
@@ -362,25 +363,13 @@ class WP_Widget_Media_Image extends WP_Widget_Media {
 		</script>
 		<script type="text/html" id="tmpl-wp-media-widget-image-preview">
 			<# if ( data.error && 'missing_attachment' === data.error ) { #>
-				<?php
-				wp_admin_notice(
-					$this->l10n['missing_attachment'],
-					array(
-						'type'               => 'error',
-						'additional_classes' => array( 'notice-alt', 'notice-missing-attachment' ),
-					)
-				);
-				?>
+				<div class="notice notice-error notice-alt notice-missing-attachment">
+					<p><?php echo $this->l10n['missing_attachment']; ?></p>
+				</div>
 			<# } else if ( data.error ) { #>
-				<?php
-				wp_admin_notice(
-					__( 'Unable to preview media due to an unknown error.' ),
-					array(
-						'type'               => 'error',
-						'additional_classes' => array( 'notice-alt' ),
-					)
-				);
-				?>
+				<div class="notice notice-error notice-alt">
+					<p><?php _e( 'Unable to preview media due to an unknown error.' ); ?></p>
+				</div>
 			<# } else if ( data.url ) { #>
 				<img class="attachment-thumb" src="{{ data.url }}" draggable="false" alt="{{ data.alt }}"
 					<# if ( ! data.alt && data.currentFilename ) { #>

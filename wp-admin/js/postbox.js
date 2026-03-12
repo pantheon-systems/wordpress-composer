@@ -461,19 +461,13 @@
 			closed = $( '.postbox' ).filter( '.closed' ).map( function() { return this.id; } ).get().join( ',' );
 			hidden = $( '.postbox' ).filter( ':hidden' ).map( function() { return this.id; } ).get().join( ',' );
 
-			$.post(
-				ajaxurl,
-				{
-					action: 'closed-postboxes',
-					closed: closed,
-					hidden: hidden,
-					closedpostboxesnonce: jQuery('#closedpostboxesnonce').val(),
-					page: page
-				},
-				function() {
-					wp.a11y.speak( __( 'Screen Options updated.' ) );
-				}
-			);
+			$.post(ajaxurl, {
+				action: 'closed-postboxes',
+				closed: closed,
+				hidden: hidden,
+				closedpostboxesnonce: jQuery('#closedpostboxesnonce').val(),
+				page: page
+			});
 		},
 
 		/**

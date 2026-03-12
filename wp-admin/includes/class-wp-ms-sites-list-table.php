@@ -37,7 +37,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		$this->status_list = array(
 			'archived' => array( 'site-archived', __( 'Archived' ) ),
 			'spam'     => array( 'site-spammed', _x( 'Spam', 'site' ) ),
-			'deleted'  => array( 'site-deleted', __( 'Flagged for Deletion' ) ),
+			'deleted'  => array( 'site-deleted', __( 'Deleted' ) ),
 			'mature'   => array( 'site-mature', __( 'Mature' ) ),
 		);
 
@@ -115,12 +115,12 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 			|| preg_match( '/^[0-9]{1,3}\.$/', $s )
 		) {
 			// IPv4 address.
-			$reg_blog_ids = $wpdb->get_col(
-				$wpdb->prepare(
-					"SELECT blog_id FROM {$wpdb->registration_log} WHERE {$wpdb->registration_log}.IP LIKE %s",
-					$wpdb->esc_like( $s ) . ( ! empty( $wild ) ? '%' : '' )
-				)
+			$sql = $wpdb->prepare(
+				"SELECT blog_id FROM {$wpdb->registration_log} WHERE {$wpdb->registration_log}.IP LIKE %s",
+				$wpdb->esc_like( $s ) . ( ! empty( $wild ) ? '%' : '' )
 			);
+
+			$reg_blog_ids = $wpdb->get_col( $sql );
 
 			if ( $reg_blog_ids ) {
 				$args['site__in'] = $reg_blog_ids;
@@ -256,8 +256,8 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 
 			/* translators: %s: Number of sites. */
 			'deleted'  => _n_noop(
-				'Flagged for Deletion <span class="count">(%s)</span>',
-				'Flagged for Deletion <span class="count">(%s)</span>'
+				'Deleted <span class="count">(%s)</span>',
+				'Deleted <span class="count">(%s)</span>'
 			),
 		);
 
@@ -302,7 +302,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	/**
 	 * @global string $mode List table view mode.
 	 *
-	 * @param string $which The location of the pagination nav markup: Either 'top' or 'bottom'.
+	 * @param string $which The location of the pagination nav markup: 'top' or 'bottom'.
 	 */
 	protected function pagination( $which ) {
 		global $mode;
@@ -319,7 +319,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string $which The location of the extra table nav markup: Either 'top' or 'bottom'.
+	 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
 	 */
 	protected function extra_tablenav( $which ) {
 		?>
@@ -333,7 +333,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 			 *
 			 * @since 5.3.0
 			 *
-			 * @param string $which The location of the extra table nav markup: Either 'top' or 'bottom'.
+			 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
 			 */
 			do_action( 'restrict_manage_sites', $which );
 
@@ -353,7 +353,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		 *
 		 * @since 5.3.0
 		 *
-		 * @param string $which The location of the extra table nav markup: Either 'top' or 'bottom'.
+		 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
 		 */
 		do_action( 'manage_sites_extra_tablenav', $which );
 	}
@@ -391,15 +391,15 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	protected function get_sortable_columns() {
 
 		if ( is_subdomain_install() ) {
-			$blogname_abbr         = __( 'Domain' );
+			$abbr = __( 'Domain' );
 			$blogname_orderby_text = __( 'Table ordered by Site Domain Name.' );
 		} else {
-			$blogname_abbr         = __( 'Path' );
+			$abbr = __( 'Path' );
 			$blogname_orderby_text = __( 'Table ordered by Site Path.' );
 		}
 
 		return array(
-			'blogname'    => array( 'blogname', false, $blogname_abbr, $blogname_orderby_text ),
+			'blogname'    => array( 'blogname', false, $abbr, $blogname_orderby_text ),
 			'lastupdated' => array( 'lastupdated', true, __( 'Last Updated' ), __( 'Table ordered by Last Updated.' ) ),
 			'registered'  => array( 'blog_id', true, _x( 'Registered', 'site' ), __( 'Table ordered by Site Registered Date.' ), 'desc' ),
 		);
@@ -420,8 +420,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		if ( ! is_main_site( $blog['blog_id'] ) ) :
 			$blogname = untrailingslashit( $blog['domain'] . $blog['path'] );
 			?>
-			<input type="checkbox" id="blog_<?php echo $blog['blog_id']; ?>" name="allblogs[]" value="<?php echo esc_attr( $blog['blog_id'] ); ?>" />
-			<label for="blog_<?php echo $blog['blog_id']; ?>">
+			<label class="label-covers-full-cell" for="blog_<?php echo $blog['blog_id']; ?>">
 				<span class="screen-reader-text">
 				<?php
 				/* translators: %s: Site URL. */
@@ -429,6 +428,8 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 				?>
 				</span>
 			</label>
+			<input type="checkbox" id="blog_<?php echo $blog['blog_id']; ?>" name="allblogs[]"
+				value="<?php echo esc_attr( $blog['blog_id'] ); ?>" />
 			<?php
 		endif;
 	}
@@ -596,9 +597,6 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	 * @param string $column_name Current column name.
 	 */
 	public function column_default( $item, $column_name ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$blog = $item;
-
 		/**
 		 * Fires for each registered custom column in the Sites list table.
 		 *
@@ -607,13 +605,11 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		 * @param string $column_name The name of the column to display.
 		 * @param int    $blog_id     The site ID.
 		 */
-		do_action( 'manage_sites_custom_column', $column_name, $blog['blog_id'] );
+		do_action( 'manage_sites_custom_column', $column_name, $item['blog_id'] );
 	}
 
 	/**
-	 * Generates the list table rows.
-	 *
-	 * @since 3.1.0
+	 * @global string $mode List table view mode.
 	 */
 	public function display_rows() {
 		foreach ( $this->items as $blog ) {
@@ -667,7 +663,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		 * @since 5.3.0
 		 *
 		 * @param string[] $site_states An array of site states. Default 'Main',
-		 *                              'Archived', 'Mature', 'Spam', 'Flagged for Deletion'.
+		 *                              'Archived', 'Mature', 'Spam', 'Deleted'.
 		 * @param WP_Site  $site        The current site object.
 		 */
 		$site_states = apply_filters( 'display_site_states', $site_states, $_site );
@@ -718,8 +714,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		}
 
 		// Restores the more descriptive, specific name for use within this method.
-		$blog = $item;
-
+		$blog     = $item;
 		$blogname = untrailingslashit( $blog['domain'] . $blog['path'] );
 
 		// Preordered.
@@ -758,7 +753,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 							'activateblog_' . $blog['blog_id']
 						)
 					),
-					_x( 'Remove Deletion Flag', 'site' )
+					__( 'Activate' )
 				);
 			} else {
 				$actions['deactivate'] = sprintf(
@@ -769,7 +764,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 							'deactivateblog_' . $blog['blog_id']
 						)
 					),
-					__( 'Flag for Deletion' )
+					__( 'Deactivate' )
 				);
 			}
 
@@ -830,7 +825,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 							'deleteblog_' . $blog['blog_id']
 						)
 					),
-					__( 'Delete Permanently' )
+					__( 'Delete' )
 				);
 			}
 		}
@@ -844,9 +839,9 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		/**
 		 * Filters the action links displayed for each site in the Sites list table.
 		 *
-		 * The 'Edit', 'Dashboard', 'Delete Permanently', and 'Visit' links are displayed by
+		 * The 'Edit', 'Dashboard', 'Delete', and 'Visit' links are displayed by
 		 * default for each site. The site's status determines whether to show the
-		 * 'Remove Deletion Flag' or 'Flag for Deletion' link, 'Unarchive' or 'Archive' links, and
+		 * 'Activate' or 'Deactivate' link, 'Unarchive' or 'Archive' links, and
 		 * 'Not Spam' or 'Spam' link for each site.
 		 *
 		 * @since 3.1.0

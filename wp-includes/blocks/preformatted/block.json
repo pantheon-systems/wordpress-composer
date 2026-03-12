@@ -8,11 +8,12 @@
 	"textdomain": "default",
 	"attributes": {
 		"content": {
-			"type": "rich-text",
-			"source": "rich-text",
+			"type": "string",
+			"source": "html",
 			"selector": "pre",
+			"default": "",
 			"__unstablePreserveWhiteSpace": true,
-			"role": "content"
+			"__experimentalRole": "content"
 		}
 	},
 	"supports": {
@@ -23,10 +24,6 @@
 				"background": true,
 				"text": true
 			}
-		},
-		"spacing": {
-			"padding": true,
-			"margin": true
 		},
 		"typography": {
 			"fontSize": true,
@@ -39,21 +36,6 @@
 			"__experimentalLetterSpacing": true,
 			"__experimentalDefaultControls": {
 				"fontSize": true
-			}
-		},
-		"interactivity": {
-			"clientNavigation": true
-		},
-		"__experimentalBorder": {
-			"radius": true,
-			"color": true,
-			"width": true,
-			"style": true,
-			"__experimentalDefaultControls": {
-				"radius": true,
-				"color": true,
-				"width": true,
-				"style": true
 			}
 		}
 	},

@@ -9,9 +9,7 @@
 	"textdomain": "default",
 	"attributes": {
 		"customText": {
-			"type": "string",
-			"default": "",
-			"role": "content"
+			"type": "string"
 		},
 		"noTeaser": {
 			"type": "boolean",
@@ -22,10 +20,7 @@
 		"customClassName": false,
 		"className": false,
 		"html": false,
-		"multiple": false,
-		"interactivity": {
-			"clientNavigation": true
-		}
+		"multiple": false
 	},
 	"editorStyle": "wp-block-more-editor"
 }

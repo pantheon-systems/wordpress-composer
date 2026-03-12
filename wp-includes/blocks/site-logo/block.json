@@ -12,13 +12,11 @@
 		},
 		"isLink": {
 			"type": "boolean",
-			"default": true,
-			"role": "content"
+			"default": true
 		},
 		"linkTarget": {
 			"type": "string",
-			"default": "_self",
-			"role": "content"
+			"default": "_self"
 		},
 		"shouldSyncIcon": {
 			"type": "boolean"
@@ -36,6 +34,7 @@
 		"align": true,
 		"alignWide": false,
 		"color": {
+			"__experimentalDuotone": "img, .components-placeholder__illustration, .components-placeholder::before",
 			"text": false,
 			"background": false
 		},
@@ -46,12 +45,6 @@
 				"margin": false,
 				"padding": false
 			}
-		},
-		"interactivity": {
-			"clientNavigation": true
-		},
-		"filter": {
-			"duotone": true
 		}
 	},
 	"styles": [
@@ -62,11 +55,6 @@
 		},
 		{ "name": "rounded", "label": "Rounded" }
 	],
-	"selectors": {
-		"filter": {
-			"duotone": ".wp-block-site-logo img, .wp-block-site-logo .components-placeholder__illustration, .wp-block-site-logo .components-placeholder::before"
-		}
-	},
 	"editorStyle": "wp-block-site-logo-editor",
 	"style": "wp-block-site-logo"
 }

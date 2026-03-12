@@ -15,7 +15,7 @@ require_once __DIR__ . '/admin.php';
 $parent_file  = 'upload.php';
 $submenu_file = 'upload.php';
 
-$action = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
+wp_reset_vars( array( 'action' ) );
 
 switch ( $action ) {
 	case 'editattachment':

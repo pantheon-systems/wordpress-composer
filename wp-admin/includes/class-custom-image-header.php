@@ -17,24 +17,24 @@ class Custom_Image_Header {
 	/**
 	 * Callback for administration header.
 	 *
-	 * @since 2.1.0
 	 * @var callable
+	 * @since 2.1.0
 	 */
 	public $admin_header_callback;
 
 	/**
 	 * Callback for header div.
 	 *
-	 * @since 3.0.0
 	 * @var callable
+	 * @since 3.0.0
 	 */
 	public $admin_image_div_callback;
 
 	/**
 	 * Holds default headers.
 	 *
-	 * @since 3.0.0
 	 * @var array
+	 * @since 3.0.0
 	 */
 	public $default_headers = array();
 
@@ -47,13 +47,11 @@ class Custom_Image_Header {
 	private $updated;
 
 	/**
-	 * Constructor - Registers administration header callback.
+	 * Constructor - Register administration header callback.
 	 *
 	 * @since 2.1.0
-	 *
-	 * @param callable $admin_header_callback    Administration header callback.
-	 * @param callable $admin_image_div_callback Optional. Custom image div output callback.
-	 *                                           Default empty string.
+	 * @param callable $admin_header_callback
+	 * @param callable $admin_image_div_callback Optional custom image div output callback.
 	 */
 	public function __construct( $admin_header_callback, $admin_image_div_callback = '' ) {
 		$this->admin_header_callback    = $admin_header_callback;
@@ -511,37 +509,30 @@ class Custom_Image_Header {
 <div class="wrap">
 <h1><?php _e( 'Custom Header' ); ?></h1>
 
-		<?php
-		if ( current_user_can( 'customize' ) ) {
-			$message = sprintf(
+		<?php if ( current_user_can( 'customize' ) ) { ?>
+<div class="notice notice-info hide-if-no-customize">
+	<p>
+			<?php
+			printf(
 				/* translators: %s: URL to header image configuration in Customizer. */
 				__( 'You can now manage and live-preview Custom Header in the <a href="%s">Customizer</a>.' ),
 				admin_url( 'customize.php?autofocus[control]=header_image' )
 			);
-			wp_admin_notice(
-				$message,
-				array(
-					'type'               => 'info',
-					'additional_classes' => array( 'hide-if-no-customize' ),
-				)
-			);
-		}
+			?>
+	</p>
+</div>
+		<?php } ?>
 
-		if ( ! empty( $this->updated ) ) {
-			$updated_message = sprintf(
-				/* translators: %s: Home URL. */
-				__( 'Header updated. <a href="%s">Visit your site</a> to see how it looks.' ),
-				esc_url( home_url( '/' ) )
-			);
-			wp_admin_notice(
-				$updated_message,
-				array(
-					'id'                 => 'message',
-					'additional_classes' => array( 'updated' ),
-				)
-			);
-		}
-		?>
+		<?php if ( ! empty( $this->updated ) ) { ?>
+<div id="message" class="updated">
+	<p>
+			<?php
+			/* translators: %s: Home URL. */
+			printf( __( 'Header updated. <a href="%s">Visit your site</a> to see how it looks.' ), esc_url( home_url( '/' ) ) );
+			?>
+	</p>
+</div>
+		<?php } ?>
 
 <h2><?php _e( 'Header Image' ); ?></h2>
 
@@ -664,7 +655,7 @@ class Custom_Image_Header {
 		<input type="file" id="upload" name="import" />
 		<input type="hidden" name="action" value="save" />
 			<?php wp_nonce_field( 'custom-header-upload', '_wpnonce-custom-header-upload' ); ?>
-			<?php submit_button( _x( 'Upload', 'verb' ), '', 'submit', false ); ?>
+			<?php submit_button( __( 'Upload' ), '', 'submit', false ); ?>
 	</p>
 			<?php
 			$modal_update_href = add_query_arg(
@@ -830,8 +821,8 @@ endif;
 
 		if ( ! current_theme_supports( 'custom-header', 'uploads' ) ) {
 			wp_die(
-				'<h1>' . __( 'An error occurred while processing your header image.' ) . '</h1>' .
-				'<p>' . __( 'The active theme does not support uploading a custom header image. Please ensure your theme supports custom headers and try again.' ) . '</p>',
+				'<h1>' . __( 'Something went wrong.' ) . '</h1>' .
+				'<p>' . __( 'The active theme does not support uploading a custom header image.' ) . '</p>',
 				403
 			);
 		}
@@ -884,16 +875,14 @@ endif;
 			$this->set_header_image( compact( 'url', 'attachment_id', 'width', 'height' ) );
 
 			/**
-			 * Filters the attachment file path after the custom header or background image is set.
-			 *
-			 * Used for file replication.
+			 * Fires after the header image is set or an error is returned.
 			 *
 			 * @since 2.1.0
 			 *
 			 * @param string $file          Path to the file.
 			 * @param int    $attachment_id Attachment ID.
 			 */
-			$file = apply_filters( 'wp_create_file_in_uploads', $file, $attachment_id ); // For replication.
+			do_action( 'wp_create_file_in_uploads', $file, $attachment_id ); // For replication.
 
 			return $this->finished();
 		} elseif ( $width > $max_width ) {
@@ -934,7 +923,7 @@ endif;
 	<p class="hide-if-js"><strong><?php _e( 'You need JavaScript to choose a part of the image.' ); ?></strong></p>
 
 	<div id="crop_image" style="position: relative">
-		<img src="<?php echo esc_url( $url ); ?>" id="upload" width="<?php echo esc_attr( $width ); ?>" height="<?php echo esc_attr( $height ); ?>" alt="" />
+		<img src="<?php echo esc_url( $url ); ?>" id="upload" width="<?php echo $width; ?>" height="<?php echo $height; ?>" alt="" />
 	</div>
 
 	<input type="hidden" name="x1" id="x1" value="0" />
@@ -951,7 +940,7 @@ endif;
 	<p class="submit">
 		<?php submit_button( __( 'Crop and Publish' ), 'primary', 'submit', false ); ?>
 		<?php
-		if ( 1 === $oitar
+		if ( isset( $oitar ) && 1 === $oitar
 			&& ( current_theme_supports( 'custom-header', 'flex-height' )
 				|| current_theme_supports( 'custom-header', 'flex-width' ) )
 		) {
@@ -1018,8 +1007,8 @@ endif;
 
 		if ( ! current_theme_supports( 'custom-header', 'uploads' ) ) {
 			wp_die(
-				'<h1>' . __( 'An error occurred while processing your header image.' ) . '</h1>' .
-				'<p>' . __( 'The active theme does not support uploading a custom header image. Please ensure your theme supports custom headers and try again.' ) . '</p>',
+				'<h1>' . __( 'Something went wrong.' ) . '</h1>' .
+				'<p>' . __( 'The active theme does not support uploading a custom header image.' ) . '</p>',
 				403
 			);
 		}
@@ -1029,7 +1018,7 @@ endif;
 			&& ! current_theme_supports( 'custom-header', 'flex-width' )
 		) {
 			wp_die(
-				'<h1>' . __( 'An error occurred while processing your header image.' ) . '</h1>' .
+				'<h1>' . __( 'Something went wrong.' ) . '</h1>' .
 				'<p>' . __( 'The active theme does not support a flexible sized header image.' ) . '</p>',
 				403
 			);
@@ -1077,7 +1066,7 @@ endif;
 		/** This filter is documented in wp-admin/includes/class-custom-image-header.php */
 		$cropped = apply_filters( 'wp_create_file_in_uploads', $cropped, $attachment_id ); // For replication.
 
-		$attachment = wp_copy_parent_attachment_properties( $cropped, $attachment_id, 'custom-header' );
+		$attachment = $this->create_attachment_object( $cropped, $attachment_id );
 
 		if ( ! empty( $_POST['create-new-attachment'] ) ) {
 			unset( $attachment['ID'] );
@@ -1314,14 +1303,12 @@ endif;
 	 * Creates an attachment 'object'.
 	 *
 	 * @since 3.9.0
-	 * @deprecated 6.5.0
 	 *
 	 * @param string $cropped              Cropped image URL.
 	 * @param int    $parent_attachment_id Attachment ID of parent image.
 	 * @return array An array with attachment object data.
 	 */
 	final public function create_attachment_object( $cropped, $parent_attachment_id ) {
-		_deprecated_function( __METHOD__, '6.5.0', 'wp_copy_parent_attachment_properties()' );
 		$parent     = get_post( $parent_attachment_id );
 		$parent_url = wp_get_attachment_url( $parent->ID );
 		$url        = str_replace( wp_basename( $parent_url ), wp_basename( $cropped ), $parent_url );
@@ -1423,7 +1410,7 @@ endif;
 		/** This filter is documented in wp-admin/includes/class-custom-image-header.php */
 		$cropped = apply_filters( 'wp_create_file_in_uploads', $cropped, $attachment_id ); // For replication.
 
-		$attachment = wp_copy_parent_attachment_properties( $cropped, $attachment_id, 'custom-header' );
+		$attachment = $this->create_attachment_object( $cropped, $attachment_id );
 
 		$previous = $this->get_previous_crop( $attachment );
 
@@ -1547,8 +1534,8 @@ endif;
 
 		$already_has_default = false;
 
-		foreach ( $this->default_headers as $k => $header ) {
-			if ( $header['url'] === $default ) {
+		foreach ( $this->default_headers as $k => $h ) {
+			if ( $h['url'] === $default ) {
 				$already_has_default = true;
 				break;
 			}

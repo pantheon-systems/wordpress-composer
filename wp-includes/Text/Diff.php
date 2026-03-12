@@ -223,10 +223,33 @@ class Text_Diff {
      * @access protected
      *
      * @return string  A directory name which can be used for temp files.
+     *                 Returns false if one could not be found.
      */
     static function _getTempDir()
     {
-        return get_temp_dir();
+        $tmp_locations = array('/tmp', '/var/tmp', 'c:\WUTemp', 'c:\temp',
+                               'c:\windows\temp', 'c:\winnt\temp');
+
+        /* Try PHP's upload_tmp_dir directive. */
+        $tmp = ini_get('upload_tmp_dir');
+
+        /* Otherwise, try to determine the TMPDIR environment variable. */
+        if (!strlen($tmp)) {
+            $tmp = getenv('TMPDIR');
+        }
+
+        /* If we still cannot determine a value, then cycle through a list of
+         * preset possibilities. */
+        while (!strlen($tmp) && count($tmp_locations)) {
+            $tmp_check = array_shift($tmp_locations);
+            if (@is_dir($tmp_check)) {
+                $tmp = $tmp_check;
+            }
+        }
+
+        /* If it is still empty, we have failed, so return false; otherwise
+         * return the directory determined. */
+        return strlen($tmp) ? $tmp : false;
     }
 
     /**
@@ -237,24 +260,24 @@ class Text_Diff {
     function _check($from_lines, $to_lines)
     {
         if (serialize($from_lines) != serialize($this->getOriginal())) {
-            throw new Text_Exception("Reconstructed original does not match");
+            trigger_error("Reconstructed original does not match", E_USER_ERROR);
         }
         if (serialize($to_lines) != serialize($this->getFinal())) {
-            throw new Text_Exception("Reconstructed final does not match");
+            trigger_error("Reconstructed final does not match", E_USER_ERROR);
         }
 
         $rev = $this->reverse();
         if (serialize($to_lines) != serialize($rev->getOriginal())) {
-            throw new Text_Exception("Reversed original does not match");
+            trigger_error("Reversed original does not match", E_USER_ERROR);
         }
         if (serialize($from_lines) != serialize($rev->getFinal())) {
-            throw new Text_Exception("Reversed final does not match");
+            trigger_error("Reversed final does not match", E_USER_ERROR);
         }
 
         $prevtype = null;
         foreach ($this->_edits as $edit) {
-            if ($prevtype !== null && $edit instanceof $prevtype) {
-                throw new Text_Exception("Edit sequence is non-optimal");
+            if ($edit instanceof $prevtype) {
+                trigger_error("Edit sequence is non-optimal", E_USER_ERROR);
             }
             $prevtype = get_class($edit);
         }
@@ -273,7 +296,7 @@ class Text_MappedDiff extends Text_Diff {
     /**
      * Computes a diff between sequences of strings.
      *
-     * This can be used to compute things like case-insensitive diffs, or diffs
+     * This can be used to compute things like case-insensitve diffs, or diffs
      * which ignore changes in white-space.
      *
      * @param array $from_lines         An array of strings.
@@ -327,12 +350,15 @@ class Text_MappedDiff extends Text_Diff {
  *
  * @access private
  */
-abstract class Text_Diff_Op {
+class Text_Diff_Op {
 
     var $orig;
     var $final;
 
-    abstract function &reverse();
+    function &reverse()
+    {
+        trigger_error('Abstract method', E_USER_ERROR);
+    }
 
     function norig()
     {

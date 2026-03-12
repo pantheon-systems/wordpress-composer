@@ -63,8 +63,7 @@ class MagpieRSS {
 		# Check if PHP xml isn't compiled
 		#
 		if ( ! function_exists('xml_parser_create') ) {
-			wp_trigger_error( '', "PHP's XML extension is not available. Please contact your hosting provider to enable PHP's XML extension." );
-			return;
+			return trigger_error( "PHP's XML extension is not available. Please contact your hosting provider to enable PHP's XML extension." );
 		}
 
 		$parser = xml_parser_create();
@@ -74,10 +73,11 @@ class MagpieRSS {
 		# pass in parser, and a reference to this object
 		# set up handlers
 		#
+		xml_set_object( $this->parser, $this );
 		xml_set_element_handler($this->parser,
-				array( $this, 'feed_start_element' ), array( $this, 'feed_end_element' ) );
+				'feed_start_element', 'feed_end_element' );
 
-		xml_set_character_data_handler( $this->parser, array( $this, 'feed_cdata' ) );
+		xml_set_character_data_handler( $this->parser, 'feed_cdata' );
 
 		$status = xml_parse( $this->parser, $source );
 
@@ -93,10 +93,7 @@ class MagpieRSS {
 			}
 		}
 
-		if ( PHP_VERSION_ID < 80000 ) { // xml_parser_free() has no effect as of PHP 8.0.
-			xml_parser_free( $this->parser );
-		}
-
+		xml_parser_free( $this->parser );
 		unset( $this->parser );
 
 		$this->normalize();
@@ -390,7 +387,7 @@ class MagpieRSS {
 
 	function error( $errormsg, $lvl = E_USER_WARNING ) {
 		if ( MAGPIE_DEBUG ) {
-			wp_trigger_error('', $errormsg, $lvl);
+			trigger_error( $errormsg, $lvl);
 		} else {
 			error_log( $errormsg, 0);
 		}
@@ -634,9 +631,6 @@ function _response_to_rss ($resp) {
  * Set up constants with default values, unless user overrides.
  *
  * @since 1.5.0
- * 
- * @global string $wp_version The WordPress version string.
- * 
  * @package External
  * @subpackage MagpieRSS
  */
@@ -826,7 +820,7 @@ class RSSCache {
 	function error ($errormsg, $lvl=E_USER_WARNING) {
 		$this->ERROR = $errormsg;
 		if ( MAGPIE_DEBUG ) {
-			wp_trigger_error( '', $errormsg, $lvl);
+			trigger_error( $errormsg, $lvl);
 		}
 		else {
 			error_log( $errormsg, 0);

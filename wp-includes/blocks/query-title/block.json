@@ -17,9 +17,6 @@
 			"type": "number",
 			"default": 1
 		},
-		"levelOptions": {
-			"type": "array"
-		},
 		"showPrefix": {
 			"type": "boolean",
 			"default": true
@@ -29,12 +26,6 @@
 			"default": true
 		}
 	},
-	"example": {
-		"attributes": {
-			"type": "search"
-		}
-	},
-	"usesContext": [ "query" ],
 	"supports": {
 		"align": [ "wide", "full" ],
 		"html": false,
@@ -59,22 +50,9 @@
 			"__experimentalTextTransform": true,
 			"__experimentalTextDecoration": true,
 			"__experimentalDefaultControls": {
-				"fontSize": true
-			}
-		},
-		"interactivity": {
-			"clientNavigation": true
-		},
-		"__experimentalBorder": {
-			"radius": true,
-			"color": true,
-			"width": true,
-			"style": true,
-			"__experimentalDefaultControls": {
-				"radius": true,
-				"color": true,
-				"width": true,
-				"style": true
+				"fontSize": true,
+				"fontAppearance": true,
+				"textTransform": true
 			}
 		}
 	},

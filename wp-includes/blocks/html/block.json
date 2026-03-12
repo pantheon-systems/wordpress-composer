@@ -10,17 +10,13 @@
 	"attributes": {
 		"content": {
 			"type": "string",
-			"source": "raw",
-			"role": "content"
+			"source": "raw"
 		}
 	},
 	"supports": {
 		"customClassName": false,
 		"className": false,
-		"html": false,
-		"interactivity": {
-			"clientNavigation": true
-		}
+		"html": false
 	},
 	"editorStyle": "wp-block-html-editor"
 }

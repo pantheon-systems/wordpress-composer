@@ -9,8 +9,7 @@
 	"textdomain": "default",
 	"attributes": {
 		"label": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		}
 	},
 	"usesContext": [
@@ -37,9 +36,6 @@
 			"__experimentalDefaultControls": {
 				"fontSize": true
 			}
-		},
-		"interactivity": {
-			"clientNavigation": true
 		}
 	},
 	"editorStyle": "wp-block-home-link-editor",

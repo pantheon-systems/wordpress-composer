@@ -110,23 +110,19 @@ class getid3_lyrics3 extends getid3_handler
 			if (!isset($info['ape'])) {
 				if (isset($info['lyrics3']['tag_offset_start'])) {
 					$GETID3_ERRORARRAY = &$info['warning'];
-					if ($this->getid3->option_tag_apetag) {
-						getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.apetag.php', __FILE__, true);
-						$getid3_temp = new getID3();
-						$getid3_temp->openfile($this->getid3->filename, $this->getid3->info['filesize'], $this->getid3->fp);
-						$getid3_apetag = new getid3_apetag($getid3_temp);
-						$getid3_apetag->overrideendoffset = $info['lyrics3']['tag_offset_start'];
-						$getid3_apetag->Analyze();
-						if (!empty($getid3_temp->info['ape'])) {
-							$info['ape'] = $getid3_temp->info['ape'];
-						}
-						if (!empty($getid3_temp->info['replay_gain'])) {
-							$info['replay_gain'] = $getid3_temp->info['replay_gain'];
-						}
-						unset($getid3_temp, $getid3_apetag);
-					} else {
-						$this->warning('Unable to check for Lyrics3 and APE tags interaction since option_tag_apetag=FALSE');
+					getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.apetag.php', __FILE__, true);
+					$getid3_temp = new getID3();
+					$getid3_temp->openfile($this->getid3->filename, $this->getid3->info['filesize'], $this->getid3->fp);
+					$getid3_apetag = new getid3_apetag($getid3_temp);
+					$getid3_apetag->overrideendoffset = $info['lyrics3']['tag_offset_start'];
+					$getid3_apetag->Analyze();
+					if (!empty($getid3_temp->info['ape'])) {
+						$info['ape'] = $getid3_temp->info['ape'];
 					}
+					if (!empty($getid3_temp->info['replay_gain'])) {
+						$info['replay_gain'] = $getid3_temp->info['replay_gain'];
+					}
+					unset($getid3_temp, $getid3_apetag);
 				} else {
 					$this->warning('Lyrics3 and APE tags appear to have become entangled (most likely due to updating the APE tags with a non-Lyrics3-aware tagger)');
 				}
@@ -231,7 +227,7 @@ class getid3_lyrics3 extends getid3_handler
 						foreach ($imagestrings as $key => $imagestring) {
 							if (strpos($imagestring, '||') !== false) {
 								$imagearray = explode('||', $imagestring);
-								$ParsedLyrics3['images'][$key]['filename']     =                                $imagearray[0];
+								$ParsedLyrics3['images'][$key]['filename']     =                                (isset($imagearray[0]) ? $imagearray[0] : '');
 								$ParsedLyrics3['images'][$key]['description']  =                                (isset($imagearray[1]) ? $imagearray[1] : '');
 								$ParsedLyrics3['images'][$key]['timestamp']    = $this->Lyrics3Timestamp2Seconds(isset($imagearray[2]) ? $imagearray[2] : '');
 							}
@@ -276,7 +272,7 @@ class getid3_lyrics3 extends getid3_handler
 	 */
 	public function Lyrics3Timestamp2Seconds($rawtimestamp) {
 		if (preg_match('#^\\[([0-9]{2}):([0-9]{2})\\]$#', $rawtimestamp, $regs)) {
-			return (int) (((int) $regs[1] * 60) + (int) $regs[2]);
+			return (int) (($regs[1] * 60) + $regs[2]);
 		}
 		return false;
 	}
@@ -291,28 +287,28 @@ class getid3_lyrics3 extends getid3_handler
 		$notimestamplyricsarray = array();
 		foreach ($lyricsarray as $key => $lyricline) {
 			$regs = array();
-			$thislinetimestamps = array();
+			unset($thislinetimestamps);
 			while (preg_match('#^(\\[[0-9]{2}:[0-9]{2}\\])#', $lyricline, $regs)) {
 				$thislinetimestamps[] = $this->Lyrics3Timestamp2Seconds($regs[0]);
 				$lyricline = str_replace($regs[0], '', $lyricline);
 			}
 			$notimestamplyricsarray[$key] = $lyricline;
-			if (count($thislinetimestamps) > 0) {
+			if (isset($thislinetimestamps) && is_array($thislinetimestamps)) {
 				sort($thislinetimestamps);
 				foreach ($thislinetimestamps as $timestampkey => $timestamp) {
-					if (isset($Lyrics3data['comments']['synchedlyrics'][$timestamp])) {
+					if (isset($Lyrics3data['synchedlyrics'][$timestamp])) {
 						// timestamps only have a 1-second resolution, it's possible that multiple lines
 						// could have the same timestamp, if so, append
-						$Lyrics3data['comments']['synchedlyrics'][$timestamp] .= "\r\n".$lyricline;
+						$Lyrics3data['synchedlyrics'][$timestamp] .= "\r\n".$lyricline;
 					} else {
-						$Lyrics3data['comments']['synchedlyrics'][$timestamp] = $lyricline;
+						$Lyrics3data['synchedlyrics'][$timestamp] = $lyricline;
 					}
 				}
 			}
 		}
-		$Lyrics3data['comments']['unsynchedlyrics'][0] = implode("\r\n", $notimestamplyricsarray);
-		if (isset($Lyrics3data['comments']['synchedlyrics']) && is_array($Lyrics3data['comments']['synchedlyrics'])) {
-			ksort($Lyrics3data['comments']['synchedlyrics']);
+		$Lyrics3data['unsynchedlyrics'] = implode("\r\n", $notimestamplyricsarray);
+		if (isset($Lyrics3data['synchedlyrics']) && is_array($Lyrics3data['synchedlyrics'])) {
+			ksort($Lyrics3data['synchedlyrics']);
 		}
 		return true;
 	}

@@ -18,15 +18,11 @@ if ( ! class_exists( 'WP_Site_Health' ) ) {
 }
 
 $health_check_site_status = WP_Site_Health::get_instance();
-
-wp_admin_notice(
-	__( 'The Site Health check requires JavaScript.' ),
-	array(
-		'type'               => 'error',
-		'additional_classes' => array( 'hide-if-js' ),
-	)
-);
 ?>
+
+<div class="notice notice-error hide-if-js">
+	<p><?php _e( 'The Site Health check requires JavaScript.' ); ?></p>
+</div>
 
 <div class="health-check-body health-check-debug-tab hide-if-no-js">
 	<?php
@@ -64,7 +60,7 @@ wp_admin_notice(
 
 		<?php
 
-		$sizes_fields = array( 'uploads_size', 'themes_size', 'plugins_size', 'fonts_size', 'wordpress_size', 'database_size', 'total_size' );
+		$sizes_fields = array( 'uploads_size', 'themes_size', 'plugins_size', 'wordpress_size', 'database_size', 'total_size' );
 
 		foreach ( $info as $section => $details ) {
 			if ( ! isset( $details['fields'] ) || empty( $details['fields'] ) ) {
@@ -108,7 +104,7 @@ wp_admin_notice(
 				}
 
 				?>
-				<table class="widefat striped health-check-table">
+				<table class="widefat striped health-check-table" role="presentation">
 					<tbody>
 					<?php
 
@@ -126,9 +122,9 @@ wp_admin_notice(
 						}
 
 						if ( in_array( $field_name, $sizes_fields, true ) ) {
-							printf( '<tr><th scope="row">%s</th><td class="%s">%s</td></tr>', esc_html( $field['label'] ), esc_attr( $field_name ), $values );
+							printf( '<tr><td>%s</td><td class="%s">%s</td></tr>', esc_html( $field['label'] ), esc_attr( $field_name ), $values );
 						} else {
-							printf( '<tr><th scope="row">%s</th><td>%s</td></tr>', esc_html( $field['label'] ), $values );
+							printf( '<tr><td>%s</td><td>%s</td></tr>', esc_html( $field['label'] ), $values );
 						}
 					}
 

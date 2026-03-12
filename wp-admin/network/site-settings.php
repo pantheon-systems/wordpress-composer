@@ -104,14 +104,8 @@ network_edit_site_nav(
 );
 
 if ( ! empty( $messages ) ) {
-	$notice_args = array(
-		'type'        => 'success',
-		'dismissible' => true,
-		'id'          => 'message',
-	);
-
 	foreach ( $messages as $msg ) {
-		wp_admin_notice( $msg, $notice_args );
+		echo '<div id="message" class="notice notice-success is-dismissible"><p>' . $msg . '</p></div>';
 	}
 }
 ?>
@@ -121,16 +115,15 @@ if ( ! empty( $messages ) ) {
 	<table class="form-table" role="presentation">
 		<?php
 		$blog_prefix = $wpdb->get_blog_prefix( $id );
-		$options     = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT * FROM %i
-				WHERE option_name NOT LIKE %s
-				AND option_name NOT LIKE %s',
-				"{$blog_prefix}options",
-				$wpdb->esc_like( '_' ) . '%',
-				'%' . $wpdb->esc_like( 'user_roles' )
-			)
+		$sql         = "SELECT * FROM {$blog_prefix}options
+			WHERE option_name NOT LIKE %s
+			AND option_name NOT LIKE %s";
+		$query       = $wpdb->prepare(
+			$sql,
+			$wpdb->esc_like( '_' ) . '%',
+			'%' . $wpdb->esc_like( 'user_roles' )
 		);
+		$options     = $wpdb->get_results( $query );
 
 		foreach ( $options as $option ) {
 			if ( 'default_role' === $option->option_name ) {

@@ -1,7 +1,7 @@
 ;var MXI_DEBUG = false;
 /**
  * mOxie - multi-runtime File API & XMLHttpRequest L2 Polyfill
- * v1.3.5.1
+ * v1.3.5
  *
  * Copyright 2013, Moxiecode Systems AB
  * Released under GPL License.
@@ -16,12 +16,8 @@
  */
 
 /**
- * Modified for WordPress.
- * - Silverlight and Flash runtimes support was removed. See https://core.trac.wordpress.org/ticket/41755.
- * - A stray Unicode character has been removed. See https://core.trac.wordpress.org/ticket/59329.
- *
- * This is a de-facto fork of the mOxie library that will be maintained by WordPress due to upstream license changes
- * that are incompatible with the GPL.
+ * Modified for WordPress, Silverlight and Flash runtimes support was removed.
+ * See https://core.trac.wordpress.org/ticket/41755.
  */
 
 /*jshint smarttabs:true, undef:true, latedef:true, curly:true, bitwise:true, camelcase:true */
@@ -7392,6 +7388,7 @@ define("moxie/runtime/html5/utils/BinaryReader", [
 			UTF16StringReader.apply(this, arguments);
 		}
 	}
+	 
 
 	Basic.extend(BinaryReader.prototype, {
 		

@@ -3,12 +3,6 @@
  * Sets up the default filters and actions for most
  * of the WordPress hooks.
  *
- * This file is loaded very early in the bootstrap which
- * means many functions are not yet available and site
- * information such as if this is multisite is unknown.
- * Before using functions besides `add_filter` and
- * `add_action`, verify things will work as expected.
- *
  * If you need to remove a default hook, this file will
  * give you the priority to use for removing the hook.
  *
@@ -22,11 +16,6 @@
  *
  * @package WordPress
  */
-
-// Don't load directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	die( '-1' );
-}
 
 // Strip, trim, kses, special chars for string saves.
 foreach ( array( 'pre_term_name', 'pre_comment_author_name', 'pre_link_name', 'pre_link_target', 'pre_link_rel', 'pre_user_display_name', 'pre_user_first_name', 'pre_user_last_name', 'pre_user_nickname' ) as $filter ) {
@@ -151,13 +140,15 @@ add_filter( 'update_term_metadata_cache', 'wp_check_term_meta_support_prefilter'
 add_action( 'added_comment_meta', 'wp_cache_set_comments_last_changed' );
 add_action( 'updated_comment_meta', 'wp_cache_set_comments_last_changed' );
 add_action( 'deleted_comment_meta', 'wp_cache_set_comments_last_changed' );
-add_action( 'init', 'wp_create_initial_comment_meta' );
 
 // Places to balance tags on input.
 foreach ( array( 'content_save_pre', 'excerpt_save_pre', 'comment_save_pre', 'pre_comment_content' ) as $filter ) {
 	add_filter( $filter, 'convert_invalid_entities' );
 	add_filter( $filter, 'balanceTags', 50 );
 }
+
+// Add proper rel values for links with target.
+add_action( 'init', 'wp_init_targeted_link_rel_filters' );
 
 // Format strings for display.
 foreach ( array( 'comment_author', 'term_name', 'link_name', 'link_description', 'link_notes', 'bloginfo', 'wp_title', 'document_title', 'widget_title' ) as $filter ) {
@@ -198,24 +189,22 @@ add_filter( 'the_title', 'wptexturize' );
 add_filter( 'the_title', 'convert_chars' );
 add_filter( 'the_title', 'trim' );
 
-add_filter( 'the_content', 'apply_block_hooks_to_content_from_post_object', 8 ); // BEFORE do_blocks().
 add_filter( 'the_content', 'do_blocks', 9 );
 add_filter( 'the_content', 'wptexturize' );
 add_filter( 'the_content', 'convert_smilies', 20 );
 add_filter( 'the_content', 'wpautop' );
 add_filter( 'the_content', 'shortcode_unautop' );
 add_filter( 'the_content', 'prepend_attachment' );
+add_filter( 'the_content', 'wp_filter_content_tags' );
 add_filter( 'the_content', 'wp_replace_insecure_home_url' );
-add_filter( 'the_content', 'do_shortcode', 11 ); // AFTER wpautop().
-add_filter( 'the_content', 'wp_filter_content_tags', 12 ); // Runs after do_shortcode().
 
 add_filter( 'the_excerpt', 'wptexturize' );
 add_filter( 'the_excerpt', 'convert_smilies' );
 add_filter( 'the_excerpt', 'convert_chars' );
 add_filter( 'the_excerpt', 'wpautop' );
 add_filter( 'the_excerpt', 'shortcode_unautop' );
+add_filter( 'the_excerpt', 'wp_filter_content_tags' );
 add_filter( 'the_excerpt', 'wp_replace_insecure_home_url' );
-add_filter( 'the_excerpt', 'wp_filter_content_tags', 12 );
 add_filter( 'get_the_excerpt', 'wp_trim_excerpt', 10, 2 );
 
 add_filter( 'the_post_thumbnail_caption', 'wptexturize' );
@@ -241,13 +230,13 @@ add_filter( 'widget_text_content', 'wptexturize' );
 add_filter( 'widget_text_content', 'convert_smilies', 20 );
 add_filter( 'widget_text_content', 'wpautop' );
 add_filter( 'widget_text_content', 'shortcode_unautop' );
+add_filter( 'widget_text_content', 'wp_filter_content_tags' );
 add_filter( 'widget_text_content', 'wp_replace_insecure_home_url' );
 add_filter( 'widget_text_content', 'do_shortcode', 11 ); // Runs after wpautop(); note that $post global will be null when shortcodes run.
-add_filter( 'widget_text_content', 'wp_filter_content_tags', 12 ); // Runs after do_shortcode().
 
 add_filter( 'widget_block_content', 'do_blocks', 9 );
+add_filter( 'widget_block_content', 'wp_filter_content_tags' );
 add_filter( 'widget_block_content', 'do_shortcode', 11 );
-add_filter( 'widget_block_content', 'wp_filter_content_tags', 12 ); // Runs after do_shortcode().
 
 add_filter( 'block_type_metadata', 'wp_migrate_old_typography_shape' );
 
@@ -296,7 +285,6 @@ foreach (
 }
 
 // Misc filters.
-add_filter( 'wp_default_autoload_value', 'wp_filter_default_autoload_value_via_option_size', 5, 4 ); // Allow the value to be overridden at the default priority.
 add_filter( 'option_ping_sites', 'privacy_ping_filter' );
 add_filter( 'option_blog_charset', '_wp_specialchars' ); // IMPORTANT: This must not be wp_specialchars() or esc_html() or it'll cause an infinite loop.
 add_filter( 'option_blog_charset', '_canonical_charset' );
@@ -359,7 +347,6 @@ add_action( 'wp_head', 'rel_canonical' );
 add_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );
 add_action( 'wp_head', 'wp_custom_css_cb', 101 );
 add_action( 'wp_head', 'wp_site_icon', 99 );
-add_action( 'wp_footer', 'wp_print_speculation_rules' );
 add_action( 'wp_footer', 'wp_print_footer_scripts', 20 );
 add_action( 'template_redirect', 'wp_shortlink_header', 11, 0 );
 add_action( 'wp_print_footer_scripts', '_wp_footer_scripts' );
@@ -370,16 +357,10 @@ add_action( 'switch_theme', 'wp_clean_theme_json_cache' );
 add_action( 'start_previewing_theme', 'wp_clean_theme_json_cache' );
 add_action( 'after_switch_theme', '_wp_menus_changed' );
 add_action( 'after_switch_theme', '_wp_sidebars_changed' );
-add_action( 'wp_enqueue_scripts', 'wp_enqueue_emoji_styles' );
-add_action( 'wp_print_styles', 'print_emoji_styles' ); // Retained for backwards-compatibility. Unhooked by wp_enqueue_emoji_styles().
+add_action( 'wp_print_styles', 'print_emoji_styles' );
+add_action( 'plugins_loaded', '_wp_theme_json_webfonts_handler' );
 
-if (
-	// Comment reply link.
-	isset( $_GET['replytocom'] )
-	||
-	// Unapproved comment preview.
-	( isset( $_GET['unapproved'] ) && isset( $_GET['moderation-hash'] ) )
-) {
+if ( isset( $_GET['replytocom'] ) ) {
 	add_filter( 'wp_robots', 'wp_robots_no_robots' );
 }
 
@@ -391,7 +372,6 @@ add_action( 'login_head', 'print_admin_styles', 9 );
 add_action( 'login_head', 'wp_site_icon', 99 );
 add_action( 'login_footer', 'wp_print_footer_scripts', 20 );
 add_action( 'login_init', 'send_frame_options_header', 10, 0 );
-add_action( 'login_init', 'wp_admin_headers' );
 
 // Feed generator tags.
 foreach ( array( 'rss2_head', 'commentsrss2_head', 'rss_head', 'rdf_header', 'atom_head', 'comments_atom_head', 'opml_head', 'app_head' ) as $action ) {
@@ -408,6 +388,11 @@ if ( ! defined( 'DOING_CRON' ) ) {
 	add_action( 'init', 'wp_cron' );
 }
 
+// HTTPS detection.
+add_action( 'init', 'wp_schedule_https_detection' );
+add_action( 'wp_https_detection', 'wp_update_https_detection_errors' );
+add_filter( 'cron_request', 'wp_cron_conditionally_prevent_sslverify', 9999 );
+
 // HTTPS migration.
 add_action( 'update_option_home', 'wp_update_https_migration_required', 10, 2 );
 
@@ -423,7 +408,6 @@ add_action( 'do_all_pings', 'do_all_trackbacks', 10, 0 );
 add_action( 'do_all_pings', 'generic_ping', 10, 0 );
 add_action( 'do_robots', 'do_robots' );
 add_action( 'do_favicon', 'do_favicon' );
-add_action( 'wp_before_include_template', 'wp_start_template_enhancement_output_buffer', 1000 ); // Late priority to let `wp_template_enhancement_output_buffer` filters and `wp_finalized_template_enhancement_output_buffer` actions be registered.
 add_action( 'set_comment_cookies', 'wp_set_comment_cookies', 10, 3 );
 add_action( 'sanitize_comment_cookies', 'sanitize_comment_cookies' );
 add_action( 'init', 'smilies_init', 5 );
@@ -431,7 +415,6 @@ add_action( 'plugins_loaded', 'wp_maybe_load_widgets', 0 );
 add_action( 'plugins_loaded', 'wp_maybe_load_embeds', 0 );
 add_action( 'shutdown', 'wp_ob_end_flush_all', 1 );
 // Create a revision whenever a post is updated.
-add_action( 'wp_after_insert_post', 'wp_save_post_revision_on_insert', 9, 3 );
 add_action( 'post_updated', 'wp_save_post_revision', 10, 1 );
 add_action( 'publish_post', '_publish_post_hook', 5, 1 );
 add_action( 'transition_post_status', '_transition_post_status', 5, 3 );
@@ -522,7 +505,6 @@ add_action( 'wp_update_comment_type_batch', '_wp_batch_update_comment_type' );
 // Email notifications.
 add_action( 'comment_post', 'wp_new_comment_notify_moderator' );
 add_action( 'comment_post', 'wp_new_comment_notify_postauthor' );
-add_action( 'rest_insert_comment', 'wp_new_comment_via_rest_notify_postauthor' );
 add_action( 'after_password_reset', 'wp_password_change_notification' );
 add_action( 'register_new_user', 'wp_send_new_user_notifications' );
 add_action( 'edit_user_created_user', 'wp_send_new_user_notifications', 10, 2 );
@@ -534,10 +516,6 @@ add_action( 'rest_api_init', 'register_initial_settings', 10 );
 add_action( 'rest_api_init', 'create_initial_rest_routes', 99 );
 add_action( 'parse_request', 'rest_api_loaded' );
 
-// Abilities API.
-add_action( 'wp_abilities_api_categories_init', 'wp_register_core_ability_categories' );
-add_action( 'wp_abilities_api_init', 'wp_register_core_abilities' );
-
 // Sitemaps actions.
 add_action( 'init', 'wp_sitemaps_get_server' );
 
@@ -546,7 +524,7 @@ add_action( 'init', 'wp_sitemaps_get_server' );
  */
 // Theme.
 add_action( 'setup_theme', 'create_initial_theme_features', 0 );
-add_action( 'after_setup_theme', '_add_default_theme_supports', 1 );
+add_action( 'setup_theme', '_add_default_theme_supports', 1 );
 add_action( 'wp_loaded', '_custom_header_background_just_in_time' );
 add_action( 'wp_head', '_custom_logo_header_styles' );
 add_action( 'plugins_loaded', '_wp_customize_include' );
@@ -557,9 +535,6 @@ add_action( 'transition_post_status', '_wp_keep_alive_customize_changeset_depend
 
 // Block Theme Previews.
 add_action( 'plugins_loaded', 'wp_initialize_theme_preview_hooks', 1 );
-
-// Site preview for Classic Theme.
-add_action( 'init', 'wp_initialize_site_preview_hooks', 1 );
 
 // Calendar widget cache.
 add_action( 'save_post', 'delete_get_calendar_cache' );
@@ -591,18 +566,14 @@ add_action( 'set_current_user', 'kses_init' );
 // Script Loader.
 add_action( 'wp_default_scripts', 'wp_default_scripts' );
 add_action( 'wp_default_scripts', 'wp_default_packages' );
-add_action( 'wp_default_scripts', 'wp_default_script_modules' );
 
 add_action( 'wp_enqueue_scripts', 'wp_localize_jquery_ui_datepicker', 1000 );
 add_action( 'wp_enqueue_scripts', 'wp_common_block_scripts_and_styles' );
 add_action( 'wp_enqueue_scripts', 'wp_enqueue_classic_theme_styles' );
 add_action( 'admin_enqueue_scripts', 'wp_localize_jquery_ui_datepicker', 1000 );
 add_action( 'admin_enqueue_scripts', 'wp_common_block_scripts_and_styles' );
-add_action( 'admin_enqueue_scripts', 'wp_enqueue_command_palette_assets' );
-add_action( 'enqueue_block_assets', 'wp_enqueue_classic_theme_styles' );
 add_action( 'enqueue_block_assets', 'wp_enqueue_registered_block_scripts_and_styles' );
 add_action( 'enqueue_block_assets', 'enqueue_block_styles_assets', 30 );
-add_action( 'init', 'wp_load_classic_theme_block_styles_on_demand', 8 ); // Must happen before register_core_block_style_handles() at priority 9.
 /*
  * `wp_enqueue_registered_block_scripts_and_styles` is bound to both
  * `enqueue_block_editor_assets` and `enqueue_block_assets` hooks
@@ -625,10 +596,14 @@ add_action( 'wp_print_scripts', 'wp_just_in_time_script_localization' );
 add_filter( 'print_scripts_array', 'wp_prototype_before_jquery' );
 add_action( 'customize_controls_print_styles', 'wp_resource_hints', 1 );
 add_action( 'admin_head', 'wp_check_widget_editor_deps' );
+add_filter( 'block_editor_settings_all', 'wp_add_editor_classic_theme_styles' );
 
 // Global styles can be enqueued in both the header and the footer. See https://core.trac.wordpress.org/ticket/53494.
 add_action( 'wp_enqueue_scripts', 'wp_enqueue_global_styles' );
 add_action( 'wp_footer', 'wp_enqueue_global_styles', 1 );
+
+// Global styles custom CSS.
+add_action( 'wp_enqueue_scripts', 'wp_enqueue_global_styles_custom_css' );
 
 // Block supports, and other styles parsed and stored in the Style Engine.
 add_action( 'wp_enqueue_scripts', 'wp_enqueue_stored_styles' );
@@ -637,8 +612,6 @@ add_action( 'wp_footer', 'wp_enqueue_stored_styles', 1 );
 add_action( 'wp_default_styles', 'wp_default_styles' );
 add_filter( 'style_loader_src', 'wp_style_loader_src', 10, 2 );
 
-add_action( 'wp_head', 'wp_enqueue_img_auto_sizes_contain_css_fix', 0 ); // Must run before wp_print_auto_sizes_contain_css_fix().
-add_action( 'wp_head', 'wp_print_auto_sizes_contain_css_fix', 1 ); // Retained for backwards-compatibility. Unhooked by wp_enqueue_img_auto_sizes_contain_css_fix().
 add_action( 'wp_head', 'wp_maybe_inline_styles', 1 ); // Run for styles enqueued in <head>.
 add_action( 'wp_footer', 'wp_maybe_inline_styles', 1 ); // Run for late-loaded styles in the footer.
 
@@ -666,6 +639,9 @@ add_action( 'change_locale', 'create_initial_taxonomies' );
 add_action( 'template_redirect', 'redirect_canonical' );
 add_action( 'template_redirect', 'wp_redirect_admin_locations', 1000 );
 
+// Shortcodes.
+add_filter( 'the_content', 'do_shortcode', 11 ); // AFTER wpautop().
+
 // Media.
 add_action( 'wp_playlist_scripts', 'wp_playlist_scripts' );
 add_action( 'customize_controls_enqueue_scripts', 'wp_plupload_default_settings' );
@@ -686,9 +662,6 @@ add_action( 'widgets_init', '_wp_block_theme_register_classic_sidebars', 1 );
 // Don't remove. Wrong way to disable.
 add_action( 'template_redirect', '_wp_admin_bar_init', 0 );
 add_action( 'admin_init', '_wp_admin_bar_init' );
-add_action( 'wp_enqueue_scripts', 'wp_enqueue_admin_bar_bump_styles' );
-add_action( 'wp_enqueue_scripts', 'wp_enqueue_admin_bar_header_styles' );
-add_action( 'admin_enqueue_scripts', 'wp_enqueue_admin_bar_header_styles' );
 add_action( 'before_signup_header', '_wp_admin_bar_init' );
 add_action( 'activate_header', '_wp_admin_bar_init' );
 add_action( 'wp_body_open', 'wp_admin_bar_render', 0 );
@@ -704,21 +677,18 @@ add_filter( 'media_send_to_editor', 'image_media_send_to_editor', 10, 3 );
 add_action( 'rest_api_init', 'wp_oembed_register_route' );
 add_filter( 'rest_pre_serve_request', '_oembed_rest_pre_serve_request', 10, 4 );
 
-add_action( 'wp_head', 'wp_oembed_add_discovery_links', 4 ); // Printed after feed_links() and feed_links_extra().
-add_action( 'wp_head', 'wp_oembed_add_discovery_links' ); // Unhooked the first time that wp_oembed_add_discovery_links() runs for back-compat.
+add_action( 'wp_head', 'wp_oembed_add_discovery_links' );
 add_action( 'wp_head', 'wp_oembed_add_host_js' ); // Back-compat for sites disabling oEmbed host JS by removing action.
 add_filter( 'embed_oembed_html', 'wp_maybe_enqueue_oembed_host_js' );
 
 add_action( 'embed_head', 'enqueue_embed_scripts', 1 );
 add_action( 'embed_head', 'print_emoji_detection_script' );
-add_action( 'embed_head', 'wp_enqueue_embed_styles', 9 );
-add_action( 'embed_head', 'print_embed_styles' ); // Retained for backwards-compatibility. Unhooked by wp_enqueue_embed_styles().
+add_action( 'embed_head', 'print_embed_styles' );
 add_action( 'embed_head', 'wp_print_head_scripts', 20 );
 add_action( 'embed_head', 'wp_print_styles', 20 );
 add_action( 'embed_head', 'wp_robots' );
 add_action( 'embed_head', 'rel_canonical' );
 add_action( 'embed_head', 'locale_stylesheet', 30 );
-add_action( 'enqueue_embed_scripts', 'wp_enqueue_emoji_styles' );
 
 add_action( 'embed_content_meta', 'print_embed_comments_button' );
 add_action( 'embed_content_meta', 'print_embed_sharing_button' );
@@ -748,13 +718,9 @@ add_filter( 'user_has_cap', 'wp_maybe_grant_site_health_caps', 1, 4 );
 add_filter( 'render_block_context', '_block_template_render_without_post_block_context' );
 add_filter( 'pre_wp_unique_post_slug', 'wp_filter_wp_template_unique_post_slug', 10, 5 );
 add_action( 'save_post_wp_template_part', 'wp_set_unique_slug_on_create_template_part' );
-add_action( 'wp_enqueue_scripts', 'wp_enqueue_block_template_skip_link' );
-add_action( 'wp_footer', 'the_block_template_skip_link' ); // Retained for backwards-compatibility. Unhooked by wp_enqueue_block_template_skip_link().
-add_action( 'after_setup_theme', 'wp_enable_block_templates', 1 );
+add_action( 'wp_footer', 'the_block_template_skip_link' );
+add_action( 'setup_theme', 'wp_enable_block_templates' );
 add_action( 'wp_loaded', '_add_template_loader_filters' );
-
-// wp_navigation post type.
-add_filter( 'rest_wp_navigation_item_schema', array( 'WP_Navigation_Fallback', 'update_wp_navigation_post_schema' ) );
 
 // Fluid typography.
 add_filter( 'render_block', 'wp_render_typography_support', 10, 2 );
@@ -764,39 +730,5 @@ add_action( 'init', 'wp_register_persisted_preferences_meta' );
 
 // CPT wp_block custom postmeta field.
 add_action( 'init', 'wp_create_initial_post_meta' );
-
-// Include revisioned meta when considering whether a post revision has changed.
-add_filter( 'wp_save_post_revision_post_has_changed', 'wp_check_revisioned_meta_fields_have_changed', 10, 3 );
-
-// Save revisioned post meta immediately after a revision is saved
-add_action( '_wp_put_post_revision', 'wp_save_revisioned_meta_fields', 10, 2 );
-
-// Include revisioned meta when creating or updating an autosave revision.
-add_action( 'wp_creating_autosave', 'wp_autosave_post_revisioned_meta_fields' );
-
-// When restoring revisions, also restore revisioned meta.
-add_action( 'wp_restore_post_revision', 'wp_restore_post_revision_meta', 10, 2 );
-
-// Font management.
-add_action( 'wp_head', 'wp_print_font_faces', 50 );
-add_action( 'deleted_post', '_wp_after_delete_font_family', 10, 2 );
-add_action( 'before_delete_post', '_wp_before_delete_font_face', 10, 2 );
-add_action( 'init', '_wp_register_default_font_collections' );
-
-// Add ignoredHookedBlocks metadata attribute to the template and template part post types.
-add_filter( 'rest_pre_insert_wp_template', 'inject_ignored_hooked_blocks_metadata_attributes' );
-add_filter( 'rest_pre_insert_wp_template_part', 'inject_ignored_hooked_blocks_metadata_attributes' );
-
-// Update ignoredHookedBlocks postmeta for some post types.
-add_filter( 'rest_pre_insert_page', 'update_ignored_hooked_blocks_postmeta' );
-add_filter( 'rest_pre_insert_post', 'update_ignored_hooked_blocks_postmeta' );
-add_filter( 'rest_pre_insert_wp_block', 'update_ignored_hooked_blocks_postmeta' );
-add_filter( 'rest_pre_insert_wp_navigation', 'update_ignored_hooked_blocks_postmeta' );
-
-// Inject hooked blocks into the Posts endpoint REST response for some given post types.
-add_filter( 'rest_prepare_page', 'insert_hooked_blocks_into_rest_response', 10, 2 );
-add_filter( 'rest_prepare_post', 'insert_hooked_blocks_into_rest_response', 10, 2 );
-add_filter( 'rest_prepare_wp_block', 'insert_hooked_blocks_into_rest_response', 10, 2 );
-add_filter( 'rest_prepare_wp_navigation', 'insert_hooked_blocks_into_rest_response', 10, 2 );
 
 unset( $filter, $action );

@@ -182,7 +182,7 @@ function has_shortcode( $content, $tag ) {
  * @return string[] An array of registered shortcode names found in the content.
  */
 function get_shortcode_tags_in_content( $content ) {
-	if ( ! str_contains( $content, '[' ) ) {
+	if ( false === strpos( $content, '[' ) ) {
 		return array();
 	}
 
@@ -260,7 +260,7 @@ function do_shortcode( $content, $ignore_html = false ) {
 	}
 
 	// Ensure this context is only added once if shortcodes are nested.
-	$has_filter   = has_filter( 'wp_get_attachment_image_context', '_filter_do_shortcode_context' );
+	$has_filter = has_filter( 'wp_get_attachment_image_context', '_filter_do_shortcode_context' );
 	$filter_added = false;
 
 	if ( ! $has_filter ) {
@@ -319,7 +319,7 @@ function _filter_do_shortcode_context() {
  * @global array $shortcode_tags
  *
  * @param array $tagnames Optional. List of shortcodes to find. Defaults to all registered shortcodes.
- * @return string The shortcode search regular expression.
+ * @return string The shortcode search regular expression
  */
 function get_shortcode_regex( $tagnames = null ) {
 	global $shortcode_tags;
@@ -362,7 +362,7 @@ function get_shortcode_regex( $tagnames = null ) {
 		.         '\\[\\/\\2\\]'             // Closing shortcode tag.
 		.     ')?'
 		. ')'
-		. '(\\]?)';                          // 6: Optional second closing bracket for escaping shortcodes: [[tag]].
+		. '(\\]?)';                          // 6: Optional second closing brocket for escaping shortcodes: [[tag]].
 	// phpcs:enable
 }
 
@@ -385,7 +385,7 @@ function get_shortcode_regex( $tagnames = null ) {
  *     @type string $3 Shortcode arguments list.
  *     @type string $4 Optional self closing slash.
  *     @type string $5 Content of a shortcode when it wraps some content.
- *     @type string $6 Optional second closing bracket for escaping shortcodes.
+ *     @type string $6 Optional second closing brocket for escaping shortcodes.
  * }
  * @return string Shortcode output.
  */
@@ -417,11 +417,10 @@ function do_shortcode_tag( $m ) {
 	 * shortcode generation process, returning that value instead.
 	 *
 	 * @since 4.7.0
-	 * @since 6.5.0 The `$attr` parameter is always an array.
 	 *
 	 * @param false|string $output Short-circuit return value. Either false or the value to replace the shortcode with.
 	 * @param string       $tag    Shortcode name.
-	 * @param array        $attr   Shortcode attributes array, can be empty if the original arguments string cannot be parsed.
+	 * @param array|string $attr   Shortcode attributes array or the original arguments string if it cannot be parsed.
 	 * @param array        $m      Regular expression match array.
 	 */
 	$return = apply_filters( 'pre_do_shortcode_tag', false, $tag, $attr, $m );
@@ -437,12 +436,11 @@ function do_shortcode_tag( $m ) {
 	 * Filters the output created by a shortcode callback.
 	 *
 	 * @since 4.7.0
-	 * @since 6.5.0 The `$attr` parameter is always an array.
 	 *
-	 * @param string $output Shortcode output.
-	 * @param string $tag    Shortcode name.
-	 * @param array  $attr   Shortcode attributes array, can be empty if the original arguments string cannot be parsed.
-	 * @param array  $m      Regular expression match array.
+	 * @param string       $output Shortcode output.
+	 * @param string       $tag    Shortcode name.
+	 * @param array|string $attr   Shortcode attributes array or the original arguments string if it cannot be parsed.
+	 * @param array        $m      Regular expression match array.
 	 */
 	return apply_filters( 'do_shortcode_tag', $output, $tag, $attr, $m );
 }
@@ -506,7 +504,7 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 				$element = preg_replace_callback( "/$pattern/", 'do_shortcode_tag', $element );
 			}
 
-			// Looks like we found some unexpected unfiltered HTML. Skipping it for confidence.
+			// Looks like we found some crazy unfiltered HTML. Skipping it for sanity.
 			$element = strtr( $element, $trans );
 			continue;
 		}
@@ -602,13 +600,11 @@ function get_shortcode_atts_regex() {
  * retrieval of the attributes, since all attributes have to be known.
  *
  * @since 2.5.0
- * @since 6.5.0 The function now always returns an array,
- *              even if the original arguments string cannot be parsed or is empty.
  *
  * @param string $text Shortcode arguments list.
- * @return array Array of attribute values keyed by attribute name.
- *               Returns empty array if there are no attributes
- *               or if the original arguments string cannot be parsed.
+ * @return array|string Array of attribute values keyed by attribute name.
+ *                      Returns empty array if there are no attributes.
+ *                      Returns the original arguments string if it cannot be parsed.
  */
 function shortcode_parse_atts( $text ) {
 	$atts    = array();
@@ -639,6 +635,8 @@ function shortcode_parse_atts( $text ) {
 				}
 			}
 		}
+	} else {
+		$atts = ltrim( $text );
 	}
 
 	return $atts;

@@ -299,6 +299,7 @@ if ( ! class_exists( 'POMO_StringReader', false ) ) :
 		public function read_all() {
 			return $this->substr( $this->_str, $this->_pos, $this->strlen( $this->_str ) );
 		}
+
 	}
 endif;
 
@@ -358,3 +359,4 @@ if ( ! class_exists( 'POMO_CachedIntFileReader', false ) ) :
 		}
 	}
 endif;
+

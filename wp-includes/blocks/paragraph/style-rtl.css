@@ -33,14 +33,10 @@ p.has-drop-cap.has-background{
   overflow:hidden;
 }
 
-:root :where(p.has-background){
+p.has-background{
   padding:1.25em 2.375em;
 }
 
 :where(p.has-text-color:not(.has-link-color)) a{
   color:inherit;
-}
-
-p.has-text-align-left[style*="writing-mode:vertical-lr"],p.has-text-align-right[style*="writing-mode:vertical-rl"]{
-  rotate:180deg;
 }

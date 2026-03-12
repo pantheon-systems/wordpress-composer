@@ -15,8 +15,7 @@
 			"default": "next"
 		},
 		"label": {
-			"type": "string",
-			"role": "content"
+			"type": "string"
 		},
 		"showTitle": {
 			"type": "boolean",
@@ -29,13 +28,8 @@
 		"arrow": {
 			"type": "string",
 			"default": "none"
-		},
-		"taxonomy": {
-			"type": "string",
-			"default": ""
 		}
 	},
-	"usesContext": [ "postType" ],
 	"supports": {
 		"reusable": false,
 		"html": false,
@@ -51,13 +45,9 @@
 			"__experimentalTextTransform": true,
 			"__experimentalTextDecoration": true,
 			"__experimentalLetterSpacing": true,
-			"__experimentalWritingMode": true,
 			"__experimentalDefaultControls": {
 				"fontSize": true
 			}
-		},
-		"interactivity": {
-			"clientNavigation": true
 		}
 	},
 	"style": "wp-block-post-navigation-link"

@@ -461,7 +461,7 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 	<legend>
 		<span class="hidden" id="editlegend"><?php _e( 'Edit Comment' ); ?></span>
 		<span class="hidden" id="replyhead"><?php _e( 'Reply to Comment' ); ?></span>
-		<span class="hidden" id="addhead"><?php _e( 'Add Comment' ); ?></span>
+		<span class="hidden" id="addhead"><?php _e( 'Add new Comment' ); ?></span>
 	</legend>
 
 	<div id="replycontainer">
@@ -512,16 +512,9 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 			<button type="button" class="cancel button"><?php _e( 'Cancel' ); ?></button>
 			<span class="waiting spinner"></span>
 		</p>
-		<?php
-		wp_admin_notice(
-			'<p class="error"></p>',
-			array(
-				'type'               => 'error',
-				'additional_classes' => array( 'notice-alt', 'inline', 'hidden' ),
-				'paragraph_wrap'     => false,
-			)
-		);
-		?>
+		<div class="notice notice-error notice-alt inline hidden">
+			<p class="error"></p>
+		</div>
 	</div>
 
 	<input type="hidden" name="action" id="action" value="" />
@@ -735,7 +728,7 @@ function meta_form( $post = null ) {
 		natcasesort( $keys );
 	}
 	?>
-<p><strong><?php _e( 'Add Custom Field:' ); ?></strong></p>
+<p><strong><?php _e( 'Add New Custom Field:' ); ?></strong></p>
 <table id="newmeta">
 <thead>
 <tr>
@@ -817,6 +810,9 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 		$tab_index_attribute = " tabindex=\"$tab_index\"";
 	}
 
+	// @todo Remove this?
+	// echo '<label for="timestamp" style="display: block;"><input type="checkbox" class="checkbox" name="edit_date" value="1" id="timestamp"'.$tab_index_attribute.' /> '.__( 'Edit timestamp' ).'</label><br />';
+
 	$post_date = ( $for_post ) ? $post->post_date : get_comment()->comment_date;
 	$jj        = ( $edit ) ? mysql2date( 'd', $post_date, false ) : current_time( 'd' );
 	$mm        = ( $edit ) ? mysql2date( 'm', $post_date, false ) : current_time( 'm' );
@@ -847,19 +843,19 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 	$day = '<label><span class="screen-reader-text">' .
 		/* translators: Hidden accessibility text. */
 		__( 'Day' ) .
-	'</span><input type="text" ' . ( $multi ? '' : 'id="jj" ' ) . 'name="jj" value="' . $jj . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" class="form-required" inputmode="numeric" /></label>';
+	'</span><input type="text" ' . ( $multi ? '' : 'id="jj" ' ) . 'name="jj" value="' . $jj . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" class="form-required" /></label>';
 	$year = '<label><span class="screen-reader-text">' .
 		/* translators: Hidden accessibility text. */
 		__( 'Year' ) .
-	'</span><input type="text" ' . ( $multi ? '' : 'id="aa" ' ) . 'name="aa" value="' . $aa . '" size="4" maxlength="4"' . $tab_index_attribute . ' autocomplete="off" class="form-required" inputmode="numeric" /></label>';
+	'</span><input type="text" ' . ( $multi ? '' : 'id="aa" ' ) . 'name="aa" value="' . $aa . '" size="4" maxlength="4"' . $tab_index_attribute . ' autocomplete="off" class="form-required" /></label>';
 	$hour = '<label><span class="screen-reader-text">' .
 		/* translators: Hidden accessibility text. */
 		__( 'Hour' ) .
-	'</span><input type="text" ' . ( $multi ? '' : 'id="hh" ' ) . 'name="hh" value="' . $hh . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" class="form-required" inputmode="numeric" /></label>';
+	'</span><input type="text" ' . ( $multi ? '' : 'id="hh" ' ) . 'name="hh" value="' . $hh . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" class="form-required" /></label>';
 	$minute = '<label><span class="screen-reader-text">' .
 		/* translators: Hidden accessibility text. */
 		__( 'Minute' ) .
-	'</span><input type="text" ' . ( $multi ? '' : 'id="mn" ' ) . 'name="mn" value="' . $mn . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" class="form-required" inputmode="numeric" /></label>';
+	'</span><input type="text" ' . ( $multi ? '' : 'id="mn" ' ) . 'name="mn" value="' . $mn . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" class="form-required" /></label>';
 
 	echo '<div class="timestamp-wrap">';
 	/* translators: 1: Month, 2: Day, 3: Year, 4: Hour, 5: Minute. */
@@ -904,7 +900,7 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
  * @since 4.7.0 Added the `$post_type` parameter.
  *
  * @param string $default_template Optional. The template file name. Default empty.
- * @param string $post_type        Optional. Post type to get templates for. Default 'page'.
+ * @param string $post_type        Optional. Post type to get templates for. Default 'post'.
  */
 function page_template_dropdown( $default_template = '', $post_type = 'page' ) {
 	$templates = get_page_templates( null, $post_type );
@@ -1010,15 +1006,10 @@ function wp_import_upload_form( $action ) {
 	$size       = size_format( $bytes );
 	$upload_dir = wp_upload_dir();
 	if ( ! empty( $upload_dir['error'] ) ) :
-		$upload_directory_error  = '<p>' . __( 'Before you can upload your import file, you will need to fix the following error:' ) . '</p>';
-		$upload_directory_error .= '<p><strong>' . $upload_dir['error'] . '</strong></p>';
-		wp_admin_notice(
-			$upload_directory_error,
-			array(
-				'additional_classes' => array( 'error' ),
-				'paragraph_wrap'     => false,
-			)
-		);
+		?>
+		<div class="error"><p><?php _e( 'Before you can upload your import file, you will need to fix the following error:' ); ?></p>
+		<p><strong><?php echo $upload_dir['error']; ?></strong></p></div>
+		<?php
 	else :
 		?>
 <form enctype="multipart/form-data" id="import-upload-form" method="post" class="wp-upload-form" action="<?php echo esc_url( wp_nonce_url( $action, 'import-upload' ) ); ?>">
@@ -1047,7 +1038,7 @@ function wp_import_upload_form( $action ) {
  * @since 2.5.0
  * @since 4.4.0 The `$screen` parameter now accepts an array of screen IDs.
  *
- * @global array $wp_meta_boxes Global meta box state.
+ * @global array $wp_meta_boxes
  *
  * @param string                 $id            Meta box ID (used in the 'id' attribute for the meta box).
  * @param string                 $title         Title of the meta box.
@@ -1284,7 +1275,7 @@ function _get_plugin_from_callback( $callback ) {
  *
  * @since 2.5.0
  *
- * @global array $wp_meta_boxes Global meta box state.
+ * @global array $wp_meta_boxes
  *
  * @param string|WP_Screen $screen      The screen identifier. If you have used add_menu_page() or
  *                                      add_submenu_page() to create a new screen (and hence screen_id)
@@ -1364,7 +1355,7 @@ function do_meta_boxes( $screen, $context, $data_object ) {
 						}
 					}
 
-					++$i;
+					$i++;
 					// get_hidden_meta_boxes() doesn't apply in the block editor.
 					$hidden_class = ( ! $screen->is_block_editor() && in_array( $box['id'], $hidden, true ) ) ? ' hide-if-js' : '';
 					echo '<div id="' . $box['id'] . '" class="postbox ' . postbox_classes( $box['id'], $page ) . $hidden_class . '" ' . '>' . "\n";
@@ -1436,17 +1427,16 @@ function do_meta_boxes( $screen, $context, $data_object ) {
 					if ( WP_DEBUG && ! $block_compatible && 'edit' === $screen->parent_base && ! $screen->is_block_editor() && ! isset( $_GET['meta-box-loader'] ) ) {
 						$plugin = _get_plugin_from_callback( $box['callback'] );
 						if ( $plugin ) {
-							$meta_box_not_compatible_message = sprintf(
-								/* translators: %s: The name of the plugin that generated this meta box. */
-								__( 'This meta box, from the %s plugin, is not compatible with the block editor.' ),
-								"<strong>{$plugin['Name']}</strong>"
-							);
-							wp_admin_notice(
-								$meta_box_not_compatible_message,
-								array(
-									'additional_classes' => array( 'error', 'inline' ),
-								)
-							);
+							?>
+							<div class="error inline">
+								<p>
+									<?php
+										/* translators: %s: The name of the plugin that generated this meta box. */
+										printf( __( 'This meta box, from the %s plugin, is not compatible with the block editor.' ), "<strong>{$plugin['Name']}</strong>" );
+									?>
+								</p>
+							</div>
+							<?php
 						}
 					}
 
@@ -1461,6 +1451,7 @@ function do_meta_boxes( $screen, $context, $data_object ) {
 	echo '</div>';
 
 	return $i;
+
 }
 
 /**
@@ -1469,7 +1460,7 @@ function do_meta_boxes( $screen, $context, $data_object ) {
  * @since 2.6.0
  * @since 4.4.0 The `$screen` parameter now accepts an array of screen IDs.
  *
- * @global array $wp_meta_boxes Global meta box state.
+ * @global array $wp_meta_boxes
  *
  * @param string                 $id      Meta box ID (used in the 'id' attribute for the meta box).
  * @param string|array|WP_Screen $screen  The screen or screens on which the meta box is shown (such as a
@@ -1560,27 +1551,26 @@ function do_accordion_sections( $screen, $context, $data_object ) {
 						continue;
 					}
 
-					++$i;
+					$i++;
 					$hidden_class = in_array( $box['id'], $hidden, true ) ? 'hide-if-js' : '';
 
-					$open_class    = '';
-					$aria_expanded = 'false';
+					$open_class = '';
 					if ( ! $first_open && empty( $hidden_class ) ) {
-						$first_open    = true;
-						$open_class    = 'open';
-						$aria_expanded = 'true';
+						$first_open = true;
+						$open_class = 'open';
 					}
 					?>
 					<li class="control-section accordion-section <?php echo $hidden_class; ?> <?php echo $open_class; ?> <?php echo esc_attr( $box['id'] ); ?>" id="<?php echo esc_attr( $box['id'] ); ?>">
-						<h3 class="accordion-section-title hndle">
-							<button type="button" class="accordion-trigger" aria-expanded="<?php echo $aria_expanded; ?>" aria-controls="<?php echo esc_attr( $box['id'] ); ?>-content">
-								<span class="accordion-title">
-									<?php echo esc_html( $box['title'] ); ?>
-									<span class="dashicons dashicons-arrow-down" aria-hidden="true"></span>
-								</span>
-							</button>
+						<h3 class="accordion-section-title hndle" tabindex="0">
+							<?php echo esc_html( $box['title'] ); ?>
+							<span class="screen-reader-text">
+								<?php
+								/* translators: Hidden accessibility text. */
+								_e( 'Press return or enter to open this section' );
+								?>
+							</span>
 						</h3>
-						<div class="accordion-section-content <?php postbox_classes( $box['id'], $page ); ?>" id="<?php echo esc_attr( $box['id'] ); ?>-content">
+						<div class="accordion-section-content <?php postbox_classes( $box['id'], $page ); ?>">
 							<div class="inside">
 								<?php call_user_func( $box['callback'], $data_object, $box ); ?>
 							</div><!-- .inside -->
@@ -1751,10 +1741,9 @@ function add_settings_field( $id, $title, $callback, $page, $section = 'default'
  * to output all the sections and fields that were added to that $page with
  * add_settings_section() and add_settings_field()
  *
- * @since 2.7.0
- *
  * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
  * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
+ * @since 2.7.0
  *
  * @param string $page The slug name of the page whose settings sections you want to output.
  */
@@ -1782,11 +1771,12 @@ function do_settings_sections( $page ) {
 			call_user_func( $section['callback'], $section );
 		}
 
-		if ( isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
-			echo '<table class="form-table" role="presentation">';
-			do_settings_fields( $page, $section['id'] );
-			echo '</table>';
+		if ( ! isset( $wp_settings_fields ) || ! isset( $wp_settings_fields[ $page ] ) || ! isset( $wp_settings_fields[ $page ][ $section['id'] ] ) ) {
+			continue;
 		}
+		echo '<table class="form-table" role="presentation">';
+		do_settings_fields( $page, $section['id'] );
+		echo '</table>';
 
 		if ( '' !== $section['after_section'] ) {
 			echo wp_kses_post( $section['after_section'] );
@@ -1801,9 +1791,9 @@ function do_settings_sections( $page ) {
  * a specific section. Should normally be called by do_settings_sections()
  * rather than directly.
  *
- * @since 2.7.0
- *
  * @global array $wp_settings_fields Storage array of settings fields and their pages/sections.
+ *
+ * @since 2.7.0
  *
  * @param string $page Slug title of the admin page whose settings fields you want to show.
  * @param string $section Slug title of the settings section whose fields you want to show.
@@ -2116,17 +2106,14 @@ function _admin_search_query() {
  *
  * @global string    $hook_suffix
  * @global string    $admin_body_class
- * @global string    $body_id
  * @global WP_Locale $wp_locale        WordPress date and time locale object.
  *
  * @param string $title      Optional. Title of the Iframe page. Default empty.
  * @param bool   $deprecated Not used.
  */
 function iframe_header( $title = '', $deprecated = false ) {
-	global $hook_suffix, $admin_body_class, $body_id, $wp_locale;
-
 	show_admin_bar( false );
-
+	global $hook_suffix, $admin_body_class, $wp_locale;
 	$admin_body_class = preg_replace( '/[^a-z0-9_-]+/i', '-', $hook_suffix );
 
 	$current_screen = get_current_screen();
@@ -2180,7 +2167,10 @@ var ajaxurl = '<?php echo esc_js( admin_url( 'admin-ajax.php', 'relative' ) ); ?
 	?>
 </head>
 	<?php
-	$admin_body_id = isset( $body_id ) ? 'id="' . $body_id . '" ' : '';
+	/**
+	 * @global string $body_id
+	 */
+	$admin_body_id = isset( $GLOBALS['body_id'] ) ? 'id="' . $GLOBALS['body_id'] . '" ' : '';
 
 	/** This filter is documented in wp-admin/admin-header.php */
 	$admin_body_classes = apply_filters( 'admin_body_class', '' );
@@ -2246,43 +2236,30 @@ function iframe_footer() {
  * @return string Post states string.
  */
 function _post_states( $post, $display = true ) {
-	$post_states      = get_post_states( $post );
-	$post_states_html = '';
+	$post_states        = get_post_states( $post );
+	$post_states_string = '';
 
 	if ( ! empty( $post_states ) ) {
 		$state_count = count( $post_states );
 
 		$i = 0;
 
-		$post_states_html .= ' &mdash; ';
+		$post_states_string .= ' &mdash; ';
 
 		foreach ( $post_states as $state ) {
 			++$i;
 
 			$separator = ( $i < $state_count ) ? ', ' : '';
 
-			$post_states_html .= "<span class='post-state'>{$state}{$separator}</span>";
+			$post_states_string .= "<span class='post-state'>{$state}{$separator}</span>";
 		}
 	}
 
-	/**
-	 * Filters the HTML string of post states.
-	 *
-	 * @since 6.9.0
-	 *
-	 * @param string                 $post_states_html All relevant post states combined into an HTML string for display.
-	 *                                                 E.g. `&mdash; <span class='post-state'>Draft, </span><span class='post-state'>Sticky</span>`.
-	 * @param array<string, string>  $post_states      A mapping of post state slugs to translated post state labels.
-	 *                                                 E.g. `array( 'draft' => __( 'Draft' ), 'sticky' => __( 'Sticky' ), ... )`.
-	 * @param WP_Post                $post             The current post object.
-	 */
-	$post_states_html = apply_filters( 'post_states_html', $post_states_html, $post_states, $post );
-
 	if ( $display ) {
-		echo $post_states_html;
+		echo $post_states_string;
 	}
 
-	return $post_states_html;
+	return $post_states_string;
 }
 
 /**
@@ -2355,9 +2332,8 @@ function get_post_states( $post ) {
 	 *              are used within the filter, their existence should be checked
 	 *              with `function_exists()` before being used.
 	 *
-	 * @param array<string, string>  $post_states A mapping of post state slugs to translated post state labels.
-	 *                                            E.g. `array( 'draft' => __( 'Draft' ), 'sticky' => __( 'Sticky' ), ... )`.
-	 * @param WP_Post                $post        The current post object.
+	 * @param string[] $post_states An array of post display states.
+	 * @param WP_Post  $post        The current post object.
 	 */
 	return apply_filters( 'display_post_states', $post_states, $post );
 }
@@ -2494,7 +2470,7 @@ function get_media_states( $post ) {
 function compression_test() {
 	?>
 	<script type="text/javascript">
-	var compressionNonce = <?php echo wp_json_encode( wp_create_nonce( 'update_can_compress_scripts' ), JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ); ?>;
+	var compressionNonce = <?php echo wp_json_encode( wp_create_nonce( 'update_can_compress_scripts' ) ); ?>;
 	var testCompression = {
 		get : function(test) {
 			var x;
@@ -2552,22 +2528,22 @@ function compression_test() {
  *
  * @see get_submit_button()
  *
- * @param string       $text             Optional. The text of the button. Defaults to 'Save Changes'.
+ * @param string       $text             The text of the button (defaults to 'Save Changes')
  * @param string       $type             Optional. The type and CSS class(es) of the button. Core values
  *                                       include 'primary', 'small', and 'large'. Default 'primary'.
- * @param string       $name             Optional. The HTML name of the submit button. If no `id` attribute
- *                                       is given in the `$other_attributes` parameter, `$name` will be used
- *                                       as the button's `id`. Default 'submit'.
- * @param bool         $wrap             Optional. True if the output button should be wrapped in a paragraph tag,
- *                                       false otherwise. Default true.
- * @param array|string $other_attributes Optional. Other attributes that should be output with the button,
- *                                       mapping attributes to their values, e.g. `array( 'id' => 'search-submit' )`.
- *                                       These key/value attribute pairs will be output as `attribute="value"`,
- *                                       where attribute is the key. Attributes can also be provided as a string,
- *                                       e.g. `id="search-submit"`, though the array format is generally preferred.
- *                                       Default empty string.
+ * @param string       $name             The HTML name of the submit button. Defaults to "submit". If no
+ *                                       id attribute is given in $other_attributes below, $name will be
+ *                                       used as the button's id.
+ * @param bool         $wrap             True if the output button should be wrapped in a paragraph tag,
+ *                                       false otherwise. Defaults to true.
+ * @param array|string $other_attributes Other attributes that should be output with the button, mapping
+ *                                       attributes to their values, such as setting tabindex to 1, etc.
+ *                                       These key/value attribute pairs will be output as attribute="value",
+ *                                       where attribute is the key. Other attributes can also be provided
+ *                                       as a string such as 'tabindex="1"', though the array format is
+ *                                       preferred. Default null.
  */
-function submit_button( $text = '', $type = 'primary', $name = 'submit', $wrap = true, $other_attributes = '' ) {
+function submit_button( $text = null, $type = 'primary', $name = 'submit', $wrap = true, $other_attributes = null ) {
 	echo get_submit_button( $text, $type, $name, $wrap, $other_attributes );
 }
 
@@ -2576,20 +2552,20 @@ function submit_button( $text = '', $type = 'primary', $name = 'submit', $wrap =
  *
  * @since 3.1.0
  *
- * @param string       $text             Optional. The text of the button. Defaults to 'Save Changes'.
+ * @param string       $text             Optional. The text of the button. Default 'Save Changes'.
  * @param string       $type             Optional. The type and CSS class(es) of the button. Core values
  *                                       include 'primary', 'small', and 'large'. Default 'primary large'.
- * @param string       $name             Optional. The HTML name of the submit button. If no `id` attribute
- *                                       is given in the `$other_attributes` parameter, `$name` will be used
- *                                       as the button's `id`. Default 'submit'.
- * @param bool         $wrap             Optional. True if the output button should be wrapped in a paragraph tag,
- *                                       false otherwise. Default true.
+ * @param string       $name             Optional. The HTML name of the submit button. Defaults to "submit".
+ *                                       If no id attribute is given in $other_attributes below, `$name` will
+ *                                       be used as the button's id. Default 'submit'.
+ * @param bool         $wrap             Optional. True if the output button should be wrapped in a paragraph
+ *                                       tag, false otherwise. Default true.
  * @param array|string $other_attributes Optional. Other attributes that should be output with the button,
- *                                       mapping attributes to their values, e.g. `array( 'id' => 'search-submit' )`.
- *                                       These key/value attribute pairs will be output as `attribute="value"`,
- *                                       where attribute is the key. Attributes can also be provided as a string,
- *                                       e.g. `id="search-submit"`, though the array format is generally preferred.
- *                                       Default empty string.
+ *                                       mapping attributes to their values, such as `array( 'tabindex' => '1' )`.
+ *                                       These attributes will be output as `attribute="value"`, such as
+ *                                       `tabindex="1"`. Other attributes can also be provided as a string such
+ *                                       as `tabindex="1"`, though the array format is typically cleaner.
+ *                                       Default empty.
  * @return string Submit button HTML.
  */
 function get_submit_button( $text = '', $type = 'primary large', $name = 'submit', $wrap = true, $other_attributes = '' ) {
@@ -2645,8 +2621,6 @@ function get_submit_button( $text = '', $type = 'primary large', $name = 'submit
 
 /**
  * Prints out the beginning of the admin HTML header.
- *
- * @since 3.3.0
  *
  * @global bool $is_IE
  */
@@ -2715,22 +2689,17 @@ function convert_to_screen( $hook_name ) {
  * @access private
  */
 function _local_storage_notice() {
-	$local_storage_message  = '<p class="local-restore">';
-	$local_storage_message .= __( 'The backup of this post in your browser is different from the version below.' );
-	$local_storage_message .= '<button type="button" class="button restore-backup">' . __( 'Restore the backup' ) . '</button></p>';
-	$local_storage_message .= '<p class="help">';
-	$local_storage_message .= __( 'This will replace the current editor content with the last backup version. You can use undo and redo in the editor to get the old content back or to return to the restored version.' );
-	$local_storage_message .= '</p>';
-
-	wp_admin_notice(
-		$local_storage_message,
-		array(
-			'id'                 => 'local-storage-notice',
-			'additional_classes' => array( 'hidden' ),
-			'dismissible'        => true,
-			'paragraph_wrap'     => false,
-		)
-	);
+	?>
+	<div id="local-storage-notice" class="hidden notice is-dismissible">
+	<p class="local-restore">
+		<?php _e( 'The backup of this post in your browser is different from the version below.' ); ?>
+		<button type="button" class="button restore-backup"><?php _e( 'Restore the backup' ); ?></button>
+	</p>
+	<p class="help">
+		<?php _e( 'This will replace the current editor content with the last backup version. You can use undo and redo in the editor to get the old content back or to return to the restored version.' ); ?>
+	</p>
+	</div>
+	<?php
 }
 
 /**
@@ -2808,12 +2777,9 @@ function wp_star_rating( $args = array() ) {
  * @since 4.2.0
  */
 function _wp_posts_page_notice() {
-	wp_admin_notice(
-		__( 'You are currently editing the page that shows your latest posts.' ),
-		array(
-			'type'               => 'warning',
-			'additional_classes' => array( 'inline' ),
-		)
+	printf(
+		'<div class="notice notice-warning inline"><p>%s</p></div>',
+		__( 'You are currently editing the page that shows your latest posts.' )
 	);
 }
 

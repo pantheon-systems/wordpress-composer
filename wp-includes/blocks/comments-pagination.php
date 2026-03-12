@@ -8,8 +8,6 @@
 /**
  * Renders the `core/comments-pagination` block on the server.
  *
- * @since 6.0.0
- *
  * @param array  $attributes Block attributes.
  * @param string $content    Block default content.
  *
@@ -25,15 +23,10 @@ function render_block_core_comments_pagination( $attributes, $content ) {
 	}
 
 	$classes            = ( isset( $attributes['style']['elements']['link']['color']['text'] ) ) ? 'has-link-color' : '';
-	$wrapper_attributes = get_block_wrapper_attributes(
-		array(
-			'aria-label' => __( 'Comments pagination' ),
-			'class'      => $classes,
-		)
-	);
+	$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $classes ) );
 
 	return sprintf(
-		'<nav %1$s>%2$s</nav>',
+		'<div %1$s>%2$s</div>',
 		$wrapper_attributes,
 		$content
 	);
@@ -41,8 +34,6 @@ function render_block_core_comments_pagination( $attributes, $content ) {
 
 /**
  * Registers the `core/comments-pagination` block on the server.
- *
- * @since 6.0.0
  */
 function register_block_core_comments_pagination() {
 	register_block_type_from_metadata(

@@ -10,7 +10,7 @@
 require_once __DIR__ . '/admin.php';
 require ABSPATH . 'wp-admin/includes/theme-install.php';
 
-$tab = ! empty( $_REQUEST['tab'] ) ? sanitize_text_field( $_REQUEST['tab'] ) : '';
+wp_reset_vars( array( 'tab' ) );
 
 if ( ! current_user_can( 'install_themes' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to install themes on this site.' ) );
@@ -54,8 +54,9 @@ wp_localize_script(
 			'adminUrl'   => parse_url( self_admin_url(), PHP_URL_PATH ),
 		),
 		'l10n'            => array(
-			'addNew'              => __( 'Add Theme' ),
+			'addNew'              => __( 'Add New Theme' ),
 			'search'              => __( 'Search Themes' ),
+			'searchPlaceholder'   => __( 'Search themes...' ), // Placeholder (no ellipsis).
 			'upload'              => __( 'Upload Theme' ),
 			'back'                => __( 'Back' ),
 			'error'               => sprintf(
@@ -182,14 +183,9 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 
 	<hr class="wp-header-end">
 
-	<?php
-	wp_admin_notice(
-		__( 'The Theme Installer screen requires JavaScript.' ),
-		array(
-			'additional_classes' => array( 'error', 'hide-if-js' ),
-		)
-	);
-	?>
+	<div class="error hide-if-js">
+		<p><?php _e( 'The Theme Installer screen requires JavaScript.' ); ?></p>
+	</div>
 
 	<div class="upload-theme">
 	<?php install_themes_upload(); ?>
@@ -216,7 +212,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 
 		<button type="button" class="button drawer-toggle" aria-expanded="false"><?php _e( 'Feature Filter' ); ?></button>
 
-		<form class="search-form"><p class="search-box"></p></form>
+		<form class="search-form"></form>
 
 		<div class="favorites-form">
 			<?php
@@ -230,7 +226,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 			?>
 			<p class="install-help"><?php _e( 'If you have marked themes as favorites on WordPress.org, you can browse them here.' ); ?></p>
 
-			<p class="favorites-username">
+			<p>
 				<label for="wporg-username-input"><?php _e( 'Your WordPress.org username:' ); ?></label>
 				<input type="hidden" id="wporg-username-nonce" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce( $action ) ); ?>" />
 				<input type="search" id="wporg-username-input" value="<?php echo esc_attr( $user ); ?>" />
@@ -322,15 +318,7 @@ if ( $tab ) {
 	<# } #>
 
 	<# if ( data.installed ) { #>
-		<?php
-		wp_admin_notice(
-			_x( 'Installed', 'theme' ),
-			array(
-				'type'               => 'success',
-				'additional_classes' => array( 'notice-alt' ),
-			)
-		);
-		?>
+		<div class="notice notice-success notice-alt"><p><?php _ex( 'Installed', 'theme' ); ?></p></div>
 	<# } #>
 
 	<# if ( ! data.compatible_wp || ! data.compatible_php ) { #>
@@ -599,7 +587,7 @@ if ( $tab ) {
 			</div>
 			<div class="wp-full-overlay-footer">
 				<button type="button" class="collapse-sidebar button" aria-expanded="true" aria-label="<?php esc_attr_e( 'Collapse Sidebar' ); ?>">
-					<span class="collapse-sidebar-arrow" aria-hidden="true"></span>
+					<span class="collapse-sidebar-arrow"></span>
 					<span class="collapse-sidebar-label"><?php _e( 'Collapse' ); ?></span>
 				</button>
 			</div>

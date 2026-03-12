@@ -143,7 +143,7 @@ if ( $action ) {
 			}
 	}
 
-	update_option( 'allowedthemes', $allowed_themes, false );
+	update_option( 'allowedthemes', $allowed_themes );
 	restore_current_blog();
 
 	wp_safe_redirect(
@@ -196,15 +196,7 @@ if ( isset( $_GET['enabled'] ) ) {
 		/* translators: %s: Number of themes. */
 		$message = _n( '%s theme enabled.', '%s themes enabled.', $enabled );
 	}
-
-	wp_admin_notice(
-		sprintf( $message, number_format_i18n( $enabled ) ),
-		array(
-			'type'        => 'success',
-			'dismissible' => true,
-			'id'          => 'message',
-		)
-	);
+	echo '<div id="message" class="notice notice-success is-dismissible"><p>' . sprintf( $message, number_format_i18n( $enabled ) ) . '</p></div>';
 } elseif ( isset( $_GET['disabled'] ) ) {
 	$disabled = absint( $_GET['disabled'] );
 	if ( 1 === $disabled ) {
@@ -213,31 +205,16 @@ if ( isset( $_GET['enabled'] ) ) {
 		/* translators: %s: Number of themes. */
 		$message = _n( '%s theme disabled.', '%s themes disabled.', $disabled );
 	}
-
-	wp_admin_notice(
-		sprintf( $message, number_format_i18n( $disabled ) ),
-		array(
-			'type'        => 'success',
-			'dismissible' => true,
-			'id'          => 'message',
-		)
-	);
+	echo '<div id="message" class="notice notice-success is-dismissible"><p>' . sprintf( $message, number_format_i18n( $disabled ) ) . '</p></div>';
 } elseif ( isset( $_GET['error'] ) && 'none' === $_GET['error'] ) {
-	wp_admin_notice(
-		__( 'No theme selected.' ),
-		array(
-			'type'        => 'error',
-			'dismissible' => true,
-			'id'          => 'message',
-		)
-	);
+	echo '<div id="message" class="notice notice-error is-dismissible"><p>' . __( 'No theme selected.' ) . '</p></div>';
 }
 ?>
 
 <p><?php _e( 'Network enabled themes are not shown on this screen.' ); ?></p>
 
 <form method="get">
-<?php $wp_list_table->search_box( __( 'Search installed themes' ), 'theme' ); ?>
+<?php $wp_list_table->search_box( __( 'Search Installed Themes' ), 'theme' ); ?>
 <input type="hidden" name="id" value="<?php echo esc_attr( $id ); ?>" />
 </form>
 

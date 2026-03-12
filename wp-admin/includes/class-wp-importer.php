@@ -29,14 +29,8 @@ class WP_Importer {
 		// Grab all posts in chunks.
 		do {
 			$meta_key = $importer_name . '_' . $blog_id . '_permalink';
-			$results  = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = %s LIMIT %d,%d",
-					$meta_key,
-					$offset,
-					$limit
-				)
-			);
+			$sql      = $wpdb->prepare( "SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = %s LIMIT %d,%d", $meta_key, $offset, $limit );
+			$results  = $wpdb->get_results( $sql );
 
 			// Increment offset.
 			$offset = ( $limit + $offset );
@@ -68,12 +62,9 @@ class WP_Importer {
 
 		// Get count of permalinks.
 		$meta_key = $importer_name . '_' . $blog_id . '_permalink';
-		$result   = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT COUNT( post_id ) AS cnt FROM $wpdb->postmeta WHERE meta_key = %s",
-				$meta_key
-			)
-		);
+		$sql      = $wpdb->prepare( "SELECT COUNT( post_id ) AS cnt FROM $wpdb->postmeta WHERE meta_key = %s", $meta_key );
+
+		$result = $wpdb->get_results( $sql );
 
 		if ( ! empty( $result ) ) {
 			$count = (int) $result[0]->cnt;
@@ -100,13 +91,8 @@ class WP_Importer {
 
 		// Grab all comments in chunks.
 		do {
-			$results = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT comment_ID, comment_agent FROM $wpdb->comments LIMIT %d,%d",
-					$offset,
-					$limit
-				)
-			);
+			$sql     = $wpdb->prepare( "SELECT comment_ID, comment_agent FROM $wpdb->comments LIMIT %d,%d", $offset, $limit );
+			$results = $wpdb->get_results( $sql );
 
 			// Increment offset.
 			$offset = ( $limit + $offset );
@@ -119,7 +105,7 @@ class WP_Importer {
 					$source_comment_id = (int) $source_comment_id;
 
 					// Check if this comment came from this blog.
-					if ( (int) $blog_id === (int) $comment_agent_blog_id ) {
+					if ( $blog_id == $comment_agent_blog_id ) {
 						$hashtable[ $source_comment_id ] = (int) $r->comment_ID;
 					}
 				}
@@ -209,13 +195,7 @@ class WP_Importer {
 	 * @param bool   $head
 	 * @return array
 	 */
-	public function get_page(
-		$url,
-		$username = '',
-		#[\SensitiveParameter]
-		$password = '',
-		$head = false
-	) {
+	public function get_page( $url, $username = '', $password = '', $head = false ) {
 		// Increase the timeout.
 		add_filter( 'http_request_timeout', array( $this, 'bump_request_timeout' ) );
 

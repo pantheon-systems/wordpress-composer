@@ -9,8 +9,6 @@
  * Build an array with CSS classes and inline styles defining the colors
  * which will be applied to the home link markup in the front-end.
  *
- * @since 6.0.0
- *
  * @param  array $context home link block context.
  * @return array Colors CSS classes and inline styles.
  */
@@ -63,8 +61,6 @@ function block_core_home_link_build_css_colors( $context ) {
  * Build an array with CSS classes and inline styles defining the font sizes
  * which will be applied to the home link markup in the front-end.
  *
- * @since 6.0.0
- *
  * @param  array $context Home link block context.
  * @return array Font size CSS classes and inline styles.
  */
@@ -92,8 +88,6 @@ function block_core_home_link_build_css_font_sizes( $context ) {
 /**
  * Builds an array with classes and style for the li wrapper
  *
- * @since 6.0.0
- *
  * @param  array $context    Home link block context.
  * @return string The li wrapper attributes.
  */
@@ -104,15 +98,8 @@ function block_core_home_link_build_li_wrapper_attributes( $context ) {
 		$colors['css_classes'],
 		$font_sizes['css_classes']
 	);
-	$style_attribute = ( $colors['inline_styles'] . $font_sizes['inline_styles'] );
 	$classes[]       = 'wp-block-navigation-item';
-
-	if ( is_front_page() ) {
-		$classes[] = 'current-menu-item';
-	} elseif ( is_home() && ( (int) get_option( 'page_for_posts' ) !== get_queried_object_id() ) ) {
-		// Edge case where the Reading settings has a posts page set but not a static homepage.
-		$classes[] = 'current-menu-item';
-	}
+	$style_attribute = ( $colors['inline_styles'] . $font_sizes['inline_styles'] );
 
 	$wrapper_attributes = get_block_wrapper_attributes(
 		array(
@@ -127,8 +114,6 @@ function block_core_home_link_build_li_wrapper_attributes( $context ) {
 /**
  * Renders the `core/home-link` block.
  *
- * @since 6.0.0
- *
  * @param array    $attributes The block attributes.
  * @param string   $content    The saved content.
  * @param WP_Block $block      The parsed block.
@@ -137,16 +122,10 @@ function block_core_home_link_build_li_wrapper_attributes( $context ) {
  */
 function render_block_core_home_link( $attributes, $content, $block ) {
 	if ( empty( $attributes['label'] ) ) {
-		$attributes['label'] = __( 'Home' );
+		return '';
 	}
-	$aria_current = '';
 
-	if ( is_front_page() ) {
-		$aria_current = ' aria-current="page"';
-	} elseif ( is_home() && ( (int) get_option( 'page_for_posts' ) !== get_queried_object_id() ) ) {
-		// Edge case where the Reading settings has a posts page set but not a static homepage.
-		$aria_current = ' aria-current="page"';
-	}
+	$aria_current = is_home() || ( is_front_page() && 'page' === get_option( 'show_on_front' ) ) ? ' aria-current="page"' : '';
 
 	return sprintf(
 		'<li %1$s><a class="wp-block-home-link__content wp-block-navigation-item__content" href="%2$s" rel="home"%3$s>%4$s</a></li>',
@@ -159,8 +138,6 @@ function render_block_core_home_link( $attributes, $content, $block ) {
 
 /**
  * Register the home block
- *
- * @since 6.0.0
  *
  * @uses render_block_core_home_link()
  * @throws WP_Error An WP_Error exception parsing the block definition.

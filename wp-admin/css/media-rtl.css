@@ -113,8 +113,14 @@
 	margin-left: 10px;
 }
 
+.media-item-wrapper {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
 .media-item .attachment-tools {
 	display: flex;
+	justify-content: flex-end;
 	align-items: center;
 }
 
@@ -125,7 +131,6 @@
 }
 
 .media-item .edit-attachment.copy-to-clipboard-container {
-	display: flex;
 	margin-top: 0;
 }
 
@@ -168,14 +173,14 @@
 }
 
 .media-item .filename {
-	padding: 14px 2px;
+	padding: 14px 0;
 	overflow: hidden;
-	margin-right: 4px;
+	margin-right: 6px;
 }
 
 .media-item .pinkynail {
 	float: right;
-	margin: 14px;
+	margin: 0 0 0 10px;
 	max-height: 70px;
 	max-width: 70px;
 }
@@ -185,10 +190,15 @@
 	display: none;
 }
 
+.media-item .original {
+	position: relative;
+	min-height: 34px;
+}
+
 .media-item .progress {
-	display: inline-block;
+	float: left;
 	height: 22px;
-	margin: 0 6px 7px;
+	margin: 7px 6px;
 	width: 200px;
 	line-height: 2em;
 	padding: 0;
@@ -346,7 +356,9 @@
 }
 
 #find-posts-close:focus {
-	box-shadow: 0 0 0 2px #2271b1;
+	box-shadow:
+		0 0 0 1px #4f94d4,
+		0 0 2px 1px rgba(79, 148, 212, 0.8);
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
 	outline-offset: -2px;
@@ -355,10 +367,10 @@
 #find-posts-close:before {
 	font: normal 20px/36px dashicons;
 	vertical-align: top;
+	speak: never;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	content: "\f158";
-	content: "\f158" / '';
 }
 
 .find-box-buttons {
@@ -444,10 +456,6 @@ border color while dragging a file over the uploader drop area */
 	position: relative;
 }
 
-.post-type-attachment .wp-filter select {
-	margin: 0 0 0 6px;
-}
-
 /**
  * Media Library grid view
  */
@@ -525,7 +533,9 @@ border color while dragging a file over the uploader drop area */
 .media-frame.mode-grid .attachment:focus,
 .media-frame.mode-grid .selected.attachment:focus,
 .media-frame.mode-grid .attachment.details:focus {
-	box-shadow: inset 0 0 0 2px #2271b1;
+	box-shadow:
+		inset 0 0 2px 3px #f0f0f1,
+		inset 0 0 0 7px #4f94d4;
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
 	outline-offset: -6px;
@@ -575,7 +585,13 @@ border color while dragging a file over the uploader drop area */
 }
 
 .media-frame-content .media-search-input-label {
+	margin: 0 0 0 .2em;
 	vertical-align: baseline;
+}
+
+.media-frame.mode-grid .media-search-input-label {
+	position: static;
+	margin: 0 0 0 .5em;
 }
 
 .attachments-browser .media-toolbar-secondary > .media-button {
@@ -623,7 +639,6 @@ border color while dragging a file over the uploader drop area */
 
 .upload-php .media-modal-close .media-modal-icon:before {
 	content: "\f335";
-	content: "\f335" / '';
 	font-size: 22px;
 }
 
@@ -696,12 +711,10 @@ border color while dragging a file over the uploader drop area */
 
 .edit-attachment-frame .edit-media-header .left:before {
 	content: "\f345";
-	content: "\f341" / '';
 }
 
 .edit-attachment-frame .edit-media-header .right:before {
 	content: "\f341";
-	content: "\f345" / '';
 }
 
 .edit-attachment-frame .edit-media-header [disabled],
@@ -826,7 +839,7 @@ border color while dragging a file over the uploader drop area */
 }
 
 .copy-to-clipboard-container .success {
-	color: #007017;
+	color: #008a20;
 	margin-right: 8px;
 }
 
@@ -894,7 +907,7 @@ border color while dragging a file over the uploader drop area */
 }
 
 .imgedit-settings {
-	max-width: 240px; /* Prevent reflow when help info is expanded. */
+	max-width: 400px; /* Prevent reflow when help info is expanded. */
 }
 
 .imgedit-group-controls > * {
@@ -903,15 +916,6 @@ border color while dragging a file over the uploader drop area */
 
 .imgedit-panel-active .imgedit-group-controls > * {
 	display: block;
-}
-
-.imgedit-panel-active .imgedit-group-controls > .imgedit-crop-apply {
-	display: flex;
-}
-
-.imgedit-crop-apply {
-	gap: 4px;
-	flex-wrap: wrap;
 }
 
 .wp_attachment_holder .imgedit-wrap .image-editor {
@@ -984,10 +988,20 @@ border color while dragging a file over the uploader drop area */
 	padding: 1em 0 0;
 }
 
+.image-editor .imgedit-menu .button {
+	display: inline-block;
+	width: auto;
+	min-height: 28px;
+	font-size: 13px;
+	line-height: 2;
+	padding: 0 10px;
+}
+
 .imgedit-menu .button:after,
 .imgedit-menu .button:before {
 	font: normal 16px/1 dashicons;
 	margin-left: 8px;
+	speak: never;
 	vertical-align: middle;
 	position: relative;
 	top: -2px;
@@ -1017,27 +1031,22 @@ border color while dragging a file over the uploader drop area */
 
 .imgedit-crop:before {
 	content: "\f165";
-	content: "\f165" / '';
 }
 
 .imgedit-scale:before {
 	content: "\f211";
-	content: "\f211" / '';
 }
 
 .imgedit-rotate:before {
 	content: "\f167";
-	content: "\f167" / '';
 }
 
 .imgedit-undo:before {
 	content: "\f171";
-	content: "\f171" / '';
 }
 
 .imgedit-redo:before {
 	content: "\f172";
-	content: "\f172" / '';
 }
 
 .imgedit-crop-wrap {
@@ -1115,7 +1124,7 @@ border color while dragging a file over the uploader drop area */
 .imgedit-panel-tools > .imgedit-menu {
 	display: flex;
 	column-gap: 4px;
-	align-items: flex-start;
+	align-items: start;
 	flex-wrap: wrap;
 }
 
@@ -1163,8 +1172,8 @@ border color while dragging a file over the uploader drop area */
 
 .image-editor .imgedit-settings .imgedit-help-toggle:focus {
 	color: #2271b1;
-	border-color: #2271b1;
-	box-shadow: 0 0 0 1px #2271b1;
+	border-color: #4f94d4;
+	box-shadow: 0 0 3px rgba(34, 113, 177, 0.8);
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
 }
@@ -1274,7 +1283,7 @@ audio, video {
 	.edit-attachment-frame textarea {
 		line-height: 1.5;
 	}
-
+	
 	.wp_attachment_details label[for="content"] {
 		font-size: 14px;
 		line-height: 1.5;
@@ -1364,12 +1373,6 @@ audio, video {
 		width: 100%;
 		margin-bottom: 20px;
 		display: flex;
-		flex-wrap: nowrap;
-		column-gap: 0;
-	}
-
-	.wp-filter p.search-box #media-search-input {
-		width: 100%;
 	}
 
 }
@@ -1431,19 +1434,5 @@ audio, video {
 @media only screen and (max-width: 640px), screen and (max-height: 400px) {
 	.upload-php .mode-grid .media-sidebar{
 		max-width: 100%;
-	}
-}
-
-@media only screen and (max-width: 375px) {
-	.media-item .attachment-tools {
-		align-items: baseline;
-	}
-	.media-item .edit-attachment.copy-to-clipboard-container {
-		flex-direction: column;
-	}
-
-	.copy-to-clipboard-container .success {
-		line-height: normal;
-		margin-top: 10px;
 	}
 }

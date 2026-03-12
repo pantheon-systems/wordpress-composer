@@ -387,7 +387,7 @@ class getID3
 	 */
 	protected $startup_warning = '';
 
-	const VERSION           = '1.9.24-202509040923';
+	const VERSION           = '1.9.22-202207161647';
 	const FREAD_BUFFER_SIZE = 32768;
 
 	const ATTACHMENTS_NONE   = false;
@@ -409,10 +409,10 @@ class getID3
 		$memoryLimit = ini_get('memory_limit');
 		if (preg_match('#([0-9]+) ?M#i', $memoryLimit, $matches)) {
 			// could be stored as "16M" rather than 16777216 for example
-			$memoryLimit = (int) $matches[1] * 1048576;
+			$memoryLimit = $matches[1] * 1048576;
 		} elseif (preg_match('#([0-9]+) ?G#i', $memoryLimit, $matches)) { // The 'G' modifier is available since PHP 5.1.0
 			// could be stored as "2G" rather than 2147483648 for example
-			$memoryLimit = (int) $matches[1] * 1073741824;
+			$memoryLimit = $matches[1] * 1073741824;
 		}
 		$this->memory_limit = $memoryLimit;
 
@@ -425,27 +425,31 @@ class getID3
 		}
 
 		// Check safe_mode off
-		if (preg_match('#(1|ON)#i', ini_get('safe_mode'))) {
+		if (preg_match('#(1|ON)#i', ini_get('safe_mode'))) { // phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.safe_modeDeprecatedRemoved
 			$this->warning('WARNING: Safe mode is on, shorten support disabled, md5data/sha1data for ogg vorbis disabled, ogg vorbos/flac tag writing disabled.');
 		}
 
+		// phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.mbstring_func_overloadDeprecated
 		if (($mbstring_func_overload = (int) ini_get('mbstring.func_overload')) && ($mbstring_func_overload & 0x02)) {
 			// http://php.net/manual/en/mbstring.overload.php
 			// "mbstring.func_overload in php.ini is a positive value that represents a combination of bitmasks specifying the categories of functions to be overloaded. It should be set to 1 to overload the mail() function. 2 for string functions, 4 for regular expression functions"
 			// getID3 cannot run when string functions are overloaded. It doesn't matter if mail() or ereg* functions are overloaded since getID3 does not use those.
+			// phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.mbstring_func_overloadDeprecated
 			$this->startup_error .= 'WARNING: php.ini contains "mbstring.func_overload = '.ini_get('mbstring.func_overload').'", getID3 cannot run with this setting (bitmask 2 (string functions) cannot be set). Recommended to disable entirely.'."\n";
 		}
 
-		// check for magic quotes in PHP < 5.4.0 (when these options were removed and getters always return false)
-		if (version_compare(PHP_VERSION, '5.4.0', '<')) {
+		// check for magic quotes in PHP < 7.4.0 (when these functions became deprecated)
+		if (version_compare(PHP_VERSION, '7.4.0', '<')) {
 			// Check for magic_quotes_runtime
 			if (function_exists('get_magic_quotes_runtime')) {
-				if (get_magic_quotes_runtime()) { // @phpstan-ignore-line
+				// phpcs:ignore PHPCompatibility.FunctionUse.RemovedFunctions.get_magic_quotes_runtimeDeprecated
+				if (get_magic_quotes_runtime()) {
 					$this->startup_error .= 'magic_quotes_runtime must be disabled before running getID3(). Surround getid3 block by set_magic_quotes_runtime(0) and set_magic_quotes_runtime(1).'."\n";
 				}
 			}
 			// Check for magic_quotes_gpc
 			if (function_exists('get_magic_quotes_gpc')) {
+				// phpcs:ignore PHPCompatibility.FunctionUse.RemovedFunctions.get_magic_quotes_gpcDeprecated
 				if (get_magic_quotes_gpc()) {
 					$this->startup_error .= 'magic_quotes_gpc must be disabled before running getID3(). Surround getid3 block by set_magic_quotes_gpc(0) and set_magic_quotes_gpc(1).'."\n";
 				}
@@ -481,7 +485,7 @@ class getID3
 					if (strpos($value, ' ') !== false) {
 						if (!empty($path_so_far)) {
 							$commandline = 'dir /x '.escapeshellarg(implode(DIRECTORY_SEPARATOR, $path_so_far));
-							$dir_listing = shell_exec($commandline);
+							$dir_listing = `$commandline`;
 							$lines = explode("\n", $dir_listing);
 							foreach ($lines as $line) {
 								$line = trim($line);
@@ -529,7 +533,7 @@ class getID3
 	 * @return bool
 	 */
 	public function setOption($optArray) {
-		if (empty($optArray)) {
+		if (!is_array($optArray) || empty($optArray)) {
 			return false;
 		}
 		foreach ($optArray as $opt => $val) {
@@ -680,8 +684,6 @@ class getID3
 					catch (getid3_exception $e) {
 						throw $e;
 					}
-				} else {
-					$this->warning('skipping check for '.$tag_name.' tags since option_tag_'.$tag_name.'=FALSE');
 				}
 			}
 			if (isset($this->info['id3v2']['tag_offset_start'])) {
@@ -1466,28 +1468,8 @@ class getID3
 							'fail_ape'  => 'ERROR',
 						),
 
-				// XZ   - data         - XZ compressed data
-				'7zip'  => array(
-							'pattern'   => '^7z\\xBC\\xAF\\x27\\x1C',
-							'group'     => 'archive',
-							'module'    => '7zip',
-							'mime_type' => 'application/x-7z-compressed',
-							'fail_id3'  => 'ERROR',
-							'fail_ape'  => 'ERROR',
-						),
-
 
 				// Misc other formats
-
-				// GPX - data         - GPS Exchange Format
-				'gpx' => array (
-							'pattern'   => '^<\\?xml [^>]+>[\s]*<gpx ',
-							'group'     => 'misc',
-							'module'    => 'gpx',
-							'mime_type' => 'application/gpx+xml',
-							'fail_id3'  => 'ERROR',
-							'fail_ape'  => 'ERROR',
-						),
 
 				// PAR2 - data        - Parity Volume Set Specification 2.0
 				'par2' => array (
@@ -1798,6 +1780,7 @@ class getID3
 			// page sequence numbers likely happens for OggSpeex and OggFLAC as well, but
 			// currently vorbiscomment only works on OggVorbis files.
 
+			// phpcs:ignore PHPCompatibility.IniDirectives.RemovedIniDirectives.safe_modeDeprecatedRemoved
 			if (preg_match('#(1|ON)#i', ini_get('safe_mode'))) {
 
 				$this->warning('Failed making system call to vorbiscomment.exe - '.$algorithm.'_data is incorrect - error returned: PHP running in Safe Mode (backtick operator not available)');
@@ -1821,7 +1804,7 @@ class getID3
 					if (file_exists(GETID3_HELPERAPPSDIR.'vorbiscomment.exe')) {
 
 						$commandline = '"'.GETID3_HELPERAPPSDIR.'vorbiscomment.exe" -w -c "'.$empty.'" "'.$file.'" "'.$temp.'"';
-						$VorbisCommentError = shell_exec($commandline);
+						$VorbisCommentError = `$commandline`;
 
 					} else {
 
@@ -1832,7 +1815,7 @@ class getID3
 				} else {
 
 					$commandline = 'vorbiscomment -w -c '.escapeshellarg($empty).' '.escapeshellarg($file).' '.escapeshellarg($temp).' 2>&1';
-					$VorbisCommentError = shell_exec($commandline);
+					$VorbisCommentError = `$commandline`;
 
 				}
 
@@ -1902,8 +1885,8 @@ class getID3
 
 		// Calculate combined bitrate - audio + video
 		$CombinedBitrate  = 0;
-		$CombinedBitrate += (isset($this->info['audio']['bitrate']) && ($this->info['audio']['bitrate'] != 'free') ? $this->info['audio']['bitrate'] : 0);
-		$CombinedBitrate += (isset($this->info['video']['bitrate'])                                                ? $this->info['video']['bitrate'] : 0);
+		$CombinedBitrate += (isset($this->info['audio']['bitrate']) ? $this->info['audio']['bitrate'] : 0);
+		$CombinedBitrate += (isset($this->info['video']['bitrate']) ? $this->info['video']['bitrate'] : 0);
 		if (($CombinedBitrate > 0) && empty($this->info['bitrate'])) {
 			$this->info['bitrate'] = $CombinedBitrate;
 		}
@@ -1999,7 +1982,7 @@ class getID3
 		}
 		$BitrateUncompressed = $this->info['video']['resolution_x'] * $this->info['video']['resolution_y'] * $this->info['video']['bits_per_sample'] * $FrameRate;
 
-		$this->info['video']['compression_ratio'] = getid3_lib::SafeDiv($BitrateCompressed, $BitrateUncompressed, 1);
+		$this->info['video']['compression_ratio'] = $BitrateCompressed / $BitrateUncompressed;
 		return true;
 	}
 
@@ -2010,9 +1993,7 @@ class getID3
 		if (empty($this->info['audio']['bitrate']) || empty($this->info['audio']['channels']) || empty($this->info['audio']['sample_rate']) || !is_numeric($this->info['audio']['sample_rate'])) {
 			return false;
 		}
-		if ($this->info['audio']['bitrate'] != 'free') {
-			$this->info['audio']['compression_ratio'] = $this->info['audio']['bitrate'] / ($this->info['audio']['channels'] * $this->info['audio']['sample_rate'] * (!empty($this->info['audio']['bits_per_sample']) ? $this->info['audio']['bits_per_sample'] : 16));
-		}
+		$this->info['audio']['compression_ratio'] = $this->info['audio']['bitrate'] / ($this->info['audio']['channels'] * $this->info['audio']['sample_rate'] * (!empty($this->info['audio']['bits_per_sample']) ? $this->info['audio']['bits_per_sample'] : 16));
 
 		if (!empty($this->info['audio']['streams'])) {
 			foreach ($this->info['audio']['streams'] as $streamnumber => $streamdata) {
@@ -2207,8 +2188,6 @@ abstract class getid3_handler
 	}
 
 	/**
-	 * @phpstan-impure
-	 *
 	 * @return int|bool
 	 */
 	protected function ftell() {
@@ -2220,8 +2199,6 @@ abstract class getid3_handler
 
 	/**
 	 * @param int $bytes
-	 *
-	 * @phpstan-impure
 	 *
 	 * @return string|false
 	 *
@@ -2268,8 +2245,6 @@ abstract class getid3_handler
 	 * @param int $bytes
 	 * @param int $whence
 	 *
-	 * @phpstan-impure
-	 *
 	 * @return int
 	 *
 	 * @throws getid3_exception
@@ -2311,8 +2286,6 @@ abstract class getid3_handler
 	}
 
 	/**
-	 * @phpstan-impure
-	 *
 	 * @return string|false
 	 *
 	 * @throws getid3_exception
@@ -2368,8 +2341,6 @@ abstract class getid3_handler
 	}
 
 	/**
-	 * @phpstan-impure
-	 *
 	 * @return bool
 	 */
 	protected function feof() {

@@ -12,13 +12,7 @@
 			"type": "string"
 		}
 	},
-	"usesContext": [
-		"queryId",
-		"query",
-		"paginationArrow",
-		"showLabel",
-		"enhancedPagination"
-	],
+	"usesContext": [ "queryId", "query", "paginationArrow", "showLabel" ],
 	"supports": {
 		"reusable": false,
 		"html": false,
@@ -41,9 +35,6 @@
 			"__experimentalDefaultControls": {
 				"fontSize": true
 			}
-		},
-		"interactivity": {
-			"clientNavigation": true
 		}
 	}
 }

@@ -9,21 +9,21 @@
 	"attributes": {
 		"url": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"caption": {
-			"type": "rich-text",
-			"source": "rich-text",
+			"type": "string",
+			"source": "html",
 			"selector": "figcaption",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"type": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"providerNameSlug": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"allowResponsive": {
 			"type": "boolean",
@@ -32,21 +32,18 @@
 		"responsive": {
 			"type": "boolean",
 			"default": false,
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"previewable": {
 			"type": "boolean",
 			"default": true,
-			"role": "content"
+			"__experimentalRole": "content"
 		}
 	},
 	"supports": {
 		"align": true,
 		"spacing": {
 			"margin": true
-		},
-		"interactivity": {
-			"clientNavigation": true
 		}
 	},
 	"editorStyle": "wp-block-embed-editor",

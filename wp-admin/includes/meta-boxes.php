@@ -311,24 +311,25 @@ function post_submit_meta_box( $post, $args = array() ) {
 		endif;
 
 		if ( 'draft' === $post->post_status && get_post_meta( $post_id, '_customize_changeset_uuid', true ) ) :
-			$message = sprintf(
-				/* translators: %s: URL to the Customizer. */
-				__( 'This draft comes from your <a href="%s">unpublished customization changes</a>. You can edit, but there is no need to publish now. It will be published automatically with those changes.' ),
-				esc_url(
-					add_query_arg(
-						'changeset_uuid',
-						rawurlencode( get_post_meta( $post_id, '_customize_changeset_uuid', true ) ),
-						admin_url( 'customize.php' )
-					)
-				)
-			);
-			wp_admin_notice(
-				$message,
-				array(
-					'type'               => 'info',
-					'additional_classes' => array( 'notice-alt', 'inline' ),
-				)
-			);
+			?>
+			<div class="notice notice-info notice-alt inline">
+				<p>
+					<?php
+					printf(
+						/* translators: %s: URL to the Customizer. */
+						__( 'This draft comes from your <a href="%s">unpublished customization changes</a>. You can edit, but there is no need to publish now. It will be published automatically with those changes.' ),
+						esc_url(
+							add_query_arg(
+								'changeset_uuid',
+								rawurlencode( get_post_meta( $post_id, '_customize_changeset_uuid', true ) ),
+								admin_url( 'customize.php' )
+							)
+						)
+					);
+					?>
+				</p>
+			</div>
+			<?php
 		endif;
 
 		/**
@@ -434,7 +435,7 @@ function attachment_submit_meta_box( $post ) {
 		<span id="timestamp">
 			<?php
 			$uploaded_on = sprintf(
-				/* translators: Publish box date string. 1: Date, 2: Time. */
+				/* translators: Publish box date string. 1: Date, 2: Time. See https://www.php.net/manual/datetime.format.php */
 				__( '%1$s at %2$s' ),
 				/* translators: Publish box date format, see https://www.php.net/manual/datetime.format.php */
 				date_i18n( _x( 'M j, Y', 'publish box date format' ), strtotime( $post->post_date ) ),
@@ -901,8 +902,8 @@ function post_comment_meta_box( $post ) {
 	$total         = get_comments(
 		array(
 			'post_id' => $post->ID,
+			'number'  => 1,
 			'count'   => true,
-			'orderby' => 'none',
 		)
 	);
 	$wp_list_table = _get_list_table( 'WP_Post_Comments_List_Table' );
@@ -1032,7 +1033,7 @@ function page_attributes_meta_box( $post ) {
 		endif; // End empty pages check.
 	endif;  // End hierarchical check.
 
-	if ( count( get_page_templates( $post ) ) > 0 && (int) get_option( 'page_for_posts' ) !== $post->ID ) :
+	if ( count( get_page_templates( $post ) ) > 0 && get_option( 'page_for_posts' ) != $post->ID ) :
 		$template = ! empty( $post->page_template ) ? $post->page_template : false;
 		?>
 <p class="post-attributes-label-wrapper page-template-label-wrapper"><label class="post-attributes-label" for="page_template"><?php _e( 'Template' ); ?></label>
@@ -1200,12 +1201,12 @@ function link_categories_meta_box( $link ) {
 	</div>
 
 	<div id="category-adder" class="wp-hidden-children">
-		<a id="category-add-toggle" href="#category-add" class="taxonomy-add-new"><?php _e( '+ Add Category' ); ?></a>
+		<a id="category-add-toggle" href="#category-add" class="taxonomy-add-new"><?php _e( '+ Add New Category' ); ?></a>
 		<p id="link-category-add" class="wp-hidden-child">
 			<label class="screen-reader-text" for="newcat">
 				<?php
 				/* translators: Hidden accessibility text. */
-				_e( '+ Add Category' );
+				_e( '+ Add New Category' );
 				?>
 			</label>
 			<input type="text" name="newcat" id="newcat" class="form-required form-input-tip" value="<?php esc_attr_e( 'New category name' ); ?>" aria-required="true" />
@@ -1228,7 +1229,12 @@ function link_categories_meta_box( $link ) {
 function link_target_meta_box( $link ) {
 
 	?>
-<fieldset><legend class="screen-reader-text"><span><?php _e( 'Target' ); ?></span></legend>
+<fieldset><legend class="screen-reader-text"><span>
+	<?php
+	/* translators: Hidden accessibility text. */
+	_e( 'Target' );
+	?>
+</span></legend>
 <p><label for="link_target_blank" class="selectit">
 <input id="link_target_blank" type="radio" name="link_target" value="_blank" <?php echo ( isset( $link->link_target ) && ( '_blank' === $link->link_target ) ? 'checked="checked"' : '' ); ?> />
 	<?php _e( '<code>_blank</code> &mdash; new window or tab.' ); ?></label></p>
@@ -1265,7 +1271,7 @@ function xfn_check( $xfn_relationship, $xfn_value = '', $deprecated = '' ) {
 		_deprecated_argument( __FUNCTION__, '2.5.0' ); // Never implemented.
 	}
 
-	$link_rel  = isset( $link->link_rel ) ? $link->link_rel : '';
+	$link_rel  = isset( $link->link_rel ) ? $link->link_rel : ''; // In PHP 5.3: $link_rel = $link->link_rel ?: '';
 	$link_rels = preg_split( '/\s+/', $link_rel );
 
 	// Mark the specified value as checked if it matches the current link's relationship.
@@ -1316,21 +1322,29 @@ function link_xfn_meta_box( $link ) {
 		<th scope="row"><label for="link_rel"><?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'rel:' ); ?></label></th>
 		<td><input type="text" name="link_rel" id="link_rel" value="<?php echo ( isset( $link->link_rel ) ? esc_attr( $link->link_rel ) : '' ); ?>" /></td>
 	</tr>
-	<?php $identity_group_title = /* translators: xfn: https://gmpg.org/xfn/ */ __( 'identity' ); ?>
 	<tr>
-		<th scope="row"><?php echo $identity_group_title; ?></th>
+		<th scope="row"><?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'identity' ); ?></th>
 		<td><fieldset>
-			<legend class="screen-reader-text"><span><?php echo $identity_group_title; ?></span></legend>
+			<legend class="screen-reader-text"><span>
+				<?php
+				/* translators: Hidden accessibility text. xfn: https://gmpg.org/xfn/ */
+				_e( 'identity' );
+				?>
+			</span></legend>
 			<label for="me">
 			<input type="checkbox" name="identity" value="me" id="me" <?php xfn_check( 'identity', 'me' ); ?> />
 			<?php _e( 'another web address of mine' ); ?></label>
 		</fieldset></td>
 	</tr>
-	<?php $friendship_group_title = /* translators: xfn: https://gmpg.org/xfn/ */ __( 'friendship' ); ?>
 	<tr>
-		<th scope="row"><?php echo $friendship_group_title; ?></th>
+		<th scope="row"><?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'friendship' ); ?></th>
 		<td><fieldset>
-			<legend class="screen-reader-text"><span><?php echo $friendship_group_title; ?></span></legend>
+			<legend class="screen-reader-text"><span>
+				<?php
+				/* translators: Hidden accessibility text. xfn: https://gmpg.org/xfn/ */
+				_e( 'friendship' );
+				?>
+			</span></legend>
 			<label for="contact">
 			<input class="valinp" type="radio" name="friendship" value="contact" id="contact" <?php xfn_check( 'friendship', 'contact' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'contact' ); ?>
 			</label>
@@ -1341,25 +1355,33 @@ function link_xfn_meta_box( $link ) {
 			<input class="valinp" type="radio" name="friendship" value="friend" id="friend" <?php xfn_check( 'friendship', 'friend' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'friend' ); ?>
 			</label>
 			<label for="friendship">
-			<input name="friendship" type="radio" class="valinp" value="" id="friendship" <?php xfn_check( 'friendship' ); ?> />&nbsp;<?php /* translators: xfn (friendship relation): http://gmpg.org/xfn/ */ _ex( 'none', 'Type of relation' ); ?>
+			<input name="friendship" type="radio" class="valinp" value="" id="friendship" <?php xfn_check( 'friendship' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'none' ); ?>
 			</label>
 		</fieldset></td>
 	</tr>
-	<?php $physical_group_title = /* translators: xfn: https://gmpg.org/xfn/ */ __( 'physical' ); ?>
 	<tr>
-		<th scope="row"> <?php echo $physical_group_title; ?> </th>
+		<th scope="row"> <?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'physical' ); ?> </th>
 		<td><fieldset>
-			<legend class="screen-reader-text"><span><?php echo $physical_group_title; ?></span></legend>
+			<legend class="screen-reader-text"><span>
+				<?php
+				/* translators: Hidden accessibility text. xfn: https://gmpg.org/xfn/ */
+				_e( 'physical' );
+				?>
+			</span></legend>
 			<label for="met">
 			<input class="valinp" type="checkbox" name="physical" value="met" id="met" <?php xfn_check( 'physical', 'met' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'met' ); ?>
 			</label>
 		</fieldset></td>
 	</tr>
-	<?php $professional_group_title = /* translators: xfn: https://gmpg.org/xfn/ */ __( 'professional' ); ?>
 	<tr>
-		<th scope="row"> <?php echo $professional_group_title; ?> </th>
+		<th scope="row"> <?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'professional' ); ?> </th>
 		<td><fieldset>
-			<legend class="screen-reader-text"><span><?php echo $professional_group_title; ?></span></legend>
+			<legend class="screen-reader-text"><span>
+				<?php
+				/* translators: Hidden accessibility text. xfn: https://gmpg.org/xfn/ */
+				_e( 'professional' );
+				?>
+			</span></legend>
 			<label for="co-worker">
 			<input class="valinp" type="checkbox" name="professional" value="co-worker" id="co-worker" <?php xfn_check( 'professional', 'co-worker' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'co-worker' ); ?>
 			</label>
@@ -1368,11 +1390,15 @@ function link_xfn_meta_box( $link ) {
 			</label>
 		</fieldset></td>
 	</tr>
-	<?php $geographical_group_title = /* translators: xfn: https://gmpg.org/xfn/ */ __( 'geographical' ); ?>
 	<tr>
-		<th scope="row"><?php echo $geographical_group_title; ?></th>
+		<th scope="row"><?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'geographical' ); ?></th>
 		<td><fieldset>
-			<legend class="screen-reader-text"><span><?php echo $geographical_group_title; ?></span></legend>
+			<legend class="screen-reader-text"><span>
+				<?php
+				/* translators: Hidden accessibility text. xfn: https://gmpg.org/xfn/ */
+				_e( 'geographical' );
+				?>
+			</span></legend>
 			<label for="co-resident">
 			<input class="valinp" type="radio" name="geographical" value="co-resident" id="co-resident" <?php xfn_check( 'geographical', 'co-resident' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'co-resident' ); ?>
 			</label>
@@ -1380,15 +1406,19 @@ function link_xfn_meta_box( $link ) {
 			<input class="valinp" type="radio" name="geographical" value="neighbor" id="neighbor" <?php xfn_check( 'geographical', 'neighbor' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'neighbor' ); ?>
 			</label>
 			<label for="geographical">
-			<input class="valinp" type="radio" name="geographical" value="" id="geographical" <?php xfn_check( 'geographical' ); ?> />&nbsp;<?php /* translators: xfn (geographical relation): http://gmpg.org/xfn/ */ _ex( 'none', 'Type of relation' ); ?>
+			<input class="valinp" type="radio" name="geographical" value="" id="geographical" <?php xfn_check( 'geographical' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'none' ); ?>
 			</label>
 		</fieldset></td>
 	</tr>
-	<?php $family_group_title = /* translators: xfn: https://gmpg.org/xfn/ */ __( 'family' ); ?>
 	<tr>
-		<th scope="row"><?php echo $family_group_title; ?></th>
+		<th scope="row"><?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'family' ); ?></th>
 		<td><fieldset>
-			<legend class="screen-reader-text"><span><?php echo $family_group_title; ?></span></legend>
+			<legend class="screen-reader-text"><span>
+				<?php
+				/* translators: Hidden accessibility text. xfn: https://gmpg.org/xfn/ */
+				_e( 'family' );
+				?>
+			</span></legend>
 			<label for="child">
 			<input class="valinp" type="radio" name="family" value="child" id="child" <?php xfn_check( 'family', 'child' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'child' ); ?>
 			</label>
@@ -1405,15 +1435,19 @@ function link_xfn_meta_box( $link ) {
 			<input class="valinp" type="radio" name="family" value="spouse" id="spouse" <?php xfn_check( 'family', 'spouse' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'spouse' ); ?>
 			</label>
 			<label for="family">
-			<input class="valinp" type="radio" name="family" value="" id="family" <?php xfn_check( 'family' ); ?> />&nbsp;<?php /* translators: xfn (family relation): http://gmpg.org/xfn/ */ _ex( 'none', 'Type of relation' ); ?>
+			<input class="valinp" type="radio" name="family" value="" id="family" <?php xfn_check( 'family' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'none' ); ?>
 			</label>
 		</fieldset></td>
 	</tr>
-	<?php $romantic_group_title = /* translators: xfn: https://gmpg.org/xfn/ */ __( 'romantic' ); ?>
 	<tr>
-		<th scope="row"><?php echo $romantic_group_title; ?></th>
+		<th scope="row"><?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'romantic' ); ?></th>
 		<td><fieldset>
-			<legend class="screen-reader-text"><span><?php echo $romantic_group_title; ?></span></legend>
+			<legend class="screen-reader-text"><span>
+				<?php
+				/* translators: Hidden accessibility text. xfn: https://gmpg.org/xfn/ */
+				_e( 'romantic' );
+				?>
+			</span></legend>
 			<label for="muse">
 			<input class="valinp" type="checkbox" name="romantic" value="muse" id="muse" <?php xfn_check( 'romantic', 'muse' ); ?> />&nbsp;<?php /* translators: xfn: https://gmpg.org/xfn/ */ _e( 'muse' ); ?>
 			</label>
@@ -1462,7 +1496,7 @@ function link_advanced_meta_box( $link ) {
 		<?php
 		for ( $rating = 0; $rating <= 10; $rating++ ) {
 			echo '<option value="' . $rating . '"';
-			if ( isset( $link->link_rating ) && $link->link_rating === $rating ) {
+			if ( isset( $link->link_rating ) && $link->link_rating == $rating ) {
 				echo ' selected="selected"';
 			}
 			echo '>' . $rating . '</option>';
@@ -1646,15 +1680,13 @@ function register_and_do_post_meta_boxes( $post ) {
 		add_meta_box( 'commentstatusdiv', __( 'Discussion' ), 'post_comment_status_meta_box', null, 'normal', 'core', array( '__back_compat_meta_box' => true ) );
 	}
 
-	$statuses = get_post_stati( array( 'public' => true ) );
-
-	if ( empty( $statuses ) ) {
-		$statuses = array( 'publish' );
+	$stati = get_post_stati( array( 'public' => true ) );
+	if ( empty( $stati ) ) {
+		$stati = array( 'publish' );
 	}
+	$stati[] = 'private';
 
-	$statuses[] = 'private';
-
-	if ( in_array( get_post_status( $post ), $statuses, true ) ) {
+	if ( in_array( get_post_status( $post ), $stati, true ) ) {
 		/*
 		 * If the post type support comments, or the post has comments,
 		 * allow the Comments meta box.

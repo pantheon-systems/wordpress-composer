@@ -76,14 +76,6 @@
 	pointer-events: none;
 }
 
-#titlewrap .skiplink:focus {
-	clip: inherit;
-	clip-path: inherit;
-	left: 4px;
-	top: 4px;
-	width: auto;
-}
-
 input#link_description,
 input#link_url {
 	width: 100%;
@@ -309,6 +301,7 @@ ul.wp-tab-bar li {
 #postimagediv .inside img {
 	max-width: 100%;
 	height: auto;
+	width: auto;
 	vertical-align: top;
 	background-image: linear-gradient(-45deg, #c3c4c7 25%, transparent 25%, transparent 75%, #c3c4c7 75%, #c3c4c7), linear-gradient(-45deg, #c3c4c7 25%, transparent 25%, transparent 75%, #c3c4c7 75%, #c3c4c7);
 	background-position: 100% 0, 10px 10px;
@@ -494,6 +487,7 @@ form#tags-filter {
 #post-body .misc-pub-response-to:before,
 #post-body .misc-pub-comment-status:before {
 	font: normal 20px/1 dashicons;
+	speak: never;
 	display: inline-block;
 	margin-right: -1px;
 	padding-left: 3px;
@@ -505,43 +499,36 @@ form#tags-filter {
 #post-body .misc-pub-post-status:before,
 #post-body .misc-pub-comment-status:before {
 	content: "\f173";
-	content: "\f173" / '';
 }
 
 #post-body #visibility:before {
 	content: "\f177";
-	content: "\f177" / '';
 }
 
 .curtime #timestamp:before {
 	content: "\f145";
-	content: "\f145" / '';
 	position: relative;
 	top: -1px;
 }
 
 #post-body .misc-pub-uploadedby:before {
 	content: "\f110";
-	content: "\f110" / '';
 	position: relative;
 	top: -1px;
 }
 
 #post-body .misc-pub-uploadedto:before {
 	content: "\f318";
-	content: "\f318" / '';
 	position: relative;
 	top: -1px;
 }
 
 #post-body .misc-pub-revisions:before {
 	content: "\f321";
-	content: "\f321" / '';
 }
 
 #post-body .misc-pub-response-to:before {
 	content: "\f101";
-	content: "\f101" / '';
 }
 
 #timestampdiv {
@@ -989,7 +976,7 @@ form#tags-filter {
 
 .privacy-settings-accordion-actions .success {
 	display: none;
-	color: #007017;
+	color: #008a20;
 	padding-left: 1em;
 	padding-top: 6px;
 }
@@ -1051,14 +1038,6 @@ form#tags-filter {
 	.wp-core-ui button.privacy-text-copy {
 		white-space: normal;
 		line-height: 1.8;
-	}
-
-	#edit-slug-box {
-		padding: 0;
-	}
-
-	#titlewrap .skiplink:focus {
-		top: 5px;
 	}
 }
 
@@ -1210,6 +1189,7 @@ form#tags-filter {
 	margin-left: 7px;
 	color: #dcdcde;
 	font: normal 20px/1 dashicons;
+	speak: never;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -1237,52 +1217,42 @@ label.post-format-icon {
 
 .post-format-icon.post-format-standard::before {
 	content: "\f109";
-	content: "\f109" / '';
 }
 
 .post-format-icon.post-format-image::before {
 	content: "\f128";
-	content: "\f128" / '';
 }
 
 .post-format-icon.post-format-gallery::before {
 	content: "\f161";
-	content: "\f161" / '';
 }
 
 .post-format-icon.post-format-audio::before {
 	content: "\f127";
-	content: "\f127" / '';
 }
 
 .post-format-icon.post-format-video::before {
 	content: "\f126";
-	content: "\f126" / '';
 }
 
 .post-format-icon.post-format-chat::before {
 	content: "\f125";
-	content: "\f125" / '';
 }
 
 .post-format-icon.post-format-status::before {
 	content: "\f130";
-	content: "\f130" / '';
 }
 
 .post-format-icon.post-format-aside::before {
 	content: "\f123";
-	content: "\f123" / '';
 }
 
 .post-format-icon.post-format-quote::before {
 	content: "\f122";
-	content: "\f122" / '';
 }
 
 .post-format-icon.post-format-link::before {
 	content: "\f103";
-	content: "\f103" / '';
 }
 
 /*------------------------------------------------------------------------------
@@ -1324,11 +1294,10 @@ div.tabs-panel-inactive {
 }
 
 div.tabs-panel-active:focus {
-	box-shadow: inset 0 0 0 2px #2271b1;
-	/* Only visible in Windows High Contrast mode */
-	outline: 2px solid transparent;
+	box-shadow: inset 0 0 0 1px #4f94d4, inset 0 0 2px 1px rgba(79, 148, 212, 0.8);
+	outline: 0 none;
 }
-.options-discussion-php .indent-children ul,
+
 #front-page-warning,
 #front-static-pages ul,
 ul.export-filters,
@@ -1393,11 +1362,6 @@ span.description,
 
 p.description code {
 	font-style: normal;
-}
-
-p.description code,
-.form-wrap p code {
-	color: #50575e;
 }
 
 .form-wrap .form-field {
@@ -2018,7 +1982,7 @@ table.links-table {
 	}
 
 	.misc-pub-section {
-		padding: 12px 10px;
+		padding: 20px 10px;
 	}
 
 	#delete-action,

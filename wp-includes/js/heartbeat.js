@@ -132,17 +132,16 @@
 				}
 
 				/*
-				 * Logic check: the interval can be from 1 to 3600 seconds and can be set temporarily
-				 * to 5 seconds. It can be set in the initial options or changed later from JS
-				 * or from PHP through the AJAX responses.
+				 * The interval can be from 15 to 120 seconds and can be set temporarily to 5 seconds.
+				 * It can be set in the initial options or changed later through JS and/or through PHP.
 				 */
 				if ( options.interval ) {
 					settings.mainInterval = options.interval;
 
-					if ( settings.mainInterval < 1 ) {
-						settings.mainInterval = 1;
-					} else if ( settings.mainInterval > 3600 ) {
-						settings.mainInterval = 3600;
+					if ( settings.mainInterval < 15 ) {
+						settings.mainInterval = 15;
+					} else if ( settings.mainInterval > 120 ) {
+						settings.mainInterval = 120;
 					}
 				}
 
@@ -224,34 +223,15 @@
 				settings.checkFocusTimer = window.setInterval( checkFocus, 10000 );
 			}
 
-			$(window).on( 'pagehide.wp-heartbeat', function() {
+			$(window).on( 'unload.wp-heartbeat', function() {
 				// Don't connect anymore.
-				suspend();
+				settings.suspend = true;
 
 				// Abort the last request if not completed.
 				if ( settings.xhr && settings.xhr.readyState !== 4 ) {
 					settings.xhr.abort();
 				}
 			});
-
-			$(window).on(
-				'pageshow.wp-heartbeat',
-				/**
-				 * Handles pageshow event, specifically when page navigation is restored from back/forward cache.
-				 *
-				 * @param {jQuery.Event} event
-				 * @param {PageTransitionEvent} event.originalEvent
-				 */
-				function ( event ) {
-					if ( event.originalEvent.persisted ) {
-						/*
-						 * When page navigation is stored via bfcache (Back/Forward Cache), consider this the same as
-						 * if the user had just switched to the tab since the behavior is similar.
-						 */
-						focused();
-					}
-				}
-			);
 
 			// Check for user activity every 30 seconds.
 			window.setInterval( checkUserActivity, 30000 );
@@ -561,26 +541,12 @@
 			settings.userActivity = time();
 
 			// Resume if suspended.
-			resume();
+			settings.suspend = false;
 
 			if ( ! settings.hasFocus ) {
 				settings.hasFocus = true;
 				scheduleNextTick();
 			}
-		}
-
-		/**
-		 * Suspends connecting.
-		 */
-		function suspend() {
-			settings.suspend = true;
-		}
-
-		/**
-		 * Resumes connecting.
-		 */
-		function resume() {
-			settings.suspend = false;
 		}
 
 		/**
@@ -627,7 +593,7 @@
 			// Suspend after 10 minutes of inactivity when suspending is enabled.
 			// Always suspend after 60 minutes of inactivity. This will release the post lock, etc.
 			if ( ( settings.suspendEnabled && lastActive > 600000 ) || lastActive > 3600000 ) {
-				suspend();
+				settings.suspend = true;
 			}
 
 			if ( ! settings.userActivityEvents ) {
@@ -722,10 +688,10 @@
 		 *
 		 * @memberOf wp.heartbeat.prototype
 		 *
-		 * @param {string|number} speed Interval: 'fast' or integer between 1 and 3600 (seconds).
+		 * @param {string|number} speed Interval: 'fast' or 5, 15, 30, 60, 120.
 		 *                              Fast equals 5.
-		 * @param {number}        ticks Tells how many ticks before the interval reverts back.
-		 *                              Value must be between 1 and 30. Used with speed = 'fast' or 5.
+		 * @param {string}        ticks Tells how many ticks before the interval reverts
+		 *                              back. Used with speed = 'fast' or 5.
 		 *
 		 * @return {number} Current interval in seconds.
 		 */
@@ -734,28 +700,35 @@
 				oldInterval = settings.tempInterval ? settings.tempInterval : settings.mainInterval;
 
 			if ( speed ) {
-				if ( 'fast' === speed ) {
-					// Special case, see below.
-					newInterval = 5000;
-				} else if ( 'long-polling' === speed ) {
-					// Allow long polling (experimental).
-					settings.mainInterval = 0;
-					return 0;
-				} else {
-					speed = parseInt( speed, 10 );
-
-					if ( speed >= 1 && speed <= 3600 ) {
-						newInterval = speed * 1000;
-					} else {
+				switch ( speed ) {
+					case 'fast':
+					case 5:
+						newInterval = 5000;
+						break;
+					case 15:
+						newInterval = 15000;
+						break;
+					case 30:
+						newInterval = 30000;
+						break;
+					case 60:
+						newInterval = 60000;
+						break;
+					case 120:
+						newInterval = 120000;
+						break;
+					case 'long-polling':
+						// Allow long polling (experimental).
+						settings.mainInterval = 0;
+						return 0;
+					default:
 						newInterval = settings.originalInterval;
-					}
 				}
 
 				if ( settings.minimalInterval && newInterval < settings.minimalInterval ) {
 					newInterval = settings.minimalInterval;
 				}
 
-				// Special case, runs for a number of ticks then reverts to the previous interval.
 				if ( 5000 === newInterval ) {
 					ticks = parseInt( ticks, 10 ) || 30;
 					ticks = ticks < 1 || ticks > 30 ? 30 : ticks;
