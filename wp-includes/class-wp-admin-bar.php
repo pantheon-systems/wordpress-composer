@@ -501,17 +501,14 @@ class WP_Admin_Bar {
 			return;
 		}
 
-		$is_parent             = ! empty( $node->children );
-		$has_link              = ! empty( $node->href );
-		$is_root_top_item      = 'root-default' === $node->parent;
-		$is_top_secondary_item = 'top-secondary' === $node->parent;
+		$is_parent = ! empty( $node->children );
+		$has_link  = ! empty( $node->href );
 
 		// Allow only numeric values, then casted to integers, and allow a tabindex value of `0` for a11y.
 		$tabindex        = ( isset( $node->meta['tabindex'] ) && is_numeric( $node->meta['tabindex'] ) ) ? (int) $node->meta['tabindex'] : '';
 		$aria_attributes = ( '' !== $tabindex ) ? ' tabindex="' . $tabindex . '"' : '';
 
 		$menuclass = '';
-		$arrow     = '';
 
 		if ( $is_parent ) {
 			$menuclass        = 'menupop ';
@@ -520,11 +517,6 @@ class WP_Admin_Bar {
 
 		if ( ! empty( $node->meta['class'] ) ) {
 			$menuclass .= $node->meta['class'];
-		}
-
-		// Print the arrow icon for the menu children with children.
-		if ( ! $is_root_top_item && ! $is_top_secondary_item && $is_parent ) {
-			$arrow = '<span class="wp-admin-bar-arrow" aria-hidden="true"></span>';
 		}
 
 		if ( $menuclass ) {
@@ -550,7 +542,7 @@ class WP_Admin_Bar {
 			}
 		}
 
-		echo ">{$arrow}{$node->title}";
+		echo ">{$node->title}";
 
 		if ( $has_link ) {
 			echo '</a>';
@@ -596,7 +588,6 @@ class WP_Admin_Bar {
 		add_action( 'admin_bar_menu', 'wp_admin_bar_my_account_menu', 0 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_search_menu', 4 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_my_account_item', 7 );
-		add_action( 'admin_bar_menu', 'wp_admin_bar_recovery_mode_menu', 8 );
 
 		// Site related.
 		add_action( 'admin_bar_menu', 'wp_admin_bar_sidebar_toggle', 0 );

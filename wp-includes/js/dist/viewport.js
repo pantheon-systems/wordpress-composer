@@ -232,21 +232,9 @@ var external_this_wp_compose_ = __webpack_require__("K9lf");
  * the given prop names, where the value passed to the underlying component is
  * the result of the query assigned as the object's value.
  *
- * @see isViewportMatch
- *
  * @param {Object} queries  Object of prop name to viewport query.
  *
- * @example
- *
- * ```jsx
- * function MyComponent( { isMobile } ) {
- * 	return (
- * 		<div>Currently: { isMobile ? 'Mobile' : 'Not Mobile' }</div>
- * 	);
- * }
- *
- * MyComponent = withViewportMatch( { isMobile: '< small' } )( MyComponent );
- * ```
+ * @see isViewportMatch
  *
  * @return {Function} Higher-order component.
  */
@@ -275,19 +263,9 @@ var with_viewport_match_withViewportMatch = function withViewportMatch(queries) 
  * Higher-order component creator, creating a new component which renders if
  * the viewport query is satisfied.
  *
- * @see withViewportMatches
- *
  * @param {string} query Viewport query.
  *
- * @example
- *
- * ```jsx
- * function MyMobileComponent() {
- * 	return <div>I'm only rendered on mobile viewports!</div>;
- * }
- *
- * MyMobileComponent = ifViewportMatches( '< small' )( MyMobileComponent );
- * ```
+ * @see withViewportMatches
  *
  * @return {Function} Higher-order component.
  */

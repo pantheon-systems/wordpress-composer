@@ -1728,8 +1728,8 @@ function wp_kses_normalize_entities( $string ) {
 	$string = str_replace( '&', '&amp;', $string );
 
 	$string = preg_replace_callback( '/&amp;([A-Za-z]{2,8}[0-9]{0,2});/', 'wp_kses_named_entities', $string );
-	$string = preg_replace_callback( '/&amp;#(0*[1-9][0-9]{0,6});/', 'wp_kses_normalize_entities2', $string );
-	$string = preg_replace_callback( '/&amp;#[Xx](0*[1-9A-Fa-f][0-9A-Fa-f]{0,5});/', 'wp_kses_normalize_entities3', $string );
+	$string = preg_replace_callback( '/&amp;#(0*+[1-9][0-9]{0,6});/', 'wp_kses_normalize_entities2', $string );
+	$string = preg_replace_callback( '/&amp;#[Xx](0*+[1-9A-Fa-f][0-9A-Fa-f]{0,5});/', 'wp_kses_normalize_entities3', $string );
 
 	return $string;
 }
@@ -2062,7 +2062,6 @@ function safecss_filter_attr( $css, $deprecated = '' ) {
 	 * @since 4.6.0 Added support for `list-style-type`.
 	 * @since 5.0.0 Added support for `background-image`.
 	 * @since 5.1.0 Added support for `text-transform`.
-	 * @since 5.2.0 Added support for `background-position` and `grid-template-columns`
 	 *
 	 * @param string[] $attr Array of allowed CSS attributes.
 	 */
@@ -2072,7 +2071,6 @@ function safecss_filter_attr( $css, $deprecated = '' ) {
 			'background',
 			'background-color',
 			'background-image',
-			'background-position',
 
 			'border',
 			'border-width',
@@ -2140,7 +2138,6 @@ function safecss_filter_attr( $css, $deprecated = '' ) {
 			'overflow',
 			'vertical-align',
 			'list-style-type',
-			'grid-template-columns',
 		)
 	);
 

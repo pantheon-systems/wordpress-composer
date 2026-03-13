@@ -156,7 +156,7 @@
 	color: #0073aa;
 	z-index: 100000;
 	line-height: normal;
-	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	box-shadow: 0 0 2px 2px rgba(0,0,0,.6);
 	text-decoration: none;
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
@@ -191,7 +191,7 @@ p.popular-tags,
 .imgedit-group,
 .comment-ays {
 	border: 1px solid #e5e5e5;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.04);
 }
 
 table.widefat,
@@ -274,7 +274,7 @@ a:focus .media-icon img,
 	color: #124964;
 	box-shadow:
 		0 0 0 1px #5b9dd9,
-		0 0 2px 1px rgba(30, 140, 190, 0.8);
+		0 0 2px 1px rgba(30, 140, 190, .8);
 	/* Only visible in Windows High Contrast mode */
 	outline: 1px solid transparent;
 }
@@ -423,7 +423,7 @@ code {
 	padding: 3px 5px 2px 5px;
 	margin: 0 1px;
 	background: #eaeaea;
-	background: rgba(0, 0, 0, 0.07);
+	background: rgba(0,0,0,0.07);
 	font-size: 13px;
 }
 
@@ -586,7 +586,7 @@ code {
 	font-weight: 400;
 	margin: 0;
 	padding: 9px 0 4px 0;
-	line-height: 1.3;
+	line-height: 29px;
 }
 
 .wrap h1.wp-heading-inline {
@@ -647,7 +647,7 @@ code {
 
 .wrap .page-title-action:focus {
 	border-color: #5b9dd9;
-	box-shadow: 0 0 2px rgba(30, 140, 190, 0.8);
+	box-shadow: 0 0 2px rgba( 30, 140, 190, 0.8 );
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
 }
@@ -666,7 +666,7 @@ code {
 div#widgets-right .widget-top:hover,
 #widgets-left .widget-top:hover {
 	border-color: #999;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .sorthelper {
@@ -831,7 +831,7 @@ img.emoji {
 .tagchecklist .ntdelbutton:focus .remove-tag-icon:before {
 	box-shadow:
 		0 0 0 1px #5b9dd9,
-		0 0 2px 1px rgba(30, 140, 190, 0.8);
+		0 0 2px 1px rgba(30, 140, 190, .8);
 }
 
 .key-labels label {
@@ -914,11 +914,11 @@ span.required,
 
 #delete-action {
 	float: left;
-	line-height: 2.1;
+	line-height: 28px;
 }
 
 #delete-link {
-	line-height: 2.1;
+	line-height: 28px;
 	vertical-align: middle;
 	text-align: left;
 	margin-left: 8px;
@@ -931,7 +931,7 @@ span.required,
 #publishing-action {
 	text-align: right;
 	float: right;
-	line-height: 1.9;
+	line-height: 23px;
 }
 
 #publishing-action .spinner {
@@ -996,7 +996,7 @@ th.action-links {
 	margin: 12px 0 25px;
 	padding: 0 10px;
 	width: 100%;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.04);
 	border: 1px solid #e5e5e5;
 	background: #fff;
 	color: #555;
@@ -1185,7 +1185,7 @@ th.action-links {
 	width: 24%;
 	background: #fff;
 	border: 1px solid #e5e5e5;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.04);
 }
 
 .filter-group legend {
@@ -1206,7 +1206,7 @@ th.action-links {
 
 .filter-drawer .filter-group-feature input,
 .filter-drawer .filter-group-feature label {
-	line-height: 1.4;
+	line-height: 16px;
 }
 
 .filter-drawer .filter-group-feature input {
@@ -1243,7 +1243,7 @@ th.action-links {
 
 .wp-filter .button-link.edit-filters {
 	padding: 0 5px;
-	line-height: 2.2;
+	line-height: 28px;
 }
 
 .filtered-by {
@@ -1267,7 +1267,7 @@ th.action-links {
 	margin: 0 5px;
 	padding: 4px 8px;
 	border: 1px solid #e5e5e5;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.04);
 	background: #fff;
 	font-size: 11px;
 }
@@ -1365,7 +1365,7 @@ div.updated,
 div.error {
 	background: #fff;
 	border-left: 4px solid #fff;
-	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+	box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
 	margin: 5px 15px 2px;
 	padding: 1px 12px;
 }
@@ -1430,7 +1430,7 @@ div.error p,
 
 .notice-dismiss:focus {
 	outline: none;
-	box-shadow: 0 0 0 1px #5b9dd9, 0 0 2px 1px rgba(30, 140, 190, 0.8);
+	box-shadow: 0 0 0 1px #5b9dd9, 0 0 2px 1px rgba(30, 140, 190, .8);
 }
 
 .ie8 .notice-dismiss:focus {
@@ -1551,14 +1551,14 @@ div.error {
 #update-nag,
 .update-nag {
 	display: inline-block;
-	line-height: 1.4;
+	line-height: 19px;
 	padding: 11px 15px;
 	font-size: 14px;
 	text-align: left;
 	margin: 25px 20px 0 2px;
 	background-color: #fff;
 	border-left: 4px solid #ffba00;
-	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+	box-shadow: 0 1px 1px 0 rgba(0,0,0,0.1);
 }
 
 ul#dismissed-updates {
@@ -1659,7 +1659,6 @@ form.upgrade .hint {
 }
 
 #screen-meta-links {
-	float: right;
 	margin: 0 20px 0 0;
 }
 
@@ -1671,13 +1670,18 @@ form.upgrade .hint {
 	background-color: #fff;
 	border: 1px solid #ddd;
 	border-top: none;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.025);
+	box-shadow: 0 1px 0 rgba(0,0,0,.025);
 }
 
 #screen-options-link-wrap,
 #contextual-help-link-wrap {
-	float: left;
+	float: right;
+	height: 28px;
 	margin: 0 0 0 6px;
+	border: 1px solid #ddd;
+	border-top: none;
+	background: #fff;
+	box-shadow: 0 1px 1px -1px rgba(0,0,0,0.1);
 }
 
 #screen-meta-links .screen-meta-toggle {
@@ -1686,17 +1690,12 @@ form.upgrade .hint {
 }
 
 #screen-meta-links .show-settings {
-	border: 1px solid #ddd;
-	border-top: none;
-	border-bottom-color: #ccc;
-	height: auto;
-	margin-bottom: 0;
-	padding: 3px 6px 3px 16px;
-	background: #fff;
+	border: 0;
+	background: none;
 	border-radius: 0;
 	color: #72777c;
 	line-height: 1.7;
-	box-shadow: none;
+	padding: 3px 6px 3px 16px;
 }
 
 #screen-meta-links .show-settings:hover,
@@ -1705,12 +1704,8 @@ form.upgrade .hint {
 	color: #32373c;
 }
 
-#screen-meta-links .show-settings:focus {
-	border-color: #5b9dd9;
-	box-shadow: 0 0 3px rgba(0, 115, 170, 0.8);
-}
-
 #screen-meta-links .show-settings:active {
+	box-shadow: none;
 	transform: none;
 }
 
@@ -1765,7 +1760,7 @@ form.upgrade .hint {
 .metabox-prefs label {
 	display: inline-block;
 	padding-right: 15px;
-	line-height: 2.35;
+	line-height: 30px;
 }
 
 #number-of-columns {
@@ -1804,7 +1799,7 @@ form.upgrade .hint {
 }
 
 .metabox-prefs .screen-options label {
-	line-height: 2.2;
+	line-height: 28px;
 	padding-right: 0;
 }
 
@@ -1868,7 +1863,7 @@ form.upgrade .hint {
 .contextual-help-tabs a {
 	display: block;
 	padding: 5px 5px 5px 12px;
-	line-height: 1.4;
+	line-height: 18px;
 	text-decoration: none;
 	border: 1px solid transparent;
 	border-right: none;
@@ -1884,7 +1879,7 @@ form.upgrade .hint {
 	margin: 0 -1px 0 0;
 	border-left: 2px solid #00a0d2;
 	background: #f6fbfd;
-	box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02), 0 1px 0 rgba(0, 0, 0, 0.02);
+	box-shadow: 0 2px 0 rgba(0,0,0,0.02), 0 1px 0 rgba(0,0,0,0.02);
 }
 
 .contextual-help-tabs .active a {
@@ -1900,7 +1895,7 @@ form.upgrade .hint {
 .help-tab-content {
 	display: none;
 	margin: 0 22px 12px 0;
-	line-height: 1.6;
+	line-height: 1.6em;
 }
 
 .help-tab-content.active {
@@ -2083,13 +2078,13 @@ html.wp-toolbar {
 
 .postbox .inside {
 	padding: 0 12px 12px;
-	line-height: 1.4;
+	line-height: 1.4em;
 	font-size: 13px;
 }
 
 .stuffbox .inside {
 	padding: 0;
-	line-height: 1.4;
+	line-height: 1.4em;
 	font-size: 13px;
 	margin-top: 0;
 }
@@ -2158,7 +2153,7 @@ html.wp-toolbar {
 #wpfooter p {
 	font-size: 13px;
 	margin: 0;
-	line-height: 1.55;
+	line-height: 20px;
 }
 
 #footer-thankyou {
@@ -2176,7 +2171,7 @@ html.wp-toolbar {
 	margin-left: 0.5em; /* half the font size so set the font size properly */
 	padding: 5px 10px;
 	font-size: 14px;
-	line-height: 1.71428571;
+	line-height: 24px;
 	font-weight: 600;
 	background: #e5e5e5;
 	color: #555;
@@ -2188,7 +2183,7 @@ h3 .nav-tab, /* Back-compat for pre-4.4 */
 .nav-tab-small .nav-tab {
 	padding: 5px 14px;
 	font-size: 12px;
-	line-height: 1.33;
+	line-height: 16px;
 }
 
 .nav-tab:hover,
@@ -2290,7 +2285,7 @@ h1.nav-tab-wrapper, /* Back-compat for pre-4.4 */
 /* Back-compat for nav-menus screen */
 .nav-menus-php .metabox-holder h3 {
 	padding: 10px 10px 11px 14px;
-	line-height: 1.5;
+	line-height: 21px;
 }
 
 #templateside ul li a {
@@ -2353,7 +2348,7 @@ body.iframe {
 
 .importers td {
 	padding-right: 14px;
-	line-height: 1.4;
+	line-height: 1.5em;
 }
 
 .importers .import-system {
@@ -2378,7 +2373,7 @@ body.iframe {
 }
 
 .importer-action {
-	line-height: 1.55; /* Same as with .updating-message */
+	line-height: 20px; /* Same as with .updating-message */
 	color: #555;
 	margin-bottom: 1em;
 }
@@ -2433,7 +2428,7 @@ body.iframe {
 
 br.clear {
 	height: 2px;
-	line-height: 0.15;
+	line-height: 2px;
 }
 
 .checkbox {
@@ -2537,7 +2532,7 @@ div.action-links {
 	background: #f5f5f5;
 	font-size: 22px;
 	font-weight: 600;
-	line-height: 2.4;
+	line-height: 56px;
 	position: relative;
 	height: 56px;
 }
@@ -2563,15 +2558,15 @@ div.action-links {
 	font-family: "Helvetica Neue", sans-serif;
 	display: inline-block;
 	font-size: 30px;
-	line-height: 1.68;
+	line-height: 50px;
 	box-sizing: border-box;
 	max-width: 100%;
 	padding: 0 15px;
 	margin-top: 174px;
 	color: #fff;
-	background: rgba(30, 30, 30, 0.9);
-	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-	box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+	background: rgba( 30, 30, 30, 0.9 );
+	text-shadow: 0 1px 3px rgba( 0, 0, 0, 0.4 );
+	box-shadow: 0 0 30px rgba( 255, 255, 255, 0.1 );
 	border-radius: 8px;
 }
 
@@ -2587,7 +2582,7 @@ div.action-links {
 	height: 250px;
 	width: 100%;
 	background: transparent;
-	box-shadow: inset 0 0 50px 4px rgba(0, 0, 0, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0 0 50px 4px rgba( 0, 0, 0, 0.2 ), inset 0 -1px 0 rgba( 0, 0, 0, 0.1 );
 }
 
 #plugin-information-tabs {
@@ -2608,7 +2603,7 @@ div.action-links {
 	padding: 9px 10px;
 	margin: 0;
 	height: 18px;
-	line-height: 1.3;
+	line-height: 18px;
 	font-size: 14px;
 	text-decoration: none;
 	transition: none;
@@ -2656,15 +2651,10 @@ div.action-links {
 	right: 250px;
 	bottom: 0;
 	left: 0;
-	margin-top: 10px;
 	margin-right: 250px; /* FYI box */
 	padding: 10px 26px;
 	margin-bottom: -99939px; /* 60px less than the padding below to accommodate footer */
 	padding-bottom: 99999px; /* equal height column trick */
-}
-
-#section-holder .notice {
-	margin: 5px 0 15px;
 }
 
 #section-holder .updated {
@@ -2805,7 +2795,7 @@ div.action-links {
 	max-width: 100%;
 	width: auto;
 	height: auto;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.3 );
 }
 
 /* rtl:ignore */
@@ -2893,7 +2883,7 @@ div.action-links {
 	#plugin-information-title.with-banner h2 {
 		margin-top: 30px;
 		font-size: 20px;
-		line-height: 2;
+		line-height: 40px;
 		max-width: 85%;
 	}
 
@@ -3060,7 +3050,7 @@ img {
 .js .postbox .handlediv:focus .toggle-indicator:before {
 	box-shadow:
 		0 0 0 1px #5b9dd9,
-		0 0 2px 1px rgba(30, 140, 190, 0.8);
+		0 0 2px 1px rgba(30, 140, 190, .8);
 }
 
 /* @todo: appears to be Press This only and overridden */
@@ -3155,7 +3145,7 @@ img {
 }
 [role="treeitem"] .folder-label.focus {
 	color: #124964;
-	box-shadow: 0 0 0 1px #5b9dd9, 0 0 2px 1px rgba(30, 140, 190, 0.8);
+	box-shadow: 0 0 0 1px #5b9dd9, 0 0 2px 1px rgba(30, 140, 190, .8);
 }
 [role="treeitem"].hover,
 [role="treeitem"] .folder-label.hover {
@@ -3323,7 +3313,7 @@ img {
 }
 
 #documentation label {
-	line-height: 1.8;
+	line-height: 22px;
 	vertical-align: baseline;
 	font-weight: 600;
 }
@@ -3384,7 +3374,7 @@ img {
 .widget-top .widget-action:focus .toggle-indicator:before {
 	box-shadow:
 		0 0 0 1px #5b9dd9,
-		0 0 2px 1px rgba(30, 140, 190, 0.8);
+		0 0 2px 1px rgba(30,140,190,.8);
 }
 
 .control-section .accordion-section-title:after,
@@ -3482,7 +3472,7 @@ img {
 	border-left: none;
 	border-right: none;
 	padding: 10px 10px 11px 14px;
-	line-height: 1.55;
+	line-height: 21px;
 	background: #fff;
 }
 
@@ -3696,10 +3686,6 @@ img {
 		padding-top: 46px;
 	}
 
-	.screen-reader-shortcut:focus {
-		top: -39px;
-	}
-
 	body {
 		min-width: 240px;
 		overflow-x: hidden;
@@ -3720,7 +3706,6 @@ img {
 	}
 
 	.wrap {
-		clear: both;
 		margin-right: 12px;
 		margin-left: 0;
 	}
@@ -3936,7 +3921,7 @@ img {
 
 	.filter-drawer .filter-group-feature input,
 	.filter-drawer .filter-group-feature label {
-		line-height: 2.1;
+		line-height: 25px;
 	}
 
 	.filter-drawer .filter-group-feature label {
@@ -3945,7 +3930,7 @@ img {
 
 	.wp-filter .button.drawer-toggle {
 		font-size: 13px;
-		line-height: 2;
+		line-height: 26px;
 		height: 28px;
 	}
 
@@ -3981,7 +3966,7 @@ img {
 	}
 
 	#screen-meta-links {
-		margin-bottom: 20px; /* Add margins beneath links for better spacing between boxes and elements */
+		margin-bottom: 60px; /* Add margins beneath links for better spacing between boxes and elements */
 	}
 }
 
@@ -3995,10 +3980,6 @@ img {
 
 	html.wp-toolbar {
 		padding-top: 0;
-	}
-
-	.screen-reader-shortcut:focus {
-		top: 7px;
 	}
 
 	#wpbody {
@@ -4018,15 +3999,8 @@ img {
 
 	h1 .nav-tab,
 	h2 .nav-tab,
-	h3 .nav-tab,
-	nav .nav-tab {
+	h3 .nav-tab {
 		margin: 10px 10px 0 0;
-		border-bottom: 1px solid #ccc;
-	}
-
-	.nav-tab-active:hover,
-	.nav-tab-active:focus,
-	.nav-tab-active:focus:active {
 		border-bottom: 1px solid #ccc;
 	}
 }

@@ -46,6 +46,7 @@ pantheon.upstream.yml
 ######################
 .DS_Store*
 ehthumbs.db
+Icon?
 Thumbs.db
 ._*
 

@@ -97,7 +97,7 @@ class Custom_Background {
 		get_current_screen()->set_help_sidebar(
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
 			'<p>' . __( '<a href="https://codex.wordpress.org/Appearance_Background_Screen">Documentation on Custom Background</a>' ) . '</p>' .
-			'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
+			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
 		);
 
 		wp_enqueue_media();
@@ -244,9 +244,9 @@ class Custom_Background {
 </div>
 		<?php } ?>
 
-<h2><?php _e( 'Background Image' ); ?></h2>
+<h3><?php _e( 'Background Image' ); ?></h3>
 
-<table class="form-table" role="presentation">
+<table class="form-table">
 <tbody>
 <tr>
 <th scope="row"><?php _e( 'Preview' ); ?></th>
@@ -338,9 +338,9 @@ class Custom_Background {
 </tbody>
 </table>
 
-<h2><?php _e( 'Display Options' ); ?></h2>
+<h3><?php _e( 'Display Options' ); ?></h3>
 <form method="post">
-<table class="form-table" role="presentation">
+<table class="form-table">
 <tbody>
 		<?php if ( get_background_image() ) : ?>
 <input name="background-preset" type="hidden" value="custom">
@@ -494,7 +494,7 @@ class Custom_Background {
 		$url      = $file['url'];
 		$type     = $file['type'];
 		$file     = $file['file'];
-		$filename = wp_basename( $file );
+		$filename = basename( $file );
 
 		// Construct the object array
 		$object = array(

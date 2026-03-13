@@ -211,8 +211,6 @@ function isShallowEqual( a, b ) {
 }
 
 module.exports = isShallowEqual;
-module.exports.isShallowEqualObjects = isShallowEqualObjects;
-module.exports.isShallowEqualArrays = isShallowEqualArrays;
 
 
 /***/ })

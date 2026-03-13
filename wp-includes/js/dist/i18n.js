@@ -669,22 +669,19 @@ var OPERATORS = {
  */
 function evaluate_evaluate( postfix, variables ) {
 	var stack = [],
-		i, j, args, getOperatorResult, term, value;
+		i, getOperatorResult, term, value;
 
 	for ( i = 0; i < postfix.length; i++ ) {
 		term = postfix[ i ];
 
 		getOperatorResult = OPERATORS[ term ];
 		if ( getOperatorResult ) {
-			// Pop from stack by number of function arguments.
-			j = getOperatorResult.length;
-			args = Array( j );
-			while ( j-- ) {
-				args[ j ] = stack.pop();
-			}
-
 			try {
-				value = getOperatorResult.apply( null, args );
+				// Pop from stack by number of function arguments.
+				value = getOperatorResult.apply(
+					null,
+					stack.splice( -1 * getOperatorResult.length )
+				);
 			} catch ( earlyReturn ) {
 				return earlyReturn;
 			}
@@ -831,28 +828,17 @@ function Tannin( data, options ) {
  */
 Tannin.prototype.getPluralForm = function( domain, n ) {
 	var getPluralForm = this.pluralForms[ domain ],
-		config, plural, pf;
+		config, plural;
 
 	if ( ! getPluralForm ) {
 		config = this.data[ domain ][ '' ];
-
-		pf = (
+		plural = getPluralExpression(
 			config[ 'Plural-Forms' ] ||
 			config[ 'plural-forms' ] ||
 			config.plural_forms
 		);
 
-		if ( typeof pf !== 'function' ) {
-			plural = getPluralExpression(
-				config[ 'Plural-Forms' ] ||
-				config[ 'plural-forms' ] ||
-				config.plural_forms
-			);
-
-			pf = pluralForms( plural );
-		}
-
-		getPluralForm = this.pluralForms[ domain ] = pf;
+		getPluralForm = this.pluralForms[ domain ] = pluralForms( plural );
 	}
 
 	return getPluralForm( n );
@@ -1067,7 +1053,7 @@ function _nx(single, plural, number, context, domain) {
  * original format string is returned.
  *
  * @param {string}   format  The format of the string to generate.
- * @param {...string} args Arguments to apply to the format.
+ * @param {string[]} ...args Arguments to apply to the format.
  *
  * @see http://www.diveintojavascript.com/projects/javascript-sprintf
  *

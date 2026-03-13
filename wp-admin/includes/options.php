@@ -61,31 +61,22 @@ function options_general_add_js() {
 			if ( "time_format_custom_radio" != $(this).attr("id") )
 				$( 'input[name="time_format_custom"]' ).val( $( this ).val() ).closest( 'fieldset' ).find( '.example' ).text( $( this ).parent( 'label' ).children( '.format-i18n' ).text() );
 		});
-
 		$( 'input[name="time_format_custom"]' ).on( 'click input', function() {
 			$( '#time_format_custom_radio' ).prop( 'checked', true );
 		});
-
-		$( 'input[name="date_format_custom"], input[name="time_format_custom"]' ).on( 'input', function() {
+		$("input[name='date_format_custom'], input[name='time_format_custom']").change( function() {
 			var format = $( this ),
 				fieldset = format.closest( 'fieldset' ),
 				example = fieldset.find( '.example' ),
 				spinner = fieldset.find( '.spinner' );
 
-			// Debounce the event callback while users are typing.
-			clearTimeout( $.data( this, 'timer' ) );
-			$( this ).data( 'timer', setTimeout( function() {
-				// If custom date is not empty.
-				if ( format.val() ) {
-					spinner.addClass( 'is-active' );
+			spinner.addClass( 'is-active' );
 
-					$.post( ajaxurl, {
-						action: 'date_format_custom' == format.attr( 'name' ) ? 'date_format' : 'time_format',
-						date 	: format.val()
-					}, function( d ) { spinner.removeClass( 'is-active' ); example.text( d ); } );
-				}
-			}, 500 ) );
-		} );
+			$.post( ajaxurl, {
+					action: 'date_format_custom' == format.attr( 'name' ) ? 'date_format' : 'time_format',
+					date : format.val()
+				}, function( d ) { spinner.removeClass( 'is-active' ); example.text( d ); } );
+		});
 
 		var languageSelect = $( '#WPLANG' );
 		$( 'form' ).submit( function() {
@@ -116,7 +107,7 @@ function options_reading_add_js() {
 				selects.prop( 'disabled', ! staticPage.prop('checked') );
 			};
 		check_disabled();
-		section.find( 'input:radio' ).change( check_disabled );
+		 section.find('input:radio').change(check_disabled);
 	});
 </script>
 	<?php

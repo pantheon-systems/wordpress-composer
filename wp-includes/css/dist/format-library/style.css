@@ -28,29 +28,10 @@
 /**
  * Styles that are reused verbatim in a few places
  */
-/**
- * Allows users to opt-out of animations via OS-level preferences.
- */
-.block-editor-format-toolbar__image-container-content {
-  display: flex; }
-  .block-editor-format-toolbar__image-container-content .components-icon-button {
-    height: 52px;
-    align-self: flex-end; }
-
-.block-editor-format-toolbar__image-container-value {
-  margin: 7px;
-  flex-grow: 1;
-  flex-shrink: 1;
-  white-space: nowrap;
-  min-width: 150px;
-  max-width: 500px; }
-  .block-editor-format-toolbar__image-container-value.components-base-control .components-base-control__field {
-    margin-bottom: 0; }
-
-.block-editor-format-toolbar__link-container-content {
+.editor-format-toolbar__link-container-content {
   display: flex; }
 
-.block-editor-format-toolbar__link-container-value {
+.editor-format-toolbar__link-container-value {
   margin: 7px;
   flex-grow: 1;
   flex-shrink: 1;
@@ -59,5 +40,5 @@
   white-space: nowrap;
   min-width: 150px;
   max-width: 500px; }
-  .block-editor-format-toolbar__link-container-value.has-invalid-link {
+  .editor-format-toolbar__link-container-value.has-invalid-link {
     color: #d94f4f; }

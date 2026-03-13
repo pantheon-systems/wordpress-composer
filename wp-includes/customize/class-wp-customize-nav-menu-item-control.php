@@ -11,8 +11,6 @@
  * Customize control to represent the name field for a given menu.
  *
  * @since 4.3.0
- *
- * @see WP_Customize_Control
  */
 class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 

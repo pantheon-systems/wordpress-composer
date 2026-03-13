@@ -40,7 +40,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		);
 
 		$status = 'all';
-		if ( isset( $_REQUEST['plugin_status'] ) && in_array( $_REQUEST['plugin_status'], array( 'active', 'inactive', 'recently_activated', 'upgrade', 'mustuse', 'dropins', 'search', 'paused' ) ) ) {
+		if ( isset( $_REQUEST['plugin_status'] ) && in_array( $_REQUEST['plugin_status'], array( 'active', 'inactive', 'recently_activated', 'upgrade', 'mustuse', 'dropins', 'search' ) ) ) {
 			$status = $_REQUEST['plugin_status'];
 		}
 
@@ -99,7 +99,6 @@ class WP_Plugins_List_Table extends WP_List_Table {
 			'upgrade'            => array(),
 			'mustuse'            => array(),
 			'dropins'            => array(),
-			'paused'             => array(),
 		);
 
 		$screen = $this->screen;
@@ -184,18 +183,16 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		foreach ( (array) $plugins['all'] as $plugin_file => $plugin_data ) {
 			// Extra info if known. array_merge() ensures $plugin_data has precedence if keys collide.
 			if ( isset( $plugin_info->response[ $plugin_file ] ) ) {
-				$plugin_data                    = array_merge( (array) $plugin_info->response[ $plugin_file ], $plugin_data );
-				$plugins['all'][ $plugin_file ] = $plugin_data;
+				$plugins['all'][ $plugin_file ] = $plugin_data = array_merge( (array) $plugin_info->response[ $plugin_file ], $plugin_data );
 				// Make sure that $plugins['upgrade'] also receives the extra info since it is used on ?plugin_status=upgrade
 				if ( isset( $plugins['upgrade'][ $plugin_file ] ) ) {
-					$plugins['upgrade'][ $plugin_file ] = $plugin_data;
+					$plugins['upgrade'][ $plugin_file ] = $plugin_data = array_merge( (array) $plugin_info->response[ $plugin_file ], $plugin_data );
 				}
 			} elseif ( isset( $plugin_info->no_update[ $plugin_file ] ) ) {
-				$plugin_data                    = array_merge( (array) $plugin_info->no_update[ $plugin_file ], $plugin_data );
-				$plugins['all'][ $plugin_file ] = $plugin_data;
+				$plugins['all'][ $plugin_file ] = $plugin_data = array_merge( (array) $plugin_info->no_update[ $plugin_file ], $plugin_data );
 				// Make sure that $plugins['upgrade'] also receives the extra info since it is used on ?plugin_status=upgrade
 				if ( isset( $plugins['upgrade'][ $plugin_file ] ) ) {
-					$plugins['upgrade'][ $plugin_file ] = $plugin_data;
+					$plugins['upgrade'][ $plugin_file ] = $plugin_data = array_merge( (array) $plugin_info->no_update[ $plugin_file ], $plugin_data );
 				}
 			}
 
@@ -221,10 +218,6 @@ class WP_Plugins_List_Table extends WP_List_Table {
 				// On the non-network screen, populate the active list with plugins that are individually activated
 				// On the network-admin screen, populate the active list with plugins that are network activated
 				$plugins['active'][ $plugin_file ] = $plugin_data;
-
-				if ( ! $screen->in_admin( 'network' ) && is_plugin_paused( $plugin_file ) ) {
-					$plugins['paused'][ $plugin_file ] = $plugin_data;
-				}
 			} else {
 				if ( isset( $recently_activated[ $plugin_file ] ) ) {
 					// Populate the recently activated list with plugins that have been recently activated
@@ -450,11 +443,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 					break;
 				case 'dropins':
 					/* translators: %s: plugin count */
-					$text = _n( 'Drop-in <span class="count">(%s)</span>', 'Drop-ins <span class="count">(%s)</span>', $count );
-					break;
-				case 'paused':
-					/* translators: %s: plugin count */
-					$text = _n( 'Paused <span class="count">(%s)</span>', 'Paused <span class="count">(%s)</span>', $count );
+					$text = _n( 'Drop-ins <span class="count">(%s)</span>', 'Drop-ins <span class="count">(%s)</span>', $count );
 					break;
 				case 'upgrade':
 					/* translators: %s: plugin count */
@@ -668,10 +657,6 @@ class WP_Plugins_List_Table extends WP_List_Table {
 						/* translators: %s: plugin name */
 						$actions['deactivate'] = '<a href="' . wp_nonce_url( 'plugins.php?action=deactivate&amp;plugin=' . urlencode( $plugin_file ) . '&amp;plugin_status=' . $context . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . $plugin_file ) . '" aria-label="' . esc_attr( sprintf( _x( 'Deactivate %s', 'plugin' ), $plugin_data['Name'] ) ) . '">' . __( 'Deactivate' ) . '</a>';
 					}
-					if ( current_user_can( 'resume_plugin', $plugin_file ) && is_plugin_paused( $plugin_file ) ) {
-						/* translators: %s: plugin name */
-						$actions['resume'] = '<a class="resume-link" href="' . wp_nonce_url( 'plugins.php?action=resume&amp;plugin=' . urlencode( $plugin_file ) . '&amp;plugin_status=' . $context . '&amp;paged=' . $page . '&amp;s=' . $s, 'resume-plugin_' . $plugin_file ) . '" aria-label="' . esc_attr( sprintf( _x( 'Resume %s', 'plugin' ), $plugin_data['Name'] ) ) . '">' . __( 'Resume' ) . '</a>';
-					}
 				} else {
 					if ( current_user_can( 'activate_plugin', $plugin_file ) ) {
 						/* translators: %s: plugin name */
@@ -761,11 +746,9 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 		}
 
-		$requires_php   = isset( $plugin_data['requires_php'] ) ? $plugin_data['requires_php'] : null;
-		$compatible_php = is_php_version_compatible( $requires_php );
-		$class          = $is_active ? 'active' : 'inactive';
-		$checkbox_id    = 'checkbox_' . md5( $plugin_data['Name'] );
-		if ( $restrict_network_active || $restrict_network_only || in_array( $status, array( 'mustuse', 'dropins' ) ) || ! $compatible_php ) {
+		$class       = $is_active ? 'active' : 'inactive';
+		$checkbox_id = 'checkbox_' . md5( $plugin_data['Name'] );
+		if ( $restrict_network_active || $restrict_network_only || in_array( $status, array( 'mustuse', 'dropins' ) ) ) {
 			$checkbox = '';
 		} else {
 			/* translators: %s: plugin name */
@@ -779,12 +762,6 @@ class WP_Plugins_List_Table extends WP_List_Table {
 
 		if ( ! empty( $totals['upgrade'] ) && ! empty( $plugin_data['update'] ) ) {
 			$class .= ' update';
-		}
-
-		$paused = ! $screen->in_admin( 'network' ) && is_plugin_paused( $plugin_file );
-
-		if ( $paused ) {
-			$class .= ' paused';
 		}
 
 		$plugin_slug = isset( $plugin_data['slug'] ) ? $plugin_data['slug'] : sanitize_title( $plugin_name );
@@ -868,24 +845,12 @@ class WP_Plugins_List_Table extends WP_List_Table {
 					 * @param array    $plugin_data An array of plugin data.
 					 * @param string   $status      Status of the plugin. Defaults are 'All', 'Active',
 					 *                              'Inactive', 'Recently Activated', 'Upgrade', 'Must-Use',
-					 *                              'Drop-ins', 'Search', 'Paused'.
+					 *                              'Drop-ins', 'Search'.
 					 */
 					$plugin_meta = apply_filters( 'plugin_row_meta', $plugin_meta, $plugin_file, $plugin_data, $status );
 					echo implode( ' | ', $plugin_meta );
 
 					echo '</div>';
-
-					if ( $paused ) {
-						$notice_text = __( 'This plugin failed to load properly and is paused during recovery mode.' );
-
-						printf( '<p><span class="dashicons dashicons-warning"></span> <strong>%s</strong></p>', $notice_text );
-
-						$error = wp_get_plugin_error( $plugin_file );
-
-						if ( false !== $error ) {
-							printf( '<div class="error-display"><p>%s</p></div>', wp_get_extension_error_description( $error ) );
-						}
-					}
 
 					echo '</td>';
 					break;
@@ -920,7 +885,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		 * @param array  $plugin_data An array of plugin data.
 		 * @param string $status      Status of the plugin. Defaults are 'All', 'Active',
 		 *                            'Inactive', 'Recently Activated', 'Upgrade', 'Must-Use',
-		 *                            'Drop-ins', 'Search', 'Paused'.
+		 *                            'Drop-ins', 'Search'.
 		 */
 		do_action( 'after_plugin_row', $plugin_file, $plugin_data, $status );
 
@@ -936,7 +901,7 @@ class WP_Plugins_List_Table extends WP_List_Table {
 		 * @param array  $plugin_data An array of plugin data.
 		 * @param string $status      Status of the plugin. Defaults are 'All', 'Active',
 		 *                            'Inactive', 'Recently Activated', 'Upgrade', 'Must-Use',
-		 *                            'Drop-ins', 'Search', 'Paused'.
+		 *                            'Drop-ins', 'Search'.
 		 */
 		do_action( "after_plugin_row_{$plugin_file}", $plugin_file, $plugin_data, $status );
 	}

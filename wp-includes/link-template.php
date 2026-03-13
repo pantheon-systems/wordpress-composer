@@ -470,7 +470,7 @@ function get_attachment_link( $post = null, $leavename = false ) {
 function get_year_link( $year ) {
 	global $wp_rewrite;
 	if ( ! $year ) {
-		$year = current_time( 'Y' );
+		$year = gmdate( 'Y', current_time( 'timestamp' ) );
 	}
 	$yearlink = $wp_rewrite->get_year_permastruct();
 	if ( ! empty( $yearlink ) ) {
@@ -505,10 +505,10 @@ function get_year_link( $year ) {
 function get_month_link( $year, $month ) {
 	global $wp_rewrite;
 	if ( ! $year ) {
-		$year = current_time( 'Y' );
+		$year = gmdate( 'Y', current_time( 'timestamp' ) );
 	}
 	if ( ! $month ) {
-		$month = current_time( 'm' );
+		$month = gmdate( 'm', current_time( 'timestamp' ) );
 	}
 	$monthlink = $wp_rewrite->get_month_permastruct();
 	if ( ! empty( $monthlink ) ) {
@@ -546,13 +546,13 @@ function get_month_link( $year, $month ) {
 function get_day_link( $year, $month, $day ) {
 	global $wp_rewrite;
 	if ( ! $year ) {
-		$year = current_time( 'Y' );
+		$year = gmdate( 'Y', current_time( 'timestamp' ) );
 	}
 	if ( ! $month ) {
-		$month = current_time( 'm' );
+		$month = gmdate( 'm', current_time( 'timestamp' ) );
 	}
 	if ( ! $day ) {
-		$day = current_time( 'j' );
+		$day = gmdate( 'j', current_time( 'timestamp' ) );
 	}
 
 	$daylink = $wp_rewrite->get_day_permastruct();
@@ -1688,7 +1688,7 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 	$adjacent = $previous ? 'previous' : 'next';
 
 	if ( ! empty( $excluded_terms ) && ! is_array( $excluded_terms ) ) {
-		// Back-compat, $excluded_terms used to be $excluded_categories with IDs separated by " and ".
+		// back-compat, $excluded_terms used to be $excluded_terms with IDs separated by " and "
 		if ( false !== strpos( $excluded_terms, ' and ' ) ) {
 			_deprecated_argument( __FUNCTION__, '3.3.0', sprintf( __( 'Use commas instead of %s to separate excluded terms.' ), "'and'" ) );
 			$excluded_terms = explode( ' and ', $excluded_terms );
@@ -2189,7 +2189,7 @@ function adjacent_post_link( $format, $link, $in_same_term = false, $excluded_te
  *
  * @global WP_Rewrite $wp_rewrite
  *
- * @param int  $pagenum Optional. Page number. Default 1.
+ * @param int  $pagenum Optional. Page ID. Default 1.
  * @param bool $escape  Optional. Whether to escape the URL for display, with esc_url(). Defaults to true.
  *                      Otherwise, prepares the URL with esc_url_raw().
  * @return string The link URL for the given page number.
@@ -2248,12 +2248,10 @@ function get_pagenum_link( $pagenum = 1, $escape = true ) {
 	 * Filters the page number link for the current request.
 	 *
 	 * @since 2.5.0
-	 * @since 5.2.0 Added the `$pagenum` argument.
 	 *
-	 * @param string $result  The page number link.
-	 * @param int    $pagenum The page number.
+	 * @param string $result The page number link.
 	 */
-	$result = apply_filters( 'get_pagenum_link', $result, $pagenum );
+	$result = apply_filters( 'get_pagenum_link', $result );
 
 	if ( $escape ) {
 		return esc_url( $result );

@@ -167,7 +167,7 @@ function guides() {
 
   switch (action.type) {
     case 'TRIGGER_GUIDE':
-      return [].concat(Object(toConsumableArray["a" /* default */])(state), [action.tipIds]);
+      return Object(toConsumableArray["a" /* default */])(state).concat([action.tipIds]);
   }
 
   return state;

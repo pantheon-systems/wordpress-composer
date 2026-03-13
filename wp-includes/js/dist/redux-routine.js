@@ -111,6 +111,9 @@ function isGenerator(object) {
   return !!object && object[Symbol.toStringTag] === 'Generator';
 }
 
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/typeof.js
+var esm_typeof = __webpack_require__("U8pU");
+
 // EXTERNAL MODULE: ./node_modules/rungen/dist/index.js
 var dist = __webpack_require__("hnoU");
 
@@ -121,9 +124,25 @@ var external_lodash_ = __webpack_require__("YLtl");
 var is_promise = __webpack_require__("JlUD");
 var is_promise_default = /*#__PURE__*/__webpack_require__.n(is_promise);
 
+// CONCATENATED MODULE: ./node_modules/@wordpress/redux-routine/build-module/cast-error.js
+/**
+ * Casts value as an error if it's not one.
+ *
+ * @param {*} error The value to cast.
+ *
+ * @return {Error} The cast error.
+ */
+function castError(error) {
+  if (!(error instanceof Error)) {
+    error = new Error(error);
+  }
+
+  return error;
+}
+
 // CONCATENATED MODULE: ./node_modules/@wordpress/redux-routine/build-module/is-action.js
 /**
- * External dependencies
+ * External imports
  */
 
 /**
@@ -152,6 +171,8 @@ function isActionOfType(object, expectedType) {
 }
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/redux-routine/build-module/runtime.js
+
+
 /**
  * External dependencies
  */
@@ -161,6 +182,7 @@ function isActionOfType(object, expectedType) {
 /**
  * Internal dependencies
  */
+
 
 
 /**
@@ -185,9 +207,11 @@ function createRuntime() {
 
       if (is_promise_default()(routine)) {
         // Async control routine awaits resolution.
-        routine.then(yieldNext, yieldError);
+        routine.then(yieldNext, function (error) {
+          return yieldError(castError(error));
+        });
       } else {
-        yieldNext(routine);
+        next(routine);
       }
 
       return true;
@@ -209,7 +233,7 @@ function createRuntime() {
   return function (action) {
     return new Promise(function (resolve, reject) {
       return rungenRuntime(action, function (result) {
-        if (isAction(result)) {
+        if (Object(esm_typeof["a" /* default */])(result) === 'object' && Object(external_lodash_["isString"])(result.type)) {
           dispatch(result);
         }
 
@@ -342,6 +366,29 @@ var cps = exports.cps = function cps(value, next, rungen, yieldNext, raiseNext) 
 };
 
 exports.default = [call, cps];
+
+/***/ }),
+
+/***/ "U8pU":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _typeof; });
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
 
 /***/ }),
 

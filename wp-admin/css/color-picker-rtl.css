@@ -1,7 +1,5 @@
-/* rtl:ignore */
 .wp-color-picker {
 	width: 80px;
-	direction: ltr;
 }
 
 .wp-picker-container .hidden {
@@ -22,7 +20,7 @@
 	border-right: 1px solid #ccc;
 	color: #555;
 	display: block;
-	line-height: 2;
+	line-height: 22px;
 	padding: 0 6px;
 	text-align: center;
 }
@@ -41,13 +39,13 @@
 	border-right: 1px solid #999;
 }
 
-.wp-picker-container {
+.wp-picker-containers {
 	display: inline-block;
 }
 
 .wp-color-result:focus {
 	border-color: #5b9dd9;
-	box-shadow: 0 0 3px rgba(0, 115, 170, 0.8);
+	box-shadow: 0 0 3px rgba( 0, 115, 170, .8 );
 }
 
 .wp-color-result:active {
@@ -89,7 +87,7 @@
 	width: 65px;
 	font-size: 12px;
 	font-family: monospace;
-	line-height: 1.4;
+	line-height: 16px;
 	margin: 0;
 	vertical-align: top;
 }
@@ -117,14 +115,14 @@
 .iris-picker .iris-strip .ui-slider-handle:focus {
 	box-shadow:
 		0 0 0 1px #5b9dd9,
-		0 0 2px 1px rgba(30, 140, 190, 0.8);
+		0 0 2px 1px rgba(30, 140, 190, .8);
 }
 
 .iris-picker .iris-palette:focus {
 	box-shadow:
-		inset 0 0 5px rgba(0, 0, 0, 0.4),
+		inset 0 0 5px rgba(0,0,0,.4),
 		0 0 0 1px #5b9dd9,
-		0 0 2px 1px rgba(30, 140, 190, 0.8);
+		0 0 2px 1px rgba(30, 140, 190, .8);
 }
 
 @media screen and (max-width: 782px) {
@@ -132,7 +130,7 @@
 		width: 80px;
 		padding: 6px 5px 5px;
 		font-size: 16px;
-		line-height: 1.15;
+		line-height: 18px;
 	}
 
 	.wp-customizer .wp-picker-container input[type="text"].wp-color-picker {
@@ -143,12 +141,12 @@
 		height: auto;
 		padding: 0 40px 0 0;
 		font-size: 14px;
-		line-height: 2.1;
+		line-height: 29px;
 	}
 
 	.wp-customizer .wp-picker-container .wp-color-result.button {
 		font-size: 13px;
-		line-height: 2;
+		line-height: 26px;
 	}
 
 	.wp-picker-container .wp-color-result-text {
@@ -165,7 +163,7 @@
 @media screen and (max-width: 640px) {
 	.wp-customizer .wp-picker-container .wp-color-result.button {
 		font-size: 14px;
-		line-height: 2.1;
+		line-height: 29px;
 	}
 
 	.wp-customizer .wp-picker-container input[type="text"].wp-color-picker {

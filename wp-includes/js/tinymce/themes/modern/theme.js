@@ -1,5 +1,5 @@
 (function () {
-var modern = (function (domGlobals) {
+var modern = (function () {
     'use strict';
 
     var global = tinymce.util.Tools.resolve('tinymce.ThemeManager');
@@ -172,13 +172,13 @@ var modern = (function (domGlobals) {
       var eq = function (o) {
         return o.isNone();
       };
-      var call = function (thunk) {
+      var call$$1 = function (thunk) {
         return thunk();
       };
       var id = function (n) {
         return n;
       };
-      var noop = function () {
+      var noop$$1 = function () {
       };
       var nul = function () {
         return null;
@@ -194,17 +194,17 @@ var modern = (function (domGlobals) {
         isSome: never$1,
         isNone: always$1,
         getOr: id,
-        getOrThunk: call,
+        getOrThunk: call$$1,
         getOrDie: function (msg) {
           throw new Error(msg || 'error: getOrDie called on none.');
         },
         getOrNull: nul,
         getOrUndefined: undef,
         or: id,
-        orThunk: call,
+        orThunk: call$$1,
         map: none,
         ap: none,
-        each: noop,
+        each: noop$$1,
         bind: none,
         flatten: none,
         exists: never$1,
@@ -1194,8 +1194,8 @@ var modern = (function (domGlobals) {
       id: function () {
         return 'mceu_' + count++;
       },
-      create: function (name, attrs, children) {
-        var elm = domGlobals.document.createElement(name);
+      create: function (name$$1, attrs, children) {
+        var elm = document.createElement(name$$1);
         global$3.DOM.setAttribs(elm, attrs);
         if (typeof children === 'string') {
           elm.innerHTML = children;
@@ -1233,13 +1233,13 @@ var modern = (function (domGlobals) {
         return global$3.DOM.getPos(elm, root || funcs.getContainer());
       },
       getContainer: function () {
-        return global$8.container ? global$8.container : domGlobals.document.body;
+        return global$8.container ? global$8.container : document.body;
       },
       getViewPort: function (win) {
         return global$3.DOM.getViewPort(win);
       },
       get: function (id) {
-        return domGlobals.document.getElementById(id);
+        return document.getElementById(id);
       },
       addClass: function (elm, cls) {
         return global$3.DOM.addClass(elm, cls);
@@ -1253,20 +1253,20 @@ var modern = (function (domGlobals) {
       toggleClass: function (elm, cls, state) {
         return global$3.DOM.toggleClass(elm, cls, state);
       },
-      css: function (elm, name, value) {
-        return global$3.DOM.setStyle(elm, name, value);
+      css: function (elm, name$$1, value) {
+        return global$3.DOM.setStyle(elm, name$$1, value);
       },
-      getRuntimeStyle: function (elm, name) {
-        return global$3.DOM.getStyle(elm, name, true);
+      getRuntimeStyle: function (elm, name$$1) {
+        return global$3.DOM.getStyle(elm, name$$1, true);
       },
-      on: function (target, name, callback, scope) {
-        return global$3.DOM.bind(target, name, callback, scope);
+      on: function (target, name$$1, callback, scope) {
+        return global$3.DOM.bind(target, name$$1, callback, scope);
       },
-      off: function (target, name, callback) {
-        return global$3.DOM.unbind(target, name, callback);
+      off: function (target, name$$1, callback) {
+        return global$3.DOM.unbind(target, name$$1, callback);
       },
-      fire: function (target, name, args) {
-        return global$3.DOM.fire(target, name, args);
+      fire: function (target, name$$1, args) {
+        return global$3.DOM.fire(target, name$$1, args);
       },
       innerHtml: function (elm, html) {
         global$3.DOM.setHTML(elm, html);
@@ -1285,7 +1285,7 @@ var modern = (function (domGlobals) {
       pos = funcs.getPos(targetElm, UiContainer.getUiContainer(ctrl));
       x = pos.x;
       y = pos.y;
-      if (isFixed(ctrl) && isStatic(domGlobals.document.body)) {
+      if (isFixed(ctrl) && isStatic(document.body)) {
         x -= viewport.x;
         y -= viewport.y;
       }
@@ -1337,11 +1337,11 @@ var modern = (function (domGlobals) {
       };
     };
     var getWindowViewPort = function () {
-      var win = domGlobals.window;
-      var x = Math.max(win.pageXOffset, domGlobals.document.body.scrollLeft, domGlobals.document.documentElement.scrollLeft);
-      var y = Math.max(win.pageYOffset, domGlobals.document.body.scrollTop, domGlobals.document.documentElement.scrollTop);
-      var w = win.innerWidth || domGlobals.document.documentElement.clientWidth;
-      var h = win.innerHeight || domGlobals.document.documentElement.clientHeight;
+      var win = window;
+      var x = Math.max(win.pageXOffset, document.body.scrollLeft, document.documentElement.scrollLeft);
+      var y = Math.max(win.pageYOffset, document.body.scrollTop, document.documentElement.scrollTop);
+      var w = win.innerWidth || document.documentElement.clientWidth;
+      var h = win.innerHeight || document.documentElement.clientHeight;
       return {
         x: x,
         y: y,
@@ -1378,12 +1378,12 @@ var modern = (function (domGlobals) {
         return this.moveTo(pos.x, pos.y);
       },
       moveBy: function (dx, dy) {
-        var self = this, rect = self.layoutRect();
-        self.moveTo(rect.x + dx, rect.y + dy);
-        return self;
+        var self$$1 = this, rect = self$$1.layoutRect();
+        self$$1.moveTo(rect.x + dx, rect.y + dy);
+        return self$$1;
       },
       moveTo: function (x, y) {
-        var self = this;
+        var self$$1 = this;
         function constrain(value, max, size) {
           if (value < 0) {
             return 0;
@@ -1394,14 +1394,14 @@ var modern = (function (domGlobals) {
           }
           return value;
         }
-        if (self.settings.constrainToViewport) {
+        if (self$$1.settings.constrainToViewport) {
           var viewPortRect = getViewPortRect(this);
-          var layoutRect = self.layoutRect();
+          var layoutRect = self$$1.layoutRect();
           x = constrain(x, viewPortRect.w + viewPortRect.x, layoutRect.w);
           y = constrain(y, viewPortRect.h + viewPortRect.y, layoutRect.h);
         }
-        var uiContainer = UiContainer.getUiContainer(self);
-        if (uiContainer && isStatic(uiContainer) && !isFixed(self)) {
+        var uiContainer = UiContainer.getUiContainer(self$$1);
+        if (uiContainer && isStatic(uiContainer) && !isFixed(self$$1)) {
           x -= uiContainer.scrollLeft;
           y -= uiContainer.scrollTop;
         }
@@ -1409,20 +1409,20 @@ var modern = (function (domGlobals) {
           x += 1;
           y += 1;
         }
-        if (self.state.get('rendered')) {
-          self.layoutRect({
+        if (self$$1.state.get('rendered')) {
+          self$$1.layoutRect({
             x: x,
             y: y
           }).repaint();
         } else {
-          self.settings.x = x;
-          self.settings.y = y;
+          self$$1.settings.x = x;
+          self$$1.settings.y = y;
         }
-        self.fire('move', {
+        self$$1.fire('move', {
           x: x,
           y: y
         });
-        return self;
+        return self$$1;
       }
     };
 
@@ -2046,13 +2046,13 @@ var modern = (function (domGlobals) {
     var dirtyCtrls = {}, animationFrameRequested;
     var ReflowQueue = {
       add: function (ctrl) {
-        var parent = ctrl.parent();
-        if (parent) {
-          if (!parent._layout || parent._layout.isNative()) {
+        var parent$$1 = ctrl.parent();
+        if (parent$$1) {
+          if (!parent$$1._layout || parent$$1._layout.isNative()) {
             return;
           }
-          if (!dirtyCtrls[parent._id]) {
-            dirtyCtrls[parent._id] = parent;
+          if (!dirtyCtrls[parent$$1._id]) {
+            dirtyCtrls[parent$$1._id] = parent$$1;
           }
           if (!animationFrameRequested) {
             animationFrameRequested = true;
@@ -2066,7 +2066,7 @@ var modern = (function (domGlobals) {
                 }
               }
               dirtyCtrls = {};
-            }, domGlobals.document.body);
+            }, document.body);
           }
         }
       },
@@ -2077,7 +2077,7 @@ var modern = (function (domGlobals) {
       }
     };
 
-    var hasMouseWheelEventSupport = 'onmousewheel' in domGlobals.document;
+    var hasMouseWheelEventSupport = 'onmousewheel' in document;
     var hasWheelEventSupport = false;
     var classPrefix = 'mce-';
     var Control, idCounter = 0;
@@ -2088,59 +2088,59 @@ var modern = (function (domGlobals) {
       },
       classPrefix: classPrefix,
       init: function (settings) {
-        var self = this;
+        var self$$1 = this;
         var classes, defaultClasses;
         function applyClasses(classes) {
           var i;
           classes = classes.split(' ');
           for (i = 0; i < classes.length; i++) {
-            self.classes.add(classes[i]);
+            self$$1.classes.add(classes[i]);
           }
         }
-        self.settings = settings = global$2.extend({}, self.Defaults, settings);
-        self._id = settings.id || 'mceu_' + idCounter++;
-        self._aria = { role: settings.role };
-        self._elmCache = {};
-        self.$ = global$9;
-        self.state = new ObservableObject({
+        self$$1.settings = settings = global$2.extend({}, self$$1.Defaults, settings);
+        self$$1._id = settings.id || 'mceu_' + idCounter++;
+        self$$1._aria = { role: settings.role };
+        self$$1._elmCache = {};
+        self$$1.$ = global$9;
+        self$$1.state = new ObservableObject({
           visible: true,
           active: false,
           disabled: false,
           value: ''
         });
-        self.data = new ObservableObject(settings.data);
-        self.classes = new ClassList(function () {
-          if (self.state.get('rendered')) {
-            self.getEl().className = this.toString();
+        self$$1.data = new ObservableObject(settings.data);
+        self$$1.classes = new ClassList(function () {
+          if (self$$1.state.get('rendered')) {
+            self$$1.getEl().className = this.toString();
           }
         });
-        self.classes.prefix = self.classPrefix;
+        self$$1.classes.prefix = self$$1.classPrefix;
         classes = settings.classes;
         if (classes) {
-          if (self.Defaults) {
-            defaultClasses = self.Defaults.classes;
+          if (self$$1.Defaults) {
+            defaultClasses = self$$1.Defaults.classes;
             if (defaultClasses && classes !== defaultClasses) {
               applyClasses(defaultClasses);
             }
           }
           applyClasses(classes);
         }
-        global$2.each('title text name visible disabled active value'.split(' '), function (name) {
-          if (name in settings) {
-            self[name](settings[name]);
+        global$2.each('title text name visible disabled active value'.split(' '), function (name$$1) {
+          if (name$$1 in settings) {
+            self$$1[name$$1](settings[name$$1]);
           }
         });
-        self.on('click', function () {
-          if (self.disabled()) {
+        self$$1.on('click', function () {
+          if (self$$1.disabled()) {
             return false;
           }
         });
-        self.settings = settings;
-        self.borderBox = BoxUtils.parseBox(settings.border);
-        self.paddingBox = BoxUtils.parseBox(settings.padding);
-        self.marginBox = BoxUtils.parseBox(settings.margin);
+        self$$1.settings = settings;
+        self$$1.borderBox = BoxUtils.parseBox(settings.border);
+        self$$1.paddingBox = BoxUtils.parseBox(settings.padding);
+        self$$1.marginBox = BoxUtils.parseBox(settings.margin);
         if (settings.hidden) {
-          self.hide();
+          self$$1.hide();
         }
       },
       Properties: 'parent,name',
@@ -2161,15 +2161,15 @@ var modern = (function (domGlobals) {
         return ctrl;
       },
       initLayoutRect: function () {
-        var self = this;
-        var settings = self.settings;
+        var self$$1 = this;
+        var settings = self$$1.settings;
         var borderBox, layoutRect;
-        var elm = self.getEl();
+        var elm = self$$1.getEl();
         var width, height, minWidth, minHeight, autoResize;
         var startMinWidth, startMinHeight, initialSize;
-        borderBox = self.borderBox = self.borderBox || BoxUtils.measureBox(elm, 'border');
-        self.paddingBox = self.paddingBox || BoxUtils.measureBox(elm, 'padding');
-        self.marginBox = self.marginBox || BoxUtils.measureBox(elm, 'margin');
+        borderBox = self$$1.borderBox = self$$1.borderBox || BoxUtils.measureBox(elm, 'border');
+        self$$1.paddingBox = self$$1.paddingBox || BoxUtils.measureBox(elm, 'padding');
+        self$$1.marginBox = self$$1.marginBox || BoxUtils.measureBox(elm, 'margin');
         initialSize = funcs.getSize(elm);
         startMinWidth = settings.minWidth;
         startMinHeight = settings.minHeight;
@@ -2185,7 +2185,7 @@ var modern = (function (domGlobals) {
         var deltaH = borderBox.top + borderBox.bottom;
         var maxW = settings.maxWidth || 65535;
         var maxH = settings.maxHeight || 65535;
-        self._layoutRect = layoutRect = {
+        self$$1._layoutRect = layoutRect = {
           x: settings.x || 0,
           y: settings.y || 0,
           w: width,
@@ -2205,14 +2205,14 @@ var modern = (function (domGlobals) {
           autoResize: autoResize,
           scrollW: 0
         };
-        self._lastLayoutRect = {};
+        self$$1._lastLayoutRect = {};
         return layoutRect;
       },
       layoutRect: function (newRect) {
-        var self = this;
-        var curRect = self._layoutRect, lastLayoutRect, size, deltaWidth, deltaHeight, repaintControls;
+        var self$$1 = this;
+        var curRect = self$$1._layoutRect, lastLayoutRect, size, deltaWidth, deltaHeight, repaintControls;
         if (!curRect) {
-          curRect = self.initLayoutRect();
+          curRect = self$$1.initLayoutRect();
         }
         if (newRect) {
           deltaWidth = curRect.deltaW;
@@ -2263,13 +2263,13 @@ var modern = (function (domGlobals) {
           if (newRect.contentH !== undefined) {
             curRect.contentH = newRect.contentH;
           }
-          lastLayoutRect = self._lastLayoutRect;
+          lastLayoutRect = self$$1._lastLayoutRect;
           if (lastLayoutRect.x !== curRect.x || lastLayoutRect.y !== curRect.y || lastLayoutRect.w !== curRect.w || lastLayoutRect.h !== curRect.h) {
             repaintControls = Control.repaintControls;
             if (repaintControls) {
-              if (repaintControls.map && !repaintControls.map[self._id]) {
-                repaintControls.push(self);
-                repaintControls.map[self._id] = true;
+              if (repaintControls.map && !repaintControls.map[self$$1._id]) {
+                repaintControls.push(self$$1);
+                repaintControls.map[self$$1._id] = true;
               }
             }
             lastLayoutRect.x = curRect.x;
@@ -2277,21 +2277,21 @@ var modern = (function (domGlobals) {
             lastLayoutRect.w = curRect.w;
             lastLayoutRect.h = curRect.h;
           }
-          return self;
+          return self$$1;
         }
         return curRect;
       },
       repaint: function () {
-        var self = this;
+        var self$$1 = this;
         var style, bodyStyle, bodyElm, rect, borderBox;
         var borderW, borderH, lastRepaintRect, round, value;
-        round = !domGlobals.document.createRange ? Math.round : function (value) {
+        round = !document.createRange ? Math.round : function (value) {
           return value;
         };
-        style = self.getEl().style;
-        rect = self._layoutRect;
-        lastRepaintRect = self._lastRepaintRect || {};
-        borderBox = self.borderBox;
+        style = self$$1.getEl().style;
+        rect = self$$1._layoutRect;
+        lastRepaintRect = self$$1._lastRepaintRect || {};
+        borderBox = self$$1.borderBox;
         borderW = borderBox.left + borderBox.right;
         borderH = borderBox.top + borderBox.bottom;
         if (rect.x !== lastRepaintRect.x) {
@@ -2312,92 +2312,92 @@ var modern = (function (domGlobals) {
           style.height = (value >= 0 ? value : 0) + 'px';
           lastRepaintRect.h = rect.h;
         }
-        if (self._hasBody && rect.innerW !== lastRepaintRect.innerW) {
+        if (self$$1._hasBody && rect.innerW !== lastRepaintRect.innerW) {
           value = round(rect.innerW);
-          bodyElm = self.getEl('body');
+          bodyElm = self$$1.getEl('body');
           if (bodyElm) {
             bodyStyle = bodyElm.style;
             bodyStyle.width = (value >= 0 ? value : 0) + 'px';
           }
           lastRepaintRect.innerW = rect.innerW;
         }
-        if (self._hasBody && rect.innerH !== lastRepaintRect.innerH) {
+        if (self$$1._hasBody && rect.innerH !== lastRepaintRect.innerH) {
           value = round(rect.innerH);
-          bodyElm = bodyElm || self.getEl('body');
+          bodyElm = bodyElm || self$$1.getEl('body');
           if (bodyElm) {
             bodyStyle = bodyStyle || bodyElm.style;
             bodyStyle.height = (value >= 0 ? value : 0) + 'px';
           }
           lastRepaintRect.innerH = rect.innerH;
         }
-        self._lastRepaintRect = lastRepaintRect;
-        self.fire('repaint', {}, false);
+        self$$1._lastRepaintRect = lastRepaintRect;
+        self$$1.fire('repaint', {}, false);
       },
       updateLayoutRect: function () {
-        var self = this;
-        self.parent()._lastRect = null;
-        funcs.css(self.getEl(), {
+        var self$$1 = this;
+        self$$1.parent()._lastRect = null;
+        funcs.css(self$$1.getEl(), {
           width: '',
           height: ''
         });
-        self._layoutRect = self._lastRepaintRect = self._lastLayoutRect = null;
-        self.initLayoutRect();
+        self$$1._layoutRect = self$$1._lastRepaintRect = self$$1._lastLayoutRect = null;
+        self$$1.initLayoutRect();
       },
-      on: function (name, callback) {
-        var self = this;
-        function resolveCallbackName(name) {
+      on: function (name$$1, callback) {
+        var self$$1 = this;
+        function resolveCallbackName(name$$1) {
           var callback, scope;
-          if (typeof name !== 'string') {
-            return name;
+          if (typeof name$$1 !== 'string') {
+            return name$$1;
           }
           return function (e) {
             if (!callback) {
-              self.parentsAndSelf().each(function (ctrl) {
+              self$$1.parentsAndSelf().each(function (ctrl) {
                 var callbacks = ctrl.settings.callbacks;
-                if (callbacks && (callback = callbacks[name])) {
+                if (callbacks && (callback = callbacks[name$$1])) {
                   scope = ctrl;
                   return false;
                 }
               });
             }
             if (!callback) {
-              e.action = name;
+              e.action = name$$1;
               this.fire('execute', e);
               return;
             }
             return callback.call(scope, e);
           };
         }
-        getEventDispatcher(self).on(name, resolveCallbackName(callback));
-        return self;
+        getEventDispatcher(self$$1).on(name$$1, resolveCallbackName(callback));
+        return self$$1;
       },
-      off: function (name, callback) {
-        getEventDispatcher(this).off(name, callback);
+      off: function (name$$1, callback) {
+        getEventDispatcher(this).off(name$$1, callback);
         return this;
       },
-      fire: function (name, args, bubble) {
-        var self = this;
+      fire: function (name$$1, args, bubble) {
+        var self$$1 = this;
         args = args || {};
         if (!args.control) {
-          args.control = self;
+          args.control = self$$1;
         }
-        args = getEventDispatcher(self).fire(name, args);
-        if (bubble !== false && self.parent) {
-          var parent = self.parent();
-          while (parent && !args.isPropagationStopped()) {
-            parent.fire(name, args, false);
-            parent = parent.parent();
+        args = getEventDispatcher(self$$1).fire(name$$1, args);
+        if (bubble !== false && self$$1.parent) {
+          var parent$$1 = self$$1.parent();
+          while (parent$$1 && !args.isPropagationStopped()) {
+            parent$$1.fire(name$$1, args, false);
+            parent$$1 = parent$$1.parent();
           }
         }
         return args;
       },
-      hasEventListeners: function (name) {
-        return getEventDispatcher(this).has(name);
+      hasEventListeners: function (name$$1) {
+        return getEventDispatcher(this).has(name$$1);
       },
       parents: function (selector) {
-        var self = this;
+        var self$$1 = this;
         var ctrl, parents = new Collection$2();
-        for (ctrl = self.parent(); ctrl; ctrl = ctrl.parent()) {
+        for (ctrl = self$$1.parent(); ctrl; ctrl = ctrl.parent()) {
           parents.add(ctrl);
         }
         if (selector) {
@@ -2444,16 +2444,16 @@ var modern = (function (domGlobals) {
         this.getEl().blur();
         return this;
       },
-      aria: function (name, value) {
-        var self = this, elm = self.getEl(self.ariaTarget);
+      aria: function (name$$1, value) {
+        var self$$1 = this, elm = self$$1.getEl(self$$1.ariaTarget);
         if (typeof value === 'undefined') {
-          return self._aria[name];
+          return self$$1._aria[name$$1];
         }
-        self._aria[name] = value;
-        if (self.state.get('rendered')) {
-          elm.setAttribute(name === 'role' ? name : 'aria-' + name, value);
+        self$$1._aria[name$$1] = value;
+        if (self$$1.state.get('rendered')) {
+          elm.setAttribute(name$$1 === 'role' ? name$$1 : 'aria-' + name$$1, value);
         }
-        return self;
+        return self$$1;
       },
       encode: function (text, translate) {
         if (translate !== false) {
@@ -2467,55 +2467,55 @@ var modern = (function (domGlobals) {
         return Control.translate ? Control.translate(text) : text;
       },
       before: function (items) {
-        var self = this, parent = self.parent();
-        if (parent) {
-          parent.insert(items, parent.items().indexOf(self), true);
+        var self$$1 = this, parent$$1 = self$$1.parent();
+        if (parent$$1) {
+          parent$$1.insert(items, parent$$1.items().indexOf(self$$1), true);
         }
-        return self;
+        return self$$1;
       },
       after: function (items) {
-        var self = this, parent = self.parent();
-        if (parent) {
-          parent.insert(items, parent.items().indexOf(self));
+        var self$$1 = this, parent$$1 = self$$1.parent();
+        if (parent$$1) {
+          parent$$1.insert(items, parent$$1.items().indexOf(self$$1));
         }
-        return self;
+        return self$$1;
       },
       remove: function () {
-        var self = this;
-        var elm = self.getEl();
-        var parent = self.parent();
+        var self$$1 = this;
+        var elm = self$$1.getEl();
+        var parent$$1 = self$$1.parent();
         var newItems, i;
-        if (self.items) {
-          var controls = self.items().toArray();
+        if (self$$1.items) {
+          var controls = self$$1.items().toArray();
           i = controls.length;
           while (i--) {
             controls[i].remove();
           }
         }
-        if (parent && parent.items) {
+        if (parent$$1 && parent$$1.items) {
           newItems = [];
-          parent.items().each(function (item) {
-            if (item !== self) {
+          parent$$1.items().each(function (item) {
+            if (item !== self$$1) {
               newItems.push(item);
             }
           });
-          parent.items().set(newItems);
-          parent._lastRect = null;
+          parent$$1.items().set(newItems);
+          parent$$1._lastRect = null;
         }
-        if (self._eventsRoot && self._eventsRoot === self) {
+        if (self$$1._eventsRoot && self$$1._eventsRoot === self$$1) {
           global$9(elm).off();
         }
-        var lookup = self.getRoot().controlIdLookup;
+        var lookup = self$$1.getRoot().controlIdLookup;
         if (lookup) {
-          delete lookup[self._id];
+          delete lookup[self$$1._id];
         }
         if (elm && elm.parentNode) {
           elm.parentNode.removeChild(elm);
         }
-        self.state.set('rendered', false);
-        self.state.destroy();
-        self.fire('remove');
-        return self;
+        self$$1.state.set('rendered', false);
+        self$$1.state.destroy();
+        self$$1.fire('remove');
+        return self$$1;
       },
       renderBefore: function (elm) {
         global$9(elm).before(this.renderHtml());
@@ -2535,81 +2535,81 @@ var modern = (function (domGlobals) {
         return '<div id="' + this._id + '" class="' + this.classes + '"></div>';
       },
       postRender: function () {
-        var self = this;
-        var settings = self.settings;
-        var elm, box, parent, name, parentEventsRoot;
-        self.$el = global$9(self.getEl());
-        self.state.set('rendered', true);
-        for (name in settings) {
-          if (name.indexOf('on') === 0) {
-            self.on(name.substr(2), settings[name]);
+        var self$$1 = this;
+        var settings = self$$1.settings;
+        var elm, box, parent$$1, name$$1, parentEventsRoot;
+        self$$1.$el = global$9(self$$1.getEl());
+        self$$1.state.set('rendered', true);
+        for (name$$1 in settings) {
+          if (name$$1.indexOf('on') === 0) {
+            self$$1.on(name$$1.substr(2), settings[name$$1]);
           }
         }
-        if (self._eventsRoot) {
-          for (parent = self.parent(); !parentEventsRoot && parent; parent = parent.parent()) {
-            parentEventsRoot = parent._eventsRoot;
+        if (self$$1._eventsRoot) {
+          for (parent$$1 = self$$1.parent(); !parentEventsRoot && parent$$1; parent$$1 = parent$$1.parent()) {
+            parentEventsRoot = parent$$1._eventsRoot;
           }
           if (parentEventsRoot) {
-            for (name in parentEventsRoot._nativeEvents) {
-              self._nativeEvents[name] = true;
+            for (name$$1 in parentEventsRoot._nativeEvents) {
+              self$$1._nativeEvents[name$$1] = true;
             }
           }
         }
-        bindPendingEvents(self);
+        bindPendingEvents(self$$1);
         if (settings.style) {
-          elm = self.getEl();
+          elm = self$$1.getEl();
           if (elm) {
             elm.setAttribute('style', settings.style);
             elm.style.cssText = settings.style;
           }
         }
-        if (self.settings.border) {
-          box = self.borderBox;
-          self.$el.css({
+        if (self$$1.settings.border) {
+          box = self$$1.borderBox;
+          self$$1.$el.css({
             'border-top-width': box.top,
             'border-right-width': box.right,
             'border-bottom-width': box.bottom,
             'border-left-width': box.left
           });
         }
-        var root = self.getRoot();
+        var root = self$$1.getRoot();
         if (!root.controlIdLookup) {
           root.controlIdLookup = {};
         }
-        root.controlIdLookup[self._id] = self;
-        for (var key in self._aria) {
-          self.aria(key, self._aria[key]);
+        root.controlIdLookup[self$$1._id] = self$$1;
+        for (var key in self$$1._aria) {
+          self$$1.aria(key, self$$1._aria[key]);
         }
-        if (self.state.get('visible') === false) {
-          self.getEl().style.display = 'none';
+        if (self$$1.state.get('visible') === false) {
+          self$$1.getEl().style.display = 'none';
         }
-        self.bindStates();
-        self.state.on('change:visible', function (e) {
+        self$$1.bindStates();
+        self$$1.state.on('change:visible', function (e) {
           var state = e.value;
           var parentCtrl;
-          if (self.state.get('rendered')) {
-            self.getEl().style.display = state === false ? 'none' : '';
-            self.getEl().getBoundingClientRect();
+          if (self$$1.state.get('rendered')) {
+            self$$1.getEl().style.display = state === false ? 'none' : '';
+            self$$1.getEl().getBoundingClientRect();
           }
-          parentCtrl = self.parent();
+          parentCtrl = self$$1.parent();
           if (parentCtrl) {
             parentCtrl._lastRect = null;
           }
-          self.fire(state ? 'show' : 'hide');
-          ReflowQueue.add(self);
+          self$$1.fire(state ? 'show' : 'hide');
+          ReflowQueue.add(self$$1);
         });
-        self.fire('postrender', {}, false);
+        self$$1.fire('postrender', {}, false);
       },
       bindStates: function () {
       },
       scrollIntoView: function (align) {
         function getOffset(elm, rootElm) {
-          var x, y, parent = elm;
+          var x, y, parent$$1 = elm;
           x = y = 0;
-          while (parent && parent !== rootElm && parent.nodeType) {
-            x += parent.offsetLeft || 0;
-            y += parent.offsetTop || 0;
-            parent = parent.offsetParent;
+          while (parent$$1 && parent$$1 !== rootElm && parent$$1.nodeType) {
+            x += parent$$1.offsetLeft || 0;
+            y += parent$$1.offsetTop || 0;
+            parent$$1 = parent$$1.offsetParent;
           }
           return {
             x: x,
@@ -2659,20 +2659,20 @@ var modern = (function (domGlobals) {
       },
       reflow: function () {
         ReflowQueue.remove(this);
-        var parent = this.parent();
-        if (parent && parent._layout && !parent._layout.isNative()) {
-          parent.reflow();
+        var parent$$1 = this.parent();
+        if (parent$$1 && parent$$1._layout && !parent$$1._layout.isNative()) {
+          parent$$1.reflow();
         }
         return this;
       }
     };
-    global$2.each('text title visible disabled active value'.split(' '), function (name) {
-      proto$1[name] = function (value) {
+    global$2.each('text title visible disabled active value'.split(' '), function (name$$1) {
+      proto$1[name$$1] = function (value) {
         if (arguments.length === 0) {
-          return this.state.get(name);
+          return this.state.get(name$$1);
         }
         if (typeof value !== 'undefined') {
-          this.state.set(name, value);
+          this.state.set(name$$1, value);
         }
         return this;
       };
@@ -2682,12 +2682,12 @@ var modern = (function (domGlobals) {
       if (!obj._eventDispatcher) {
         obj._eventDispatcher = new global$b({
           scope: obj,
-          toggleEvent: function (name, state) {
-            if (state && global$b.isNative(name)) {
+          toggleEvent: function (name$$1, state) {
+            if (state && global$b.isNative(name$$1)) {
               if (!obj._nativeEvents) {
                 obj._nativeEvents = {};
               }
-              obj._nativeEvents[name] = true;
+              obj._nativeEvents[name$$1] = true;
               if (obj.state.get('rendered')) {
                 bindPendingEvents(obj);
               }
@@ -2698,7 +2698,7 @@ var modern = (function (domGlobals) {
       return obj._eventDispatcher;
     }
     function bindPendingEvents(eventCtrl) {
-      var i, l, parents, eventRootCtrl, nativeEvents, name;
+      var i, l, parents, eventRootCtrl, nativeEvents, name$$1;
       function delegate(e) {
         var control = eventCtrl.getParentCtrl(e.target);
         if (control) {
@@ -2771,11 +2771,11 @@ var modern = (function (domGlobals) {
         if (!eventRootDelegates) {
           eventRootDelegates = eventRootCtrl._delegates = {};
         }
-        for (name in nativeEvents) {
+        for (name$$1 in nativeEvents) {
           if (!nativeEvents) {
             return false;
           }
-          if (name === 'wheel' && !hasWheelEventSupport) {
+          if (name$$1 === 'wheel' && !hasWheelEventSupport) {
             if (hasMouseWheelEventSupport) {
               global$9(eventCtrl.getEl()).on('mousewheel', fixWheelEvent);
             } else {
@@ -2783,16 +2783,16 @@ var modern = (function (domGlobals) {
             }
             continue;
           }
-          if (name === 'mouseenter' || name === 'mouseleave') {
+          if (name$$1 === 'mouseenter' || name$$1 === 'mouseleave') {
             if (!eventRootCtrl._hasMouseEnter) {
               global$9(eventRootCtrl.getEl()).on('mouseleave', mouseLeaveHandler).on('mouseover', mouseEnterHandler);
               eventRootCtrl._hasMouseEnter = 1;
             }
-          } else if (!eventRootDelegates[name]) {
-            global$9(eventRootCtrl.getEl()).on(name, delegate);
-            eventRootDelegates[name] = true;
+          } else if (!eventRootDelegates[name$$1]) {
+            global$9(eventRootCtrl.getEl()).on(name$$1, delegate);
+            eventRootDelegates[name$$1] = true;
           }
-          nativeEvents[name] = false;
+          nativeEvents[name$$1] = false;
         }
       }
     }
@@ -2808,9 +2808,9 @@ var modern = (function (domGlobals) {
         return node && node.nodeType === 1;
       }
       try {
-        focusedElement = domGlobals.document.activeElement;
+        focusedElement = document.activeElement;
       } catch (ex) {
-        focusedElement = domGlobals.document.body;
+        focusedElement = document.body;
       }
       focusedControl = root.getParentCtrl(focusedElement);
       function getRole(elm) {
@@ -2821,17 +2821,17 @@ var modern = (function (domGlobals) {
         return null;
       }
       function getParentRole(elm) {
-        var role, parent = elm || focusedElement;
-        while (parent = parent.parentNode) {
-          if (role = getRole(parent)) {
+        var role, parent$$1 = elm || focusedElement;
+        while (parent$$1 = parent$$1.parentNode) {
+          if (role = getRole(parent$$1)) {
             return role;
           }
         }
       }
-      function getAriaProp(name) {
+      function getAriaProp(name$$1) {
         var elm = focusedElement;
         if (isElement(elm)) {
-          return elm.getAttribute('aria-' + name);
+          return elm.getAttribute('aria-' + name$$1);
         }
       }
       function isTextInputElement(elm) {
@@ -3289,9 +3289,9 @@ var modern = (function (domGlobals) {
     }
     function DragHelper (id, settings) {
       var $eventOverlay;
-      var doc = settings.document || domGlobals.document;
+      var doc = settings.document || document;
       var downButton;
-      var start, stop, drag, startX, startY;
+      var start, stop$$1, drag, startX, startY;
       settings = settings || {};
       var handleElement = doc.getElementById(settings.handle || id);
       start = function (e) {
@@ -3303,8 +3303,8 @@ var modern = (function (domGlobals) {
         handleElm = handleElement;
         startX = e.screenX;
         startY = e.screenY;
-        if (domGlobals.window.getComputedStyle) {
-          cursor = domGlobals.window.getComputedStyle(handleElm, null).getPropertyValue('cursor');
+        if (window.getComputedStyle) {
+          cursor = window.getComputedStyle(handleElm, null).getPropertyValue('cursor');
         } else {
           cursor = handleElm.runtimeStyle.cursor;
         }
@@ -3318,22 +3318,22 @@ var modern = (function (domGlobals) {
           opacity: 0.0001,
           cursor: cursor
         }).appendTo(doc.body);
-        global$9(doc).on('mousemove touchmove', drag).on('mouseup touchend', stop);
+        global$9(doc).on('mousemove touchmove', drag).on('mouseup touchend', stop$$1);
         settings.start(e);
       };
       drag = function (e) {
         updateWithTouchData(e);
         if (e.button !== downButton) {
-          return stop(e);
+          return stop$$1(e);
         }
         e.deltaX = e.screenX - startX;
         e.deltaY = e.screenY - startY;
         e.preventDefault();
         settings.drag(e);
       };
-      stop = function (e) {
+      stop$$1 = function (e) {
         updateWithTouchData(e);
-        global$9(doc).off('mousemove touchmove', drag).off('mouseup touchend', stop);
+        global$9(doc).off('mousemove touchmove', drag).off('mouseup touchend', stop$$1);
         $eventOverlay.remove();
         if (settings.stop) {
           settings.stop(e);
@@ -3490,9 +3490,9 @@ var modern = (function (domGlobals) {
     var visiblePanels = [];
     var zOrder = [];
     var hasModal;
-    function isChildOf(ctrl, parent) {
+    function isChildOf(ctrl, parent$$1) {
       while (ctrl) {
-        if (ctrl === parent) {
+        if (ctrl === parent$$1) {
           return true;
         }
         ctrl = ctrl.parent();
@@ -3523,7 +3523,7 @@ var modern = (function (domGlobals) {
           }
           skipOrHidePanels(e);
         };
-        global$9(domGlobals.document).on('click touchstart', documentClickHandler);
+        global$9(document).on('click touchstart', documentClickHandler);
       }
     }
     function bindDocumentScrollHandler() {
@@ -3535,32 +3535,32 @@ var modern = (function (domGlobals) {
             repositionPanel(visiblePanels[i]);
           }
         };
-        global$9(domGlobals.window).on('scroll', documentScrollHandler);
+        global$9(window).on('scroll', documentScrollHandler);
       }
     }
     function bindWindowResizeHandler() {
       if (!windowResizeHandler) {
-        var docElm_1 = domGlobals.document.documentElement;
+        var docElm_1 = document.documentElement;
         var clientWidth_1 = docElm_1.clientWidth, clientHeight_1 = docElm_1.clientHeight;
         windowResizeHandler = function () {
-          if (!domGlobals.document.all || clientWidth_1 !== docElm_1.clientWidth || clientHeight_1 !== docElm_1.clientHeight) {
+          if (!document.all || clientWidth_1 !== docElm_1.clientWidth || clientHeight_1 !== docElm_1.clientHeight) {
             clientWidth_1 = docElm_1.clientWidth;
             clientHeight_1 = docElm_1.clientHeight;
             FloatPanel.hideAll();
           }
         };
-        global$9(domGlobals.window).on('resize', windowResizeHandler);
+        global$9(window).on('resize', windowResizeHandler);
       }
     }
     function repositionPanel(panel) {
-      var scrollY = funcs.getViewPort().y;
+      var scrollY$$1 = funcs.getViewPort().y;
       function toggleFixedChildPanels(fixed, deltaY) {
-        var parent;
+        var parent$$1;
         for (var i = 0; i < visiblePanels.length; i++) {
           if (visiblePanels[i] !== panel) {
-            parent = visiblePanels[i].parent();
-            while (parent && (parent = parent.parent())) {
-              if (parent === panel) {
+            parent$$1 = visiblePanels[i].parent();
+            while (parent$$1 && (parent$$1 = parent$$1.parent())) {
+              if (parent$$1 === panel) {
                 visiblePanels[i].fixed(fixed).moveBy(0, deltaY).repaint();
               }
             }
@@ -3570,14 +3570,14 @@ var modern = (function (domGlobals) {
       if (panel.settings.autofix) {
         if (!panel.state.get('fixed')) {
           panel._autoFixY = panel.layoutRect().y;
-          if (panel._autoFixY < scrollY) {
+          if (panel._autoFixY < scrollY$$1) {
             panel.fixed(true).layoutRect({ y: 0 }).repaint();
-            toggleFixedChildPanels(true, scrollY - panel._autoFixY);
+            toggleFixedChildPanels(true, scrollY$$1 - panel._autoFixY);
           }
         } else {
-          if (panel._autoFixY > scrollY) {
+          if (panel._autoFixY > scrollY$$1) {
             panel.fixed(false).layoutRect({ y: panel._autoFixY }).repaint();
-            toggleFixedChildPanels(false, panel._autoFixY - scrollY);
+            toggleFixedChildPanels(false, panel._autoFixY - scrollY$$1);
           }
         }
       }
@@ -3620,83 +3620,83 @@ var modern = (function (domGlobals) {
         Resizable
       ],
       init: function (settings) {
-        var self = this;
-        self._super(settings);
-        self._eventsRoot = self;
-        self.classes.add('floatpanel');
+        var self$$1 = this;
+        self$$1._super(settings);
+        self$$1._eventsRoot = self$$1;
+        self$$1.classes.add('floatpanel');
         if (settings.autohide) {
           bindDocumentClickHandler();
           bindWindowResizeHandler();
-          visiblePanels.push(self);
+          visiblePanels.push(self$$1);
         }
         if (settings.autofix) {
           bindDocumentScrollHandler();
-          self.on('move', function () {
+          self$$1.on('move', function () {
             repositionPanel(this);
           });
         }
-        self.on('postrender show', function (e) {
-          if (e.control === self) {
+        self$$1.on('postrender show', function (e) {
+          if (e.control === self$$1) {
             var $modalBlockEl_1;
-            var prefix_1 = self.classPrefix;
-            if (self.modal && !hasModal) {
-              $modalBlockEl_1 = global$9('#' + prefix_1 + 'modal-block', self.getContainerElm());
+            var prefix_1 = self$$1.classPrefix;
+            if (self$$1.modal && !hasModal) {
+              $modalBlockEl_1 = global$9('#' + prefix_1 + 'modal-block', self$$1.getContainerElm());
               if (!$modalBlockEl_1[0]) {
-                $modalBlockEl_1 = global$9('<div id="' + prefix_1 + 'modal-block" class="' + prefix_1 + 'reset ' + prefix_1 + 'fade"></div>').appendTo(self.getContainerElm());
+                $modalBlockEl_1 = global$9('<div id="' + prefix_1 + 'modal-block" class="' + prefix_1 + 'reset ' + prefix_1 + 'fade"></div>').appendTo(self$$1.getContainerElm());
               }
               global$7.setTimeout(function () {
                 $modalBlockEl_1.addClass(prefix_1 + 'in');
-                global$9(self.getEl()).addClass(prefix_1 + 'in');
+                global$9(self$$1.getEl()).addClass(prefix_1 + 'in');
               });
               hasModal = true;
             }
-            addRemove(true, self);
+            addRemove(true, self$$1);
           }
         });
-        self.on('show', function () {
-          self.parents().each(function (ctrl) {
+        self$$1.on('show', function () {
+          self$$1.parents().each(function (ctrl) {
             if (ctrl.state.get('fixed')) {
-              self.fixed(true);
+              self$$1.fixed(true);
               return false;
             }
           });
         });
         if (settings.popover) {
-          self._preBodyHtml = '<div class="' + self.classPrefix + 'arrow"></div>';
-          self.classes.add('popover').add('bottom').add(self.isRtl() ? 'end' : 'start');
+          self$$1._preBodyHtml = '<div class="' + self$$1.classPrefix + 'arrow"></div>';
+          self$$1.classes.add('popover').add('bottom').add(self$$1.isRtl() ? 'end' : 'start');
         }
-        self.aria('label', settings.ariaLabel);
-        self.aria('labelledby', self._id);
-        self.aria('describedby', self.describedBy || self._id + '-none');
+        self$$1.aria('label', settings.ariaLabel);
+        self$$1.aria('labelledby', self$$1._id);
+        self$$1.aria('describedby', self$$1.describedBy || self$$1._id + '-none');
       },
       fixed: function (state) {
-        var self = this;
-        if (self.state.get('fixed') !== state) {
-          if (self.state.get('rendered')) {
+        var self$$1 = this;
+        if (self$$1.state.get('fixed') !== state) {
+          if (self$$1.state.get('rendered')) {
             var viewport = funcs.getViewPort();
             if (state) {
-              self.layoutRect().y -= viewport.y;
+              self$$1.layoutRect().y -= viewport.y;
             } else {
-              self.layoutRect().y += viewport.y;
+              self$$1.layoutRect().y += viewport.y;
             }
           }
-          self.classes.toggle('fixed', state);
-          self.state.set('fixed', state);
+          self$$1.classes.toggle('fixed', state);
+          self$$1.state.set('fixed', state);
         }
-        return self;
+        return self$$1;
       },
       show: function () {
-        var self = this;
+        var self$$1 = this;
         var i;
-        var state = self._super();
+        var state = self$$1._super();
         i = visiblePanels.length;
         while (i--) {
-          if (visiblePanels[i] === self) {
+          if (visiblePanels[i] === self$$1) {
             break;
           }
         }
         if (i === -1) {
-          visiblePanels.push(self);
+          visiblePanels.push(self$$1);
         }
         return state;
       },
@@ -3709,23 +3709,23 @@ var modern = (function (domGlobals) {
         FloatPanel.hideAll();
       },
       close: function () {
-        var self = this;
-        if (!self.fire('close').isDefaultPrevented()) {
-          self.remove();
-          addRemove(false, self);
+        var self$$1 = this;
+        if (!self$$1.fire('close').isDefaultPrevented()) {
+          self$$1.remove();
+          addRemove(false, self$$1);
         }
-        return self;
+        return self$$1;
       },
       remove: function () {
         removeVisiblePanel(this);
         this._super();
       },
       postRender: function () {
-        var self = this;
-        if (self.settings.bodyRole) {
-          this.getEl('body').setAttribute('role', self.settings.bodyRole);
+        var self$$1 = this;
+        if (self$$1.settings.bodyRole) {
+          this.getEl('body').setAttribute('role', self$$1.settings.bodyRole);
         }
-        return self._super();
+        return self$$1._super();
       }
     });
     FloatPanel.hideAll = function () {
@@ -4227,9 +4227,9 @@ var modern = (function (domGlobals) {
         return;
       }
       if (!viewport) {
-        viewport = domGlobals.document.createElement('meta');
+        viewport = document.createElement('meta');
         viewport.setAttribute('name', 'viewport');
-        domGlobals.document.getElementsByTagName('head')[0].appendChild(viewport);
+        document.getElementsByTagName('head')[0].appendChild(viewport);
       }
       contentValue = viewport.getAttribute('content');
       if (contentValue && typeof oldMetaValue !== 'undefined') {
@@ -4240,8 +4240,8 @@ var modern = (function (domGlobals) {
     function toggleBodyFullScreenClasses(classPrefix, state) {
       if (checkFullscreenWindows() && state === false) {
         global$9([
-          domGlobals.document.documentElement,
-          domGlobals.document.body
+          document.documentElement,
+          document.body
         ]).removeClass(classPrefix + 'fullscreen');
       }
     }
@@ -4256,17 +4256,17 @@ var modern = (function (domGlobals) {
     function handleWindowResize() {
       if (!global$8.desktop) {
         var lastSize_1 = {
-          w: domGlobals.window.innerWidth,
-          h: domGlobals.window.innerHeight
+          w: window.innerWidth,
+          h: window.innerHeight
         };
         global$7.setInterval(function () {
-          var w = domGlobals.window.innerWidth, h = domGlobals.window.innerHeight;
+          var w = window.innerWidth, h = window.innerHeight;
           if (lastSize_1.w !== w || lastSize_1.h !== h) {
             lastSize_1 = {
               w: w,
               h: h
             };
-            global$9(domGlobals.window).trigger('resize');
+            global$9(window).trigger('resize');
           }
         }, 100);
       }
@@ -4279,9 +4279,9 @@ var modern = (function (domGlobals) {
           windows[i].moveTo(windows[i].settings.x || Math.max(0, rect.w / 2 - layoutRect.w / 2), windows[i].settings.y || Math.max(0, rect.h / 2 - layoutRect.h / 2));
         }
       }
-      global$9(domGlobals.window).on('resize', reposition);
+      global$9(window).on('resize', reposition);
     }
-    var Window = FloatPanel.extend({
+    var Window$$1 = FloatPanel.extend({
       modal: true,
       Defaults: {
         border: 1,
@@ -4298,73 +4298,73 @@ var modern = (function (domGlobals) {
         }
       },
       init: function (settings) {
-        var self = this;
-        self._super(settings);
-        if (self.isRtl()) {
-          self.classes.add('rtl');
+        var self$$1 = this;
+        self$$1._super(settings);
+        if (self$$1.isRtl()) {
+          self$$1.classes.add('rtl');
         }
-        self.classes.add('window');
-        self.bodyClasses.add('window-body');
-        self.state.set('fixed', true);
+        self$$1.classes.add('window');
+        self$$1.bodyClasses.add('window-body');
+        self$$1.state.set('fixed', true);
         if (settings.buttons) {
-          self.statusbar = new Panel({
+          self$$1.statusbar = new Panel({
             layout: 'flex',
             border: '1 0 0 0',
             spacing: 3,
             padding: 10,
             align: 'center',
-            pack: self.isRtl() ? 'start' : 'end',
+            pack: self$$1.isRtl() ? 'start' : 'end',
             defaults: { type: 'button' },
             items: settings.buttons
           });
-          self.statusbar.classes.add('foot');
-          self.statusbar.parent(self);
+          self$$1.statusbar.classes.add('foot');
+          self$$1.statusbar.parent(self$$1);
         }
-        self.on('click', function (e) {
-          var closeClass = self.classPrefix + 'close';
+        self$$1.on('click', function (e) {
+          var closeClass = self$$1.classPrefix + 'close';
           if (funcs.hasClass(e.target, closeClass) || funcs.hasClass(e.target.parentNode, closeClass)) {
-            self.close();
+            self$$1.close();
           }
         });
-        self.on('cancel', function () {
-          self.close();
+        self$$1.on('cancel', function () {
+          self$$1.close();
         });
-        self.on('move', function (e) {
-          if (e.control === self) {
+        self$$1.on('move', function (e) {
+          if (e.control === self$$1) {
             FloatPanel.hideAll();
           }
         });
-        self.aria('describedby', self.describedBy || self._id + '-none');
-        self.aria('label', settings.title);
-        self._fullscreen = false;
+        self$$1.aria('describedby', self$$1.describedBy || self$$1._id + '-none');
+        self$$1.aria('label', settings.title);
+        self$$1._fullscreen = false;
       },
       recalc: function () {
-        var self = this;
-        var statusbar = self.statusbar;
+        var self$$1 = this;
+        var statusbar$$1 = self$$1.statusbar;
         var layoutRect, width, x, needsRecalc;
-        if (self._fullscreen) {
-          self.layoutRect(funcs.getWindowSize());
-          self.layoutRect().contentH = self.layoutRect().innerH;
+        if (self$$1._fullscreen) {
+          self$$1.layoutRect(funcs.getWindowSize());
+          self$$1.layoutRect().contentH = self$$1.layoutRect().innerH;
         }
-        self._super();
-        layoutRect = self.layoutRect();
-        if (self.settings.title && !self._fullscreen) {
+        self$$1._super();
+        layoutRect = self$$1.layoutRect();
+        if (self$$1.settings.title && !self$$1._fullscreen) {
           width = layoutRect.headerW;
           if (width > layoutRect.w) {
             x = layoutRect.x - Math.max(0, width / 2);
-            self.layoutRect({
+            self$$1.layoutRect({
               w: width,
               x: x
             });
             needsRecalc = true;
           }
         }
-        if (statusbar) {
-          statusbar.layoutRect({ w: self.layoutRect().innerW }).recalc();
-          width = statusbar.layoutRect().minW + layoutRect.deltaW;
+        if (statusbar$$1) {
+          statusbar$$1.layoutRect({ w: self$$1.layoutRect().innerW }).recalc();
+          width = statusbar$$1.layoutRect().minW + layoutRect.deltaW;
           if (width > layoutRect.w) {
             x = layoutRect.x - Math.max(0, width - layoutRect.w);
-            self.layoutRect({
+            self$$1.layoutRect({
               w: width,
               x: x
             });
@@ -4372,158 +4372,158 @@ var modern = (function (domGlobals) {
           }
         }
         if (needsRecalc) {
-          self.recalc();
+          self$$1.recalc();
         }
       },
       initLayoutRect: function () {
-        var self = this;
-        var layoutRect = self._super();
+        var self$$1 = this;
+        var layoutRect = self$$1._super();
         var deltaH = 0, headEl;
-        if (self.settings.title && !self._fullscreen) {
-          headEl = self.getEl('head');
+        if (self$$1.settings.title && !self$$1._fullscreen) {
+          headEl = self$$1.getEl('head');
           var size = funcs.getSize(headEl);
           layoutRect.headerW = size.width;
           layoutRect.headerH = size.height;
           deltaH += layoutRect.headerH;
         }
-        if (self.statusbar) {
-          deltaH += self.statusbar.layoutRect().h;
+        if (self$$1.statusbar) {
+          deltaH += self$$1.statusbar.layoutRect().h;
         }
         layoutRect.deltaH += deltaH;
         layoutRect.minH += deltaH;
         layoutRect.h += deltaH;
         var rect = funcs.getWindowSize();
-        layoutRect.x = self.settings.x || Math.max(0, rect.w / 2 - layoutRect.w / 2);
-        layoutRect.y = self.settings.y || Math.max(0, rect.h / 2 - layoutRect.h / 2);
+        layoutRect.x = self$$1.settings.x || Math.max(0, rect.w / 2 - layoutRect.w / 2);
+        layoutRect.y = self$$1.settings.y || Math.max(0, rect.h / 2 - layoutRect.h / 2);
         return layoutRect;
       },
       renderHtml: function () {
-        var self = this, layout = self._layout, id = self._id, prefix = self.classPrefix;
-        var settings = self.settings;
+        var self$$1 = this, layout = self$$1._layout, id = self$$1._id, prefix = self$$1.classPrefix;
+        var settings = self$$1.settings;
         var headerHtml = '', footerHtml = '', html = settings.html;
-        self.preRender();
-        layout.preRender(self);
+        self$$1.preRender();
+        layout.preRender(self$$1);
         if (settings.title) {
-          headerHtml = '<div id="' + id + '-head" class="' + prefix + 'window-head">' + '<div id="' + id + '-title" class="' + prefix + 'title">' + self.encode(settings.title) + '</div>' + '<div id="' + id + '-dragh" class="' + prefix + 'dragh"></div>' + '<button type="button" class="' + prefix + 'close" aria-hidden="true">' + '<i class="mce-ico mce-i-remove"></i>' + '</button>' + '</div>';
+          headerHtml = '<div id="' + id + '-head" class="' + prefix + 'window-head">' + '<div id="' + id + '-title" class="' + prefix + 'title">' + self$$1.encode(settings.title) + '</div>' + '<div id="' + id + '-dragh" class="' + prefix + 'dragh"></div>' + '<button type="button" class="' + prefix + 'close" aria-hidden="true">' + '<i class="mce-ico mce-i-remove"></i>' + '</button>' + '</div>';
         }
         if (settings.url) {
           html = '<iframe src="' + settings.url + '" tabindex="-1"></iframe>';
         }
         if (typeof html === 'undefined') {
-          html = layout.renderHtml(self);
+          html = layout.renderHtml(self$$1);
         }
-        if (self.statusbar) {
-          footerHtml = self.statusbar.renderHtml();
+        if (self$$1.statusbar) {
+          footerHtml = self$$1.statusbar.renderHtml();
         }
-        return '<div id="' + id + '" class="' + self.classes + '" hidefocus="1">' + '<div class="' + self.classPrefix + 'reset" role="application">' + headerHtml + '<div id="' + id + '-body" class="' + self.bodyClasses + '">' + html + '</div>' + footerHtml + '</div>' + '</div>';
+        return '<div id="' + id + '" class="' + self$$1.classes + '" hidefocus="1">' + '<div class="' + self$$1.classPrefix + 'reset" role="application">' + headerHtml + '<div id="' + id + '-body" class="' + self$$1.bodyClasses + '">' + html + '</div>' + footerHtml + '</div>' + '</div>';
       },
       fullscreen: function (state) {
-        var self = this;
-        var documentElement = domGlobals.document.documentElement;
+        var self$$1 = this;
+        var documentElement = document.documentElement;
         var slowRendering;
-        var prefix = self.classPrefix;
+        var prefix = self$$1.classPrefix;
         var layoutRect;
-        if (state !== self._fullscreen) {
-          global$9(domGlobals.window).on('resize', function () {
+        if (state !== self$$1._fullscreen) {
+          global$9(window).on('resize', function () {
             var time;
-            if (self._fullscreen) {
+            if (self$$1._fullscreen) {
               if (!slowRendering) {
                 time = new Date().getTime();
                 var rect = funcs.getWindowSize();
-                self.moveTo(0, 0).resizeTo(rect.w, rect.h);
+                self$$1.moveTo(0, 0).resizeTo(rect.w, rect.h);
                 if (new Date().getTime() - time > 50) {
                   slowRendering = true;
                 }
               } else {
-                if (!self._timer) {
-                  self._timer = global$7.setTimeout(function () {
+                if (!self$$1._timer) {
+                  self$$1._timer = global$7.setTimeout(function () {
                     var rect = funcs.getWindowSize();
-                    self.moveTo(0, 0).resizeTo(rect.w, rect.h);
-                    self._timer = 0;
+                    self$$1.moveTo(0, 0).resizeTo(rect.w, rect.h);
+                    self$$1._timer = 0;
                   }, 50);
                 }
               }
             }
           });
-          layoutRect = self.layoutRect();
-          self._fullscreen = state;
+          layoutRect = self$$1.layoutRect();
+          self$$1._fullscreen = state;
           if (!state) {
-            self.borderBox = BoxUtils.parseBox(self.settings.border);
-            self.getEl('head').style.display = '';
+            self$$1.borderBox = BoxUtils.parseBox(self$$1.settings.border);
+            self$$1.getEl('head').style.display = '';
             layoutRect.deltaH += layoutRect.headerH;
             global$9([
               documentElement,
-              domGlobals.document.body
+              document.body
             ]).removeClass(prefix + 'fullscreen');
-            self.classes.remove('fullscreen');
-            self.moveTo(self._initial.x, self._initial.y).resizeTo(self._initial.w, self._initial.h);
+            self$$1.classes.remove('fullscreen');
+            self$$1.moveTo(self$$1._initial.x, self$$1._initial.y).resizeTo(self$$1._initial.w, self$$1._initial.h);
           } else {
-            self._initial = {
+            self$$1._initial = {
               x: layoutRect.x,
               y: layoutRect.y,
               w: layoutRect.w,
               h: layoutRect.h
             };
-            self.borderBox = BoxUtils.parseBox('0');
-            self.getEl('head').style.display = 'none';
+            self$$1.borderBox = BoxUtils.parseBox('0');
+            self$$1.getEl('head').style.display = 'none';
             layoutRect.deltaH -= layoutRect.headerH + 2;
             global$9([
               documentElement,
-              domGlobals.document.body
+              document.body
             ]).addClass(prefix + 'fullscreen');
-            self.classes.add('fullscreen');
+            self$$1.classes.add('fullscreen');
             var rect = funcs.getWindowSize();
-            self.moveTo(0, 0).resizeTo(rect.w, rect.h);
+            self$$1.moveTo(0, 0).resizeTo(rect.w, rect.h);
           }
         }
-        return self.reflow();
+        return self$$1.reflow();
       },
       postRender: function () {
-        var self = this;
+        var self$$1 = this;
         var startPos;
         setTimeout(function () {
-          self.classes.add('in');
-          self.fire('open');
+          self$$1.classes.add('in');
+          self$$1.fire('open');
         }, 0);
-        self._super();
-        if (self.statusbar) {
-          self.statusbar.postRender();
+        self$$1._super();
+        if (self$$1.statusbar) {
+          self$$1.statusbar.postRender();
         }
-        self.focus();
-        this.dragHelper = new DragHelper(self._id + '-dragh', {
+        self$$1.focus();
+        this.dragHelper = new DragHelper(self$$1._id + '-dragh', {
           start: function () {
             startPos = {
-              x: self.layoutRect().x,
-              y: self.layoutRect().y
+              x: self$$1.layoutRect().x,
+              y: self$$1.layoutRect().y
             };
           },
           drag: function (e) {
-            self.moveTo(startPos.x + e.deltaX, startPos.y + e.deltaY);
+            self$$1.moveTo(startPos.x + e.deltaX, startPos.y + e.deltaY);
           }
         });
-        self.on('submit', function (e) {
+        self$$1.on('submit', function (e) {
           if (!e.isDefaultPrevented()) {
-            self.close();
+            self$$1.close();
           }
         });
-        windows.push(self);
+        windows.push(self$$1);
         toggleFullScreenState(true);
       },
       submit: function () {
         return this.fire('submit', { data: this.toJSON() });
       },
       remove: function () {
-        var self = this;
+        var self$$1 = this;
         var i;
-        self.dragHelper.destroy();
-        self._super();
-        if (self.statusbar) {
+        self$$1.dragHelper.destroy();
+        self$$1._super();
+        if (self$$1.statusbar) {
           this.statusbar.remove();
         }
-        toggleBodyFullScreenClasses(self.classPrefix, false);
+        toggleBodyFullScreenClasses(self$$1.classPrefix, false);
         i = windows.length;
         while (i--) {
-          if (windows[i] === self) {
+          if (windows[i] === self$$1) {
             windows.splice(i, 1);
           }
         }
@@ -4536,7 +4536,7 @@ var modern = (function (domGlobals) {
     });
     handleWindowResize();
 
-    var MessageBox = Window.extend({
+    var MessageBox = Window$$1.extend({
       init: function (settings) {
         settings = {
           border: 1,
@@ -4569,14 +4569,14 @@ var modern = (function (domGlobals) {
           var buttons;
           var callback = settings.callback || function () {
           };
-          function createButton(text, status, primary) {
+          function createButton(text, status$$1, primary) {
             return {
               type: 'button',
               text: text,
               subtype: primary ? 'primary' : '',
               onClick: function (e) {
                 e.control.parents()[1].close();
-                callback(status);
+                callback(status$$1);
               }
             };
           }
@@ -4601,7 +4601,7 @@ var modern = (function (domGlobals) {
             buttons = [createButton('Ok', true, true)];
             break;
           }
-          return new Window({
+          return new Window$$1({
             padding: 20,
             x: settings.x,
             y: settings.y,
@@ -4627,7 +4627,7 @@ var modern = (function (domGlobals) {
             onCancel: function () {
               callback(false);
             }
-          }).renderTo(domGlobals.document.body).reflow();
+          }).renderTo(document.body).reflow();
         },
         alert: function (settings, callback) {
           if (typeof settings === 'string') {
@@ -4648,7 +4648,7 @@ var modern = (function (domGlobals) {
     });
 
     function WindowManagerImpl (editor) {
-      var open = function (args, params, closeCallback) {
+      var open$$1 = function (args, params, closeCallback) {
         var win;
         args.title = args.title || ' ';
         args.url = args.url || args.file;
@@ -4682,26 +4682,26 @@ var modern = (function (domGlobals) {
             }
           ];
         }
-        win = new Window(args);
+        win = new Window$$1(args);
         win.on('close', function () {
           closeCallback(win);
         });
         if (args.data) {
           win.on('postRender', function () {
             this.find('*').each(function (ctrl) {
-              var name = ctrl.name();
-              if (name in args.data) {
-                ctrl.value(args.data[name]);
+              var name$$1 = ctrl.name();
+              if (name$$1 in args.data) {
+                ctrl.value(args.data[name$$1]);
               }
             });
           });
         }
         win.features = args || {};
         win.params = params || {};
-        win = win.renderTo(domGlobals.document.body).reflow();
+        win = win.renderTo(document.body).reflow();
         return win;
       };
-      var alert = function (message, choiceCallback, closeCallback) {
+      var alert$$1 = function (message, choiceCallback, closeCallback) {
         var win;
         win = MessageBox.alert(message, function () {
           choiceCallback();
@@ -4711,7 +4711,7 @@ var modern = (function (domGlobals) {
         });
         return win;
       };
-      var confirm = function (message, choiceCallback, closeCallback) {
+      var confirm$$1 = function (message, choiceCallback, closeCallback) {
         var win;
         win = MessageBox.confirm(message, function (state) {
           choiceCallback(state);
@@ -4721,20 +4721,20 @@ var modern = (function (domGlobals) {
         });
         return win;
       };
-      var close = function (window) {
-        window.close();
+      var close$$1 = function (window$$1) {
+        window$$1.close();
       };
-      var getParams = function (window) {
-        return window.params;
+      var getParams = function (window$$1) {
+        return window$$1.params;
       };
-      var setParams = function (window, params) {
-        window.params = params;
+      var setParams = function (window$$1, params) {
+        window$$1.params = params;
       };
       return {
-        open: open,
-        alert: alert,
-        confirm: confirm,
-        close: close,
+        open: open$$1,
+        alert: alert$$1,
+        confirm: confirm$$1,
+        close: close$$1,
         getParams: getParams,
         setParams: setParams
       };
@@ -4847,26 +4847,26 @@ var modern = (function (domGlobals) {
         role: 'button'
       },
       init: function (settings) {
-        var self = this;
+        var self$$1 = this;
         var size;
-        self._super(settings);
-        settings = self.settings;
-        size = self.settings.size;
-        self.on('click mousedown', function (e) {
+        self$$1._super(settings);
+        settings = self$$1.settings;
+        size = self$$1.settings.size;
+        self$$1.on('click mousedown', function (e) {
           e.preventDefault();
         });
-        self.on('touchstart', function (e) {
-          self.fire('click', e);
+        self$$1.on('touchstart', function (e) {
+          self$$1.fire('click', e);
           e.preventDefault();
         });
         if (settings.subtype) {
-          self.classes.add(settings.subtype);
+          self$$1.classes.add(settings.subtype);
         }
         if (size) {
-          self.classes.add('btn-' + size);
+          self$$1.classes.add('btn-' + size);
         }
         if (settings.icon) {
-          self.icon(settings.icon);
+          self$$1.icon(settings.icon);
         }
       },
       icon: function (icon) {
@@ -4886,67 +4886,67 @@ var modern = (function (domGlobals) {
         this._super();
       },
       renderHtml: function () {
-        var self = this, id = self._id, prefix = self.classPrefix;
-        var icon = self.state.get('icon'), image;
-        var text = self.state.get('text');
+        var self$$1 = this, id = self$$1._id, prefix = self$$1.classPrefix;
+        var icon = self$$1.state.get('icon'), image;
+        var text = self$$1.state.get('text');
         var textHtml = '';
         var ariaPressed;
-        var settings = self.settings;
+        var settings = self$$1.settings;
         image = settings.image;
         if (image) {
           icon = 'none';
           if (typeof image !== 'string') {
-            image = domGlobals.window.getSelection ? image[0] : image[1];
+            image = window.getSelection ? image[0] : image[1];
           }
           image = ' style="background-image: url(\'' + image + '\')"';
         } else {
           image = '';
         }
         if (text) {
-          self.classes.add('btn-has-text');
-          textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>';
+          self$$1.classes.add('btn-has-text');
+          textHtml = '<span class="' + prefix + 'txt">' + self$$1.encode(text) + '</span>';
         }
         icon = icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
         ariaPressed = typeof settings.active === 'boolean' ? ' aria-pressed="' + settings.active + '"' : '';
-        return '<div id="' + id + '" class="' + self.classes + '" tabindex="-1"' + ariaPressed + '>' + '<button id="' + id + '-button" role="presentation" type="button" tabindex="-1">' + (icon ? '<i class="' + icon + '"' + image + '></i>' : '') + textHtml + '</button>' + '</div>';
+        return '<div id="' + id + '" class="' + self$$1.classes + '" tabindex="-1"' + ariaPressed + '>' + '<button id="' + id + '-button" role="presentation" type="button" tabindex="-1">' + (icon ? '<i class="' + icon + '"' + image + '></i>' : '') + textHtml + '</button>' + '</div>';
       },
       bindStates: function () {
-        var self = this, $ = self.$, textCls = self.classPrefix + 'txt';
+        var self$$1 = this, $ = self$$1.$, textCls = self$$1.classPrefix + 'txt';
         function setButtonText(text) {
-          var $span = $('span.' + textCls, self.getEl());
+          var $span = $('span.' + textCls, self$$1.getEl());
           if (text) {
             if (!$span[0]) {
-              $('button:first', self.getEl()).append('<span class="' + textCls + '"></span>');
-              $span = $('span.' + textCls, self.getEl());
+              $('button:first', self$$1.getEl()).append('<span class="' + textCls + '"></span>');
+              $span = $('span.' + textCls, self$$1.getEl());
             }
-            $span.html(self.encode(text));
+            $span.html(self$$1.encode(text));
           } else {
             $span.remove();
           }
-          self.classes.toggle('btn-has-text', !!text);
+          self$$1.classes.toggle('btn-has-text', !!text);
         }
-        self.state.on('change:text', function (e) {
+        self$$1.state.on('change:text', function (e) {
           setButtonText(e.value);
         });
-        self.state.on('change:icon', function (e) {
+        self$$1.state.on('change:icon', function (e) {
           var icon = e.value;
-          var prefix = self.classPrefix;
-          self.settings.icon = icon;
-          icon = icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : '';
-          var btnElm = self.getEl().firstChild;
+          var prefix = self$$1.classPrefix;
+          self$$1.settings.icon = icon;
+          icon = icon ? prefix + 'ico ' + prefix + 'i-' + self$$1.settings.icon : '';
+          var btnElm = self$$1.getEl().firstChild;
           var iconElm = btnElm.getElementsByTagName('i')[0];
           if (icon) {
             if (!iconElm || iconElm !== btnElm.firstChild) {
-              iconElm = domGlobals.document.createElement('i');
+              iconElm = document.createElement('i');
               btnElm.insertBefore(iconElm, btnElm.firstChild);
             }
             iconElm.className = icon;
           } else if (iconElm) {
             btnElm.removeChild(iconElm);
           }
-          setButtonText(self.state.get('text'));
+          setButtonText(self$$1.state.get('text'));
         });
-        return self._super();
+        return self$$1._super();
       }
     });
 
@@ -5025,18 +5025,18 @@ var modern = (function (domGlobals) {
         checked: false
       },
       init: function (settings) {
-        var self = this;
-        self._super(settings);
-        self.on('click mousedown', function (e) {
+        var self$$1 = this;
+        self$$1._super(settings);
+        self$$1.on('click mousedown', function (e) {
           e.preventDefault();
         });
-        self.on('click', function (e) {
+        self$$1.on('click', function (e) {
           e.preventDefault();
-          if (!self.disabled()) {
-            self.checked(!self.checked());
+          if (!self$$1.disabled()) {
+            self$$1.checked(!self$$1.checked());
           }
         });
-        self.checked(self.settings.checked);
+        self$$1.checked(self$$1.settings.checked);
       },
       checked: function (state) {
         if (!arguments.length) {
@@ -5052,35 +5052,35 @@ var modern = (function (domGlobals) {
         return this.checked(state);
       },
       renderHtml: function () {
-        var self = this, id = self._id, prefix = self.classPrefix;
-        return '<div id="' + id + '" class="' + self.classes + '" unselectable="on" aria-labelledby="' + id + '-al" tabindex="-1">' + '<i class="' + prefix + 'ico ' + prefix + 'i-checkbox"></i>' + '<span id="' + id + '-al" class="' + prefix + 'label">' + self.encode(self.state.get('text')) + '</span>' + '</div>';
+        var self$$1 = this, id = self$$1._id, prefix = self$$1.classPrefix;
+        return '<div id="' + id + '" class="' + self$$1.classes + '" unselectable="on" aria-labelledby="' + id + '-al" tabindex="-1">' + '<i class="' + prefix + 'ico ' + prefix + 'i-checkbox"></i>' + '<span id="' + id + '-al" class="' + prefix + 'label">' + self$$1.encode(self$$1.state.get('text')) + '</span>' + '</div>';
       },
       bindStates: function () {
-        var self = this;
+        var self$$1 = this;
         function checked(state) {
-          self.classes.toggle('checked', state);
-          self.aria('checked', state);
+          self$$1.classes.toggle('checked', state);
+          self$$1.aria('checked', state);
         }
-        self.state.on('change:text', function (e) {
-          self.getEl('al').firstChild.data = self.translate(e.value);
+        self$$1.state.on('change:text', function (e) {
+          self$$1.getEl('al').firstChild.data = self$$1.translate(e.value);
         });
-        self.state.on('change:checked change:value', function (e) {
-          self.fire('change');
+        self$$1.state.on('change:checked change:value', function (e) {
+          self$$1.fire('change');
           checked(e.value);
         });
-        self.state.on('change:icon', function (e) {
+        self$$1.state.on('change:icon', function (e) {
           var icon = e.value;
-          var prefix = self.classPrefix;
+          var prefix = self$$1.classPrefix;
           if (typeof icon === 'undefined') {
-            return self.settings.icon;
+            return self$$1.settings.icon;
           }
-          self.settings.icon = icon;
-          icon = icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : '';
-          var btnElm = self.getEl().firstChild;
+          self$$1.settings.icon = icon;
+          icon = icon ? prefix + 'ico ' + prefix + 'i-' + self$$1.settings.icon : '';
+          var btnElm = self$$1.getEl().firstChild;
           var iconElm = btnElm.getElementsByTagName('i')[0];
           if (icon) {
             if (!iconElm || iconElm !== btnElm.firstChild) {
-              iconElm = domGlobals.document.createElement('i');
+              iconElm = document.createElement('i');
               btnElm.insertBefore(iconElm, btnElm.firstChild);
             }
             iconElm.className = icon;
@@ -5088,10 +5088,10 @@ var modern = (function (domGlobals) {
             btnElm.removeChild(iconElm);
           }
         });
-        if (self.state.get('checked')) {
+        if (self$$1.state.get('checked')) {
           checked(true);
         }
-        return self._super();
+        return self$$1._super();
       }
     });
 
@@ -5099,62 +5099,62 @@ var modern = (function (domGlobals) {
 
     var ComboBox = Widget.extend({
       init: function (settings) {
-        var self = this;
-        self._super(settings);
-        settings = self.settings;
-        self.classes.add('combobox');
-        self.subinput = true;
-        self.ariaTarget = 'inp';
+        var self$$1 = this;
+        self$$1._super(settings);
+        settings = self$$1.settings;
+        self$$1.classes.add('combobox');
+        self$$1.subinput = true;
+        self$$1.ariaTarget = 'inp';
         settings.menu = settings.menu || settings.values;
         if (settings.menu) {
           settings.icon = 'caret';
         }
-        self.on('click', function (e) {
+        self$$1.on('click', function (e) {
           var elm = e.target;
-          var root = self.getEl();
+          var root = self$$1.getEl();
           if (!global$9.contains(root, elm) && elm !== root) {
             return;
           }
           while (elm && elm !== root) {
             if (elm.id && elm.id.indexOf('-open') !== -1) {
-              self.fire('action');
+              self$$1.fire('action');
               if (settings.menu) {
-                self.showMenu();
+                self$$1.showMenu();
                 if (e.aria) {
-                  self.menu.items()[0].focus();
+                  self$$1.menu.items()[0].focus();
                 }
               }
             }
             elm = elm.parentNode;
           }
         });
-        self.on('keydown', function (e) {
+        self$$1.on('keydown', function (e) {
           var rootControl;
           if (e.keyCode === 13 && e.target.nodeName === 'INPUT') {
             e.preventDefault();
-            self.parents().reverse().each(function (ctrl) {
+            self$$1.parents().reverse().each(function (ctrl) {
               if (ctrl.toJSON) {
                 rootControl = ctrl;
                 return false;
               }
             });
-            self.fire('submit', { data: rootControl.toJSON() });
+            self$$1.fire('submit', { data: rootControl.toJSON() });
           }
         });
-        self.on('keyup', function (e) {
+        self$$1.on('keyup', function (e) {
           if (e.target.nodeName === 'INPUT') {
-            var oldValue = self.state.get('value');
+            var oldValue = self$$1.state.get('value');
             var newValue = e.target.value;
             if (newValue !== oldValue) {
-              self.state.set('value', newValue);
-              self.fire('autocomplete', e);
+              self$$1.state.set('value', newValue);
+              self$$1.fire('autocomplete', e);
             }
           }
         });
-        self.on('mouseover', function (e) {
-          var tooltip = self.tooltip().moveTo(-65535);
-          if (self.statusLevel() && e.target.className.indexOf(self.classPrefix + 'status') !== -1) {
-            var statusMessage = self.statusMessage() || 'Ok';
+        self$$1.on('mouseover', function (e) {
+          var tooltip = self$$1.tooltip().moveTo(-65535);
+          if (self$$1.statusLevel() && e.target.className.indexOf(self$$1.classPrefix + 'status') !== -1) {
+            var statusMessage = self$$1.statusMessage() || 'Ok';
             var rel = tooltip.text(statusMessage).show().testMoveRel(e.target, [
               'bc-tc',
               'bc-tl',
@@ -5180,10 +5180,10 @@ var modern = (function (domGlobals) {
         return this.state.get('statusMessage');
       },
       showMenu: function () {
-        var self = this;
-        var settings = self.settings;
+        var self$$1 = this;
+        var settings = self$$1.settings;
         var menu;
-        if (!self.menu) {
+        if (!self$$1.menu) {
           menu = settings.menu || [];
           if (menu.length) {
             menu = {
@@ -5193,32 +5193,32 @@ var modern = (function (domGlobals) {
           } else {
             menu.type = menu.type || 'menu';
           }
-          self.menu = global$4.create(menu).parent(self).renderTo(self.getContainerElm());
-          self.fire('createmenu');
-          self.menu.reflow();
-          self.menu.on('cancel', function (e) {
-            if (e.control === self.menu) {
-              self.focus();
+          self$$1.menu = global$4.create(menu).parent(self$$1).renderTo(self$$1.getContainerElm());
+          self$$1.fire('createmenu');
+          self$$1.menu.reflow();
+          self$$1.menu.on('cancel', function (e) {
+            if (e.control === self$$1.menu) {
+              self$$1.focus();
             }
           });
-          self.menu.on('show hide', function (e) {
+          self$$1.menu.on('show hide', function (e) {
             e.control.items().each(function (ctrl) {
-              ctrl.active(ctrl.value() === self.value());
+              ctrl.active(ctrl.value() === self$$1.value());
             });
           }).fire('show');
-          self.menu.on('select', function (e) {
-            self.value(e.control.value());
+          self$$1.menu.on('select', function (e) {
+            self$$1.value(e.control.value());
           });
-          self.on('focusin', function (e) {
+          self$$1.on('focusin', function (e) {
             if (e.target.tagName.toUpperCase() === 'INPUT') {
-              self.menu.hide();
+              self$$1.menu.hide();
             }
           });
-          self.aria('expanded', true);
+          self$$1.aria('expanded', true);
         }
-        self.menu.show();
-        self.menu.layoutRect({ w: self.layoutRect().w });
-        self.menu.moveRel(self.getEl(), self.isRtl() ? [
+        self$$1.menu.show();
+        self$$1.menu.layoutRect({ w: self$$1.layoutRect().w });
+        self$$1.menu.moveRel(self$$1.getEl(), self$$1.isRtl() ? [
           'br-tr',
           'tr-br'
         ] : [
@@ -5230,10 +5230,10 @@ var modern = (function (domGlobals) {
         this.getEl('inp').focus();
       },
       repaint: function () {
-        var self = this, elm = self.getEl(), openElm = self.getEl('open'), rect = self.layoutRect();
+        var self$$1 = this, elm = self$$1.getEl(), openElm = self$$1.getEl('open'), rect = self$$1.layoutRect();
         var width, lineHeight, innerPadding = 0;
         var inputElm = elm.firstChild;
-        if (self.statusLevel() && self.statusLevel() !== 'none') {
+        if (self$$1.statusLevel() && self$$1.statusLevel() !== 'none') {
           innerPadding = parseInt(funcs.getRuntimeStyle(inputElm, 'padding-right'), 10) - parseInt(funcs.getRuntimeStyle(inputElm, 'padding-left'), 10);
         }
         if (openElm) {
@@ -5241,28 +5241,28 @@ var modern = (function (domGlobals) {
         } else {
           width = rect.w - 10;
         }
-        var doc = domGlobals.document;
+        var doc = document;
         if (doc.all && (!doc.documentMode || doc.documentMode <= 8)) {
-          lineHeight = self.layoutRect().h - 2 + 'px';
+          lineHeight = self$$1.layoutRect().h - 2 + 'px';
         }
         global$9(inputElm).css({
           width: width - innerPadding,
           lineHeight: lineHeight
         });
-        self._super();
-        return self;
+        self$$1._super();
+        return self$$1;
       },
       postRender: function () {
-        var self = this;
+        var self$$1 = this;
         global$9(this.getEl('inp')).on('change', function (e) {
-          self.state.set('value', e.target.value);
-          self.fire('change', e);
+          self$$1.state.set('value', e.target.value);
+          self$$1.fire('change', e);
         });
-        return self._super();
+        return self$$1._super();
       },
       renderHtml: function () {
-        var self = this, id = self._id, settings = self.settings, prefix = self.classPrefix;
-        var value = self.state.get('value') || '';
+        var self$$1 = this, id = self$$1._id, settings = self$$1.settings, prefix = self$$1.classPrefix;
+        var value = self$$1.state.get('value') || '';
         var icon, text, openBtnHtml = '', extraAttrs = '', statusHtml = '';
         if ('spellcheck' in settings) {
           extraAttrs += ' spellcheck="' + settings.spellcheck + '"';
@@ -5277,19 +5277,19 @@ var modern = (function (domGlobals) {
           extraAttrs += ' type="' + settings.subtype + '"';
         }
         statusHtml = '<i id="' + id + '-status" class="mce-status mce-ico" style="display: none"></i>';
-        if (self.disabled()) {
+        if (self$$1.disabled()) {
           extraAttrs += ' disabled="disabled"';
         }
         icon = settings.icon;
         if (icon && icon !== 'caret') {
           icon = prefix + 'ico ' + prefix + 'i-' + settings.icon;
         }
-        text = self.state.get('text');
+        text = self$$1.state.get('text');
         if (icon || text) {
           openBtnHtml = '<div id="' + id + '-open" class="' + prefix + 'btn ' + prefix + 'open" tabIndex="-1" role="button">' + '<button id="' + id + '-action" type="button" hidefocus="1" tabindex="-1">' + (icon !== 'caret' ? '<i class="' + icon + '"></i>' : '<i class="' + prefix + 'caret"></i>') + (text ? (icon ? ' ' : '') + text : '') + '</button>' + '</div>';
-          self.classes.add('has-open');
+          self$$1.classes.add('has-open');
         }
-        return '<div id="' + id + '" class="' + self.classes + '">' + '<input id="' + id + '-inp" class="' + prefix + 'textbox" value="' + self.encode(value, false) + '" hidefocus="1"' + extraAttrs + ' placeholder="' + self.encode(settings.placeholder) + '" />' + statusHtml + openBtnHtml + '</div>';
+        return '<div id="' + id + '" class="' + self$$1.classes + '">' + '<input id="' + id + '-inp" class="' + prefix + 'textbox" value="' + self$$1.encode(value, false) + '" hidefocus="1"' + extraAttrs + ' placeholder="' + self$$1.encode(settings.placeholder) + '" />' + statusHtml + openBtnHtml + '</div>';
       },
       value: function (value) {
         if (arguments.length) {
@@ -5302,30 +5302,30 @@ var modern = (function (domGlobals) {
         return this.state.get('value');
       },
       showAutoComplete: function (items, term) {
-        var self = this;
+        var self$$1 = this;
         if (items.length === 0) {
-          self.hideMenu();
+          self$$1.hideMenu();
           return;
         }
         var insert = function (value, title) {
           return function () {
-            self.fire('selectitem', {
+            self$$1.fire('selectitem', {
               title: title,
               value: value
             });
           };
         };
-        if (self.menu) {
-          self.menu.items().remove();
+        if (self$$1.menu) {
+          self$$1.menu.items().remove();
         } else {
-          self.menu = global$4.create({
+          self$$1.menu = global$4.create({
             type: 'menu',
             classes: 'combobox-menu',
             layout: 'flow'
-          }).parent(self).renderTo();
+          }).parent(self$$1).renderTo();
         }
         global$2.each(items, function (item) {
-          self.menu.add({
+          self$$1.menu.add({
             text: item.title,
             url: item.previewUrl,
             match: term,
@@ -5333,28 +5333,28 @@ var modern = (function (domGlobals) {
             onclick: insert(item.value, item.title)
           });
         });
-        self.menu.renderNew();
-        self.hideMenu();
-        self.menu.on('cancel', function (e) {
-          if (e.control.parent() === self.menu) {
+        self$$1.menu.renderNew();
+        self$$1.hideMenu();
+        self$$1.menu.on('cancel', function (e) {
+          if (e.control.parent() === self$$1.menu) {
             e.stopPropagation();
-            self.focus();
-            self.hideMenu();
+            self$$1.focus();
+            self$$1.hideMenu();
           }
         });
-        self.menu.on('select', function () {
-          self.focus();
+        self$$1.menu.on('select', function () {
+          self$$1.focus();
         });
-        var maxW = self.layoutRect().w;
-        self.menu.layoutRect({
+        var maxW = self$$1.layoutRect().w;
+        self$$1.menu.layoutRect({
           w: maxW,
           minW: 0,
           maxW: maxW
         });
-        self.menu.repaint();
-        self.menu.reflow();
-        self.menu.show();
-        self.menu.moveRel(self.getEl(), self.isRtl() ? [
+        self$$1.menu.repaint();
+        self$$1.menu.reflow();
+        self$$1.menu.show();
+        self$$1.menu.moveRel(self$$1.getEl(), self$$1.isRtl() ? [
           'br-tr',
           'tr-br'
         ] : [
@@ -5368,32 +5368,32 @@ var modern = (function (domGlobals) {
         }
       },
       bindStates: function () {
-        var self = this;
-        self.state.on('change:value', function (e) {
-          if (self.getEl('inp').value !== e.value) {
-            self.getEl('inp').value = e.value;
+        var self$$1 = this;
+        self$$1.state.on('change:value', function (e) {
+          if (self$$1.getEl('inp').value !== e.value) {
+            self$$1.getEl('inp').value = e.value;
           }
         });
-        self.state.on('change:disabled', function (e) {
-          self.getEl('inp').disabled = e.value;
+        self$$1.state.on('change:disabled', function (e) {
+          self$$1.getEl('inp').disabled = e.value;
         });
-        self.state.on('change:statusLevel', function (e) {
-          var statusIconElm = self.getEl('status');
-          var prefix = self.classPrefix, value = e.value;
+        self$$1.state.on('change:statusLevel', function (e) {
+          var statusIconElm = self$$1.getEl('status');
+          var prefix = self$$1.classPrefix, value = e.value;
           funcs.css(statusIconElm, 'display', value === 'none' ? 'none' : '');
           funcs.toggleClass(statusIconElm, prefix + 'i-checkmark', value === 'ok');
           funcs.toggleClass(statusIconElm, prefix + 'i-warning', value === 'warn');
           funcs.toggleClass(statusIconElm, prefix + 'i-error', value === 'error');
-          self.classes.toggle('has-status', value !== 'none');
-          self.repaint();
+          self$$1.classes.toggle('has-status', value !== 'none');
+          self$$1.repaint();
         });
-        funcs.on(self.getEl('status'), 'mouseleave', function () {
-          self.tooltip().hide();
+        funcs.on(self$$1.getEl('status'), 'mouseleave', function () {
+          self$$1.tooltip().hide();
         });
-        self.on('cancel', function (e) {
-          if (self.menu && self.menu.visible()) {
+        self$$1.on('cancel', function (e) {
+          if (self$$1.menu && self$$1.menu.visible()) {
             e.stopPropagation();
-            self.hideMenu();
+            self$$1.hideMenu();
           }
         });
         var focusIdx = function (idx, menu) {
@@ -5401,20 +5401,20 @@ var modern = (function (domGlobals) {
             menu.items().eq(idx)[0].focus();
           }
         };
-        self.on('keydown', function (e) {
+        self$$1.on('keydown', function (e) {
           var keyCode = e.keyCode;
           if (e.target.nodeName === 'INPUT') {
             if (keyCode === global$d.DOWN) {
               e.preventDefault();
-              self.fire('autocomplete');
-              focusIdx(0, self.menu);
+              self$$1.fire('autocomplete');
+              focusIdx(0, self$$1.menu);
             } else if (keyCode === global$d.UP) {
               e.preventDefault();
-              focusIdx(-1, self.menu);
+              focusIdx(-1, self$$1.menu);
             }
           }
         });
-        return self._super();
+        return self$$1._super();
       },
       remove: function () {
         global$9(this.getEl('inp')).off();
@@ -6025,36 +6025,35 @@ var modern = (function (domGlobals) {
     };
 
     var fromHtml = function (html, scope) {
-      var doc = scope || domGlobals.document;
+      var doc = scope || document;
       var div = doc.createElement('div');
       div.innerHTML = html;
       if (!div.hasChildNodes() || div.childNodes.length > 1) {
-        domGlobals.console.error('HTML does not have a single root node', html);
-        throw new Error('HTML must have a single root node');
+        console.error('HTML does not have a single root node', html);
+        throw 'HTML must have a single root node';
       }
       return fromDom(div.childNodes[0]);
     };
     var fromTag = function (tag, scope) {
-      var doc = scope || domGlobals.document;
+      var doc = scope || document;
       var node = doc.createElement(tag);
       return fromDom(node);
     };
     var fromText = function (text, scope) {
-      var doc = scope || domGlobals.document;
+      var doc = scope || document;
       var node = doc.createTextNode(text);
       return fromDom(node);
     };
     var fromDom = function (node) {
-      if (node === null || node === undefined) {
+      if (node === null || node === undefined)
         throw new Error('Node cannot be null or undefined');
-      }
       return { dom: constant(node) };
     };
     var fromPoint = function (docElm, x, y) {
       var doc = docElm.dom();
       return Option.from(doc.elementFromPoint(x, y)).map(fromDom);
     };
-    var Element = {
+    var Element$$1 = {
       fromHtml: fromHtml,
       fromTag: fromTag,
       fromText: fromText,
@@ -6078,18 +6077,18 @@ var modern = (function (domGlobals) {
       };
     };
 
-    var ATTRIBUTE = domGlobals.Node.ATTRIBUTE_NODE;
-    var CDATA_SECTION = domGlobals.Node.CDATA_SECTION_NODE;
-    var COMMENT = domGlobals.Node.COMMENT_NODE;
-    var DOCUMENT = domGlobals.Node.DOCUMENT_NODE;
-    var DOCUMENT_TYPE = domGlobals.Node.DOCUMENT_TYPE_NODE;
-    var DOCUMENT_FRAGMENT = domGlobals.Node.DOCUMENT_FRAGMENT_NODE;
-    var ELEMENT = domGlobals.Node.ELEMENT_NODE;
-    var TEXT = domGlobals.Node.TEXT_NODE;
-    var PROCESSING_INSTRUCTION = domGlobals.Node.PROCESSING_INSTRUCTION_NODE;
-    var ENTITY_REFERENCE = domGlobals.Node.ENTITY_REFERENCE_NODE;
-    var ENTITY = domGlobals.Node.ENTITY_NODE;
-    var NOTATION = domGlobals.Node.NOTATION_NODE;
+    var ATTRIBUTE = Node.ATTRIBUTE_NODE;
+    var CDATA_SECTION = Node.CDATA_SECTION_NODE;
+    var COMMENT = Node.COMMENT_NODE;
+    var DOCUMENT = Node.DOCUMENT_NODE;
+    var DOCUMENT_TYPE = Node.DOCUMENT_TYPE_NODE;
+    var DOCUMENT_FRAGMENT = Node.DOCUMENT_FRAGMENT_NODE;
+    var ELEMENT = Node.ELEMENT_NODE;
+    var TEXT = Node.TEXT_NODE;
+    var PROCESSING_INSTRUCTION = Node.PROCESSING_INSTRUCTION_NODE;
+    var ENTITY_REFERENCE = Node.ENTITY_REFERENCE_NODE;
+    var ENTITY = Node.ENTITY_NODE;
+    var NOTATION = Node.NOTATION_NODE;
 
     var Immutable = function () {
       var fields = [];
@@ -6112,7 +6111,7 @@ var modern = (function (domGlobals) {
       };
     };
 
-    var Global = typeof domGlobals.window !== 'undefined' ? domGlobals.window : Function('return this;')();
+    var Global = typeof window !== 'undefined' ? window : Function('return this;')();
 
     var path = function (parts, scope) {
       var o = scope !== undefined && scope !== null ? scope : Global;
@@ -6149,7 +6148,7 @@ var modern = (function (domGlobals) {
     var documentPositionContainedBy = function (a, b) {
       return compareDocumentPosition(a, b, node().DOCUMENT_POSITION_CONTAINED_BY);
     };
-    var Node = {
+    var Node$1 = {
       documentPositionPreceding: documentPositionPreceding,
       documentPositionContainedBy: documentPositionContainedBy
     };
@@ -6162,7 +6161,7 @@ var modern = (function (domGlobals) {
       }
       return undefined;
     };
-    var find$1 = function (regexes, agent) {
+    var find$2 = function (regexes, agent) {
       var r = firstMatch(regexes, agent);
       if (!r)
         return {
@@ -6178,7 +6177,7 @@ var modern = (function (domGlobals) {
       var cleanedAgent = String(agent).toLowerCase();
       if (versionRegexes.length === 0)
         return unknown();
-      return find$1(versionRegexes, cleanedAgent);
+      return find$2(versionRegexes, cleanedAgent);
     };
     var unknown = function () {
       return nu(0, 0);
@@ -6332,14 +6331,14 @@ var modern = (function (domGlobals) {
       detectOs: detectOs
     };
 
-    var contains = function (str, substr) {
+    var contains$1 = function (str, substr) {
       return str.indexOf(substr) !== -1;
     };
 
     var normalVersionRegex = /.*?version\/\ ?([0-9]+)\.([0-9]+).*/;
     var checkContains = function (target) {
       return function (uastring) {
-        return contains(uastring, target);
+        return contains$1(uastring, target);
       };
     };
     var browsers = [
@@ -6347,7 +6346,7 @@ var modern = (function (domGlobals) {
         name: 'Edge',
         versionRegexes: [/.*?edge\/ ?([0-9]+)\.([0-9]+)$/],
         search: function (uastring) {
-          var monstrosity = contains(uastring, 'edge/') && contains(uastring, 'chrome') && contains(uastring, 'safari') && contains(uastring, 'applewebkit');
+          var monstrosity = contains$1(uastring, 'edge/') && contains$1(uastring, 'chrome') && contains$1(uastring, 'safari') && contains$1(uastring, 'applewebkit');
           return monstrosity;
         }
       },
@@ -6358,7 +6357,7 @@ var modern = (function (domGlobals) {
           normalVersionRegex
         ],
         search: function (uastring) {
-          return contains(uastring, 'chrome') && !contains(uastring, 'chromeframe');
+          return contains$1(uastring, 'chrome') && !contains$1(uastring, 'chromeframe');
         }
       },
       {
@@ -6368,7 +6367,7 @@ var modern = (function (domGlobals) {
           /.*?rv:([0-9]+)\.([0-9]+).*/
         ],
         search: function (uastring) {
-          return contains(uastring, 'msie') || contains(uastring, 'trident');
+          return contains$1(uastring, 'msie') || contains$1(uastring, 'trident');
         }
       },
       {
@@ -6391,7 +6390,7 @@ var modern = (function (domGlobals) {
           /.*?cpu os ([0-9]+)_([0-9]+).*/
         ],
         search: function (uastring) {
-          return (contains(uastring, 'safari') || contains(uastring, 'mobile/')) && contains(uastring, 'applewebkit');
+          return (contains$1(uastring, 'safari') || contains$1(uastring, 'mobile/')) && contains$1(uastring, 'applewebkit');
         }
       }
     ];
@@ -6404,7 +6403,7 @@ var modern = (function (domGlobals) {
       {
         name: 'iOS',
         search: function (uastring) {
-          return contains(uastring, 'iphone') || contains(uastring, 'ipad');
+          return contains$1(uastring, 'iphone') || contains$1(uastring, 'ipad');
         },
         versionRegexes: [
           /.*?version\/\ ?([0-9]+)\.([0-9]+).*/,
@@ -6458,7 +6457,7 @@ var modern = (function (domGlobals) {
     var PlatformDetection = { detect: detect$2 };
 
     var detect$3 = cached(function () {
-      var userAgent = domGlobals.navigator.userAgent;
+      var userAgent = navigator.userAgent;
       return PlatformDetection.detect(userAgent);
     });
     var PlatformDetection$1 = { detect: detect$3 };
@@ -6469,32 +6468,31 @@ var modern = (function (domGlobals) {
       return dom.nodeType !== ELEMENT$1 && dom.nodeType !== DOCUMENT$1 || dom.childElementCount === 0;
     };
     var all = function (selector, scope) {
-      var base = scope === undefined ? domGlobals.document : scope.dom();
-      return bypassSelector(base) ? [] : map(base.querySelectorAll(selector), Element.fromDom);
+      var base = scope === undefined ? document : scope.dom();
+      return bypassSelector(base) ? [] : map(base.querySelectorAll(selector), Element$$1.fromDom);
     };
     var one = function (selector, scope) {
-      var base = scope === undefined ? domGlobals.document : scope.dom();
-      return bypassSelector(base) ? Option.none() : Option.from(base.querySelector(selector)).map(Element.fromDom);
+      var base = scope === undefined ? document : scope.dom();
+      return bypassSelector(base) ? Option.none() : Option.from(base.querySelector(selector)).map(Element$$1.fromDom);
     };
 
     var regularContains = function (e1, e2) {
-      var d1 = e1.dom();
-      var d2 = e2.dom();
+      var d1 = e1.dom(), d2 = e2.dom();
       return d1 === d2 ? false : d1.contains(d2);
     };
     var ieContains = function (e1, e2) {
-      return Node.documentPositionContainedBy(e1.dom(), e2.dom());
+      return Node$1.documentPositionContainedBy(e1.dom(), e2.dom());
     };
     var browser = PlatformDetection$1.detect().browser;
-    var contains$1 = browser.isIE() ? ieContains : regularContains;
+    var contains$2 = browser.isIE() ? ieContains : regularContains;
 
     var spot = Immutable('element', 'offset');
 
-    var descendants = function (scope, selector) {
+    var descendants$1 = function (scope, selector) {
       return all(selector, scope);
     };
 
-    var trim = global$2.trim;
+    var trim$1 = global$2.trim;
     var hasContentEditableState = function (value) {
       return function (node) {
         if (node && node.nodeType === 1) {
@@ -6529,7 +6527,7 @@ var modern = (function (domGlobals) {
       return false;
     };
     var select = function (selector, root) {
-      return map(descendants(Element.fromDom(root), selector), function (element) {
+      return map(descendants$1(Element$$1.fromDom(root), selector), function (element) {
         return element.dom();
       });
     };
@@ -6580,13 +6578,13 @@ var modern = (function (domGlobals) {
       return elms;
     };
     var hasTitle = function (target) {
-      return trim(target.title).length > 0;
+      return trim$1(target.title).length > 0;
     };
-    var find$2 = function (elm) {
+    var find$3 = function (elm) {
       var elms = getTargetElements(elm);
       return filter(getHeaderTargets(elms).concat(getAnchorTargets(elms)), hasTitle);
     };
-    var LinkTargets = { find: find$2 };
+    var LinkTargets = { find: find$3 };
 
     var getActiveEditor = function () {
       return window.tinymce ? window.tinymce.activeEditor : global$1.activeEditor;
@@ -7032,7 +7030,7 @@ var modern = (function (domGlobals) {
       }
     });
 
-    var descendant = function (scope, selector) {
+    var descendant$1 = function (scope, selector) {
       return one(selector, scope);
     };
 
@@ -7975,7 +7973,7 @@ var modern = (function (domGlobals) {
     };
     var setupUiContainer = function (editor) {
       if (editor.settings.ui_container) {
-        global$8.container = descendant(Element.fromDom(domGlobals.document.body), editor.settings.ui_container).fold(constant(null), function (elm) {
+        global$8.container = descendant$1(Element$$1.fromDom(document.body), editor.settings.ui_container).fold(constant(null), function (elm) {
           return elm.dom();
         });
       }
@@ -8312,9 +8310,9 @@ var modern = (function (domGlobals) {
       }
     });
 
-    function isChildOf$1(node, parent) {
+    function isChildOf$1(node, parent$$1) {
       while (node) {
-        if (parent === node) {
+        if (parent$$1 === node) {
           return true;
         }
         node = node.parentNode;
@@ -8323,26 +8321,26 @@ var modern = (function (domGlobals) {
     }
     var MenuButton = Button.extend({
       init: function (settings) {
-        var self = this;
-        self._renderOpen = true;
-        self._super(settings);
-        settings = self.settings;
-        self.classes.add('menubtn');
+        var self$$1 = this;
+        self$$1._renderOpen = true;
+        self$$1._super(settings);
+        settings = self$$1.settings;
+        self$$1.classes.add('menubtn');
         if (settings.fixedWidth) {
-          self.classes.add('fixed-width');
+          self$$1.classes.add('fixed-width');
         }
-        self.aria('haspopup', true);
-        self.state.set('menu', settings.menu || self.render());
+        self$$1.aria('haspopup', true);
+        self$$1.state.set('menu', settings.menu || self$$1.render());
       },
       showMenu: function (toggle) {
-        var self = this;
+        var self$$1 = this;
         var menu;
-        if (self.menu && self.menu.visible() && toggle !== false) {
-          return self.hideMenu();
+        if (self$$1.menu && self$$1.menu.visible() && toggle !== false) {
+          return self$$1.hideMenu();
         }
-        if (!self.menu) {
-          menu = self.state.get('menu') || [];
-          self.classes.add('opened');
+        if (!self$$1.menu) {
+          menu = self$$1.state.get('menu') || [];
+          self$$1.classes.add('opened');
           if (menu.length) {
             menu = {
               type: 'menu',
@@ -8354,104 +8352,104 @@ var modern = (function (domGlobals) {
             menu.animate = true;
           }
           if (!menu.renderTo) {
-            self.menu = global$4.create(menu).parent(self).renderTo();
+            self$$1.menu = global$4.create(menu).parent(self$$1).renderTo();
           } else {
-            self.menu = menu.parent(self).show().renderTo();
+            self$$1.menu = menu.parent(self$$1).show().renderTo();
           }
-          self.fire('createmenu');
-          self.menu.reflow();
-          self.menu.on('cancel', function (e) {
-            if (e.control.parent() === self.menu) {
+          self$$1.fire('createmenu');
+          self$$1.menu.reflow();
+          self$$1.menu.on('cancel', function (e) {
+            if (e.control.parent() === self$$1.menu) {
               e.stopPropagation();
-              self.focus();
-              self.hideMenu();
+              self$$1.focus();
+              self$$1.hideMenu();
             }
           });
-          self.menu.on('select', function () {
-            self.focus();
+          self$$1.menu.on('select', function () {
+            self$$1.focus();
           });
-          self.menu.on('show hide', function (e) {
-            if (e.type === 'hide' && e.control.parent() === self) {
-              self.classes.remove('opened-under');
+          self$$1.menu.on('show hide', function (e) {
+            if (e.type === 'hide' && e.control.parent() === self$$1) {
+              self$$1.classes.remove('opened-under');
             }
-            if (e.control === self.menu) {
-              self.activeMenu(e.type === 'show');
-              self.classes.toggle('opened', e.type === 'show');
+            if (e.control === self$$1.menu) {
+              self$$1.activeMenu(e.type === 'show');
+              self$$1.classes.toggle('opened', e.type === 'show');
             }
-            self.aria('expanded', e.type === 'show');
+            self$$1.aria('expanded', e.type === 'show');
           }).fire('show');
         }
-        self.menu.show();
-        self.menu.layoutRect({ w: self.layoutRect().w });
-        self.menu.repaint();
-        self.menu.moveRel(self.getEl(), self.isRtl() ? [
+        self$$1.menu.show();
+        self$$1.menu.layoutRect({ w: self$$1.layoutRect().w });
+        self$$1.menu.repaint();
+        self$$1.menu.moveRel(self$$1.getEl(), self$$1.isRtl() ? [
           'br-tr',
           'tr-br'
         ] : [
           'bl-tl',
           'tl-bl'
         ]);
-        var menuLayoutRect = self.menu.layoutRect();
-        var selfBottom = self.$el.offset().top + self.layoutRect().h;
+        var menuLayoutRect = self$$1.menu.layoutRect();
+        var selfBottom = self$$1.$el.offset().top + self$$1.layoutRect().h;
         if (selfBottom > menuLayoutRect.y && selfBottom < menuLayoutRect.y + menuLayoutRect.h) {
-          self.classes.add('opened-under');
+          self$$1.classes.add('opened-under');
         }
-        self.fire('showmenu');
+        self$$1.fire('showmenu');
       },
       hideMenu: function () {
-        var self = this;
-        if (self.menu) {
-          self.menu.items().each(function (item) {
+        var self$$1 = this;
+        if (self$$1.menu) {
+          self$$1.menu.items().each(function (item) {
             if (item.hideMenu) {
               item.hideMenu();
             }
           });
-          self.menu.hide();
+          self$$1.menu.hide();
         }
       },
       activeMenu: function (state) {
         this.classes.toggle('active', state);
       },
       renderHtml: function () {
-        var self = this, id = self._id, prefix = self.classPrefix;
-        var icon = self.settings.icon, image;
-        var text = self.state.get('text');
+        var self$$1 = this, id = self$$1._id, prefix = self$$1.classPrefix;
+        var icon = self$$1.settings.icon, image;
+        var text = self$$1.state.get('text');
         var textHtml = '';
-        image = self.settings.image;
+        image = self$$1.settings.image;
         if (image) {
           icon = 'none';
           if (typeof image !== 'string') {
-            image = domGlobals.window.getSelection ? image[0] : image[1];
+            image = window.getSelection ? image[0] : image[1];
           }
           image = ' style="background-image: url(\'' + image + '\')"';
         } else {
           image = '';
         }
         if (text) {
-          self.classes.add('btn-has-text');
-          textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>';
+          self$$1.classes.add('btn-has-text');
+          textHtml = '<span class="' + prefix + 'txt">' + self$$1.encode(text) + '</span>';
         }
-        icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
-        self.aria('role', self.parent() instanceof MenuBar ? 'menuitem' : 'button');
-        return '<div id="' + id + '" class="' + self.classes + '" tabindex="-1" aria-labelledby="' + id + '">' + '<button id="' + id + '-open" role="presentation" type="button" tabindex="-1">' + (icon ? '<i class="' + icon + '"' + image + '></i>' : '') + textHtml + ' <i class="' + prefix + 'caret"></i>' + '</button>' + '</div>';
+        icon = self$$1.settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
+        self$$1.aria('role', self$$1.parent() instanceof MenuBar ? 'menuitem' : 'button');
+        return '<div id="' + id + '" class="' + self$$1.classes + '" tabindex="-1" aria-labelledby="' + id + '">' + '<button id="' + id + '-open" role="presentation" type="button" tabindex="-1">' + (icon ? '<i class="' + icon + '"' + image + '></i>' : '') + textHtml + ' <i class="' + prefix + 'caret"></i>' + '</button>' + '</div>';
       },
       postRender: function () {
-        var self = this;
-        self.on('click', function (e) {
-          if (e.control === self && isChildOf$1(e.target, self.getEl())) {
-            self.focus();
-            self.showMenu(!e.aria);
+        var self$$1 = this;
+        self$$1.on('click', function (e) {
+          if (e.control === self$$1 && isChildOf$1(e.target, self$$1.getEl())) {
+            self$$1.focus();
+            self$$1.showMenu(!e.aria);
             if (e.aria) {
-              self.menu.items().filter(':visible')[0].focus();
+              self$$1.menu.items().filter(':visible')[0].focus();
             }
           }
         });
-        self.on('mouseenter', function (e) {
+        self$$1.on('mouseenter', function (e) {
           var overCtrl = e.control;
-          var parent = self.parent();
+          var parent$$1 = self$$1.parent();
           var hasVisibleSiblingMenu;
-          if (overCtrl && parent && overCtrl instanceof MenuButton && overCtrl.parent() === parent) {
-            parent.items().filter('MenuButton').each(function (ctrl) {
+          if (overCtrl && parent$$1 && overCtrl instanceof MenuButton && overCtrl.parent() === parent$$1) {
+            parent$$1.items().filter('MenuButton').each(function (ctrl) {
               if (ctrl.hideMenu && ctrl !== overCtrl) {
                 if (ctrl.menu && ctrl.menu.visible()) {
                   hasVisibleSiblingMenu = true;
@@ -8465,17 +8463,17 @@ var modern = (function (domGlobals) {
             }
           }
         });
-        return self._super();
+        return self$$1._super();
       },
       bindStates: function () {
-        var self = this;
-        self.state.on('change:menu', function () {
-          if (self.menu) {
-            self.menu.remove();
+        var self$$1 = this;
+        self$$1.state.on('change:menu', function () {
+          if (self$$1.menu) {
+            self$$1.menu.remove();
           }
-          self.menu = null;
+          self$$1.menu = null;
         });
-        return self._super();
+        return self$$1._super();
       },
       remove: function () {
         this._super();
@@ -9232,11 +9230,11 @@ var modern = (function (domGlobals) {
         role: 'button'
       },
       repaint: function () {
-        var self = this;
-        var elm = self.getEl();
-        var rect = self.layoutRect();
+        var self$$1 = this;
+        var elm = self$$1.getEl();
+        var rect = self$$1.layoutRect();
         var mainButtonElm, menuButtonElm;
-        self._super();
+        self$$1._super();
         mainButtonElm = elm.firstChild;
         menuButtonElm = elm.lastChild;
         global$9(mainButtonElm).css({
@@ -9244,26 +9242,26 @@ var modern = (function (domGlobals) {
           height: rect.h - 2
         });
         global$9(menuButtonElm).css({ height: rect.h - 2 });
-        return self;
+        return self$$1;
       },
       activeMenu: function (state) {
-        var self = this;
-        global$9(self.getEl().lastChild).toggleClass(self.classPrefix + 'active', state);
+        var self$$1 = this;
+        global$9(self$$1.getEl().lastChild).toggleClass(self$$1.classPrefix + 'active', state);
       },
       renderHtml: function () {
-        var self = this;
-        var id = self._id;
-        var prefix = self.classPrefix;
+        var self$$1 = this;
+        var id = self$$1._id;
+        var prefix = self$$1.classPrefix;
         var image;
-        var icon = self.state.get('icon');
-        var text = self.state.get('text');
-        var settings = self.settings;
+        var icon = self$$1.state.get('icon');
+        var text = self$$1.state.get('text');
+        var settings = self$$1.settings;
         var textHtml = '', ariaPressed;
         image = settings.image;
         if (image) {
           icon = 'none';
           if (typeof image !== 'string') {
-            image = domGlobals.window.getSelection ? image[0] : image[1];
+            image = window.getSelection ? image[0] : image[1];
           }
           image = ' style="background-image: url(\'' + image + '\')"';
         } else {
@@ -9271,15 +9269,15 @@ var modern = (function (domGlobals) {
         }
         icon = settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
         if (text) {
-          self.classes.add('btn-has-text');
-          textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>';
+          self$$1.classes.add('btn-has-text');
+          textHtml = '<span class="' + prefix + 'txt">' + self$$1.encode(text) + '</span>';
         }
         ariaPressed = typeof settings.active === 'boolean' ? ' aria-pressed="' + settings.active + '"' : '';
-        return '<div id="' + id + '" class="' + self.classes + '" role="button"' + ariaPressed + ' tabindex="-1">' + '<button type="button" hidefocus="1" tabindex="-1">' + (icon ? '<i class="' + icon + '"' + image + '></i>' : '') + textHtml + '</button>' + '<button type="button" class="' + prefix + 'open" hidefocus="1" tabindex="-1">' + (self._menuBtnText ? (icon ? '\xA0' : '') + self._menuBtnText : '') + ' <i class="' + prefix + 'caret"></i>' + '</button>' + '</div>';
+        return '<div id="' + id + '" class="' + self$$1.classes + '" role="button"' + ariaPressed + ' tabindex="-1">' + '<button type="button" hidefocus="1" tabindex="-1">' + (icon ? '<i class="' + icon + '"' + image + '></i>' : '') + textHtml + '</button>' + '<button type="button" class="' + prefix + 'open" hidefocus="1" tabindex="-1">' + (self$$1._menuBtnText ? (icon ? '\xA0' : '') + self$$1._menuBtnText : '') + ' <i class="' + prefix + 'caret"></i>' + '</button>' + '</div>';
       },
       postRender: function () {
-        var self = this, onClickHandler = self.settings.onclick;
-        self.on('click', function (e) {
+        var self$$1 = this, onClickHandler = self$$1.settings.onclick;
+        self$$1.on('click', function (e) {
           var node = e.target;
           if (e.control === this) {
             while (node) {
@@ -9294,8 +9292,8 @@ var modern = (function (domGlobals) {
             }
           }
         });
-        delete self.settings.onclick;
-        return self._super();
+        delete self$$1.settings.onclick;
+        return self$$1._super();
       }
     });
 
@@ -9400,43 +9398,43 @@ var modern = (function (domGlobals) {
 
     var TextBox = Widget.extend({
       init: function (settings) {
-        var self = this;
-        self._super(settings);
-        self.classes.add('textbox');
+        var self$$1 = this;
+        self$$1._super(settings);
+        self$$1.classes.add('textbox');
         if (settings.multiline) {
-          self.classes.add('multiline');
+          self$$1.classes.add('multiline');
         } else {
-          self.on('keydown', function (e) {
+          self$$1.on('keydown', function (e) {
             var rootControl;
             if (e.keyCode === 13) {
               e.preventDefault();
-              self.parents().reverse().each(function (ctrl) {
+              self$$1.parents().reverse().each(function (ctrl) {
                 if (ctrl.toJSON) {
                   rootControl = ctrl;
                   return false;
                 }
               });
-              self.fire('submit', { data: rootControl.toJSON() });
+              self$$1.fire('submit', { data: rootControl.toJSON() });
             }
           });
-          self.on('keyup', function (e) {
-            self.state.set('value', e.target.value);
+          self$$1.on('keyup', function (e) {
+            self$$1.state.set('value', e.target.value);
           });
         }
       },
       repaint: function () {
-        var self = this;
+        var self$$1 = this;
         var style, rect, borderBox, borderW, borderH = 0, lastRepaintRect;
-        style = self.getEl().style;
-        rect = self._layoutRect;
-        lastRepaintRect = self._lastRepaintRect || {};
-        var doc = domGlobals.document;
-        if (!self.settings.multiline && doc.all && (!doc.documentMode || doc.documentMode <= 8)) {
+        style = self$$1.getEl().style;
+        rect = self$$1._layoutRect;
+        lastRepaintRect = self$$1._lastRepaintRect || {};
+        var doc = document;
+        if (!self$$1.settings.multiline && doc.all && (!doc.documentMode || doc.documentMode <= 8)) {
           style.lineHeight = rect.h - borderH + 'px';
         }
-        borderBox = self.borderBox;
+        borderBox = self$$1.borderBox;
         borderW = borderBox.left + borderBox.right + 8;
-        borderH = borderBox.top + borderBox.bottom + (self.settings.multiline ? 8 : 0);
+        borderH = borderBox.top + borderBox.bottom + (self$$1.settings.multiline ? 8 : 0);
         if (rect.x !== lastRepaintRect.x) {
           style.left = rect.x + 'px';
           lastRepaintRect.x = rect.x;
@@ -9453,16 +9451,16 @@ var modern = (function (domGlobals) {
           style.height = rect.h - borderH + 'px';
           lastRepaintRect.h = rect.h;
         }
-        self._lastRepaintRect = lastRepaintRect;
-        self.fire('repaint', {}, false);
-        return self;
+        self$$1._lastRepaintRect = lastRepaintRect;
+        self$$1.fire('repaint', {}, false);
+        return self$$1;
       },
       renderHtml: function () {
-        var self = this;
-        var settings = self.settings;
+        var self$$1 = this;
+        var settings = self$$1.settings;
         var attrs, elm;
         attrs = {
-          id: self._id,
+          id: self$$1._id,
           hidefocus: '1'
         };
         global$2.each([
@@ -9479,18 +9477,18 @@ var modern = (function (domGlobals) {
           'placeholder',
           'required',
           'multiple'
-        ], function (name) {
-          attrs[name] = settings[name];
+        ], function (name$$1) {
+          attrs[name$$1] = settings[name$$1];
         });
-        if (self.disabled()) {
+        if (self$$1.disabled()) {
           attrs.disabled = 'disabled';
         }
         if (settings.subtype) {
           attrs.type = settings.subtype;
         }
         elm = funcs.create(settings.multiline ? 'textarea' : 'input', attrs);
-        elm.value = self.state.get('value');
-        elm.className = self.classes.toString();
+        elm.value = self$$1.state.get('value');
+        elm.className = self$$1.classes.toString();
         return elm.outerHTML;
       },
       value: function (value) {
@@ -9504,25 +9502,25 @@ var modern = (function (domGlobals) {
         return this.state.get('value');
       },
       postRender: function () {
-        var self = this;
-        self.getEl().value = self.state.get('value');
-        self._super();
-        self.$el.on('change', function (e) {
-          self.state.set('value', e.target.value);
-          self.fire('change', e);
+        var self$$1 = this;
+        self$$1.getEl().value = self$$1.state.get('value');
+        self$$1._super();
+        self$$1.$el.on('change', function (e) {
+          self$$1.state.set('value', e.target.value);
+          self$$1.fire('change', e);
         });
       },
       bindStates: function () {
-        var self = this;
-        self.state.on('change:value', function (e) {
-          if (self.getEl().value !== e.value) {
-            self.getEl().value = e.value;
+        var self$$1 = this;
+        self$$1.state.on('change:value', function (e) {
+          if (self$$1.getEl().value !== e.value) {
+            self$$1.getEl().value = e.value;
           }
         });
-        self.state.on('change:disabled', function (e) {
-          self.getEl().disabled = e.value;
+        self$$1.state.on('change:disabled', function (e) {
+          self$$1.getEl().disabled = e.value;
         });
-        return self._super();
+        return self$$1._super();
       },
       remove: function () {
         this.$el.off();
@@ -9545,7 +9543,7 @@ var modern = (function (domGlobals) {
         Movable: Movable,
         Resizable: Resizable,
         FloatPanel: FloatPanel,
-        Window: Window,
+        Window: Window$$1,
         MessageBox: MessageBox,
         Tooltip: Tooltip,
         Widget: Widget,
@@ -9625,5 +9623,5 @@ var modern = (function (domGlobals) {
 
     return Theme;
 
-}(window));
+}());
 })();

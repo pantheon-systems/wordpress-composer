@@ -161,18 +161,6 @@ function wp_print_media_templates() {
 	if ( $is_IE && strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE 7' ) !== false ) {
 		$class .= ' ie7';
 	}
-
-	$alt_text_description = sprintf(
-		/* translators: 1: link to tutorial, 2: additional link attributes, 3: accessibility text */
-		__( '<a href="%1$s" %2$s>Describe the purpose of the image%3$s</a>. Leave empty if the image is purely decorative.' ),
-		esc_url( 'https://www.w3.org/WAI/tutorials/images/decision-tree' ),
-		'target="_blank" rel="noopener noreferrer"',
-		sprintf(
-			'<span class="screen-reader-text"> %s</span>',
-			/* translators: accessibility text */
-			__( '(opens in a new tab)' )
-		)
-	);
 	?>
 	<!--[if lte IE 8]>
 	<style>
@@ -185,8 +173,8 @@ function wp_print_media_templates() {
 	</style>
 	<![endif]-->
 	<script type="text/html" id="tmpl-media-frame">
-		<div class="media-frame-title" id="media-frame-title"></div>
 		<div class="media-frame-menu"></div>
+		<div class="media-frame-title"></div>
 		<div class="media-frame-router"></div>
 		<div class="media-frame-content"></div>
 		<div class="media-frame-toolbar"></div>
@@ -194,11 +182,9 @@ function wp_print_media_templates() {
 	</script>
 
 	<script type="text/html" id="tmpl-media-modal">
-		<div tabindex="0" class="<?php echo $class; ?>" role="dialog" aria-modal="true" aria-labelledby="media-frame-title">
-			<# if ( data.hasCloseButton ) { #>
-				<button type="button" class="media-modal-close"><span class="media-modal-icon"><span class="screen-reader-text"><?php _e( 'Close dialog' ); ?></span></span></button>
-			<# } #>
-			<div class="media-modal-content" role="document"></div>
+		<div tabindex="0" class="<?php echo $class; ?>">
+			<button type="button" class="media-modal-close"><span class="media-modal-icon"><span class="screen-reader-text"><?php _e( 'Close media panel' ); ?></span></span></button>
+			<div class="media-modal-content"></div>
 		</div>
 		<div class="media-modal-backdrop"></div>
 	</script>
@@ -321,7 +307,6 @@ function wp_print_media_templates() {
 		<div class="edit-media-header">
 			<button class="left dashicons <# if ( ! data.hasPrevious ) { #> disabled <# } #>"><span class="screen-reader-text"><?php _e( 'Edit previous media item' ); ?></span></button>
 			<button class="right dashicons <# if ( ! data.hasNext ) { #> disabled <# } #>"><span class="screen-reader-text"><?php _e( 'Edit next media item' ); ?></span></button>
-			<button type="button" class="media-modal-close"><span class="media-modal-icon"><span class="screen-reader-text"><?php _e( 'Close dialog' ); ?></span></span></button>
 		</div>
 		<div class="media-frame-title"></div>
 		<div class="media-frame-content"></div>
@@ -419,14 +404,11 @@ function wp_print_media_templates() {
 			</div>
 
 			<div class="settings">
+				<label class="setting" data-setting="url">
+					<span class="name"><?php _e( 'URL' ); ?></span>
+					<input type="text" value="{{ data.url }}" readonly />
+				</label>
 				<# var maybeReadOnly = data.can.save || data.allowLocalEdits ? '' : 'readonly'; #>
-				<# if ( 'image' === data.type ) { #>
-					<label class="setting" data-setting="alt">
-						<span class="name"><?php _e( 'Alternative Text' ); ?></span>
-						<input type="text" value="{{ data.alt }}" aria-describedby="alt-text-description" {{ maybeReadOnly }} />
-					</label>
-					<p class="description" id="alt-text-description"><?php echo $alt_text_description; ?></p>
-				<# } #>
 				<?php if ( post_type_supports( 'attachment', 'title' ) ) : ?>
 				<label class="setting" data-setting="title">
 					<span class="name"><?php _e( 'Title' ); ?></span>
@@ -450,6 +432,12 @@ function wp_print_media_templates() {
 					<span class="name"><?php _e( 'Caption' ); ?></span>
 					<textarea {{ maybeReadOnly }}>{{ data.caption }}</textarea>
 				</label>
+				<# if ( 'image' === data.type ) { #>
+					<label class="setting" data-setting="alt">
+						<span class="name"><?php _e( 'Alt Text' ); ?></span>
+						<input type="text" value="{{ data.alt }}" {{ maybeReadOnly }} />
+					</label>
+				<# } #>
 				<label class="setting" data-setting="description">
 					<span class="name"><?php _e( 'Description' ); ?></span>
 					<textarea {{ maybeReadOnly }}>{{ data.description }}</textarea>
@@ -468,10 +456,6 @@ function wp_print_media_templates() {
 						<# } #>
 					</div>
 				<# } #>
-				<label class="setting" data-setting="url">
-					<span class="name"><?php _e( 'Copy Link' ); ?></span>
-					<input type="text" value="{{ data.url }}" readonly />
-				</label>
 				<div class="attachment-compat"></div>
 			</div>
 
@@ -483,9 +467,9 @@ function wp_print_media_templates() {
 				<# if ( ! data.uploading && data.can.remove ) { #> |
 					<?php if ( MEDIA_TRASH ) : ?>
 						<# if ( 'trash' === data.status ) { #>
-							<button type="button" class="button-link untrash-attachment"><?php _e( 'Restore from Trash' ); ?></button>
+							<button type="button" class="button-link untrash-attachment"><?php _e( 'Untrash' ); ?></button>
 						<# } else { #>
-							<button type="button" class="button-link trash-attachment"><?php _e( 'Move to Trash' ); ?></button>
+							<button type="button" class="button-link trash-attachment"><?php _ex( 'Trash', 'verb' ); ?></button>
 						<# } #>
 					<?php else : ?>
 						<button type="button" class="button-link delete-attachment"><?php _e( 'Delete Permanently' ); ?></button>
@@ -594,9 +578,9 @@ function wp_print_media_templates() {
 				<# if ( ! data.uploading && data.can.remove ) { #>
 					<?php if ( MEDIA_TRASH ) : ?>
 					<# if ( 'trash' === data.status ) { #>
-						<button type="button" class="button-link untrash-attachment"><?php _e( 'Restore from Trash' ); ?></button>
+						<button type="button" class="button-link untrash-attachment"><?php _e( 'Untrash' ); ?></button>
 					<# } else { #>
-						<button type="button" class="button-link trash-attachment"><?php _e( 'Move to Trash' ); ?></button>
+						<button type="button" class="button-link trash-attachment"><?php _ex( 'Trash', 'verb' ); ?></button>
 					<# } #>
 					<?php else : ?>
 						<button type="button" class="button-link delete-attachment"><?php _e( 'Delete Permanently' ); ?></button>
@@ -611,14 +595,11 @@ function wp_print_media_templates() {
 			</div>
 		</div>
 
+		<label class="setting" data-setting="url">
+			<span class="name"><?php _e( 'URL' ); ?></span>
+			<input type="text" value="{{ data.url }}" readonly />
+		</label>
 		<# var maybeReadOnly = data.can.save || data.allowLocalEdits ? '' : 'readonly'; #>
-		<# if ( 'image' === data.type ) { #>
-			<label class="setting" data-setting="alt">
-				<span class="name"><?php _e( 'Alt Text' ); ?></span>
-				<input type="text" value="{{ data.alt }}" aria-describedby="alt-text-description" {{ maybeReadOnly }} />
-			</label>
-			<p class="description" id="alt-text-description"><?php echo $alt_text_description; ?></p>
-		<# } #>
 		<?php if ( post_type_supports( 'attachment', 'title' ) ) : ?>
 		<label class="setting" data-setting="title">
 			<span class="name"><?php _e( 'Title' ); ?></span>
@@ -642,13 +623,15 @@ function wp_print_media_templates() {
 			<span class="name"><?php _e( 'Caption' ); ?></span>
 			<textarea {{ maybeReadOnly }}>{{ data.caption }}</textarea>
 		</label>
+		<# if ( 'image' === data.type ) { #>
+			<label class="setting" data-setting="alt">
+				<span class="name"><?php _e( 'Alt Text' ); ?></span>
+				<input type="text" value="{{ data.alt }}" {{ maybeReadOnly }} />
+			</label>
+		<# } #>
 		<label class="setting" data-setting="description">
 			<span class="name"><?php _e( 'Description' ); ?></span>
 			<textarea {{ maybeReadOnly }}>{{ data.description }}</textarea>
-		</label>
-		<label class="setting" data-setting="url">
-			<span class="name"><?php _e( 'Copy Link' ); ?></span>
-			<input type="text" value="{{ data.url }}" readonly />
 		</label>
 	</script>
 
@@ -899,12 +882,6 @@ function wp_print_media_templates() {
 			<img src="{{ data.model.url }}" draggable="false" alt="" />
 		</div>
 
-		<label class="setting alt-text has-description">
-			<span><?php _e( 'Alternative Text' ); ?></span>
-			<input type="text" data-setting="alt" aria-describedby="alt-text-description" />
-		</label>
-		<p class="description" id="alt-text-description"><?php echo $alt_text_description; ?></p>
-
 		<?php
 		/** This filter is documented in wp-admin/includes/media.php */
 		if ( ! apply_filters( 'disable_captions', '' ) ) :
@@ -914,6 +891,11 @@ function wp_print_media_templates() {
 				<textarea data-setting="caption" />
 			</label>
 		<?php endif; ?>
+
+		<label class="setting alt-text">
+			<span><?php _e( 'Alt Text' ); ?></span>
+			<input type="text" data-setting="alt" />
+		</label>
 
 		<div class="setting align">
 			<span><?php _e( 'Align' ); ?></span>
@@ -966,12 +948,6 @@ function wp_print_media_templates() {
 					</div>
 				</div>
 				<div class="column-settings">
-					<label class="setting alt-text has-description">
-						<span><?php _e( 'Alternative Text' ); ?></span>
-						<input type="text" data-setting="alt" value="{{ data.model.alt }}" aria-describedby="alt-text-description" />
-					</label>
-					<p class="description" id="alt-text-description"><?php echo $alt_text_description; ?></p>
-
 					<?php
 					/** This filter is documented in wp-admin/includes/media.php */
 					if ( ! apply_filters( 'disable_captions', '' ) ) :
@@ -981,6 +957,11 @@ function wp_print_media_templates() {
 							<textarea data-setting="caption">{{ data.model.caption }}</textarea>
 						</label>
 					<?php endif; ?>
+
+					<label class="setting alt-text">
+						<span><?php _e( 'Alternative Text' ); ?></span>
+						<input type="text" data-setting="alt" value="{{ data.model.alt }}" />
+					</label>
 
 					<h2><?php _e( 'Display Settings' ); ?></h2>
 					<div class="setting align">
@@ -1294,9 +1275,9 @@ function wp_print_media_templates() {
 					<dl class="gallery-item">
 						<dt class="gallery-icon">
 							<# if ( attachment.thumbnail ) { #>
-								<img src="{{ attachment.thumbnail.url }}" width="{{ attachment.thumbnail.width }}" height="{{ attachment.thumbnail.height }}" alt="{{ attachment.alt }}" />
+								<img src="{{ attachment.thumbnail.url }}" width="{{ attachment.thumbnail.width }}" height="{{ attachment.thumbnail.height }}" alt="" />
 							<# } else { #>
-								<img src="{{ attachment.url }}" alt="{{ attachment.alt }}" />
+								<img src="{{ attachment.url }}" alt="" />
 							<# } #>
 						</dt>
 						<# if ( attachment.caption ) { #>

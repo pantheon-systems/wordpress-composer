@@ -687,24 +687,14 @@ function wp_allow_comment( $commentdata, $avoid_die = false ) {
 		 * @param array $commentdata Comment data.
 		 */
 		do_action( 'comment_duplicate_trigger', $commentdata );
-
-		/**
-		 * Filters duplicate comment error message.
-		 *
-		 * @since 5.2.0
-		 *
-		 * @param string $comment_duplicate_message Duplicate comment error message.
-		 */
-		$comment_duplicate_message = apply_filters( 'comment_duplicate_message', __( 'Duplicate comment detected; it looks as though you&#8217;ve already said that!' ) );
-
 		if ( true === $avoid_die ) {
-			return new WP_Error( 'comment_duplicate', $comment_duplicate_message, 409 );
+			return new WP_Error( 'comment_duplicate', __( 'Duplicate comment detected; it looks as though you&#8217;ve already said that!' ), 409 );
 		} else {
 			if ( wp_doing_ajax() ) {
-				die( $comment_duplicate_message );
+				die( __( 'Duplicate comment detected; it looks as though you&#8217;ve already said that!' ) );
 			}
 
-			wp_die( $comment_duplicate_message, 409 );
+			wp_die( __( 'Duplicate comment detected; it looks as though you&#8217;ve already said that!' ), 409 );
 		}
 	}
 
@@ -754,10 +744,7 @@ function wp_allow_comment( $commentdata, $avoid_die = false ) {
 	);
 
 	if ( $is_flood ) {
-		/** This filter is documented in wp-includes/comment-template.php */
-		$comment_flood_message = apply_filters( 'comment_flood_message', __( 'You are posting comments too quickly. Slow down.' ) );
-
-		return new WP_Error( 'comment_flood', $comment_flood_message, 429 );
+		return new WP_Error( 'comment_flood', __( 'You are posting comments too quickly. Slow down.' ), 429 );
 	}
 
 	if ( ! empty( $commentdata['user_id'] ) ) {
@@ -901,24 +888,14 @@ function wp_check_comment_flood( $is_flood, $ip, $email, $date, $avoid_die = fal
 			 * @param int $time_newcomment  Timestamp of when the new comment was posted.
 			 */
 			do_action( 'comment_flood_trigger', $time_lastcomment, $time_newcomment );
-
 			if ( true === $avoid_die ) {
 				return true;
 			} else {
-				/**
-				 * Filters the comment flood error message.
-				 *
-				 * @since 5.2.0
-				 *
-				 * @param string $comment_flood_message Comment flood error message.
-				 */
-				$comment_flood_message = apply_filters( 'comment_flood_message', __( 'You are posting comments too quickly. Slow down.' ) );
-
 				if ( wp_doing_ajax() ) {
-					die( $comment_flood_message );
+					die( __( 'You are posting comments too quickly. Slow down.' ) );
 				}
 
-				wp_die( $comment_flood_message, 429 );
+				wp_die( __( 'You are posting comments too quickly. Slow down.' ), 429 );
 			}
 		}
 	}
