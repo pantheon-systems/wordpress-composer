@@ -12,7 +12,7 @@
  * @requires jQuery
  */
 (function($) {
-	$( function() {
+	$(document).ready(function() {
 		var frame,
 			bgImage = $( '#custom-background-image' );
 
@@ -21,7 +21,7 @@
 		 *
 		 * @since 3.5.0
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		$('#background-color').wpColorPicker({
 			change: function( event, ui ) {
@@ -37,9 +37,9 @@
 		 *
 		 * @since 4.7.0
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
-		$( 'select[name="background-size"]' ).on( 'change', function() {
+		$( 'select[name="background-size"]' ).change( function() {
 			bgImage.css( 'background-size', $( this ).val() );
 		});
 
@@ -48,9 +48,9 @@
 		 *
 		 * @since 4.7.0
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
-		$( 'input[name="background-position"]' ).on( 'change', function() {
+		$( 'input[name="background-position"]' ).change( function() {
 			bgImage.css( 'background-position', $( this ).val() );
 		});
 
@@ -59,9 +59,9 @@
 		 *
 		 * @since 3.0.0
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
-		$( 'input[name="background-repeat"]' ).on( 'change',  function() {
+		$( 'input[name="background-repeat"]' ).change( function() {
 			bgImage.css( 'background-repeat', $( this ).is( ':checked' ) ? 'repeat' : 'no-repeat' );
 		});
 
@@ -70,9 +70,9 @@
 		 *
 		 * @since 4.7.0
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
-		$( 'input[name="background-attachment"]' ).on( 'change', function() {
+		$( 'input[name="background-attachment"]' ).change( function() {
 			bgImage.css( 'background-attachment', $( this ).is( ':checked' ) ? 'scroll' : 'fixed' );
 		});
 
@@ -81,9 +81,9 @@
 		 *
 		 * @since 3.5.0
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
-		$('#choose-from-library-link').on( 'click', function( event ) {
+		$('#choose-from-library-link').click( function( event ) {
 			var $el = $(this);
 
 			event.preventDefault();
@@ -121,14 +121,14 @@
 			 *
 			 * @since 3.5.0
 			 *
-			 * @return {void}
+			 * @returns {void}
  			 */
 			frame.on( 'select', function() {
 				// Grab the selected attachment.
 				var attachment = frame.state().get('selection').first();
 				var nonceValue = $( '#_wpnonce' ).val() || '';
 
-				// Run an Ajax request to set the background image.
+				// Run an AJAX request to set the background image.
 				$.post( ajaxurl, {
 					action: 'set-background-image',
 					attachment_id: attachment.id,

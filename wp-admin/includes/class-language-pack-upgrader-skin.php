@@ -47,18 +47,16 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 
 		echo '<div class="update-messages lp-show-latest">';
 
-		/* translators: 1: Project name (plugin, theme, or WordPress), 2: Language. */
+		/* translators: 1: name of project, 2: language */
 		printf( '<h2>' . __( 'Updating translations for %1$s (%2$s)&#8230;' ) . '</h2>', $name, $this->language_update->language );
 	}
 
 	/**
-	 * @since 5.9.0 Renamed `$error` to `$errors` for PHP 8 named parameter support.
-	 *
-	 * @param string|WP_Error $errors Errors.
+	 * @param string|WP_Error $error
 	 */
-	public function error( $errors ) {
+	public function error( $error ) {
 		echo '<div class="lp-error">';
-		parent::error( $errors );
+		parent::error( $error );
 		echo '</div>';
 	}
 
@@ -72,14 +70,8 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 	 */
 	public function bulk_footer() {
 		$this->decrement_update_count( 'translation' );
-
-		$update_actions = array(
-			'updates_page' => sprintf(
-				'<a href="%s" target="_parent">%s</a>',
-				self_admin_url( 'update-core.php' ),
-				__( 'Go to WordPress Updates page' )
-			),
-		);
+		$update_actions                 = array();
+		$update_actions['updates_page'] = '<a href="' . self_admin_url( 'update-core.php' ) . '" target="_parent">' . __( 'Return to WordPress Updates page' ) . '</a>';
 
 		/**
 		 * Filters the list of action links available following a translations update.

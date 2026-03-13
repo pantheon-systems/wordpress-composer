@@ -1,4 +1,3 @@
-/*! This file is auto-generated */
 /**
  * Base Styles
  */
@@ -19,52 +18,9 @@
 	-webkit-overflow-scrolling: touch;
 }
 
-.media-modal legend {
-	padding: 0;
-	font-size: 13px;
-}
-
+.media-modal legend,
 .media-modal label {
 	font-size: 13px;
-}
-
-.media-modal .legend-inline {
-	position: absolute;
-	transform: translate(100%, 50%);
-	margin-right: -1%;
-	line-height: 1.2;
-}
-
-.media-frame a {
-	border-bottom: none;
-	color: #2271b1;
-}
-
-.media-frame a:hover,
-.media-frame a:active {
-	color: #135e96;
-}
-
-.media-frame a:focus {
-	box-shadow:
-		0 0 0 1px #4f94d4,
-		0 0 2px 1px rgba(79, 148, 212, 0.8);
-	color: #043959;
-	/* Only visible in Windows High Contrast mode */
-	outline: 1px solid transparent;
-}
-
-.media-frame a.button {
-	color: #2c3338;
-}
-
-.media-frame a.button:hover {
-	color: #1d2327;
-}
-
-.media-frame a.button-primary,
-.media-frame a.button-primary:hover {
-	color: #fff;
 }
 
 .media-frame input,
@@ -74,58 +30,55 @@
 
 .media-frame select,
 .wp-admin .media-frame select {
-	min-height: 30px;
-	vertical-align: middle;
+	line-height: 28px;
+	margin-top: 3px;
+}
+
+.media-frame a {
+	border-bottom: none;
+	color: #0073aa;
+}
+
+.media-frame a:hover,
+.media-frame a:active {
+	color: #00a0d2;
+}
+
+.media-frame a:focus {
+	box-shadow:
+		0 0 0 1px #5b9dd9,
+		0 0 2px 1px rgba(30, 140, 190, 0.8);
+	color: #124964;
+	/* Only visible in Windows High Contrast mode */
+	outline: 1px solid transparent;
+}
+
+.media-frame a.button {
+	color: #32373c;
+}
+
+.media-frame a.button:hover {
+	color: #23282d;
+}
+
+.media-frame a.button-primary,
+.media-frame a.button-primary:hover {
+	color: #fff;
 }
 
 .media-frame input[type="text"],
 .media-frame input[type="password"],
-.media-frame input[type="color"],
-.media-frame input[type="date"],
-.media-frame input[type="datetime"],
-.media-frame input[type="datetime-local"],
-.media-frame input[type="email"],
-.media-frame input[type="month"],
 .media-frame input[type="number"],
 .media-frame input[type="search"],
-.media-frame input[type="tel"],
-.media-frame input[type="time"],
+.media-frame input[type="email"],
 .media-frame input[type="url"],
-.media-frame input[type="week"],
 .media-frame textarea,
 .media-frame select {
-	box-shadow: 0 0 0 transparent;
-	border-radius: 4px;
-	border: 1px solid #8c8f94;
-	background-color: #fff;
-	color: #2c3338;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-	font-size: 13px;
-	line-height: 1.38461538;
-}
-
-.media-frame input[type="text"],
-.media-frame input[type="password"],
-.media-frame input[type="date"],
-.media-frame input[type="datetime"],
-.media-frame input[type="datetime-local"],
-.media-frame input[type="email"],
-.media-frame input[type="month"],
-.media-frame input[type="number"],
-.media-frame input[type="search"],
-.media-frame input[type="tel"],
-.media-frame input[type="time"],
-.media-frame input[type="url"],
-.media-frame input[type="week"] {
-	padding: 0 8px;
-	/* inherits font size 13px */
-	line-height: 2.15384615; /* 28px */
-}
-
-/* Search field in the Media Library toolbar */
-.media-frame.mode-grid .wp-filter input[type="search"] {
-	font-size: 14px;
-	line-height: 2;
+	font-size: 12px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #ddd;
 }
 
 .media-frame input[type="text"]:focus,
@@ -136,16 +89,19 @@
 .media-frame input[type="url"]:focus,
 .media-frame textarea:focus,
 .media-frame select:focus {
-	border-color: #3582c4;
-	box-shadow: 0 0 0 1px #3582c4;
-	outline: 2px solid transparent;
+	border-color: #5b9dd9;
+}
+
+.media-frame select {
+	height: 24px;
+	padding: 2px;
 }
 
 .media-frame input:disabled,
 .media-frame textarea:disabled,
 .media-frame input[readonly],
 .media-frame textarea[readonly] {
-	background-color: #f0f0f1;
+	background-color: #eee;
 }
 
 .media-frame input[type="search"] {
@@ -153,24 +109,19 @@
 }
 
 .media-frame ::-webkit-input-placeholder {
-	color: #646970;
+	color: #72777c;
 }
 
 .media-frame ::-moz-placeholder {
-	color: #646970;
+	color: #72777c;
 	opacity: 1;
 }
 
 .media-frame :-ms-input-placeholder {
-	color: #646970;
+	color: #72777c;
 }
 
-/*
- * In some cases there's the need of higher specificity,
- * for example higher than `.media-embed .setting`.
- */
-.media-frame .hidden,
-.media-frame .setting.hidden {
+.media-frame .hidden {
 	display: none;
 }
 
@@ -229,7 +180,7 @@
 	padding: 0;
 	border: 1px solid transparent;
 	background: none;
-	color: #646970;
+	color: #666;
 	z-index: 1000;
 	cursor: pointer;
 	outline: none;
@@ -238,15 +189,16 @@
 
 .media-modal-close:hover,
 .media-modal-close:active {
-	color: #135e96;
+	color: #00a0d2;
 }
 
 .media-modal-close:focus {
-	color: #135e96;
-	border-color: #4f94d4;
-	box-shadow: 0 0 3px rgba(34, 113, 177, 0.8);
+	color: #00a0d2;
+	border-color: #5b9dd9;
+	box-shadow: 0 0 3px rgba(0, 115, 170, 0.8);
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
+	outline-offset: -2px;
 }
 
 .media-modal-close span.media-modal-icon {
@@ -256,7 +208,7 @@
 .media-modal-close .media-modal-icon:before {
 	content: "\f158";
 	font: normal 20px/1 dashicons;
-	speak: never;
+	speak: none;
 	vertical-align: middle;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -271,15 +223,23 @@
 	overflow: auto;
 	min-height: 300px;
 	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
-	background: #fff;
+	background: #fcfcfc;
 	-webkit-font-smoothing: subpixel-antialiased;
 }
 
 .media-modal-content .media-frame select.attachment-filters {
-	margin-top: 32px;
+	margin-top: 11px;
 	margin-left: 2%;
 	width: 42%;
 	width: calc(48% - 12px);
+}
+
+.media-modal-content .media-toolbar-primary .media-button {
+	float: left;
+}
+
+.media-modal-content .attachments-browser .search {
+	width: 100%;
 }
 
 /* higher specificity */
@@ -299,22 +259,27 @@
 	z-index: 100;
 	height: 60px;
 	padding: 0 16px;
-	border: 0 solid #dcdcde;
+	border: 0 solid #ddd;
 	overflow: hidden;
 }
 
 .media-frame-toolbar .media-toolbar {
 	top: auto;
-	bottom: -47px;
+	bottom: -45px;
 	height: auto;
 	overflow: visible;
-	border-top: 1px solid #dcdcde;
+	border-top: 1px solid #ddd;
+}
+
+@media screen and (max-width: 782px) {
+	.media-frame-toolbar .media-toolbar {
+		bottom: -48px;
+	}
 }
 
 .media-toolbar-primary {
 	float: left;
 	height: 100%;
-	position: relative;
 }
 
 .media-toolbar-secondary {
@@ -344,36 +309,44 @@
 	left: 0;
 	bottom: 0;
 	width: 267px;
-	padding: 0 16px;
+	padding: 0 16px 24px;
 	z-index: 75;
-	background: #f6f7f7;
-	border-right: 1px solid #dcdcde;
+	background: #f3f3f3;
+	border-right: 1px solid #ddd;
 	overflow: auto;
 	-webkit-overflow-scrolling: touch;
-}
-
-/*
- * Implementation of bottom padding in overflow content differs across browsers.
- * We need a different method. See https://github.com/w3c/csswg-drafts/issues/129
- */
-.media-sidebar::after {
-	content: "";
-	display: flex;
-	clear: both;
-	height: 24px;
 }
 
 .hide-toolbar .media-sidebar {
 	bottom: 0;
 }
 
+.media-sidebar .sidebar-title {
+	font-size: 20px;
+	margin: 0;
+	padding: 12px 10px 10px;
+	line-height: 28px;
+}
+
+.media-sidebar .sidebar-content {
+	padding: 0 10px;
+	margin-bottom: 130px;
+}
+
+.media-sidebar .search {
+	display: block;
+	width: 100%;
+}
+
+.media-sidebar h3, /* Back-compat for pre-4.4 */
+.image-details h3, /* Back-compat for pre-4.4 */
 .media-sidebar h2,
-.image-details .media-embed h2 {
+.image-details h2 {
 	position: relative;
 	font-weight: 600;
 	text-transform: uppercase;
 	font-size: 12px;
-	color: #646970;
+	color: #666;
 	margin: 24px 0 8px;
 }
 
@@ -382,27 +355,21 @@
 	display: block;
 	float: right;
 	width: 100%;
-	margin: 0 0 10px;
-}
-
-.media-sidebar .collection-settings .setting {
 	margin: 1px 0;
 }
 
-.media-sidebar .setting.has-description,
-.attachment-details .setting.has-description {
-	margin-bottom: 5px;
+.media-sidebar .setting label,
+.attachment-details .setting label {
+	display: block;
 }
 
-.media-sidebar .setting .link-to-custom {
+.media-sidebar .setting .link-to-custom,
+.attachment-details .setting .link-to-custom {
 	margin: 3px 2px 0;
 }
 
-.media-sidebar .setting span, /* Back-compat for pre-5.3 */
-.attachment-details .setting span, /* Back-compat for pre-5.3 */
-.media-sidebar .setting .name,
-.media-sidebar .setting .value,
-.attachment-details .setting .name {
+.media-sidebar .setting span,
+.attachment-details .setting span {
 	min-width: 30%;
 	margin-left: 4%;
 	font-size: 12px;
@@ -414,11 +381,8 @@
 	max-width: 80px;
 }
 
-.media-sidebar .setting .value {
-	text-align: right;
-}
-
-.media-sidebar .setting select {
+.media-sidebar .setting select,
+.attachment-details .setting select {
 	max-width: 65%;
 }
 
@@ -435,46 +399,15 @@
 	padding: 0;
 }
 
-.media-sidebar .setting span, /* Back-compat for pre-5.3 */
-.attachment-details .setting span, /* Back-compat for pre-5.3 */
-.media-sidebar .setting .name,
-.media-sidebar .setting .value,
-.media-sidebar .checkbox-label-inline,
-.attachment-details .setting .name,
-.attachment-details .setting .value,
+.media-sidebar .setting span,
+.attachment-details .setting span,
 .compat-item label span {
 	float: right;
 	min-height: 22px;
 	padding-top: 8px;
-	line-height: 1.33333333;
+	line-height: 16px;
 	font-weight: 400;
-	color: #646970;
-}
-
-.media-sidebar .checkbox-label-inline {
-	font-size: 12px;
-}
-
-.media-sidebar .copy-to-clipboard-container,
-.attachment-details .copy-to-clipboard-container {
-	flex-wrap: wrap;
-	margin-top: 10px;
-	margin-right: calc( 35% - 1px );
-	padding-top: 10px;
-}
-
-/* Needs high specificity. */
-.attachment-details .attachment-info .copy-to-clipboard-container {
-	float: none;
-}
-
-.media-sidebar .copy-to-clipboard-container .success,
-.attachment-details .copy-to-clipboard-container .success {
-	padding: 0;
-	min-height: 0;
-	line-height: 2.18181818;
-	text-align: right;
-	color: #008a20;
+	color: #666;
 }
 
 .compat-item label span {
@@ -517,7 +450,7 @@
 	clear: both;
 	font-size: 12px;
 	font-style: normal;
-	margin-bottom: 10px;
+	margin-bottom: 0.5em;
 }
 
 .media-sidebar .setting textarea,
@@ -527,11 +460,9 @@
 	resize: vertical;
 }
 
-.media-sidebar .alt-text textarea,
-.attachment-details .alt-text textarea,
-.compat-item .alt-text textarea,
-.alt-text textarea {
-	height: 50px;
+.media-sidebar select,
+.attachment-details select {
+	margin-top: 3px;
 }
 
 .compat-item {
@@ -609,60 +540,47 @@
 	bottom: 0;
 	margin: 0;
 	padding: 50px 0 10px;
-	background: #f6f7f7;
+	background: #f3f3f3;
 	border-left-width: 1px;
 	border-left-style: solid;
-	border-left-color: #c3c4c7;
+	border-left-color: #ccc;
 	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 
-.media-menu .media-menu-item {
+.media-menu > a {
 	display: block;
-	box-sizing: border-box;
-	width: 100%;
 	position: relative;
-	border: 0;
-	margin: 0;
 	padding: 8px 20px;
+	margin: 0;
+	line-height: 18px;
 	font-size: 14px;
-	line-height: 1.28571428;
-	background: transparent;
-	color: #2271b1;
-	text-align: right;
+	color: #0073aa;
 	text-decoration: none;
-	cursor: pointer;
 }
 
-.media-menu .media-menu-item:hover {
+.media-menu > a:hover {
+	color: #0073aa;
 	background: rgba(0, 0, 0, 0.04);
 }
 
-.media-menu .media-menu-item:active {
-	color: #2271b1;
+.media-menu > a:active {
 	outline: none;
 }
 
 .media-menu .active,
 .media-menu .active:hover {
-	color: #1d2327;
+	color: #23282d;
 	font-weight: 600;
-}
-
-.media-menu .media-menu-item:focus {
-	box-shadow:
-		0 0 0 1px #4f94d4,
-		0 0 2px 1px rgba(79, 148, 212, 0.8);
-	color: #043959;
-	/* Only visible in Windows High Contrast mode */
-	outline: 1px solid transparent;
 }
 
 .media-menu .separator {
 	height: 0;
 	margin: 12px 20px;
 	padding: 0;
-	border-top: 1px solid #dcdcde;
+	border-top: 1px solid #ddd;
 }
 
 /**
@@ -673,51 +591,45 @@
 	padding: 0 6px;
 	margin: 0;
 	clear: both;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
-.media-router .media-menu-item {
-	position: relative;
-	float: right;
-	border: 0;
-	margin: 0;
-	padding: 8px 10px 9px;
-	height: 18px;
-	line-height: 1.28571428;
-	font-size: 14px;
-	text-decoration: none;
-	background: transparent;
-	cursor: pointer;
+.media-router a {
 	transition: none;
 }
 
-.media-router .media-menu-item:last-child {
+.media-router > a {
+	position: relative;
+	float: right;
+	padding: 8px 10px 9px;
+	margin: 0;
+	height: 18px;
+	line-height: 18px;
+	font-size: 14px;
+	text-decoration: none;
+}
+
+.media-router > a:last-child {
 	border-left: 0;
 }
 
-.media-router .media-menu-item:hover,
-.media-router .media-menu-item:active {
-	color: #2271b1;
+.media-router > a:active {
+	outline: none;
 }
 
 .media-router .active,
 .media-router .active:hover {
-	color: #1d2327;
-}
-
-.media-router .media-menu-item:focus {
-	box-shadow:
-		0 0 0 1px #4f94d4,
-		0 0 2px 1px rgba(79, 148, 212, 0.8);
-	color: #043959;
-	/* Only visible in Windows High Contrast mode */
-	outline: 1px solid transparent;
+	color: #32373c;
 }
 
 .media-router .active,
-.media-router .media-menu-item.active:last-child {
+.media-router > a.active:last-child {
 	margin: -1px -1px 0;
 	background: #fff;
-	border: 1px solid #dcdcde;
+	border: 1px solid #ddd;
 	border-bottom: none;
 }
 
@@ -775,13 +687,15 @@
 	margin: 0;
 	overflow: auto;
 	background: #fff;
-	border-top: 1px solid #dcdcde;
+	border-top: 1px solid #ddd;
 }
 
 .media-frame-toolbar {
 	position: absolute;
 	right: 200px;
 	left: 0;
+	bottom: 0;
+	height: 60px;
 	z-index: 100;
 	bottom: 60px;
 	height: auto;
@@ -803,47 +717,25 @@
 }
 
 .media-frame.hide-menu .media-frame-menu,
-.media-frame.hide-menu .media-frame-menu-heading,
 .media-frame.hide-router .media-frame-router,
 .media-frame.hide-toolbar .media-frame-toolbar {
+	display: none;
+}
+
+.media-frame.hide-router .media-frame-title {
+	border-bottom: 1px solid #ddd;
+	box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.1);
+}
+
+.media-frame-title .dashicons {
 	display: none;
 }
 
 .media-frame-title h1 {
 	padding: 0 16px;
 	font-size: 22px;
-	line-height: 2.27272727;
+	line-height: 50px;
 	margin: 0;
-}
-
-.media-frame-menu-heading,
-.media-attachments-filter-heading {
-	position: absolute;
-	right: 20px;
-	top: 22px;
-	margin: 0;
-	font-size: 13px;
-	line-height: 1;
-	/* Above the media-frame-menu. */
-	z-index: 151;
-}
-
-.media-attachments-filter-heading {
-	top: 10px;
-	right: 16px;
-}
-
-.mode-grid .media-attachments-filter-heading {
-	top: 0;
-	right: -9999px;
-}
-
-.mode-grid .media-frame-actions-heading {
-	display: none;
-}
-
-.wp-core-ui .button.media-frame-menu-toggle {
-	display: none;
 }
 
 .media-frame-title .suggested-dimensions {
@@ -867,7 +759,8 @@
 	max-height: 100%;
 }
 
-.media-frame-content .crop-content .upload-errors {
+.media-frame-content .crop-content .upload-errors
+{
 	position: absolute;
 	width: 300px;
 	top: 50%;
@@ -903,30 +796,24 @@
 
 .media-frame select.attachment-filters:last-of-type {
 	margin-left: 0;
+	width: auto;
+	max-width: 100%;
 }
 
 /**
  * Search
  */
 .media-frame .search {
-	margin: 32px 0 0;
+	margin-top: 11px;
 	padding: 4px;
 	font-size: 13px;
-	color: #3c434a;
+	color: #444;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	-webkit-appearance: none;
 }
 
 .media-toolbar-primary .search {
 	max-width: 100%;
-}
-
-.media-modal .media-frame .media-search-input-label {
-	position: absolute;
-	right: 0;
-	top: 10px;
-	margin: 0;
-	line-height: 1;
 }
 
 /**
@@ -945,11 +832,13 @@
 	float: right;
 	padding: 8px;
 	margin: 0;
-	color: #3c434a;
+	color: #444;
 	cursor: pointer;
 	list-style: none;
 	text-align: center;
 	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 	width: 25%;
 	box-sizing: border-box;
@@ -960,7 +849,7 @@
 .wp-core-ui .attachment.details:focus {
 	box-shadow:
 		inset 0 0 2px 3px #fff,
-		inset 0 0 0 7px #4f94d4;
+		inset 0 0 0 7px #5b9dd9;
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
 	outline-offset: -6px;
@@ -969,13 +858,13 @@
 .wp-core-ui .selected.attachment {
 	box-shadow:
 		inset 0 0 0 5px #fff,
-		inset 0 0 0 7px #c3c4c7;
+		inset 0 0 0 7px #ccc;
 }
 
 .wp-core-ui .attachment.details {
 	box-shadow:
 		inset 0 0 0 3px #fff,
-		inset 0 0 0 7px #2271b1;
+		inset 0 0 0 7px #0073aa;
 }
 
 .wp-core-ui .attachment-preview {
@@ -983,7 +872,7 @@
 	box-shadow:
 		inset 0 0 15px rgba(0, 0, 0, 0.1),
 		inset 0 0 0 1px rgba(0, 0, 0, 0.05);
-	background: #f0f0f1;
+	background: #eee;
 	cursor: pointer;
 }
 
@@ -1051,6 +940,11 @@
 	transform: translate( 50%, -70% );
 }
 
+.ie8 .wp-core-ui .attachment img.icon {
+	top: 20%;
+	position: relative;
+}
+
 .wp-core-ui .attachment .filename {
 	position: absolute;
 	right: 0;
@@ -1104,7 +998,7 @@
 	top: 0;
 	left: 0;
 	outline: none;
-	background: #f0f0f1;
+	background: #eee;
 	cursor: pointer;
 	box-shadow: 0 0 0 1px #fff, 0 0 0 2px rgba(0, 0, 0, 0.15);
 }
@@ -1128,10 +1022,10 @@
 .wp-core-ui .attachment.details .check,
 .wp-core-ui .attachment.selected .check:focus,
 .wp-core-ui .media-frame.mode-grid .attachment.selected .check {
-	background-color: #2271b1;
+	background-color: #0073aa;
 	box-shadow:
 		0 0 0 1px #fff,
-		0 0 0 2px #2271b1;
+		0 0 0 2px #0073aa;
 }
 
 .wp-core-ui .attachment.selected .check:focus {
@@ -1155,7 +1049,7 @@
 	display: block;
 	width: 100%;
 	margin: 0;
-	padding: 0 8px;
+	padding: 8px;
 	font-size: 12px;
 	border-radius: 0;
 }
@@ -1172,8 +1066,7 @@
 
 .attachments-browser .media-toolbar {
 	left: 300px;
-	height: 72px;
-	background: #fff;
+	height: 50px;
 }
 
 .attachments-browser.hide-sidebar .media-toolbar {
@@ -1184,18 +1077,17 @@
 .attachments-browser .media-toolbar-primary > .media-button-group,
 .attachments-browser .media-toolbar-secondary > .media-button,
 .attachments-browser .media-toolbar-secondary > .media-button-group {
-	margin: 10px 0;
+	margin: 11px 0;
 }
 
 .attachments-browser .attachments {
 	padding: 2px 8px 8px;
 }
 
-.attachments-browser:not(.has-load-more) .attachments,
-.attachments-browser.has-load-more .attachments-wrapper,
+.attachments-browser .attachments,
 .attachments-browser .uploader-inline {
 	position: absolute;
-	top: 72px;
+	top: 50px;
 	right: 0;
 	left: 300px;
 	bottom: 0;
@@ -1209,16 +1101,6 @@
 
 .attachments-browser .media-toolbar-primary {
 	max-width: 33%;
-}
-
-.mode-grid .attachments-browser .media-toolbar-primary {
-	display: flex;
-	align-items: center;
-	column-gap: .5rem;
-}
-
-.mode-grid .attachments-browser .media-toolbar-mode-select .media-toolbar-primary {
-	display: none;
 }
 
 .attachments-browser .media-toolbar-secondary {
@@ -1242,7 +1124,7 @@
 
 .uploader-inline .close:before {
 	font: normal 30px/1 dashicons !important;
-	color: #50575e;
+	color: #555d66;
 	display: inline-block;
 	content: "\f335";
 	font-weight: 300;
@@ -1250,8 +1132,8 @@
 }
 
 .uploader-inline .close:focus {
-	outline: 1px solid #4f94d4;
-	box-shadow: 0 0 3px rgba(34, 113, 177, 0.8);
+	outline: 1px solid #5b9dd9;
+	box-shadow: 0 0 3px rgba(0, 115, 170, 0.8);
 }
 
 .attachments-browser.hide-sidebar .attachments,
@@ -1263,103 +1145,14 @@
 .attachments-browser .instructions {
 	display: inline-block;
 	margin-top: 16px;
-	line-height: 1.38461538;
+	line-height: 18px;
 	font-size: 13px;
-	color: #646970;
+	color: #666;
+	margin-left: 0.5em;
 }
 
 .attachments-browser .no-media {
 	padding: 2em 2em 0 0;
-}
-
-.more-loaded .attachment:not(.found-media) {
-	background: #dcdcde;
-}
-
-.load-more-wrapper {
-	clear: both;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: center;
-	padding: 1em 0;
-}
-
-.load-more-wrapper .load-more-count {
-	min-width: 100%;
-	margin: 0 0 1em;
-	text-align: center;
-}
-
-.load-more-wrapper .load-more {
-	margin: 0;
-}
-
-/* Needs high specificity. */
-.media-frame .load-more-wrapper .load-more + .spinner {
-	float: none;
-	margin: 0 10px 0 -30px;
-}
-
-/* Reset spinner margin when the button is hidden to avoid horizontal scrollbar. */
-.media-frame .load-more-wrapper .load-more.hidden + .spinner {
-	margin: 0;
-}
-
-/* Force a new row within the flex container. */
-.load-more-wrapper::after {
-	content: "";
-	min-width: 100%;
-	order: 1;
-}
-
-.load-more-wrapper .load-more-jump {
-	margin: 0 12px 0 0;
-}
-
-.attachment.new-media {
-	outline: 2px dotted #c3c4c7;
-}
-
-.load-more-wrapper {
-	clear: both;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: center;
-	padding: 1em 0;
-}
-
-.load-more-wrapper .load-more-count {
-	min-width: 100%;
-	margin: 0 0 1em;
-	text-align: center;
-}
-
-.load-more-wrapper .load-more {
-	margin: 0;
-}
-
-/* Needs high specificity. */
-.media-frame .load-more-wrapper .load-more + .spinner {
-	float: none;
-	margin: 0 10px 0 -30px;
-}
-
-/* Reset spinner margin when the button is hidden to avoid horizontal scrollbar. */
-.media-frame .load-more-wrapper .load-more.hidden + .spinner {
-	margin: 0;
-}
-
-/* Force a new row within the flex container. */
-.load-more-wrapper::after {
-	content: "";
-	min-width: 100%;
-	order: 1;
-}
-
-.load-more-wrapper .load-more-jump {
-	margin: 0 12px 0 0;
 }
 
 /**
@@ -1371,7 +1164,7 @@
 	width: 70%;
 	margin: 10px auto;
 	border-radius: 10px;
-	background: #dcdcde;
+	background: #ddd;
 	background: rgba(0, 0, 0, 0.1);
 }
 
@@ -1379,7 +1172,7 @@
 	height: 10px;
 	min-width: 20px;
 	width: 0;
-	background: #2271b1;
+	background: #0073aa;
 	border-radius: 10px;
 	transition: width 300ms;
 }
@@ -1398,7 +1191,7 @@
 	top: 50%;
 	right: 15%;
 	width: 70%;
-	margin: -5px 0 0;
+	margin: -5px 0 0 0;
 }
 
 .media-uploader-status {
@@ -1408,6 +1201,7 @@
 	max-width: 400px;
 }
 
+.uploader-inline .media-uploader-status h3, /* Back-compat for pre-4.4 */
 .uploader-inline .media-uploader-status h2 {
 	display: none;
 }
@@ -1415,7 +1209,7 @@
 .media-uploader-status .upload-details {
 	display: none;
 	font-size: 12px;
-	color: #646970;
+	color: #666;
 }
 
 .uploading.media-uploader-status .upload-details {
@@ -1427,7 +1221,7 @@
 }
 
 .media-uploader-status .upload-count {
-	color: #3c434a;
+	color: #444;
 }
 
 .media-uploader-status .upload-dismiss-errors,
@@ -1441,21 +1235,47 @@
 }
 
 .media-uploader-status .upload-dismiss-errors {
+	position: absolute;
+	top: -3px;
+	left: -5px;
+	padding: 5px;
+	border-radius: 50%;
 	transition: none;
 	text-decoration: none;
+}
+
+.uploader-inline .media-uploader-status .upload-dismiss-errors {
+	top: 2px;
+	left: 2px;
+}
+
+.media-uploader-status .upload-dismiss-errors::before {
+	content: "\f153";
+	display: block;
+	font: normal 16px/1 dashicons;
+	color: #72777c;
+}
+
+.uploader-inline .errors.media-uploader-status .upload-dismiss-errors::before {
+	color: #606a73;
+}
+
+.errors.media-uploader-status .upload-dismiss-errors:hover::before,
+.errors.media-uploader-status .upload-dismiss-errors:focus::before {
+	color: #c00;
 }
 
 .upload-errors .upload-error {
 	padding: 12px;
 	margin-bottom: 12px;
 	background: #fff;
-	border-right: 4px solid #d63638;
+	border-right: 4px solid #dc3232;
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .uploader-inline .upload-errors .upload-error {
 	padding: 12px 30px;
-	background-color: #fcf0f1;
+	background-color: #fbeaea;
 	box-shadow: none;
 }
 
@@ -1469,39 +1289,21 @@
 	word-wrap: break-word;
 }
 
-/**
- * Window and Editor uploaders used to display "drop zones"
- */
-.uploader-window,
-.wp-editor-wrap .uploader-editor {
+.uploader-window {
+	position: fixed;
 	top: 0;
 	right: 0;
 	left: 0;
 	bottom: 0;
-	text-align: center;
-	display: none;
-}
-
-.uploader-window {
-	position: fixed;
+	background: rgba(0, 86, 132, 0.9);
 	z-index: 250000;
-	opacity: 0; /* Only the inline uploader is animated with JS, the editor one isn't */
+	display: none;
+	text-align: center;
+	opacity: 0;
 	transition: opacity 250ms;
 }
 
-.wp-editor-wrap .uploader-editor {
-	position: absolute;
-	z-index: 99998; /* under the toolbar */
-	background: rgba(140, 143, 148, 0.9);
-}
-
-.uploader-window,
-.wp-editor-wrap .uploader-editor.droppable {
-	background: rgba(10, 75, 120, 0.9);
-}
-
-.uploader-window-content,
-.wp-editor-wrap .uploader-editor-content {
+.uploader-window-content {
 	position: absolute;
 	top: 10px;
 	right: 10px;
@@ -1510,29 +1312,17 @@
 	border: 1px dashed #fff;
 }
 
-/* uploader drop-zone title */
-.uploader-window h1, /* Back-compat for pre-5.3 */
-.uploader-window .uploader-editor-title,
-.wp-editor-wrap .uploader-editor .uploader-editor-title {
+.uploader-window h3, /* Back-compat for pre-4.4 */
+.uploader-window h1 {
+	margin: -0.5em 0 0;
 	position: absolute;
 	top: 50%;
 	right: 0;
 	left: 0;
-	transform: translateY(-50%);
-	font-size: 3em;
-	line-height: 1.3;
-	font-weight: 600;
+	transform: translateY( -50% );
+	font-size: 40px;
 	color: #fff;
-	margin: 0;
-	padding: 0 10px;
-}
-
-.wp-editor-wrap .uploader-editor .uploader-editor-title {
-	display: none;
-}
-
-.wp-editor-wrap .uploader-editor.droppable .uploader-editor-title {
-	display: block;
+	padding: 0;
 }
 
 .uploader-window .media-progress-bar {
@@ -1576,16 +1366,17 @@
 	margin: 0 0 4em;
 }
 
+.uploader-inline h3, /* Back-compat for pre-4.4 */
 .uploader-inline h2 {
 	font-size: 20px;
-	line-height: 1.4;
+	line-height: 28px;
 	font-weight: 400;
 	margin: 0;
 }
 
 .uploader-inline .has-upload-message .upload-instructions {
 	font-size: 14px;
-	color: #3c434a;
+	color: #444;
 	font-weight: 400;
 }
 
@@ -1598,6 +1389,7 @@
 }
 
 .uploader-inline p {
+	font-size: 12px;
 	margin: 0.5em 0;
 }
 
@@ -1648,7 +1440,7 @@
 	display: block;
 	padding-top: 12px;
 	font-size: 14px;
-	line-height: 1.42857142;
+	line-height: 20px;
 	font-weight: 600;
 }
 
@@ -1656,15 +1448,15 @@
 	float: right;
 	padding: 1px 8px;
 	margin: 1px -8px 1px 8px;
-	line-height: 1.4;
-	border-left: 1px solid #dcdcde;
-	color: #2271b1;
+	line-height: 16px;
+	border-left: 1px solid #ddd;
+	color: #0073aa;
 	text-decoration: none;
 }
 
 .media-selection .button-link:hover,
 .media-selection .button-link:focus {
-	color: #135e96;
+	color: #00a0d2;
 }
 
 .media-selection .button-link:last-child {
@@ -1673,12 +1465,12 @@
 }
 
 .selection-info .clear-selection {
-	color: #d63638;
+	color: #bc0b0b;
 }
 
 .selection-info .clear-selection:hover,
 .selection-info .clear-selection:focus {
-	color: #d63638;
+	color: #dc3232;
 }
 
 .media-selection .selection-view {
@@ -1722,7 +1514,7 @@
 .wp-core-ui .media-selection .attachment.details:focus {
 	box-shadow:
 		0 0 0 1px #fff,
-		0 0 2px 3px #4f94d4;
+		0 0 2px 3px #5b9dd9;
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
 }
@@ -1734,7 +1526,7 @@
 .wp-core-ui .media-selection .attachment.details {
 	box-shadow:
 		0 0 0 1px #fff,
-		0 0 0 3px #2271b1;
+		0 0 0 3px #0073aa;
 }
 
 .media-selection:after {
@@ -1745,7 +1537,7 @@
 	left: 0;
 	bottom: 0;
 	width: 25px;
-	background-image: linear-gradient(to right,#fff,rgba(255, 255, 255, 0));
+	background-image: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
 }
 
 .media-selection .attachment .filename {
@@ -1769,24 +1561,12 @@
 	vertical-align: middle;
 }
 
-.media-frame.mode-grid .spinner {
-	margin: 0;
-	float: none;
-	vertical-align: middle;
-}
-
-.media-modal .media-toolbar .spinner {
-	float: none;
-	vertical-align: bottom;
-	margin: 0 5px 5px 0;
-}
-
-.media-frame .instructions + .spinner.is-active {
-	vertical-align: middle;
-}
-
 .media-frame .spinner.is-active {
 	visibility: visible;
+}
+
+.media-toolbar .spinner {
+	margin-top: 14px;
 }
 
 /**
@@ -1800,15 +1580,15 @@
 .attachment-details .settings-save-status {
 	float: left;
 	text-transform: none;
-	font-weight: 400;
+	z-index: 10;
 }
 
 .attachment-details .settings-save-status .spinner {
-	float: none;
 	margin-right: 5px;
 }
 
 .attachment-details .settings-save-status .saved {
+	float: left;
 	display: none;
 }
 
@@ -1817,30 +1597,22 @@
 }
 
 .attachment-details.save-complete .settings-save-status .saved {
-	display: inline-block;
+	display: block;
 }
 
 .attachment-info {
 	overflow: hidden;
 	min-height: 60px;
 	margin-bottom: 16px;
-	line-height: 1.5;
-	color: #646970;
-	border-bottom: 1px solid #dcdcde;
+	line-height: 18px;
+	color: #666;
+	border-bottom: 1px solid #ddd;
 	padding-bottom: 11px;
-}
-
-.attachment-info .wp-media-wrapper {
-	margin-bottom: 8px;
-}
-
-.attachment-info .wp-media-wrapper.wp-audio {
-	margin-top: 13px;
 }
 
 .attachment-info .filename {
 	font-weight: 600;
-	color: #3c434a;
+	color: #444;
 	word-wrap: break-word;
 }
 
@@ -1911,7 +1683,7 @@
 .media-modal .untrash-attachment {
 	display: inline;
 	padding: 0;
-	color: #d63638;
+	color: #bc0b0b;
 }
 
 .media-modal .delete-attachment:hover,
@@ -1920,7 +1692,7 @@
 .media-modal .trash-attachment:focus,
 .media-modal .untrash-attachment:hover,
 .media-modal .untrash-attachment:focus {
-	color: #d63638;
+	color: #dc3232;
 }
 
 /**
@@ -1932,6 +1704,10 @@
 	overflow: hidden;
 }
 
+.attachment-display-settings h4 {
+	margin: 1.4em 0 0.4em;
+}
+
 .collection-settings {
 	overflow: hidden;
 }
@@ -1941,8 +1717,7 @@
 	margin-left: 8px;
 }
 
-.collection-settings .setting span, /* Back-compat for pre-5.3 */
-.collection-settings .setting .name {
+.collection-settings .setting span {
 	min-width: inherit;
 }
 
@@ -1954,50 +1729,65 @@
 }
 
 .media-modal .imgedit-wrap .imgedit-panel-content {
-	padding: 16px 16px 0;
-	overflow: visible;
+	padding: 16px;
+	position: absolute;
+	top: 0;
+	left: 282px;
+	bottom: 0;
+	right: 0;
+	overflow: auto;
 }
 
-/*
- * Implementation of bottom padding in overflow content differs across browsers.
- * We need a different method. See https://github.com/w3c/csswg-drafts/issues/129
- */
-.media-modal .imgedit-wrap .imgedit-save-target {
-	margin: 8px 0 24px;
+.media-modal .imgedit-wrap .imgedit-settings {
+	background: #f3f3f3;
+	border-right: 1px solid #ddd;
+	padding: 20px 16px 16px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 250px;
+	overflow: auto;
 }
 
 .media-modal .imgedit-group {
 	background: none;
 	border: none;
+	border-bottom: 1px solid #ddd;
 	box-shadow: none;
 	margin: 0;
+	margin-bottom: 16px;
 	padding: 0;
+	padding-bottom: 16px;
 	position: relative; /* RTL fix, #WP29352 */
 }
 
-.media-modal .imgedit-group.imgedit-panel-active {
-	margin-bottom: 16px;
-	padding-bottom: 16px;
+.media-modal .imgedit-group:last-of-type {
+	border: none;
+	margin: 0;
+	padding: 0;
 }
 
 .media-modal .imgedit-group-top {
 	margin: 0;
 }
 
+.media-modal .imgedit-group-top h3, /* Back-compat for pre-4.4 */
 .media-modal .imgedit-group-top h2,
 .media-modal .imgedit-group-top h2 .button-link {
 	display: inline-block;
 	text-transform: uppercase;
 	font-size: 12px;
-	color: #646970;
+	color: #666;
 	margin: 0;
 	margin-top: 3px;
 }
 
+.media-modal .imgedit-group-top h3 a, /* Back-compat for pre-4.4 */
 .media-modal .imgedit-group-top h2 a,
 .media-modal .imgedit-group-top h2 .button-link {
 	text-decoration: none;
-	color: #646970;
+	color: #666;
 }
 
 /* higher specificity than media.css */
@@ -2008,7 +1798,7 @@
 	margin: 0;
 	padding: 0;
 	background: transparent;
-	color: #2271b1;
+	color: #0074a2;
 	font-size: 20px;
 	line-height: 1;
 	cursor: pointer;
@@ -2017,9 +1807,9 @@
 }
 
 .wp-core-ui.media-modal .image-editor .imgedit-help-toggle:focus {
-	color: #2271b1;
-	border-color: #4f94d4;
-	box-shadow: 0 0 3px rgba(34, 113, 177, 0.8);
+	color: #0074a2;
+	border-color: #5b9dd9;
+	box-shadow: 0 0 3px rgba(0, 115, 170, 0.8);
 	/* Only visible in Windows High Contrast mode */
 	outline: 2px solid transparent;
 }
@@ -2044,10 +1834,11 @@
 	display: block;
 }
 
-.media-modal .imgedit-wrap div.updated, /* Back-compat for pre-5.5 */
-.media-modal .imgedit-wrap .notice {
-	margin: 0 16px;
+.media-modal .imgedit-wrap div.updated {
+	margin: 0;
+	margin-bottom: 16px;
 }
+
 
 /**
  * Embed from URL and Image Details
@@ -2064,15 +1855,10 @@
 
 .media-frame .embed-url input {
 	font-size: 18px;
-	line-height: 1.22222222; /* 22px */
-	padding: 12px 14px 12px 40px; /* right padding to leave room for the spinner */
+	padding: 12px 14px;
 	width: 100%;
 	min-width: 200px;
 	box-shadow: inset -2px 2px 4px -2px rgba(0, 0, 0, 0.1);
-}
-
-.media-frame .embed-url input::-ms-clear {
-	display: none; /* the "x" in IE 11 conflicts with the spinner */
 }
 
 .media-frame .embed-url .spinner {
@@ -2088,28 +1874,12 @@
 .embed-link-settings,
 .embed-media-settings {
 	position: absolute;
-	top: 82px;
+	top: 70px;
 	right: 0;
 	left: 0;
 	bottom: 0;
-	padding: 0 16px;
+	padding: 16px 16px 32px;
 	overflow: auto;
-}
-
-.media-embed .embed-link-settings .link-text {
-	margin-top: 0;
-}
-
-/*
- * Implementation of bottom padding in overflow content differs across browsers.
- * We need a different method. See https://github.com/w3c/csswg-drafts/issues/129
- */
-.embed-link-settings::after,
-.embed-media-settings::after {
-	content: "";
-	display: flex;
-	clear: both;
-	height: 24px;
 }
 
 .media-embed .embed-link-settings {
@@ -2135,8 +1905,8 @@
 }
 
 .mejs-container:focus {
-	outline: 1px solid #4f94d4;
-	box-shadow: 0 0 2px 1px rgba(79, 148, 212, 0.8);
+	outline: 1px solid #5b9dd9;
+	box-shadow: 0 0 2px 1px rgba(30, 140, 190, 0.8);
 }
 
 .image-details .media-modal {
@@ -2156,18 +1926,14 @@
 	padding: 0;
 }
 
-.image-details .embed-media-settings::after {
-	content: none;
-}
-
 .image-details .embed-media-settings,
 .image-details .embed-media-settings div {
 	box-sizing: border-box;
 }
 
 .image-details .column-settings {
-	background: #f6f7f7;
-	border-left: 1px solid #dcdcde;
+	background: #f3f3f3;
+	border-left: 1px solid #ddd;
 	min-height: 100%;
 	width: 55%;
 	position: absolute;
@@ -2175,11 +1941,12 @@
 	right: 0;
 }
 
+.image-details .column-settings h3, /* Back-compat for pre-4.4 */
 .image-details .column-settings h2 {
 	margin: 20px;
 	padding-top: 20px;
-	border-top: 1px solid #dcdcde;
-	color: #1d2327;
+	border-top: 1px solid #ddd;
+	color: #23282d;
 }
 
 .image-details .column-image {
@@ -2200,19 +1967,19 @@
 
 .image-details .advanced-toggle {
 	padding: 0;
-	color: #646970;
+	color: #666;
 	text-transform: uppercase;
 	text-decoration: none;
 }
 
 .image-details .advanced-toggle:hover,
 .image-details .advanced-toggle:active {
-	color: #646970;
+	color: #666;
 }
 
 .image-details .advanced-toggle:after {
 	font: normal 20px/1 dashicons;
-	speak: never;
+	speak: none;
 	vertical-align: top;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -2225,14 +1992,22 @@
 	content: "\f142";
 }
 
-.image-details .custom-size label, /* Back-compat for pre-5.3 */
-.image-details .custom-size .custom-size-setting {
+.image-details .embed-media-settings .size {
+	margin-bottom: 4px;
+}
+
+.image-details .custom-size span {
+	display: block;
+}
+
+.image-details .custom-size label {
 	display: block;
 	float: right;
 }
 
-.image-details .custom-size .custom-size-setting label {
-	float: none;
+.image-details .custom-size span small {
+	color: #555d66; /* #f3f3f3 background */
+	font-size: inherit;
 }
 
 .image-details .custom-size input {
@@ -2241,11 +2016,13 @@
 
 .image-details .custom-size .sep {
 	float: right;
-	margin: 26px 6px 0;
+	margin: 26px 6px 0 6px;
 }
 
-.image-details .custom-size .description {
-	margin-right: 0;
+.image-details .custom-size:after {
+	content: "";
+	display: table;
+	clear: both;
 }
 
 .media-embed .thumbnail {
@@ -2272,17 +2049,12 @@
 	overflow: hidden;
 }
 
-.media-embed .setting,
-.media-embed .setting-group {
+.media-embed .setting {
 	width: 100%;
 	margin: 10px 0;
 	float: right;
 	display: block;
 	clear: both;
-}
-
-.media-embed .setting-group .setting:not(.checkbox-setting) {
-	margin: 0;
 }
 
 .media-embed .setting.has-description {
@@ -2294,18 +2066,7 @@
 	font-style: normal;
 }
 
-.media-embed .content-track + .description {
-	line-height: 1.4;
-	/* The !important needs to override a high specificity selector from wp-medialement.css */
-	max-width: none !important;
-}
-
-.media-embed .remove-track {
-	margin-bottom: 10px;
-}
-
-.image-details .embed-media-settings .setting,
-.image-details .embed-media-settings .setting-group {
+.image-details .embed-media-settings .setting {
 	float: none;
 	width: auto;
 }
@@ -2319,11 +2080,11 @@
 }
 
 .media-embed .setting input[type="text"],
-.media-embed .setting textarea,
-.media-embed fieldset {
+.media-embed .setting textarea {
 	display: block;
 	width: 100%;
 	max-width: 400px;
+	margin: 1px 0;
 }
 
 .image-details .embed-media-settings .setting input[type="text"],
@@ -2335,7 +2096,6 @@
 .image-details .embed-media-settings .setting input.link-to-custom,
 .image-details .embed-media-settings .link-target,
 .image-details .embed-media-settings .custom-size,
-.image-details .embed-media-settings .setting-group,
 .image-details .description {
 	margin-right: 27%;
 	width: 70%;
@@ -2347,13 +2107,7 @@
 }
 
 .image-details .embed-media-settings .link-target {
-	margin-top: 16px;
-}
-
-.image-details .checkbox-label,
-.audio-details .checkbox-label,
-.video-details .checkbox-label {
-	vertical-align: baseline;
+	margin-top: 24px;
 }
 
 .media-embed .setting input.hidden,
@@ -2361,33 +2115,24 @@
 	display: none;
 }
 
-.media-embed .setting span, /* Back-compat for pre-5.3 */
-.media-embed .setting .name,
-.media-embed .setting-group .name {
-	display: inline-block;
-	font-size: 13px;
-	line-height: 1.84615384;
-	color: #646970;
-}
-
 .media-embed .setting span {
-	display: block; /* Back-compat for pre-5.3 */
-	width: 200px; /* Back-compat for pre-5.3 */
+	display: block;
+	width: 200px;
+	font-size: 13px;
+	line-height: 24px;
+	color: #666;
 }
 
-.image-details .embed-media-settings .setting span, /* Back-compat for pre-5.3 */
-.image-details .embed-media-settings .setting .name {
+.image-details .embed-media-settings .setting span {
 	float: right;
 	width: 25%;
 	text-align: left;
-	margin: 8px 1% 0;
+	margin: 8px 1% 0 1%;
 	line-height: 1.1;
 }
 
-/* Buttons group in IE 11. */
-.media-frame .setting-group .button-group,
-.image-details .embed-media-settings .setting .button-group {
-	width: auto;
+.media-embed .setting .button-group {
+	margin: 2px 0;
 }
 
 .media-embed-sidebar {
@@ -2401,14 +2146,99 @@
 	margin-top: 10px;
 }
 
+/* Drag & drop on the editor upload */
+.wp-editor-wrap .uploader-editor {
+	background: rgba(150, 150, 150, 0.9);
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 99998; /* under the toolbar */
+	display: none;
+	text-align: center;
+}
+
+.wp-editor-wrap .uploader-editor-content {
+	border: 1px dashed #fff;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	left: 10px;
+	bottom: 10px;
+}
+
+.wp-editor-wrap .uploader-editor .uploader-editor-title {
+	position: absolute;
+	top: 50%;
+	right: 0;
+	left: 0;
+	transform: translateY( -50% );
+	font-size: 3em;
+	line-height: 1.3;
+	font-weight: 600;
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	display: none;
+}
+
+.wp-editor-wrap .uploader-editor.droppable {
+	background: rgba(0, 86, 132, 0.9);
+}
+
+.wp-editor-wrap .uploader-editor.droppable .uploader-editor-title {
+	display: block;
+}
+
 /**
- * Button groups fix: can be removed together with the Back-compat for pre-5.3
+ * IE7 Fixes
  */
- .media-frame .setting .button-group {
-	 display: flex;
-	 margin: 0 !important;
-	 max-width: none !important;
- }
+.ie7 .media-frame .attachments-browser {
+	position: static;
+}
+
+.ie7 .media-frame .embed-url input {
+	margin-top: 4px;
+	width: 90%;
+}
+
+.ie7 .compat-item {
+	width: 99%;
+}
+
+.ie7 .attachment-display-settings {
+	width: auto;
+}
+
+.ie7 .attachment-preview,
+.ie7 .attachment-preview .thumbnail {
+	width: 120px;
+	height: 120px;
+}
+
+.ie7 .media-frame .attachment .describe {
+	width: 102px;
+}
+
+.ie7 .media-sidebar .setting select {
+	max-width: 55%;
+}
+
+.ie7 .media-sidebar .setting input[type="text"],
+.ie7 .media-sidebar .setting input[type="password"],
+.ie7 .media-sidebar .setting input[type="email"],
+.ie7 .media-sidebar .setting input[type="number"],
+.ie7 .media-sidebar .setting input[type="search"],
+.ie7 .media-sidebar .setting input[type="tel"],
+.ie7 .media-sidebar .setting input[type="url"],
+.ie7 .media-sidebar .setting textarea {
+	width: 55%;
+}
+
+.ie7 .media-sidebar .setting .link-to-custom {
+	float: right;
+}
 
 /**
  * Localization
@@ -2446,45 +2276,13 @@
  * Responsive layout
  */
 @media only screen and (max-width: 900px) {
-	.media-modal .media-frame-title {
-		height: 40px;
-	}
-
-	.media-modal .media-frame-title h1 {
-		line-height: 2.22222222;
-		font-size: 18px;
-	}
-
-	.media-modal-close {
-		width: 42px;
-		height: 42px;
-	}
 
 	/* Drop-down menu */
-	.media-frame .media-frame-title {
-		position: static;
-		padding: 0 44px;
-		text-align: center;
-	}
-
+	.media-frame:not(.hide-menu) .media-frame-title,
 	.media-frame:not(.hide-menu) .media-frame-router,
 	.media-frame:not(.hide-menu) .media-frame-content,
 	.media-frame:not(.hide-menu) .media-frame-toolbar {
 		right: 0;
-	}
-
-	.media-frame:not(.hide-menu) .media-frame-router {
-		/* 40 title + (40 - 6) menu toggle button + 6 spacing */
-		top: 80px;
-	}
-
-	.media-frame:not(.hide-menu) .media-frame-content {
-		/* 80 + room for the tabs */
-		top: 114px;
-	}
-
-	.media-frame.hide-router .media-frame-content {
-		top: 80px;
 	}
 
 	.media-frame:not(.hide-menu) .media-frame-menu {
@@ -2493,22 +2291,20 @@
 	}
 
 	.media-frame:not(.hide-menu) .media-menu {
-		display: none;
 		width: auto;
 		max-width: 80%;
 		overflow: auto;
 		z-index: 2000;
-		top: 75px;
-		right: 50%;
-		transform: translateX(50%);
+		top: 50px;
+		right: -300px;
 		left: auto;
 		bottom: auto;
 		padding: 5px 0;
-		border: 1px solid #c3c4c7;
+		border: 1px solid #ccc;
 	}
 
 	.media-frame:not(.hide-menu) .media-menu.visible {
-		display: block;
+		right: 0;
 	}
 
 	.media-frame:not(.hide-menu) .media-menu > a {
@@ -2516,50 +2312,29 @@
 		font-size: 16px;
 	}
 
+	.media-frame:not(.hide-menu) .media-menu > a.active {
+		display: none;
+	}
+
 	.media-frame:not(.hide-menu) .media-menu .separator {
 		margin: 5px 10px;
 	}
 
-	/* Visually hide the menu heading keeping it available to assistive technologies. */
-	.media-frame-menu-heading {
-		clip: rect(1px, 1px, 1px, 1px);
-		-webkit-clip-path: inset(50%);
-		clip-path: inset(50%);
-		height: 1px;
-		overflow: hidden;
-		padding: 0;
-		width: 1px;
-		word-wrap: normal !important;
+	.media-frame:not(.hide-menu) .media-frame-title {
+		right: 0;
 	}
 
-	/* Reveal the menu toggle button. */
-	.wp-core-ui .media-frame:not(.hide-menu) .button.media-frame-menu-toggle {
-		display: inline-flex;
-		align-items: center;
-		position: absolute;
-		right: 50%;
-		transform: translateX(50%);
-		margin: -6px 0 0;
-		padding: 0 12px 0 2px;
-		font-size: 0.875rem;
-		font-weight: 600;
-		text-decoration: none;
-		background: transparent;
-		/* Only for IE11 to vertically align text within the inline-flex button */
-		height: 0.1%;
-		/* Modern browsers */
-		min-height: 40px;
+	.media-frame:not(.hide-menu) .media-frame-title .dashicons {
+		display: inline-block;
+		line-height: 50px;
 	}
 
-	.wp-core-ui .button.media-frame-menu-toggle:hover,
-	.wp-core-ui .button.media-frame-menu-toggle:active {
-		background: transparent;
-		transform: none;
-	}
-
-	.wp-core-ui .button.media-frame-menu-toggle:focus {
-		/* Only visible in Windows High Contrast mode */
-		outline: 1px solid transparent;
+	.media-frame:not(.hide-menu) .media-frame-title h1 {
+		color: #0073aa;
+		line-height: 3;
+		font-size: 18px;
+		float: right;
+		cursor: pointer;
 	}
 	/* End drop-down menu */
 
@@ -2569,68 +2344,32 @@
 
 	.attachments-browser .attachments,
 	.attachments-browser .uploader-inline,
-	.attachments-browser .media-toolbar,
-	.attachments-browser .attachments-wrapper,
-	.attachments-browser.has-load-more .attachments-wrapper {
-		left: 262px;
-	}
-
 	.attachments-browser .media-toolbar {
-		height: 82px;
-	}
-
-	.attachments-browser .attachments,
-	.attachments-browser .uploader-inline,
-	.media-frame-content .attachments-browser .attachments-wrapper {
-		top: 82px;
+		left: 262px;
 	}
 
 	.media-sidebar .setting,
 	.attachment-details .setting {
-		margin: 6px 0;
+		margin: 6px 0px;
 	}
 
 	.media-sidebar .setting input,
 	.media-sidebar .setting textarea,
-	.media-sidebar .setting .name,
+	.media-sidebar .setting span,
 	.attachment-details .setting input,
 	.attachment-details .setting textarea,
-	.attachment-details .setting .name,
+	.attachment-details .setting span,
 	.compat-item label span {
 		float: none;
-		display: inline-block;
 	}
 
-	.media-sidebar .setting span, /* Back-compat for pre-5.3 */
-	.attachment-details .setting span, /* Back-compat for pre-5.3 */
-	.media-sidebar .checkbox-label-inline {
-		float: none;
-	}
-
-	.media-sidebar .setting .select-label-inline {
-		display: inline;
-	}
-
-	.media-sidebar .setting .name,
-	.media-sidebar .checkbox-label-inline,
-	.attachment-details .setting .name,
+	.media-sidebar .setting span,
+	.attachment-details .setting span,
 	.compat-item label span {
 		text-align: inherit;
 		min-height: 16px;
 		margin: 0;
-		padding: 8px 2px 2px;
-	}
-
-	/* Needs high specificity. */
-	.media-sidebar .setting .copy-to-clipboard-container,
-	.attachment-details .attachment-info .copy-to-clipboard-container {
-		margin-right: 0;
-		padding-top: 0;
-	}
-
-	.media-sidebar .setting .copy-attachment-url,
-	.attachment-details .attachment-info .copy-attachment-url {
-		margin: 0 1px;
+		padding: 8px 2px 0;
 	}
 
 	.media-sidebar .setting .value,
@@ -2664,10 +2403,6 @@
 		height: auto;
 	}
 
-	.media-frame .media-toolbar input[type="search"] {
-		line-height: 2.25; /* 36px */
-	}
-
 	.media-sidebar .setting select.columns,
 	.attachment-details .setting select.columns {
 		width: auto;
@@ -2677,13 +2412,6 @@
 	.media-frame textarea,
 	.media-frame .search {
 		padding: 3px 6px;
-	}
-
-	.wp-admin .media-frame select {
-		min-height: 40px;
-		font-size: 16px;
-		line-height: 1.625;
-		padding: 5px 8px 5px 24px;
 	}
 
 	.image-details .column-image {
@@ -2700,29 +2428,15 @@
 		left: 30px;
 	}
 
-	.image-details .embed-media-settings .setting,
-	.image-details .embed-media-settings .setting-group {
+	.image-details .embed-media-settings .setting {
 		margin: 20px;
 	}
 
-	.image-details .embed-media-settings .setting span, /* Back-compat for pre-5.3 */
-	.image-details .embed-media-settings .setting .name {
+	.image-details .embed-media-settings .setting span {
 		float: none;
 		text-align: right;
 		width: 100%;
 		margin-bottom: 4px;
-		margin-right: 0;
-	}
-
-	.media-modal .legend-inline {
-		position: static;
-		transform: none;
-		margin-right: 0;
-		margin-bottom: 6px;
-	}
-
-	.image-details .embed-media-settings .setting-group .setting {
-		margin-bottom: 0;
 	}
 
 	.image-details .embed-media-settings .setting input.link-to-custom,
@@ -2746,7 +2460,6 @@
 	}
 
 	.collection-settings .setting input[type="checkbox"] {
-		float: none;
 		margin-top: 0;
 	}
 
@@ -2772,6 +2485,10 @@
 		height: auto;
 	}
 
+	.media-modal .attachments-browser .media-toolbar .spinner {
+		margin: 14px 2px 0;
+	}
+
 	/* Text inputs need to be 16px, or they force zooming on iOS */
 	.media-frame input[type="text"],
 	.media-frame input[type="password"],
@@ -2782,39 +2499,6 @@
 	.media-frame textarea,
 	.media-frame select {
 		font-size: 16px;
-		line-height: 1.5;
-	}
-
-	.media-frame .media-toolbar input[type="search"] {
-		line-height: 2.3755; /* 38px */
-	}
-
-	.media-modal .media-toolbar .spinner {
-		margin-bottom: 10px;
-	}
-}
-
-@media screen and (max-width: 782px) {
-	.imgedit-panel-content {
-		grid-template-columns: auto;
-	}
-
-	.media-frame-toolbar .media-toolbar {
-		bottom: -54px;
-	}
-
-	.mode-grid .attachments-browser .media-toolbar-primary {
-		display: flex;
-	}
-
-	.mode-grid .attachments-browser .media-toolbar-primary input[type="search"] {
-		width: 100%;
-	}
-
-	.media-sidebar .copy-to-clipboard-container .success,
-	.attachment-details .copy-to-clipboard-container .success {
-		font-size: 14px;
-		line-height: 2.71428571;
 	}
 }
 
@@ -2848,8 +2532,7 @@
 
 	.attachments-browser .attachments,
 	.attachments-browser .uploader-inline,
-	.attachments-browser .media-toolbar,
-	.media-frame-content .attachments-browser .attachments-wrapper {
+	.attachments-browser .media-toolbar {
 		left: 0;
 	}
 
@@ -2874,12 +2557,31 @@
 	.media-frame-content .media-toolbar .instructions {
 		display: none;
 	}
+}
 
-	/* Change margin direction on load more button in responsive views. */
-	.load-more-wrapper .load-more-jump {
-		margin: 12px 0 0;
+/* Landscape specific header override */
+@media screen and (max-height: 400px) {
+	.media-menu,
+	.media-frame:not(.hide-menu) .media-menu {
+		top: 44px;
 	}
 
+	.media-frame-router {
+		top: 44px;
+	}
+
+	.media-frame-content {
+		top: 78px;
+	}
+
+	.attachments-browser .attachments {
+		top: 40px;
+	}
+
+	/* Prevent unnecessary scrolling on title input */
+	.embed-link-settings {
+		overflow: visible;
+	}
 }
 
 @media only screen and (min-width: 901px) and (max-height: 400px) {
@@ -2888,17 +2590,43 @@
 		top: 0;
 		padding-top: 44px;
 	}
-
-	/* Change margin direction on load more button in responsive views. */
-	.load-more-wrapper .load-more-jump {
-		margin: 12px 0 0;
-	}
-
 }
 
 @media only screen and (max-width: 480px) {
+	.media-modal-close {
+		top: -5px;
+	}
+
+	.media-modal .media-frame-title {
+		height: 40px;
+	}
+
 	.wp-core-ui.wp-customizer .media-button {
 		margin-top: 13px;
+	}
+
+	.media-modal .media-frame-title h1,
+	.media-frame:not(.hide-menu) .media-frame-title h1 {
+		font-size: 18px;
+		line-height: 40px;
+	}
+
+	.media-frame:not(.hide-menu) .media-frame-title .dashicons {
+		line-height: 40px;
+	}
+
+	.media-frame-router,
+	.media-frame:not(.hide-menu) .media-menu {
+		top: 40px;
+		padding-top: 0;
+	}
+
+	.media-frame-content {
+		top: 74px;
+	}
+
+	.media-frame.hide-router .media-frame-content {
+		top: 40px;
 	}
 }
 
@@ -2906,6 +2634,7 @@
  * HiDPI Displays
  */
 @media print,
+  (-webkit-min-device-pixel-ratio: 1.25),
   (min-resolution: 120dpi) {
 
 	.wp-core-ui .media-modal-icon {

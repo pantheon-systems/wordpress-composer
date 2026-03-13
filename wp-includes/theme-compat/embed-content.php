@@ -27,7 +27,7 @@
 		 *
 		 * @since 4.9.0
 		 *
-		 * @param int|false $thumbnail_id Attachment ID, or false if there is none.
+		 * @param int $thumbnail_id Attachment ID.
 		 */
 		$thumbnail_id = apply_filters( 'embed_thumbnail_id', $thumbnail_id );
 

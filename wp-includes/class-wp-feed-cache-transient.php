@@ -12,7 +12,6 @@
  *
  * @since 2.8.0
  */
-#[AllowDynamicProperties]
 class WP_Feed_Cache_Transient {
 
 	/**

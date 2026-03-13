@@ -16,43 +16,12 @@
  * @see WP_Upgrader_Skin
  */
 class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
-
-	/**
-	 * Holds the plugin slug in the Plugin Directory.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @var string
-	 */
-	public $plugin = '';
-
-	/**
-	 * Whether the plugin is active.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @var bool
-	 */
-	public $plugin_active = false;
-
-	/**
-	 * Whether the plugin is active for the entire network.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @var bool
-	 */
+	public $plugin                = '';
+	public $plugin_active         = false;
 	public $plugin_network_active = false;
 
 	/**
-	 * Constructor.
-	 *
-	 * Sets up the plugin upgrader skin.
-	 *
-	 * @since 2.8.0
-	 *
-	 * @param array $args Optional. The plugin upgrader skin arguments to
-	 *                    override default options. Default empty array.
+	 * @param array $args
 	 */
 	public function __construct( $args = array() ) {
 		$defaults = array(
@@ -72,36 +41,20 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action following a single plugin update.
-	 *
-	 * @since 2.8.0
 	 */
 	public function after() {
 		$this->plugin = $this->upgrader->plugin_info();
 		if ( ! empty( $this->plugin ) && ! is_wp_error( $this->result ) && $this->plugin_active ) {
 			// Currently used only when JS is off for a single plugin update?
-			printf(
-				'<iframe title="%s" style="border:0;overflow:hidden" width="100%%" height="170" src="%s"></iframe>',
-				esc_attr__( 'Update progress' ),
-				wp_nonce_url( 'update.php?action=activate-plugin&networkwide=' . $this->plugin_network_active . '&plugin=' . urlencode( $this->plugin ), 'activate-plugin_' . $this->plugin )
-			);
+			echo '<iframe title="' . esc_attr__( 'Update progress' ) . '" style="border:0;overflow:hidden" width="100%" height="170" src="' . wp_nonce_url( 'update.php?action=activate-plugin&networkwide=' . $this->plugin_network_active . '&plugin=' . urlencode( $this->plugin ), 'activate-plugin_' . $this->plugin ) . '"></iframe>';
 		}
 
 		$this->decrement_update_count( 'plugin' );
 
 		$update_actions = array(
-			'activate_plugin' => sprintf(
-				'<a href="%s" target="_parent">%s</a>',
-				wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . urlencode( $this->plugin ), 'activate-plugin_' . $this->plugin ),
-				__( 'Activate Plugin' )
-			),
-			'plugins_page'    => sprintf(
-				'<a href="%s" target="_parent">%s</a>',
-				self_admin_url( 'plugins.php' ),
-				__( 'Go to Plugins page' )
-			),
+			'activate_plugin' => '<a href="' . wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . urlencode( $this->plugin ), 'activate-plugin_' . $this->plugin ) . '" target="_parent">' . __( 'Activate Plugin' ) . '</a>',
+			'plugins_page'    => '<a href="' . self_admin_url( 'plugins.php' ) . '" target="_parent">' . __( 'Return to Plugins page' ) . '</a>',
 		);
-
 		if ( $this->plugin_active || ! $this->result || is_wp_error( $this->result ) || ! current_user_can( 'activate_plugin', $this->plugin ) ) {
 			unset( $update_actions['activate_plugin'] );
 		}

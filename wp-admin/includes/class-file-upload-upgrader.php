@@ -16,7 +16,6 @@
  * @since 2.8.0
  * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader.php.
  */
-#[AllowDynamicProperties]
 class File_Upload_Upgrader {
 
 	/**
@@ -57,7 +56,7 @@ class File_Upload_Upgrader {
 			wp_die( __( 'Please select a file' ) );
 		}
 
-		// Handle a newly uploaded file. Else, assume it's already been uploaded.
+		//Handle a newly uploaded file, Else assume it's already been uploaded
 		if ( ! empty( $_FILES ) ) {
 			$overrides = array(
 				'test_form' => false,
@@ -96,8 +95,8 @@ class File_Upload_Upgrader {
 			$this->filename = $_FILES[ $form ]['name'];
 			$this->package  = $file['file'];
 
-			// Construct the attachment array.
-			$attachment = array(
+			// Construct the object array
+			$object = array(
 				'post_title'     => $this->filename,
 				'post_content'   => $file['url'],
 				'post_mime_type' => $file['type'],
@@ -107,7 +106,7 @@ class File_Upload_Upgrader {
 			);
 
 			// Save the data.
-			$this->id = wp_insert_attachment( $attachment, $file['file'] );
+			$this->id = wp_insert_attachment( $object, $file['file'] );
 
 			// Schedule a cleanup for 2 hours from now in case of failed installation.
 			wp_schedule_single_event( time() + 2 * HOUR_IN_SECONDS, 'upgrader_scheduled_cleanup', array( $this->id ) );
@@ -124,22 +123,21 @@ class File_Upload_Upgrader {
 			$this->package  = get_attached_file( $attachment->ID );
 		} else {
 			// Else, It's set to something, Back compat for plugins using the old (pre-3.3) File_Uploader handler.
-			$uploads = wp_upload_dir();
-			if ( ! ( $uploads && false === $uploads['error'] ) ) {
+			if ( ! ( ( $uploads = wp_upload_dir() ) && false === $uploads['error'] ) ) {
 				wp_die( $uploads['error'] );
 			}
 
 			$this->filename = sanitize_file_name( $_GET[ $urlholder ] );
 			$this->package  = $uploads['basedir'] . '/' . $this->filename;
 
-			if ( ! str_starts_with( realpath( $this->package ), realpath( $uploads['basedir'] ) ) ) {
+			if ( 0 !== strpos( realpath( $this->package ), realpath( $uploads['basedir'] ) ) ) {
 				wp_die( __( 'Please select a file' ) );
 			}
 		}
 	}
 
 	/**
-	 * Deletes the attachment/uploaded file.
+	 * Delete the attachment/uploaded file.
 	 *
 	 * @since 3.2.2
 	 *

@@ -83,7 +83,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 	 * Storage of pre-setup menu item to prevent wasted calls to wp_setup_nav_menu_item().
 	 *
 	 * @since 4.3.0
-	 * @var array|null
+	 * @var array
 	 */
 	protected $value;
 
@@ -154,12 +154,12 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @throws Exception If $id is not valid for this setting type.
-	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      A specific ID of the setting.
-	 *                                      Can be a theme mod or option name.
+	 * @param WP_Customize_Manager $manager Bootstrap Customizer instance.
+	 * @param string               $id      An specific ID of the setting. Can be a
+	 *                                      theme mod or option name.
 	 * @param array                $args    Optional. Setting arguments.
+	 *
+	 * @throws Exception If $id is not valid for this setting type.
 	 */
 	public function __construct( WP_Customize_Manager $manager, $id, array $args = array() ) {
 		if ( empty( $manager->nav_menus ) ) {
@@ -170,7 +170,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 			throw new Exception( "Illegal widget setting ID: $id" );
 		}
 
-		$this->post_id = (int) $matches['id'];
+		$this->post_id = intval( $matches['id'] );
 		add_action( 'wp_update_nav_menu_item', array( $this, 'flush_cached_value' ), 10, 2 );
 
 		parent::__construct( $manager, $id, $args );
@@ -225,7 +225,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 		} else {
 			$value = false;
 
-			// Note that an ID of less than one indicates a nav_menu not yet inserted.
+			// Note that a ID of less than one indicates a nav_menu not yet inserted.
 			if ( $this->post_id > 0 ) {
 				$post = get_post( $this->post_id );
 				if ( $post && self::POST_TYPE === $post->post_type ) {
@@ -293,7 +293,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 				$original_title = apply_filters( 'the_title', $original_object->post_title, $original_object->ID );
 
 				if ( '' === $original_title ) {
-					/* translators: %d: ID of a post. */
+					/* translators: %d: ID of a post */
 					$original_title = sprintf( __( '#%d (no title)' ), $original_object->ID );
 				}
 			}
@@ -317,7 +317,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 	 * @since 4.7.0
 	 *
 	 * @param object $item Nav menu item.
-	 * @return string The type label.
+	 * @returns string The type label.
 	 */
 	protected function get_type_label( $item ) {
 		if ( 'post_type' === $item->type ) {
@@ -382,7 +382,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 
 		foreach ( array( 'object_id', 'menu_item_parent', 'nav_menu_term_id' ) as $key ) {
 			if ( ! is_int( $this->value[ $key ] ) ) {
-				$this->value[ $key ] = (int) $this->value[ $key ];
+				$this->value[ $key ] = intval( $this->value[ $key ] );
 			}
 		}
 		foreach ( array( 'classes', 'xfn' ) as $key ) {
@@ -491,11 +491,8 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 	 */
 	public function filter_wp_get_nav_menu_items( $items, $menu, $args ) {
 		$this_item                = $this->value();
-		$current_nav_menu_term_id = null;
-		if ( isset( $this_item['nav_menu_term_id'] ) ) {
-			$current_nav_menu_term_id = $this_item['nav_menu_term_id'];
-			unset( $this_item['nav_menu_term_id'] );
-		}
+		$current_nav_menu_term_id = $this_item['nav_menu_term_id'];
+		unset( $this_item['nav_menu_term_id'] );
 
 		$should_filter = (
 			$menu->term_id === $this->original_nav_menu_term_id
@@ -510,7 +507,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 		$should_remove = (
 			false === $this_item
 			||
-			( isset( $this_item['_invalid'] ) && true === $this_item['_invalid'] )
+			true === $this_item['_invalid']
 			||
 			(
 				$this->original_nav_menu_term_id === $menu->term_id
@@ -616,11 +613,6 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 			$item->post_title = $item->title;
 		}
 
-		// 'classes' should be an array, as in wp_setup_nav_menu_item().
-		if ( isset( $item->classes ) && is_scalar( $item->classes ) ) {
-			$item->classes = explode( ' ', $item->classes );
-		}
-
 		$item->ID    = $this->post_id;
 		$item->db_id = $this->post_id;
 		$post        = new WP_Post( (object) $item );
@@ -664,16 +656,12 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 	 * we remove that in this override.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$menu_item_value` to `$value` for PHP 8 named parameter support.
 	 *
 	 * @param array|false $value The menu item value to sanitize.
 	 * @return array|false|null|WP_Error Null or WP_Error if an input isn't valid. False if it is marked for deletion.
 	 *                                   Otherwise the sanitized value.
 	 */
-	public function sanitize( $value ) {
-		// Restores the more descriptive, specific name for use within this method.
-		$menu_item_value = $value;
-
+	public function sanitize( $menu_item_value ) {
 		// Menu is marked for deletion.
 		if ( false === $menu_item_value ) {
 			return $menu_item_value;
@@ -704,11 +692,11 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 		);
 		$menu_item_value             = array_merge( $default, $menu_item_value );
 		$menu_item_value             = wp_array_slice_assoc( $menu_item_value, array_keys( $default ) );
-		$menu_item_value['position'] = (int) $menu_item_value['position'];
+		$menu_item_value['position'] = intval( $menu_item_value['position'] );
 
 		foreach ( array( 'object_id', 'menu_item_parent', 'nav_menu_term_id' ) as $key ) {
 			// Note we need to allow negative-integer IDs for previewed objects not inserted yet.
-			$menu_item_value[ $key ] = (int) $menu_item_value[ $key ];
+			$menu_item_value[ $key ] = intval( $menu_item_value[ $key ] );
 		}
 
 		foreach ( array( 'type', 'object', 'target' ) as $key ) {
@@ -735,7 +723,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 		$menu_item_value['description'] = wp_unslash( apply_filters( 'content_save_pre', wp_slash( $menu_item_value['description'] ) ) );
 
 		if ( '' !== $menu_item_value['url'] ) {
-			$menu_item_value['url'] = sanitize_url( $menu_item_value['url'] );
+			$menu_item_value['url'] = esc_url_raw( $menu_item_value['url'] );
 			if ( '' === $menu_item_value['url'] ) {
 				return new WP_Error( 'invalid_url', __( 'Invalid URL.' ) ); // Fail sanitization if URL is invalid.
 			}
@@ -816,7 +804,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 					return;
 				}
 
-				if ( (int) $value['nav_menu_term_id'] !== $nav_menu_setting->previous_term_id ) {
+				if ( $nav_menu_setting->previous_term_id !== intval( $value['nav_menu_term_id'] ) ) {
 					$this->update_status = 'error';
 					$this->update_error  = new WP_Error( 'unexpected_previous_term_id' );
 					return;
@@ -842,7 +830,7 @@ class WP_Customize_Nav_Menu_Item_Setting extends WP_Customize_Setting {
 					return;
 				}
 
-				if ( (int) $value['menu_item_parent'] !== $parent_nav_menu_item_setting->previous_post_id ) {
+				if ( $parent_nav_menu_item_setting->previous_post_id !== intval( $value['menu_item_parent'] ) ) {
 					$this->update_status = 'error';
 					$this->update_error  = new WP_Error( 'unexpected_previous_post_id' );
 					return;

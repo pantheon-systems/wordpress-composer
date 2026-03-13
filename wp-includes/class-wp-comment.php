@@ -12,26 +12,21 @@
  *
  * @since 4.4.0
  */
-#[AllowDynamicProperties]
 final class WP_Comment {
 
 	/**
 	 * Comment ID.
 	 *
-	 * A numeric string, for compatibility reasons.
-	 *
 	 * @since 4.4.0
-	 * @var string
+	 * @var int
 	 */
 	public $comment_ID;
 
 	/**
 	 * ID of the post the comment is associated with.
 	 *
-	 * A numeric string, for compatibility reasons.
-	 *
 	 * @since 4.4.0
-	 * @var string
+	 * @var int
 	 */
 	public $comment_post_ID = 0;
 
@@ -94,10 +89,8 @@ final class WP_Comment {
 	/**
 	 * Comment karma count.
 	 *
-	 * A numeric string, for compatibility reasons.
-	 *
 	 * @since 4.4.0
-	 * @var string
+	 * @var int
 	 */
 	public $comment_karma = 0;
 
@@ -121,28 +114,23 @@ final class WP_Comment {
 	 * Comment type.
 	 *
 	 * @since 4.4.0
-	 * @since 5.5.0 Default value changed to `comment`.
 	 * @var string
 	 */
-	public $comment_type = 'comment';
+	public $comment_type = '';
 
 	/**
 	 * Parent comment ID.
 	 *
-	 * A numeric string, for compatibility reasons.
-	 *
 	 * @since 4.4.0
-	 * @var string
+	 * @var int
 	 */
 	public $comment_parent = 0;
 
 	/**
 	 * Comment author ID.
 	 *
-	 * A numeric string, for compatibility reasons.
-	 *
 	 * @since 4.4.0
-	 * @var string
+	 * @var int
 	 */
 	public $user_id = 0;
 
@@ -219,7 +207,7 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Converts object to array.
+	 * Convert object to array.
 	 *
 	 * @since 4.4.0
 	 *
@@ -230,7 +218,7 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Gets the children of a comment.
+	 * Get the children of a comment.
 	 *
 	 * @since 4.4.0
 	 *
@@ -263,7 +251,7 @@ final class WP_Comment {
 	 *                                 `$meta_query`. Also accepts false, an empty array, or
 	 *                                 'none' to disable `ORDER BY` clause.
 	 * }
-	 * @return WP_Comment[] Array of `WP_Comment` objects.
+	 * @return array Array of `WP_Comment` objects.
 	 */
 	public function get_children( $args = array() ) {
 		$defaults = array(
@@ -302,7 +290,7 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Adds a child to the comment.
+	 * Add a child to the comment.
 	 *
 	 * Used by `WP_Comment_Query` when bulk-filling descendants.
 	 *
@@ -315,12 +303,12 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Gets a child comment by ID.
+	 * Get a child comment by ID.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @param int $child_id ID of the child.
-	 * @return WP_Comment|false Returns the comment object if found, otherwise false.
+	 * @return WP_Comment|bool Returns the comment object if found, otherwise false.
 	 */
 	public function get_child( $child_id ) {
 		if ( isset( $this->children[ $child_id ] ) ) {
@@ -331,7 +319,7 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Sets the 'populated_children' flag.
+	 * Set the 'populated_children' flag.
 	 *
 	 * This flag is important for ensuring that calling `get_children()` on a childless comment will not trigger
 	 * unneeded database queries.
@@ -345,7 +333,7 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Determines whether a non-public property is set.
+	 * Check whether a non-public property is set.
 	 *
 	 * If `$name` matches a post field, the comment post will be loaded and the post's value checked.
 	 *
@@ -355,7 +343,7 @@ final class WP_Comment {
 	 * @return bool
 	 */
 	public function __isset( $name ) {
-		if ( in_array( $name, $this->post_fields, true ) && 0 !== (int) $this->comment_post_ID ) {
+		if ( in_array( $name, $this->post_fields ) && 0 !== (int) $this->comment_post_ID ) {
 			$post = get_post( $this->comment_post_ID );
 			return property_exists( $post, $name );
 		}
@@ -372,7 +360,7 @@ final class WP_Comment {
 	 * @return mixed
 	 */
 	public function __get( $name ) {
-		if ( in_array( $name, $this->post_fields, true ) ) {
+		if ( in_array( $name, $this->post_fields ) ) {
 			$post = get_post( $this->comment_post_ID );
 			return $post->$name;
 		}

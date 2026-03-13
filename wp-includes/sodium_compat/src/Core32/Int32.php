@@ -138,10 +138,9 @@ class ParagonIE_Sodium_Core32_Int32
     public function mask($m = 0)
     {
         /** @var int $hi */
-        $hi = ((int) $m >> 16);
-        $hi &= 0xffff;
+        $hi = ($m >> 16) & 0xffff;
         /** @var int $lo */
-        $lo = ((int) $m) & 0xffff;
+        $lo = ($m & 0xffff);
         return new ParagonIE_Sodium_Core32_Int32(
             array(
                 (int) ($this->limbs[0] & $hi),
@@ -169,8 +168,8 @@ class ParagonIE_Sodium_Core32_Int32
             for ($j = 0; $j < $a_l; ++$j) {
                 $b_j = $b[$j];
                 $product = ($a_i * $b_j) + $r[$i + $j];
-                $carry = ((int) $product >> $baseLog2 & 0xffff);
-                $r[$i + $j] = ((int) $product - (int) ($carry * $base)) & 0xffff;
+                $carry = ($product >> $baseLog2 & 0xffff);
+                $r[$i + $j] = ($product - (int) ($carry * $base)) & 0xffff;
                 $r[$i + $j + 1] += $carry;
             }
         }

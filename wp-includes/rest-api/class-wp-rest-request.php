@@ -14,7 +14,7 @@
  *
  * Note: This implements ArrayAccess, and acts as an array of parameters when
  * used in that manner. It does not use ArrayObject (as we cannot rely on SPL),
- * so be aware it may have non-array behavior in some cases.
+ * so be aware it may have non-array behaviour in some cases.
  *
  * Note: When using features provided by ArrayAccess, be aware that WordPress deliberately
  * does not distinguish between arguments of the same name for different request methods.
@@ -24,9 +24,8 @@
  *
  * @since 4.4.0
  *
- * @link https://www.php.net/manual/en/class.arrayaccess.php
+ * @see ArrayAccess
  */
-#[AllowDynamicProperties]
 class WP_REST_Request implements ArrayAccess {
 
 	/**
@@ -291,16 +290,14 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves the Content-Type of the request.
+	 * Retrieves the content-type of the request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array|null Map containing 'value' and 'parameters' keys
-	 *                    or null when no valid Content-Type header was
-	 *                    available.
+	 * @return array Map containing 'value' and 'parameters' keys.
 	 */
 	public function get_content_type() {
-		$value = $this->get_header( 'Content-Type' );
+		$value = $this->get_header( 'content-type' );
 		if ( empty( $value ) ) {
 			return null;
 		}
@@ -311,7 +308,7 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		$value = strtolower( $value );
-		if ( ! str_contains( $value, '/' ) ) {
+		if ( strpos( $value, '/' ) === false ) {
 			return null;
 		}
 
@@ -325,31 +322,19 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Checks if the request has specified a JSON Content-Type.
-	 *
-	 * @since 5.6.0
-	 *
-	 * @return bool True if the Content-Type header is JSON.
-	 */
-	public function is_json_content_type() {
-		$content_type = $this->get_content_type();
-
-		return isset( $content_type['value'] ) && wp_is_json_media_type( $content_type['value'] );
-	}
-
-	/**
 	 * Retrieves the parameter priority order.
 	 *
-	 * Used when checking parameters in WP_REST_Request::get_param().
+	 * Used when checking parameters in get_param().
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return string[] Array of types to check, in order of priority.
+	 * @return array List of types to check, in order of priority.
 	 */
 	protected function get_parameter_order() {
 		$order = array();
 
-		if ( $this->is_json_content_type() ) {
+		$content_type = $this->get_content_type();
+		if ( $content_type['value'] === 'application/json' ) {
 			$order[] = 'JSON';
 		}
 
@@ -363,7 +348,7 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		$accepts_body_data = array( 'POST', 'PUT', 'PATCH', 'DELETE' );
-		if ( in_array( $this->method, $accepts_body_data, true ) ) {
+		if ( in_array( $this->method, $accepts_body_data ) ) {
 			$order[] = 'POST';
 		}
 
@@ -372,15 +357,19 @@ class WP_REST_Request implements ArrayAccess {
 		$order[] = 'defaults';
 
 		/**
-		 * Filters the parameter priority order for a REST API request.
+		 * Filters the parameter order.
 		 *
-		 * The order affects which parameters are checked when using WP_REST_Request::get_param()
-		 * and family. This acts similarly to PHP's `request_order` setting.
+		 * The order affects which parameters are checked when using get_param() and family.
+		 * This acts similarly to PHP's `request_order` setting.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string[]        $order   Array of types to check, in order of priority.
-		 * @param WP_REST_Request $request The request object.
+		 * @param array           $order {
+		 *    An array of types to check, in order of priority.
+		 *
+		 * @param string $type The type to check.
+		 * }
+		 * @param WP_REST_Request $this The request object.
 		 */
 		return apply_filters( 'rest_request_parameter_order', $order, $this );
 	}
@@ -407,34 +396,7 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Checks if a parameter exists in the request.
-	 *
-	 * This allows distinguishing between an omitted parameter,
-	 * and a parameter specifically set to null.
-	 *
-	 * @since 5.3.0
-	 *
-	 * @param string $key Parameter name.
-	 * @return bool True if a param exists for the given key.
-	 */
-	public function has_param( $key ) {
-		$order = $this->get_parameter_order();
-
-		foreach ( $order as $type ) {
-			if ( is_array( $this->params[ $type ] ) && array_key_exists( $key, $this->params[ $type ] ) ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Sets a parameter on the request.
-	 *
-	 * If the given parameter key exists in any parameter type an update will take place,
-	 * otherwise a new param will be created in the first parameter type (respecting
-	 * get_parameter_order()).
 	 *
 	 * @since 4.4.0
 	 *
@@ -442,19 +404,8 @@ class WP_REST_Request implements ArrayAccess {
 	 * @param mixed  $value Parameter value.
 	 */
 	public function set_param( $key, $value ) {
-		$order     = $this->get_parameter_order();
-		$found_key = false;
-
-		foreach ( $order as $type ) {
-			if ( 'defaults' !== $type && is_array( $this->params[ $type ] ) && array_key_exists( $key, $this->params[ $type ] ) ) {
-				$this->params[ $type ][ $key ] = $value;
-				$found_key                     = true;
-			}
-		}
-
-		if ( ! $found_key ) {
-			$this->params[ $order[0] ][ $key ] = $value;
-		}
+		$order                             = $this->get_parameter_order();
+		$this->params[ $order[0] ][ $key ] = $value;
 	}
 
 	/**
@@ -473,10 +424,8 @@ class WP_REST_Request implements ArrayAccess {
 
 		$params = array();
 		foreach ( $order as $type ) {
-			/*
-			 * array_merge() / the "+" operator will mess up
-			 * numeric keys, so instead do a manual foreach.
-			 */
+			// array_merge / the "+" operator will mess up
+			// numeric keys, so instead do a manual foreach.
 			foreach ( (array) $this->params[ $type ] as $key => $value ) {
 				$params[ $key ] = $value;
 			}
@@ -673,7 +622,9 @@ class WP_REST_Request implements ArrayAccess {
 		$this->parsed_json = true;
 
 		// Check that we actually got JSON.
-		if ( ! $this->is_json_content_type() ) {
+		$content_type = $this->get_content_type();
+
+		if ( empty( $content_type ) || 'application/json' !== $content_type['value'] ) {
 			return true;
 		}
 
@@ -686,22 +637,26 @@ class WP_REST_Request implements ArrayAccess {
 
 		/*
 		 * Check for a parsing error.
+		 *
+		 * Note that due to WP's JSON compatibility functions, json_last_error
+		 * might not be defined: https://core.trac.wordpress.org/ticket/27799
 		 */
-		if ( null === $params && JSON_ERROR_NONE !== json_last_error() ) {
+		if ( null === $params && ( ! function_exists( 'json_last_error' ) || JSON_ERROR_NONE !== json_last_error() ) ) {
 			// Ensure subsequent calls receive error instance.
 			$this->parsed_json = false;
 
 			$error_data = array(
-				'status'             => WP_Http::BAD_REQUEST,
-				'json_error_code'    => json_last_error(),
-				'json_error_message' => json_last_error_msg(),
+				'status' => WP_Http::BAD_REQUEST,
 			);
+			if ( function_exists( 'json_last_error' ) ) {
+				$error_data['json_error_code']    = json_last_error();
+				$error_data['json_error_message'] = json_last_error_msg();
+			}
 
 			return new WP_Error( 'rest_invalid_json', __( 'Invalid JSON body passed.' ), $error_data );
 		}
 
 		$this->params['JSON'] = $params;
-
 		return true;
 	}
 
@@ -721,7 +676,7 @@ class WP_REST_Request implements ArrayAccess {
 		$this->parsed_body = true;
 
 		/*
-		 * Check that we got URL-encoded. Treat a missing Content-Type as
+		 * Check that we got URL-encoded. Treat a missing content-type as
 		 * URL-encoded for maximum compatibility.
 		 */
 		$content_type = $this->get_content_type();
@@ -731,6 +686,15 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		parse_str( $this->get_body(), $params );
+
+		/*
+		 * Amazingly, parse_str follows magic quote rules. Sigh.
+		 *
+		 * NOTE: Do not refactor to use `wp_unslash`.
+		 */
+		if ( get_magic_quotes_gpc() ) {
+			$params = stripslashes_deep( $params );
+		}
 
 		/*
 		 * Add to the POST parameters stored internally. If a user has already
@@ -805,19 +769,16 @@ class WP_REST_Request implements ArrayAccess {
 
 		$order = $this->get_parameter_order();
 
-		$invalid_params  = array();
-		$invalid_details = array();
+		$invalid_params = array();
 
 		foreach ( $order as $type ) {
 			if ( empty( $this->params[ $type ] ) ) {
 				continue;
 			}
-
 			foreach ( $this->params[ $type ] as $key => $value ) {
 				if ( ! isset( $attributes['args'][ $key ] ) ) {
 					continue;
 				}
-
 				$param_args = $attributes['args'][ $key ];
 
 				// If the arg has a type but no sanitize_callback attribute, default to rest_parse_request_arg.
@@ -829,12 +790,10 @@ class WP_REST_Request implements ArrayAccess {
 					continue;
 				}
 
-				/** @var mixed|WP_Error $sanitized_value */
 				$sanitized_value = call_user_func( $param_args['sanitize_callback'], $value, $this, $key );
 
 				if ( is_wp_error( $sanitized_value ) ) {
-					$invalid_params[ $key ]  = implode( ' ', $sanitized_value->get_error_messages() );
-					$invalid_details[ $key ] = rest_convert_error_to_response( $sanitized_value )->get_data();
+					$invalid_params[ $key ] = $sanitized_value->get_error_message();
 				} else {
 					$this->params[ $type ][ $key ] = $sanitized_value;
 				}
@@ -844,12 +803,10 @@ class WP_REST_Request implements ArrayAccess {
 		if ( $invalid_params ) {
 			return new WP_Error(
 				'rest_invalid_param',
-				/* translators: %s: List of invalid parameters. */
 				sprintf( __( 'Invalid parameter(s): %s' ), implode( ', ', array_keys( $invalid_params ) ) ),
 				array(
-					'status'  => 400,
-					'params'  => $invalid_params,
-					'details' => $invalid_details,
+					'status' => 400,
+					'params' => $invalid_params,
 				)
 			);
 		}
@@ -862,7 +819,7 @@ class WP_REST_Request implements ArrayAccess {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return true|WP_Error True if there are no parameters to validate or if all pass validation,
+	 * @return bool|WP_Error True if there are no parameters to validate or if all pass validation,
 	 *                       WP_Error if required parameters are missing.
 	 */
 	public function has_valid_params() {
@@ -875,9 +832,13 @@ class WP_REST_Request implements ArrayAccess {
 		$attributes = $this->get_attributes();
 		$required   = array();
 
-		$args = empty( $attributes['args'] ) ? array() : $attributes['args'];
+		// No arguments set, skip validation.
+		if ( empty( $attributes['args'] ) ) {
+			return true;
+		}
 
-		foreach ( $args as $key => $arg ) {
+		foreach ( $attributes['args'] as $key => $arg ) {
+
 			$param = $this->get_param( $key );
 			if ( isset( $arg['required'] ) && true === $arg['required'] && null === $param ) {
 				$required[] = $key;
@@ -887,7 +848,6 @@ class WP_REST_Request implements ArrayAccess {
 		if ( ! empty( $required ) ) {
 			return new WP_Error(
 				'rest_missing_callback_param',
-				/* translators: %s: List of required parameters. */
 				sprintf( __( 'Missing parameter(s): %s' ), implode( ', ', $required ) ),
 				array(
 					'status' => 400,
@@ -901,15 +861,13 @@ class WP_REST_Request implements ArrayAccess {
 		 *
 		 * This is done after required checking as required checking is cheaper.
 		 */
-		$invalid_params  = array();
-		$invalid_details = array();
+		$invalid_params = array();
 
-		foreach ( $args as $key => $arg ) {
+		foreach ( $attributes['args'] as $key => $arg ) {
 
 			$param = $this->get_param( $key );
 
 			if ( null !== $param && ! empty( $arg['validate_callback'] ) ) {
-				/** @var bool|\WP_Error $valid_check */
 				$valid_check = call_user_func( $arg['validate_callback'], $param, $this, $key );
 
 				if ( false === $valid_check ) {
@@ -917,8 +875,7 @@ class WP_REST_Request implements ArrayAccess {
 				}
 
 				if ( is_wp_error( $valid_check ) ) {
-					$invalid_params[ $key ]  = implode( ' ', $valid_check->get_error_messages() );
-					$invalid_details[ $key ] = rest_convert_error_to_response( $valid_check )->get_data();
+					$invalid_params[ $key ] = $valid_check->get_error_message();
 				}
 			}
 		}
@@ -926,30 +883,16 @@ class WP_REST_Request implements ArrayAccess {
 		if ( $invalid_params ) {
 			return new WP_Error(
 				'rest_invalid_param',
-				/* translators: %s: List of invalid parameters. */
 				sprintf( __( 'Invalid parameter(s): %s' ), implode( ', ', array_keys( $invalid_params ) ) ),
 				array(
-					'status'  => 400,
-					'params'  => $invalid_params,
-					'details' => $invalid_details,
+					'status' => 400,
+					'params' => $invalid_params,
 				)
 			);
 		}
 
-		if ( isset( $attributes['validate_callback'] ) ) {
-			$valid_check = call_user_func( $attributes['validate_callback'], $this );
-
-			if ( is_wp_error( $valid_check ) ) {
-				return $valid_check;
-			}
-
-			if ( false === $valid_check ) {
-				// A WP_Error instance is preferred, but false is supported for parity with the per-arg validate_callback.
-				return new WP_Error( 'rest_invalid_params', __( 'Invalid parameters.' ), array( 'status' => 400 ) );
-			}
-		}
-
 		return true;
+
 	}
 
 	/**
@@ -960,7 +903,6 @@ class WP_REST_Request implements ArrayAccess {
 	 * @param string $offset Parameter name.
 	 * @return bool Whether the parameter is set.
 	 */
-	#[ReturnTypeWillChange]
 	public function offsetExists( $offset ) {
 		$order = $this->get_parameter_order();
 
@@ -981,7 +923,6 @@ class WP_REST_Request implements ArrayAccess {
 	 * @param string $offset Parameter name.
 	 * @return mixed|null Value if set, null otherwise.
 	 */
-	#[ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
 		return $this->get_param( $offset );
 	}
@@ -994,7 +935,6 @@ class WP_REST_Request implements ArrayAccess {
 	 * @param string $offset Parameter name.
 	 * @param mixed  $value  Parameter value.
 	 */
-	#[ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
 		$this->set_param( $offset, $value );
 	}
@@ -1006,7 +946,6 @@ class WP_REST_Request implements ArrayAccess {
 	 *
 	 * @param string $offset Parameter name.
 	 */
-	#[ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
 		$order = $this->get_parameter_order();
 
@@ -1033,12 +972,12 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		$api_root = rest_url();
-		if ( get_option( 'permalink_structure' ) && str_starts_with( $url, $api_root ) ) {
+		if ( get_option( 'permalink_structure' ) && 0 === strpos( $url, $api_root ) ) {
 			// Pretty permalinks on, and URL is under the API root.
 			$api_url_part = substr( $url, strlen( untrailingslashit( $api_root ) ) );
 			$route        = parse_url( $api_url_part, PHP_URL_PATH );
 		} elseif ( ! empty( $query_params['rest_route'] ) ) {
-			// ?rest_route=... set directly.
+			// ?rest_route=... set directly
 			$route = $query_params['rest_route'];
 			unset( $query_params['rest_route'] );
 		}
@@ -1050,7 +989,7 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		/**
-		 * Filters the REST API request generated from a URL.
+		 * Filters the request generated from a URL.
 		 *
 		 * @since 4.5.0
 		 *

@@ -72,7 +72,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 		?>
 		<li id="accordion-section-{{ data.id }}" class="theme-section">
 			<button type="button" class="customize-themes-section-title themes-section-{{ data.id }}">{{ data.title }}</button>
-			<?php if ( current_user_can( 'install_themes' ) || is_multisite() ) : // @todo Upload support. ?>
+			<?php if ( current_user_can( 'install_themes' ) || is_multisite() ) : // @todo: upload support ?>
 			<?php endif; ?>
 			<div class="customize-themes-section themes-section-{{ data.id }} control-section-content themes-php">
 				<div class="theme-overlay" tabindex="0" role="dialog" aria-label="<?php esc_attr_e( 'Theme Details' ); ?>"></div>
@@ -81,24 +81,14 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 						<?php $this->filter_bar_content_template(); ?>
 					</div>
 					<?php $this->filter_drawer_content_template(); ?>
-					<div class="error unexpected-error" style="display: none; ">
-						<p>
-							<?php
-							printf(
-								/* translators: %s: Support forums URL. */
-								__( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="%s">support forums</a>.' ),
-								__( 'https://wordpress.org/support/forums/' )
-							);
-							?>
-						</p>
-					</div>
+					<div class="error unexpected-error" style="display: none; "><p><?php _e( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ); ?></p></div>
 					<ul class="themes">
 					</ul>
 					<p class="no-themes"><?php _e( 'No themes found. Try a different search.' ); ?></p>
 					<p class="no-themes-local">
 						<?php
 						printf(
-							/* translators: %s: "Search WordPress.org themes" button text. */
+							/* translators: %s: "Search WordPress.org themes" button text */
 							__( 'No themes found. Try a different search, or %s.' ),
 							sprintf( '<button type="button" class="button-link search-dotorg-themes">%s</button>', __( 'Search WordPress.org themes' ) )
 						);
@@ -121,55 +111,35 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 	 */
 	protected function filter_bar_content_template() {
 		?>
-		<button type="button" class="button button-primary customize-section-back customize-themes-mobile-back"><?php _e( 'Go to theme sources' ); ?></button>
+		<button type="button" class="button button-primary customize-section-back customize-themes-mobile-back"><?php _e( 'Back to theme sources' ); ?></button>
 		<# if ( 'wporg' === data.action ) { #>
 			<div class="search-form">
-				<label for="wp-filter-search-input-{{ data.id }}" class="screen-reader-text">
-					<?php
-					/* translators: Hidden accessibility text. */
-					_e( 'Search themes&hellip;' );
-					?>
-				</label>
+				<label for="wp-filter-search-input-{{ data.id }}" class="screen-reader-text"><?php _e( 'Search themes&hellip;' ); ?></label>
 				<input type="search" id="wp-filter-search-input-{{ data.id }}" placeholder="<?php esc_attr_e( 'Search themes&hellip;' ); ?>" aria-describedby="{{ data.id }}-live-search-desc" class="wp-filter-search">
 				<div class="search-icon" aria-hidden="true"></div>
-				<span id="{{ data.id }}-live-search-desc" class="screen-reader-text">
-					<?php
-					/* translators: Hidden accessibility text. */
-					_e( 'The search results will be updated as you type.' );
-					?>
-				</span>
+				<span id="{{ data.id }}-live-search-desc" class="screen-reader-text"><?php _e( 'The search results will be updated as you type.' ); ?></span>
 			</div>
 			<button type="button" class="button feature-filter-toggle">
 				<span class="filter-count-0"><?php _e( 'Filter themes' ); ?></span><span class="filter-count-filters">
-					<?php
-					/* translators: %s: Number of filters selected. */
-					printf( __( 'Filter themes (%s)' ), '<span class="theme-filter-count">0</span>' );
-					?>
+				<?php
+				/* translators: %s: number of filters selected. */
+				printf( __( 'Filter themes (%s)' ), '<span class="theme-filter-count">0</span>' );
+				?>
 				</span>
 			</button>
 		<# } else { #>
 			<div class="themes-filter-container">
-				<label for="{{ data.id }}-themes-filter" class="screen-reader-text">
-					<?php
-					/* translators: Hidden accessibility text. */
-					_e( 'Search themes&hellip;' );
-					?>
-				</label>
+				<label for="{{ data.id }}-themes-filter" class="screen-reader-text"><?php _e( 'Search themes&hellip;' ); ?></label>
 				<input type="search" id="{{ data.id }}-themes-filter" placeholder="<?php esc_attr_e( 'Search themes&hellip;' ); ?>" aria-describedby="{{ data.id }}-live-search-desc" class="wp-filter-search wp-filter-search-themes" />
 				<div class="search-icon" aria-hidden="true"></div>
-				<span id="{{ data.id }}-live-search-desc" class="screen-reader-text">
-					<?php
-					/* translators: Hidden accessibility text. */
-					_e( 'The search results will be updated as you type.' );
-					?>
-				</span>
+				<span id="{{ data.id }}-live-search-desc" class="screen-reader-text"><?php _e( 'The search results will be updated as you type.' ); ?></span>
 			</div>
 		<# } #>
 		<div class="filter-themes-count">
 			<span class="themes-displayed">
 				<?php
-				/* translators: %s: Number of themes displayed. */
-				printf( __( '%s themes' ), '<span class="theme-count">0</span>' );
+				/* translators: %s: number of themes displayed. */
+				echo sprintf( __( '%s themes' ), '<span class="theme-count">0</span>' );
 				?>
 			</span>
 		</div>
@@ -184,11 +154,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 	 * @since 4.9.0
 	 */
 	protected function filter_drawer_content_template() {
-		/*
-		 * @todo Use the .org API instead of the local core feature list.
-		 * The .org API is currently outdated and will be reconciled when the .org themes directory is next redesigned.
-		 */
-		$feature_list = get_theme_feature_list( false );
+		$feature_list = get_theme_feature_list( false ); // @todo: Use the .org API instead of the local core feature list. The .org API is currently outdated and will be reconciled when the .org themes directory is next redesigned.
 		?>
 		<# if ( 'wporg' === data.action ) { #>
 			<div class="filter-drawer filter-details">

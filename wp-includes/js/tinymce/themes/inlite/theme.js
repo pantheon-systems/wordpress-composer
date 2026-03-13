@@ -551,6 +551,10 @@ var inlite = (function (domGlobals) {
     var Render = { renderUI: renderUI };
 
     var noop = function () {
+      var args = [];
+      for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+      }
     };
     var constant = function (value) {
       return function () {
@@ -560,6 +564,8 @@ var inlite = (function (domGlobals) {
     var never = constant(false);
     var always = constant(true);
 
+    var never$1 = never;
+    var always$1 = always;
     var none = function () {
       return NONE;
     };
@@ -573,27 +579,37 @@ var inlite = (function (domGlobals) {
       var id = function (n) {
         return n;
       };
+      var noop = function () {
+      };
+      var nul = function () {
+        return null;
+      };
+      var undef = function () {
+        return undefined;
+      };
       var me = {
         fold: function (n, s) {
           return n();
         },
-        is: never,
-        isSome: never,
-        isNone: always,
+        is: never$1,
+        isSome: never$1,
+        isNone: always$1,
         getOr: id,
         getOrThunk: call,
         getOrDie: function (msg) {
           throw new Error(msg || 'error: getOrDie called on none.');
         },
-        getOrNull: constant(null),
-        getOrUndefined: constant(undefined),
+        getOrNull: nul,
+        getOrUndefined: undef,
         or: id,
         orThunk: call,
         map: none,
+        ap: none,
         each: noop,
         bind: none,
-        exists: never,
-        forall: always,
+        flatten: none,
+        exists: never$1,
+        forall: always$1,
         filter: none,
         equals: eq,
         equals_: eq,
@@ -602,15 +618,19 @@ var inlite = (function (domGlobals) {
         },
         toString: constant('none()')
       };
-      if (Object.freeze) {
+      if (Object.freeze)
         Object.freeze(me);
-      }
       return me;
     }();
     var some = function (a) {
-      var constant_a = constant(a);
+      var constant_a = function () {
+        return a;
+      };
       var self = function () {
         return me;
+      };
+      var map = function (f) {
+        return some(f(a));
       };
       var bind = function (f) {
         return f(a);
@@ -622,8 +642,8 @@ var inlite = (function (domGlobals) {
         is: function (v) {
           return a === v;
         },
-        isSome: always,
-        isNone: never,
+        isSome: always$1,
+        isNone: never$1,
         getOr: constant_a,
         getOrThunk: constant_a,
         getOrDie: constant_a,
@@ -631,31 +651,35 @@ var inlite = (function (domGlobals) {
         getOrUndefined: constant_a,
         or: self,
         orThunk: self,
-        map: function (f) {
-          return some(f(a));
+        map: map,
+        ap: function (optfab) {
+          return optfab.fold(none, function (fab) {
+            return some(fab(a));
+          });
         },
         each: function (f) {
           f(a);
         },
         bind: bind,
+        flatten: constant_a,
         exists: bind,
         forall: bind,
         filter: function (f) {
           return f(a) ? me : NONE;
+        },
+        equals: function (o) {
+          return o.is(a);
+        },
+        equals_: function (o, elementEq) {
+          return o.fold(never$1, function (b) {
+            return elementEq(a, b);
+          });
         },
         toArray: function () {
           return [a];
         },
         toString: function () {
           return 'some(' + a + ')';
-        },
-        equals: function (o) {
-          return o.is(a);
-        },
-        equals_: function (o, elementEq) {
-          return o.fold(never, function (b) {
-            return elementEq(a, b);
-          });
         }
       };
       return me;
@@ -670,16 +694,13 @@ var inlite = (function (domGlobals) {
     };
 
     var typeOf = function (x) {
-      if (x === null) {
+      if (x === null)
         return 'null';
-      }
       var t = typeof x;
-      if (t === 'object' && (Array.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'Array')) {
+      if (t === 'object' && Array.prototype.isPrototypeOf(x))
         return 'array';
-      }
-      if (t === 'object' && (String.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'String')) {
+      if (t === 'object' && String.prototype.isPrototypeOf(x))
         return 'string';
-      }
       return t;
     };
     var isType$1 = function (type) {
@@ -687,49 +708,46 @@ var inlite = (function (domGlobals) {
         return typeOf(value) === type;
       };
     };
-    var isArray$1 = isType$1('array');
     var isFunction$1 = isType$1('function');
     var isNumber$1 = isType$1('number');
 
-    var nativeSlice = Array.prototype.slice;
-    var nativeIndexOf = Array.prototype.indexOf;
-    var nativePush = Array.prototype.push;
-    var rawIndexOf = function (ts, t) {
-      return nativeIndexOf.call(ts, t);
-    };
+    var rawIndexOf = function () {
+      var pIndexOf = Array.prototype.indexOf;
+      var fastIndex = function (xs, x) {
+        return pIndexOf.call(xs, x);
+      };
+      var slowIndex = function (xs, x) {
+        return slowIndexOf(xs, x);
+      };
+      return pIndexOf === undefined ? slowIndex : fastIndex;
+    }();
     var indexOf = function (xs, x) {
       var r = rawIndexOf(xs, x);
       return r === -1 ? Option.none() : Option.some(r);
     };
     var exists = function (xs, pred) {
-      for (var i = 0, len = xs.length; i < len; i++) {
-        var x = xs[i];
-        if (pred(x, i)) {
-          return true;
-        }
-      }
-      return false;
+      return findIndex(xs, pred).isSome();
     };
     var map = function (xs, f) {
       var len = xs.length;
       var r = new Array(len);
       for (var i = 0; i < len; i++) {
         var x = xs[i];
-        r[i] = f(x, i);
+        r[i] = f(x, i, xs);
       }
       return r;
     };
     var each = function (xs, f) {
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        f(x, i);
+        f(x, i, xs);
       }
     };
     var filter = function (xs, pred) {
       var r = [];
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        if (pred(x, i)) {
+        if (pred(x, i, xs)) {
           r.push(x);
         }
       }
@@ -744,24 +762,42 @@ var inlite = (function (domGlobals) {
     var find = function (xs, pred) {
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        if (pred(x, i)) {
+        if (pred(x, i, xs)) {
           return Option.some(x);
         }
       }
       return Option.none();
     };
+    var findIndex = function (xs, pred) {
+      for (var i = 0, len = xs.length; i < len; i++) {
+        var x = xs[i];
+        if (pred(x, i, xs)) {
+          return Option.some(i);
+        }
+      }
+      return Option.none();
+    };
+    var slowIndexOf = function (xs, x) {
+      for (var i = 0, len = xs.length; i < len; ++i) {
+        if (xs[i] === x) {
+          return i;
+        }
+      }
+      return -1;
+    };
+    var push = Array.prototype.push;
     var flatten$1 = function (xs) {
       var r = [];
       for (var i = 0, len = xs.length; i < len; ++i) {
-        if (!isArray$1(xs[i])) {
+        if (!Array.prototype.isPrototypeOf(xs[i]))
           throw new Error('Arr.flatten item ' + i + ' was not an array, input: ' + xs);
-        }
-        nativePush.apply(r, xs[i]);
+        push.apply(r, xs[i]);
       }
       return r;
     };
+    var slice = Array.prototype.slice;
     var from$1 = isFunction$1(Array.from) ? Array.from : function (x) {
-      return nativeSlice.call(x);
+      return slice.call(x);
     };
 
     var count = 0;
@@ -1193,7 +1229,7 @@ var inlite = (function (domGlobals) {
     });
 
     var Collection$1, proto;
-    var push = Array.prototype.push, slice = Array.prototype.slice;
+    var push$1 = Array.prototype.push, slice$1 = Array.prototype.slice;
     proto = {
       length: 0,
       init: function (items) {
@@ -1207,10 +1243,10 @@ var inlite = (function (domGlobals) {
           if (items instanceof Collection$1) {
             self.add(items.toArray());
           } else {
-            push.call(self, items);
+            push$1.call(self, items);
           }
         } else {
-          push.apply(self, items);
+          push$1.apply(self, items);
         }
         return self;
       },
@@ -1247,7 +1283,7 @@ var inlite = (function (domGlobals) {
         return new Collection$1(matches);
       },
       slice: function () {
-        return new Collection$1(slice.apply(this, arguments));
+        return new Collection$1(slice$1.apply(this, arguments));
       },
       eq: function (index) {
         return index === -1 ? this.slice(index) : this.slice(index, +index + 1);
@@ -4192,7 +4228,7 @@ var inlite = (function (domGlobals) {
           return NotificationManagerImpl(editor);
         },
         getWindowManagerImpl: function () {
-          return WindowManagerImpl();
+          return WindowManagerImpl(editor);
         }
       };
     };
@@ -4202,9 +4238,8 @@ var inlite = (function (domGlobals) {
 
     var path = function (parts, scope) {
       var o = scope !== undefined && scope !== null ? scope : Global;
-      for (var i = 0; i < parts.length && o !== undefined && o !== null; ++i) {
+      for (var i = 0; i < parts.length && o !== undefined && o !== null; ++i)
         o = o[parts[i]];
-      }
       return o;
     };
     var resolve = function (p, scope) {
@@ -4217,9 +4252,8 @@ var inlite = (function (domGlobals) {
     };
     var getOrDie = function (name, scope) {
       var actual = unsafe(name, scope);
-      if (actual === undefined || actual === null) {
-        throw new Error(name + ' not available on this browser');
-      }
+      if (actual === undefined || actual === null)
+        throw name + ' not available on this browser';
       return actual;
     };
     var Global$1 = { getOrDie: getOrDie };
@@ -5139,10 +5173,9 @@ var inlite = (function (domGlobals) {
         global$7(input).on('click', function (e) {
           e.stopPropagation();
         });
-        global$7(self.getEl('button')).on('click touchstart', function (e) {
+        global$7(self.getEl('button')).on('click', function (e) {
           e.stopPropagation();
           input.click();
-          e.preventDefault();
         });
         self.getEl().appendChild(input);
       },
@@ -6282,20 +6315,18 @@ var inlite = (function (domGlobals) {
     var firstMatch = function (regexes, s) {
       for (var i = 0; i < regexes.length; i++) {
         var x = regexes[i];
-        if (x.test(s)) {
+        if (x.test(s))
           return x;
-        }
       }
       return undefined;
     };
     var find$1 = function (regexes, agent) {
       var r = firstMatch(regexes, agent);
-      if (!r) {
+      if (!r)
         return {
           major: 0,
           minor: 0
         };
-      }
       var group = function (i) {
         return Number(agent.replace(r, '$' + i));
       };
@@ -6303,9 +6334,8 @@ var inlite = (function (domGlobals) {
     };
     var detect = function (versionRegexes, agent) {
       var cleanedAgent = String(agent).toLowerCase();
-      if (versionRegexes.length === 0) {
+      if (versionRegexes.length === 0)
         return unknown();
-      }
       return find$1(versionRegexes, cleanedAgent);
     };
     var unknown = function () {
@@ -6475,7 +6505,8 @@ var inlite = (function (domGlobals) {
         name: 'Edge',
         versionRegexes: [/.*?edge\/ ?([0-9]+)\.([0-9]+)$/],
         search: function (uastring) {
-          return contains(uastring, 'edge/') && contains(uastring, 'chrome') && contains(uastring, 'safari') && contains(uastring, 'applewebkit');
+          var monstrosity = contains(uastring, 'edge/') && contains(uastring, 'chrome') && contains(uastring, 'safari') && contains(uastring, 'applewebkit');
+          return monstrosity;
         }
       },
       {
@@ -7799,11 +7830,11 @@ var inlite = (function (domGlobals) {
       return menuItem && menuItem.text === '-';
     };
     var trimMenuItems = function (menuItems) {
-      var menuItems2 = filter(menuItems, function (menuItem, i) {
+      var menuItems2 = filter(menuItems, function (menuItem, i, menuItems) {
         return !isSeparator(menuItem) || !isSeparator(menuItems[i - 1]);
       });
-      return filter(menuItems2, function (menuItem, i) {
-        return !isSeparator(menuItem) || i > 0 && i < menuItems2.length - 1;
+      return filter(menuItems2, function (menuItem, i, menuItems) {
+        return !isSeparator(menuItem) || i > 0 && i < menuItems.length - 1;
       });
     };
     var createContextMenuItems = function (editor, context) {

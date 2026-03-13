@@ -12,21 +12,20 @@
  *
  * @since 3.6.0
  *
- * @param WP_Post|int $post         The post object or post ID.
- * @param int         $compare_from The revision ID to compare from.
- * @param int         $compare_to   The revision ID to come to.
- * @return array|false Associative array of a post's revisioned fields and their diffs.
- *                     Or, false on failure.
+ * @param object|int $post         The post object. Also accepts a post ID.
+ * @param int        $compare_from The revision ID to compare from.
+ * @param int        $compare_to   The revision ID to come to.
+ *
+ * @return array|bool Associative array of a post's revisioned fields and their diffs.
+ *                    Or, false on failure.
  */
 function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
-	$post = get_post( $post );
-	if ( ! $post ) {
+	if ( ! $post = get_post( $post ) ) {
 		return false;
 	}
 
 	if ( $compare_from ) {
-		$compare_from = get_post( $compare_from );
-		if ( ! $compare_from ) {
+		if ( ! $compare_from = get_post( $compare_from ) ) {
 			return false;
 		}
 	} else {
@@ -34,15 +33,12 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 		$compare_from = false;
 	}
 
-	$compare_to = get_post( $compare_to );
-	if ( ! $compare_to ) {
+	if ( ! $compare_to = get_post( $compare_to ) ) {
 		return false;
 	}
 
-	/*
-	 * If comparing revisions, make sure we are dealing with the right post parent.
-	 * The parent post may be a 'revision' when revisions are disabled and we're looking at autosaves.
-	 */
+	// If comparing revisions, make sure we're dealing with the right post parent.
+	// The parent post may be a 'revision' when revisions are disabled and we're looking at autosaves.
 	if ( $compare_from && $compare_from->post_parent !== $post->ID && $compare_from->ID !== $post->ID ) {
 		return false;
 	}
@@ -56,7 +52,7 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 		$compare_to   = $temp;
 	}
 
-	// Add default title if title field is empty.
+	// Add default title if title field is empty
 	if ( $compare_from && empty( $compare_from->post_title ) ) {
 		$compare_from->post_title = __( '(no title)' );
 	}
@@ -70,22 +66,16 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 		/**
 		 * Contextually filter a post revision field.
 		 *
-		 * The dynamic portion of the hook name, `$field`, corresponds to a name of a
-		 * field of the revision object.
-		 *
-		 * Possible hook names include:
-		 *
-		 *  - `_wp_post_revision_field_post_title`
-		 *  - `_wp_post_revision_field_post_content`
-		 *  - `_wp_post_revision_field_post_excerpt`
+		 * The dynamic portion of the hook name, `$field`, corresponds to each of the post
+		 * fields of the revision object being iterated over in a foreach statement.
 		 *
 		 * @since 3.6.0
 		 *
-		 * @param string  $revision_field The current revision field to compare to or from.
-		 * @param string  $field          The current revision field.
-		 * @param WP_Post $compare_from   The revision post object to compare to or from.
-		 * @param string  $context        The context of whether the current revision is the old
-		 *                                or the new one. Values are 'to' or 'from'.
+		 * @param string  $compare_from->$field The current revision field to compare to or from.
+		 * @param string  $field                The current revision field.
+		 * @param WP_Post $compare_from         The revision post object to compare to or from.
+		 * @param string  null                  The context of whether the current revision is the old
+		 *                                      or the new one. Values are 'to' or 'from'.
 		 */
 		$content_from = $compare_from ? apply_filters( "_wp_post_revision_field_{$field}", $compare_from->$field, $field, $compare_from, 'from' ) : '';
 
@@ -94,8 +84,6 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 
 		$args = array(
 			'show_split_view' => true,
-			'title_left'      => __( 'Removed' ),
-			'title_right'     => __( 'Added' ),
 		);
 
 		/**
@@ -120,10 +108,8 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 		$diff = wp_text_diff( $content_from, $content_to, $args );
 
 		if ( ! $diff && 'post_title' === $field ) {
-			/*
-			 * It's a better user experience to still show the Title, even if it didn't change.
-			 * No, you didn't see this.
-			 */
+			// It's a better user experience to still show the Title, even if it didn't change.
+			// No, you didn't see this.
 			$diff = '<table class="diff"><colgroup><col class="content diffsplit left"><col class="content diffsplit middle"><col class="content diffsplit right"></colgroup><tbody><tr>';
 
 			// In split screen mode, show the title before/after side by side.
@@ -169,9 +155,10 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
  *
  * @since 3.6.0
  *
- * @param WP_Post|int $post                 The post object or post ID.
- * @param int         $selected_revision_id The selected revision ID.
- * @param int         $from                 Optional. The revision ID to compare from.
+ * @param object|int $post                 The post object. Also accepts a post ID.
+ * @param int        $selected_revision_id The selected revision ID.
+ * @param int        $from                 Optional. The revision ID to compare from.
+ *
  * @return array An associative array of revision data and related settings.
  */
 function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null ) {
@@ -198,7 +185,7 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 
 	$show_avatars = get_option( 'show_avatars' );
 
-	update_post_author_caches( $revisions );
+	cache_users( wp_list_pluck( $revisions, 'post_author' ) );
 
 	$can_restore = current_user_can( 'edit_post', $post->ID );
 	$current_id  = false;
@@ -251,7 +238,6 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 			'author'     => $authors[ $revision->post_author ],
 			'date'       => date_i18n( __( 'M j, Y @ H:i' ), $modified ),
 			'dateShort'  => date_i18n( _x( 'j M @ H:i', 'revision date short format' ), $modified ),
-			/* translators: %s: Human-readable time difference. */
 			'timeAgo'    => sprintf( __( '%s ago' ), human_time_diff( $modified_gmt, $now_gmt ) ),
 			'autosave'   => $autosave,
 			'current'    => $current,
@@ -283,18 +269,17 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 		$revisions[ $revision->ID ] = apply_filters( 'wp_prepare_revision_for_js', $revisions_data, $revision, $post );
 	}
 
-	/*
-	 * If we only have one revision, the initial revision is missing. This happens
-	 * when we have an autosave and the user has clicked 'View the Autosave'.
+	/**
+	 * If we only have one revision, the initial revision is missing; This happens
+	 * when we have an autsosave and the user has clicked 'View the Autosave'
 	 */
-	if ( 1 === count( $revisions ) ) {
+	if ( 1 === sizeof( $revisions ) ) {
 		$revisions[ $post->ID ] = array(
 			'id'         => $post->ID,
 			'title'      => get_the_title( $post->ID ),
-			'author'     => $authors[ $revision->post_author ],
+			'author'     => $authors[ $post->post_author ],
 			'date'       => date_i18n( __( 'M j, Y @ H:i' ), strtotime( $post->post_modified ) ),
 			'dateShort'  => date_i18n( _x( 'j M @ H:i', 'revision date short format' ), strtotime( $post->post_modified ) ),
-			/* translators: %s: Human-readable time difference. */
 			'timeAgo'    => sprintf( __( '%s ago' ), human_time_diff( strtotime( $post->post_modified_gmt ), $now_gmt ) ),
 			'autosave'   => false,
 			'current'    => true,
@@ -304,7 +289,7 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 	}
 
 	/*
-	 * If a post has been saved since the latest revision (no revisioned fields
+	 * If a post has been saved since the last revision (no revisioned fields
 	 * were changed), we may not have a "current" revision. Mark the latest
 	 * revision as "current".
 	 */
@@ -324,7 +309,7 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 	// Now, grab the initial diff.
 	$compare_two_mode = is_numeric( $from );
 	if ( ! $compare_two_mode ) {
-		$found = array_search( $selected_revision_id, array_keys( $revisions ), true );
+		$found = array_search( $selected_revision_id, array_keys( $revisions ) );
 		if ( $found ) {
 			$from = array_keys( array_slice( $revisions, $found - 1, 1, true ) );
 			$from = reset( $from );
@@ -350,7 +335,7 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 		'from'           => $from,
 		'diffData'       => $diffs,
 		'baseUrl'        => parse_url( admin_url( 'revision.php' ), PHP_URL_PATH ),
-		'compareTwoMode' => absint( $compare_two_mode ), // Apparently booleans are not allowed.
+		'compareTwoMode' => absint( $compare_two_mode ), // Apparently booleans are not allowed
 		'revisionIds'    => array_keys( $revisions ),
 	);
 }
@@ -360,7 +345,7 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
  *
  * @since 4.1.0
  *
- * @global WP_Post $post Global post object.
+ * @global WP_Post $post The global `$post` object.
  */
 function wp_print_revision_templates() {
 	global $post;
@@ -409,7 +394,6 @@ function wp_print_revision_templates() {
 						<span class="byline">
 						<?php
 						printf(
-							/* translators: %s: User's display name. */
 							__( 'Autosave by %s' ),
 							'<span class="author-name">{{ data.attributes.author.name }}</span>'
 						);
@@ -419,7 +403,6 @@ function wp_print_revision_templates() {
 						<span class="byline">
 						<?php
 						printf(
-							/* translators: %s: User's display name. */
 							__( 'Current Revision by %s' ),
 							'<span class="author-name">{{ data.attributes.author.name }}</span>'
 						);
@@ -429,7 +412,6 @@ function wp_print_revision_templates() {
 						<span class="byline">
 						<?php
 						printf(
-							/* translators: %s: User's display name. */
 							__( 'Revision by %s' ),
 							'<span class="author-name">{{ data.attributes.author.name }}</span>'
 						);

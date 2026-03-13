@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2016, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,9 +33,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
+ * @version 1.3.1
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
- * @author Sam Sneddon
+ * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
@@ -117,8 +118,10 @@ class SimplePie_Decode_HTML_Entities
 			$this->consumed .= $this->data[$this->position];
 			return $this->data[$this->position++];
 		}
-
-		return false;
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -137,8 +140,10 @@ class SimplePie_Decode_HTML_Entities
 			$this->position += $len;
 			return $data;
 		}
-
-		return false;
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -163,6 +168,7 @@ class SimplePie_Decode_HTML_Entities
 		{
 			case "\x09":
 			case "\x0A":
+			case "\x0B":
 			case "\x0B":
 			case "\x0C":
 			case "\x20":
@@ -608,3 +614,4 @@ class SimplePie_Decode_HTML_Entities
 		}
 	}
 }
+

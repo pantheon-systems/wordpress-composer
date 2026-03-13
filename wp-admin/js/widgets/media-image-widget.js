@@ -40,7 +40,7 @@
 		/**
 		 * Render preview.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		renderPreview: function renderPreview() {
 			var control = this, previewContainer, previewTemplate, fieldsContainer, fieldsTemplate, linkInput;
@@ -64,7 +64,7 @@
 		/**
 		 * Open the media image-edit frame to modify the selected item.
 		 *
-		 * @return {void}
+		 * @returns {void}
 		 */
 		editMedia: function editMedia() {
 			var control = this, mediaFrame, updateCallback, defaultSync, metadata;
@@ -119,7 +119,7 @@
 		/**
 		 * Get props which are merged on top of the model when an embed is chosen (as opposed to an attachment).
 		 *
-		 * @return {Object} Reset/override props.
+		 * @returns {Object} Reset/override props.
 		 */
 		getEmbedResetProps: function getEmbedResetProps() {
 			return _.extend(
@@ -138,7 +138,7 @@
 		 * Prevent the image_title attribute from being initially set when adding an image from the media library.
 		 *
 		 * @param {wp.media.view.MediaFrame.Select} mediaFrame - Select frame.
-		 * @return {Object} Props.
+		 * @returns {Object} Props.
 		 */
 		getModelPropsFromMediaFrame: function getModelPropsFromMediaFrame( mediaFrame ) {
 			var control = this;
@@ -151,7 +151,7 @@
 		/**
 		 * Map model props to preview template props.
 		 *
-		 * @return {Object} Preview template props.
+		 * @returns {Object} Preview template props.
 		 */
 		mapModelToPreviewTemplateProps: function mapModelToPreviewTemplateProps() {
 			var control = this, previewTemplateProps, url;

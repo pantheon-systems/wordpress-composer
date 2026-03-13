@@ -12,7 +12,6 @@
  *
  * @since 4.4.0
  */
-#[AllowDynamicProperties]
 class WP_HTTP_Response {
 
 	/**
@@ -148,7 +147,7 @@ class WP_HTTP_Response {
 	 *
 	 * @return mixed Any JSON-serializable value.
 	 */
-	public function jsonSerialize() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
+	public function jsonSerialize() {
 		return $this->get_data();
 	}
 }

@@ -27,7 +27,7 @@ class WP_Customize_Themes_Panel extends WP_Customize_Panel {
 	/**
 	 * An Underscore (JS) template for rendering this panel's container.
 	 *
-	 * The themes panel renders a custom panel heading with the active theme and a switch themes button.
+	 * The themes panel renders a custom panel heading with the current theme and a switch themes button.
 	 *
 	 * @see WP_Customize_Panel::print_template()
 	 *
@@ -67,30 +67,17 @@ class WP_Customize_Themes_Panel extends WP_Customize_Panel {
 	protected function content_template() {
 		?>
 		<li class="panel-meta customize-info accordion-section <# if ( ! data.description ) { #> cannot-expand<# } #>">
-			<button class="customize-panel-back" tabindex="-1" type="button"><span class="screen-reader-text">
-				<?php
-				/* translators: Hidden accessibility text. */
-				_e( 'Back' );
-				?>
-			</span></button>
+			<button class="customize-panel-back" tabindex="-1" type="button"><span class="screen-reader-text"><?php _e( 'Back' ); ?></span></button>
 			<div class="accordion-section-title">
 				<span class="preview-notice">
 					<?php
-					printf(
-						/* translators: %s: Themes panel title in the Customizer. */
-						__( 'You are browsing %s' ),
-						'<strong class="panel-title">' . __( 'Themes' ) . '</strong>'
-					); // Separate strings for consistency with other panels.
+					/* translators: %s: themes panel title in the Customizer */
+					echo sprintf( __( 'You are browsing %s' ), '<strong class="panel-title">' . __( 'Themes' ) . '</strong>' ); // Separate strings for consistency with other panels.
 					?>
 				</span>
 				<?php if ( current_user_can( 'install_themes' ) && ! is_multisite() ) : ?>
 					<# if ( data.description ) { #>
-						<button class="customize-help-toggle dashicons dashicons-editor-help" type="button" aria-expanded="false"><span class="screen-reader-text">
-							<?php
-							/* translators: Hidden accessibility text. */
-							_e( 'Help' );
-							?>
-						</span></button>
+						<button class="customize-help-toggle dashicons dashicons-editor-help" type="button" aria-expanded="false"><span class="screen-reader-text"><?php _e( 'Help' ); ?></span></button>
 					<# } #>
 				<?php endif; ?>
 			</div>

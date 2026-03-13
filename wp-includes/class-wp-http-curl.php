@@ -16,7 +16,6 @@
  *
  * @since 2.7.0
  */
-#[AllowDynamicProperties]
 class WP_Http_Curl {
 
 	/**
@@ -39,7 +38,7 @@ class WP_Http_Curl {
 	 * The maximum amount of data to receive from the remote server.
 	 *
 	 * @since 3.6.0
-	 * @var int|false
+	 * @var int
 	 */
 	private $max_body_length = false;
 
@@ -47,7 +46,7 @@ class WP_Http_Curl {
 	 * The file resource used for streaming to file.
 	 *
 	 * @since 3.6.0
-	 * @var resource|false
+	 * @var resource
 	 */
 	private $stream_handle = false;
 
@@ -64,7 +63,7 @@ class WP_Http_Curl {
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string       $url  The request URL.
+	 * @param string $url The request URL.
 	 * @param string|array $args Optional. Override the defaults.
 	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'. A WP_Error instance upon error
 	 */
@@ -78,23 +77,20 @@ class WP_Http_Curl {
 			'headers'     => array(),
 			'body'        => null,
 			'cookies'     => array(),
-			'decompress'  => false,
-			'stream'      => false,
-			'filename'    => null,
 		);
 
-		$parsed_args = wp_parse_args( $args, $defaults );
+		$r = wp_parse_args( $args, $defaults );
 
-		if ( isset( $parsed_args['headers']['User-Agent'] ) ) {
-			$parsed_args['user-agent'] = $parsed_args['headers']['User-Agent'];
-			unset( $parsed_args['headers']['User-Agent'] );
-		} elseif ( isset( $parsed_args['headers']['user-agent'] ) ) {
-			$parsed_args['user-agent'] = $parsed_args['headers']['user-agent'];
-			unset( $parsed_args['headers']['user-agent'] );
+		if ( isset( $r['headers']['User-Agent'] ) ) {
+			$r['user-agent'] = $r['headers']['User-Agent'];
+			unset( $r['headers']['User-Agent'] );
+		} elseif ( isset( $r['headers']['user-agent'] ) ) {
+			$r['user-agent'] = $r['headers']['user-agent'];
+			unset( $r['headers']['user-agent'] );
 		}
 
 		// Construct Cookie: header if any cookies are set.
-		WP_Http::buildCookieHeader( $parsed_args );
+		WP_Http::buildCookieHeader( $r );
 
 		$handle = curl_init();
 
@@ -113,13 +109,13 @@ class WP_Http_Curl {
 			}
 		}
 
-		$is_local   = isset( $parsed_args['local'] ) && $parsed_args['local'];
-		$ssl_verify = isset( $parsed_args['sslverify'] ) && $parsed_args['sslverify'];
+		$is_local   = isset( $r['local'] ) && $r['local'];
+		$ssl_verify = isset( $r['sslverify'] ) && $r['sslverify'];
 		if ( $is_local ) {
 			/** This filter is documented in wp-includes/class-wp-http-streams.php */
 			$ssl_verify = apply_filters( 'https_local_ssl_verify', $ssl_verify, $url );
 		} elseif ( ! $is_local ) {
-			/** This filter is documented in wp-includes/class-wp-http.php */
+			/** This filter is documented in wp-includes/class-http.php */
 			$ssl_verify = apply_filters( 'https_ssl_verify', $ssl_verify, $url );
 		}
 
@@ -127,76 +123,78 @@ class WP_Http_Curl {
 		 * CURLOPT_TIMEOUT and CURLOPT_CONNECTTIMEOUT expect integers. Have to use ceil since.
 		 * a value of 0 will allow an unlimited timeout.
 		 */
-		$timeout = (int) ceil( $parsed_args['timeout'] );
+		$timeout = (int) ceil( $r['timeout'] );
 		curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, $timeout );
 		curl_setopt( $handle, CURLOPT_TIMEOUT, $timeout );
 
 		curl_setopt( $handle, CURLOPT_URL, $url );
 		curl_setopt( $handle, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $handle, CURLOPT_SSL_VERIFYHOST, ( true === $ssl_verify ) ? 2 : false );
+		curl_setopt( $handle, CURLOPT_SSL_VERIFYHOST, ( $ssl_verify === true ) ? 2 : false );
 		curl_setopt( $handle, CURLOPT_SSL_VERIFYPEER, $ssl_verify );
 
 		if ( $ssl_verify ) {
-			curl_setopt( $handle, CURLOPT_CAINFO, $parsed_args['sslcertificates'] );
+			curl_setopt( $handle, CURLOPT_CAINFO, $r['sslcertificates'] );
 		}
 
-		curl_setopt( $handle, CURLOPT_USERAGENT, $parsed_args['user-agent'] );
+		curl_setopt( $handle, CURLOPT_USERAGENT, $r['user-agent'] );
 
 		/*
 		 * The option doesn't work with safe mode or when open_basedir is set, and there's
 		 * a bug #17490 with redirected POST requests, so handle redirections outside Curl.
 		 */
 		curl_setopt( $handle, CURLOPT_FOLLOWLOCATION, false );
-		curl_setopt( $handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS );
+		if ( defined( 'CURLOPT_PROTOCOLS' ) ) { // PHP 5.2.10 / cURL 7.19.4
+			curl_setopt( $handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS );
+		}
 
-		switch ( $parsed_args['method'] ) {
+		switch ( $r['method'] ) {
 			case 'HEAD':
 				curl_setopt( $handle, CURLOPT_NOBODY, true );
 				break;
 			case 'POST':
 				curl_setopt( $handle, CURLOPT_POST, true );
-				curl_setopt( $handle, CURLOPT_POSTFIELDS, $parsed_args['body'] );
+				curl_setopt( $handle, CURLOPT_POSTFIELDS, $r['body'] );
 				break;
 			case 'PUT':
 				curl_setopt( $handle, CURLOPT_CUSTOMREQUEST, 'PUT' );
-				curl_setopt( $handle, CURLOPT_POSTFIELDS, $parsed_args['body'] );
+				curl_setopt( $handle, CURLOPT_POSTFIELDS, $r['body'] );
 				break;
 			default:
-				curl_setopt( $handle, CURLOPT_CUSTOMREQUEST, $parsed_args['method'] );
-				if ( ! is_null( $parsed_args['body'] ) ) {
-					curl_setopt( $handle, CURLOPT_POSTFIELDS, $parsed_args['body'] );
+				curl_setopt( $handle, CURLOPT_CUSTOMREQUEST, $r['method'] );
+				if ( ! is_null( $r['body'] ) ) {
+					curl_setopt( $handle, CURLOPT_POSTFIELDS, $r['body'] );
 				}
 				break;
 		}
 
-		if ( true === $parsed_args['blocking'] ) {
+		if ( true === $r['blocking'] ) {
 			curl_setopt( $handle, CURLOPT_HEADERFUNCTION, array( $this, 'stream_headers' ) );
 			curl_setopt( $handle, CURLOPT_WRITEFUNCTION, array( $this, 'stream_body' ) );
 		}
 
 		curl_setopt( $handle, CURLOPT_HEADER, false );
 
-		if ( isset( $parsed_args['limit_response_size'] ) ) {
-			$this->max_body_length = (int) $parsed_args['limit_response_size'];
+		if ( isset( $r['limit_response_size'] ) ) {
+			$this->max_body_length = intval( $r['limit_response_size'] );
 		} else {
 			$this->max_body_length = false;
 		}
 
 		// If streaming to a file open a file handle, and setup our curl streaming handler.
-		if ( $parsed_args['stream'] ) {
+		if ( $r['stream'] ) {
 			if ( ! WP_DEBUG ) {
-				$this->stream_handle = @fopen( $parsed_args['filename'], 'w+' );
+				$this->stream_handle = @fopen( $r['filename'], 'w+' );
 			} else {
-				$this->stream_handle = fopen( $parsed_args['filename'], 'w+' );
+				$this->stream_handle = fopen( $r['filename'], 'w+' );
 			}
 			if ( ! $this->stream_handle ) {
 				return new WP_Error(
 					'http_request_failed',
 					sprintf(
-						/* translators: 1: fopen(), 2: File name. */
+						/* translators: 1: fopen(), 2: file name */
 						__( 'Could not open handle for %1$s to %2$s.' ),
 						'fopen()',
-						$parsed_args['filename']
+						$r['filename']
 					)
 				);
 			}
@@ -204,16 +202,16 @@ class WP_Http_Curl {
 			$this->stream_handle = false;
 		}
 
-		if ( ! empty( $parsed_args['headers'] ) ) {
+		if ( ! empty( $r['headers'] ) ) {
 			// cURL expects full header strings in each element.
 			$headers = array();
-			foreach ( $parsed_args['headers'] as $name => $value ) {
+			foreach ( $r['headers'] as $name => $value ) {
 				$headers[] = "{$name}: $value";
 			}
 			curl_setopt( $handle, CURLOPT_HTTPHEADER, $headers );
 		}
 
-		if ( '1.0' === $parsed_args['httpversion'] ) {
+		if ( $r['httpversion'] == '1.0' ) {
 			curl_setopt( $handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0 );
 		} else {
 			curl_setopt( $handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
@@ -227,22 +225,21 @@ class WP_Http_Curl {
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param resource $handle      The cURL handle returned by curl_init() (passed by reference).
-		 * @param array    $parsed_args The HTTP request arguments.
-		 * @param string   $url         The request URL.
+		 * @param resource $handle  The cURL handle returned by curl_init() (passed by reference).
+		 * @param array    $r       The HTTP request arguments.
+		 * @param string   $url     The request URL.
 		 */
-		do_action_ref_array( 'http_api_curl', array( &$handle, $parsed_args, $url ) );
+		do_action_ref_array( 'http_api_curl', array( &$handle, $r, $url ) );
 
 		// We don't need to return the body, so don't. Just execute request and return.
-		if ( ! $parsed_args['blocking'] ) {
+		if ( ! $r['blocking'] ) {
 			curl_exec( $handle );
 
-			$curl_error = curl_error( $handle );
-			if ( $curl_error ) {
+			if ( $curl_error = curl_error( $handle ) ) {
 				curl_close( $handle );
 				return new WP_Error( 'http_request_failed', $curl_error );
 			}
-			if ( in_array( curl_getinfo( $handle, CURLINFO_HTTP_CODE ), array( 301, 302 ), true ) ) {
+			if ( in_array( curl_getinfo( $handle, CURLINFO_HTTP_CODE ), array( 301, 302 ) ) ) {
 				curl_close( $handle );
 				return new WP_Error( 'http_request_failed', __( 'Too many redirects.' ) );
 			}
@@ -260,9 +257,8 @@ class WP_Http_Curl {
 		}
 
 		curl_exec( $handle );
-
-		$processed_headers   = WP_Http::processHeaders( $this->headers, $url );
-		$body                = $this->body;
+		$theHeaders          = WP_Http::processHeaders( $this->headers, $url );
+		$theBody             = $this->body;
 		$bytes_written_total = $this->bytes_written_total;
 
 		$this->headers             = '';
@@ -272,10 +268,10 @@ class WP_Http_Curl {
 		$curl_error = curl_errno( $handle );
 
 		// If an error occurred, or, no response.
-		if ( $curl_error || ( 0 === strlen( $body ) && empty( $processed_headers['headers'] ) ) ) {
-			if ( CURLE_WRITE_ERROR /* 23 */ === $curl_error ) {
-				if ( ! $this->max_body_length || $this->max_body_length !== $bytes_written_total ) {
-					if ( $parsed_args['stream'] ) {
+		if ( $curl_error || ( 0 == strlen( $theBody ) && empty( $theHeaders['headers'] ) ) ) {
+			if ( CURLE_WRITE_ERROR /* 23 */ == $curl_error ) {
+				if ( ! $this->max_body_length || $this->max_body_length != $bytes_written_total ) {
+					if ( $r['stream'] ) {
 						curl_close( $handle );
 						fclose( $this->stream_handle );
 						return new WP_Error( 'http_request_failed', __( 'Failed to write request to temporary file.' ) );
@@ -285,13 +281,12 @@ class WP_Http_Curl {
 					}
 				}
 			} else {
-				$curl_error = curl_error( $handle );
-				if ( $curl_error ) {
+				if ( $curl_error = curl_error( $handle ) ) {
 					curl_close( $handle );
 					return new WP_Error( 'http_request_failed', $curl_error );
 				}
 			}
-			if ( in_array( curl_getinfo( $handle, CURLINFO_HTTP_CODE ), array( 301, 302 ), true ) ) {
+			if ( in_array( curl_getinfo( $handle, CURLINFO_HTTP_CODE ), array( 301, 302 ) ) ) {
 				curl_close( $handle );
 				return new WP_Error( 'http_request_failed', __( 'Too many redirects.' ) );
 			}
@@ -299,31 +294,28 @@ class WP_Http_Curl {
 
 		curl_close( $handle );
 
-		if ( $parsed_args['stream'] ) {
+		if ( $r['stream'] ) {
 			fclose( $this->stream_handle );
 		}
 
 		$response = array(
-			'headers'  => $processed_headers['headers'],
+			'headers'  => $theHeaders['headers'],
 			'body'     => null,
-			'response' => $processed_headers['response'],
-			'cookies'  => $processed_headers['cookies'],
-			'filename' => $parsed_args['filename'],
+			'response' => $theHeaders['response'],
+			'cookies'  => $theHeaders['cookies'],
+			'filename' => $r['filename'],
 		);
 
 		// Handle redirects.
-		$redirect_response = WP_Http::handle_redirects( $url, $parsed_args, $response );
-		if ( false !== $redirect_response ) {
+		if ( false !== ( $redirect_response = WP_HTTP::handle_redirects( $url, $r, $response ) ) ) {
 			return $redirect_response;
 		}
 
-		if ( true === $parsed_args['decompress']
-			&& true === WP_Http_Encoding::should_decode( $processed_headers['headers'] )
-		) {
-			$body = WP_Http_Encoding::decompress( $body );
+		if ( true === $r['decompress'] && true === WP_Http_Encoding::should_decode( $theHeaders['headers'] ) ) {
+			$theBody = WP_Http_Encoding::decompress( $theBody );
 		}
 
-		$response['body'] = $body;
+		$response['body'] = $theBody;
 
 		return $response;
 	}
@@ -331,8 +323,8 @@ class WP_Http_Curl {
 	/**
 	 * Grabs the headers of the cURL request.
 	 *
-	 * Each header is sent individually to this callback, and is appended to the `$header` property
-	 * for temporary storage.
+	 * Each header is sent individually to this callback, so we append to the `$header` property
+	 * for temporary storage
 	 *
 	 * @since 3.2.0
 	 *
@@ -348,14 +340,14 @@ class WP_Http_Curl {
 	/**
 	 * Grabs the body of the cURL request.
 	 *
-	 * The contents of the document are passed in chunks, and are appended to the `$body`
+	 * The contents of the document are passed in chunks, so we append to the `$body`
 	 * property for temporary storage. Returning a length shorter than the length of
 	 * `$data` passed in will cause cURL to abort the request with `CURLE_WRITE_ERROR`.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param resource $handle cURL handle.
-	 * @param string   $data   cURL request body.
+	 * @param resource $handle  cURL handle.
+	 * @param string   $data    cURL request body.
 	 * @return int Total bytes of data written.
 	 */
 	private function stream_body( $handle, $data ) {
