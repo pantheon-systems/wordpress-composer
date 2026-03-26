@@ -1,0 +1,10 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: wordpress-composer
+  description: WordPress for Pantheon with a composer.json file
+spec:
+  type: template
+  lifecycle: production
+  owner: sitex
