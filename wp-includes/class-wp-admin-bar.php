@@ -18,6 +18,8 @@ class WP_Admin_Bar {
 	public $user;
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @param string $name
 	 * @return string|array|void
 	 */
@@ -33,6 +35,9 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * Initializes the admin bar.
+	 *
+	 * @since 3.1.0
 	 */
 	public function initialize() {
 		$this->user = new stdClass;
@@ -82,14 +87,22 @@ class WP_Admin_Bar {
 	}
 
 	/**
-	 * @param array $node
+	 * Adds a node (menu item) to the admin bar menu.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param array $node The attributes that define the node.
 	 */
 	public function add_menu( $node ) {
 		$this->add_node( $node );
 	}
 
 	/**
-	 * @param string $id
+	 * Removes a node from the admin bar.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $id The menu slug to remove.
 	 */
 	public function remove_menu( $id ) {
 		$this->remove_node( $id );
@@ -114,9 +127,9 @@ class WP_Admin_Bar {
 	 * }
 	 */
 	public function add_node( $args ) {
-		// Shim for old method signature: add_node( $parent_id, $menu_obj, $args )
-		if ( func_num_args() >= 3 && is_string( func_get_arg( 0 ) ) ) {
-			$args = array_merge( array( 'parent' => func_get_arg( 0 ) ), func_get_arg( 2 ) );
+		// Shim for old method signature: add_node( $parent_id, $menu_obj, $args ).
+		if ( func_num_args() >= 3 && is_string( $args ) ) {
+			$args = array_merge( array( 'parent' => $args ), func_get_arg( 2 ) );
 		}
 
 		if ( is_object( $args ) ) {
@@ -144,7 +157,8 @@ class WP_Admin_Bar {
 		);
 
 		// If the node already exists, keep any data that isn't provided.
-		if ( $maybe_defaults = $this->get_node( $args['id'] ) ) {
+		$maybe_defaults = $this->get_node( $args['id'] );
+		if ( $maybe_defaults ) {
 			$defaults = get_object_vars( $maybe_defaults );
 		}
 
@@ -170,6 +184,8 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @param array $args
 	 */
 	final protected function _set_node( $args ) {
@@ -179,16 +195,21 @@ class WP_Admin_Bar {
 	/**
 	 * Gets a node.
 	 *
+	 * @since 3.3.0
+	 *
 	 * @param string $id
-	 * @return object Node.
+	 * @return object|void Node.
 	 */
 	final public function get_node( $id ) {
-		if ( $node = $this->_get_node( $id ) ) {
+		$node = $this->_get_node( $id );
+		if ( $node ) {
 			return clone $node;
 		}
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @param string $id
 	 * @return object|void
 	 */
@@ -207,10 +228,13 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @return array|void
 	 */
 	final public function get_nodes() {
-		if ( ! $nodes = $this->_get_nodes() ) {
+		$nodes = $this->_get_nodes();
+		if ( ! $nodes ) {
 			return;
 		}
 
@@ -221,6 +245,8 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @return array|void
 	 */
 	final protected function _get_nodes() {
@@ -232,7 +258,9 @@ class WP_Admin_Bar {
 	}
 
 	/**
-	 * Add a group to a menu node.
+	 * Adds a group to a toolbar menu node.
+	 *
+	 * Groups can be used to organize toolbar items into distinct sections of a toolbar menu.
 	 *
 	 * @since 3.3.0
 	 *
@@ -254,6 +282,8 @@ class WP_Admin_Bar {
 	/**
 	 * Remove a node.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @param string $id The ID of the item.
 	 */
 	public function remove_node( $id ) {
@@ -261,6 +291,8 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @param string $id
 	 */
 	final protected function _unset_node( $id ) {
@@ -268,6 +300,7 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.1.0
 	 */
 	public function render() {
 		$root = $this->_bind();
@@ -277,6 +310,8 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @return object|void
 	 */
 	final protected function _bind() {
@@ -307,19 +342,20 @@ class WP_Admin_Bar {
 		}
 
 		foreach ( $this->_get_nodes() as $node ) {
-			if ( 'root' == $node->id ) {
+			if ( 'root' === $node->id ) {
 				continue;
 			}
 
 			// Fetch the parent node. If it isn't registered, ignore the node.
-			if ( ! $parent = $this->_get_node( $node->parent ) ) {
+			$parent = $this->_get_node( $node->parent );
+			if ( ! $parent ) {
 				continue;
 			}
 
 			// Generate the group class (we distinguish between top level and other level groups).
-			$group_class = ( $node->parent == 'root' ) ? 'ab-top-menu' : 'ab-submenu';
+			$group_class = ( 'root' === $node->parent ) ? 'ab-top-menu' : 'ab-submenu';
 
-			if ( $node->type == 'group' ) {
+			if ( 'group' === $node->type ) {
 				if ( empty( $node->meta['class'] ) ) {
 					$node->meta['class'] = $group_class;
 				} else {
@@ -328,7 +364,7 @@ class WP_Admin_Bar {
 			}
 
 			// Items in items aren't allowed. Wrap nested items in 'default' groups.
-			if ( $parent->type == 'item' && $node->type == 'item' ) {
+			if ( 'item' === $parent->type && 'item' === $node->type ) {
 				$default_id = $parent->id . '-default';
 				$default    = $this->_get_node( $default_id );
 
@@ -357,7 +393,7 @@ class WP_Admin_Bar {
 
 				// Groups in groups aren't allowed. Add a special 'container' node.
 				// The container will invisibly wrap both groups.
-			} elseif ( $parent->type == 'group' && $node->type == 'group' ) {
+			} elseif ( 'group' === $parent->type && 'group' === $node->type ) {
 				$container_id = $parent->id . '-container';
 				$container    = $this->_get_node( $container_id );
 
@@ -386,7 +422,7 @@ class WP_Admin_Bar {
 						$container->parent = $grandparent->id;
 
 						$index = array_search( $parent, $grandparent->children, true );
-						if ( $index === false ) {
+						if ( false === $index ) {
 							$grandparent->children[] = $container;
 						} else {
 							array_splice( $grandparent->children, $index, 1, array( $container ) );
@@ -412,30 +448,21 @@ class WP_Admin_Bar {
 	}
 
 	/**
-	 * @global bool $is_IE
+	 * @since 3.3.0
+	 *
 	 * @param object $root
 	 */
 	final protected function _render( $root ) {
-		global $is_IE;
-
 		// Add browser classes.
 		// We have to do this here since admin bar shows on the front end.
 		$class = 'nojq nojs';
-		if ( $is_IE ) {
-			if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE 7' ) ) {
-				$class .= ' ie7';
-			} elseif ( strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE 8' ) ) {
-				$class .= ' ie8';
-			} elseif ( strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE 9' ) ) {
-				$class .= ' ie9';
-			}
-		} elseif ( wp_is_mobile() ) {
+		if ( wp_is_mobile() ) {
 			$class .= ' mobile';
 		}
 
 		?>
 		<div id="wpadminbar" class="<?php echo $class; ?>">
-			<?php if ( ! is_admin() ) { ?>
+			<?php if ( ! is_admin() && ! did_action( 'wp_body_open' ) ) { ?>
 				<a class="screen-reader-shortcut" href="#wp-toolbar" tabindex="1"><?php _e( 'Skip to toolbar' ); ?></a>
 			<?php } ?>
 			<div class="quicklinks" id="wp-toolbar" role="navigation" aria-label="<?php esc_attr_e( 'Toolbar' ); ?>">
@@ -454,10 +481,12 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @param object $node
 	 */
 	final protected function _render_container( $node ) {
-		if ( $node->type != 'container' || empty( $node->children ) ) {
+		if ( 'container' !== $node->type || empty( $node->children ) ) {
 			return;
 		}
 
@@ -469,14 +498,16 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @param object $node
 	 */
 	final protected function _render_group( $node ) {
-		if ( $node->type == 'container' ) {
+		if ( 'container' === $node->type ) {
 			$this->_render_container( $node );
 			return;
 		}
-		if ( $node->type != 'group' || empty( $node->children ) ) {
+		if ( 'group' !== $node->type || empty( $node->children ) ) {
 			return;
 		}
 
@@ -494,21 +525,26 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * @since 3.3.0
+	 *
 	 * @param object $node
 	 */
 	final protected function _render_item( $node ) {
-		if ( $node->type != 'item' ) {
+		if ( 'item' !== $node->type ) {
 			return;
 		}
 
-		$is_parent = ! empty( $node->children );
-		$has_link  = ! empty( $node->href );
+		$is_parent             = ! empty( $node->children );
+		$has_link              = ! empty( $node->href );
+		$is_root_top_item      = 'root-default' === $node->parent;
+		$is_top_secondary_item = 'top-secondary' === $node->parent;
 
 		// Allow only numeric values, then casted to integers, and allow a tabindex value of `0` for a11y.
 		$tabindex        = ( isset( $node->meta['tabindex'] ) && is_numeric( $node->meta['tabindex'] ) ) ? (int) $node->meta['tabindex'] : '';
 		$aria_attributes = ( '' !== $tabindex ) ? ' tabindex="' . $tabindex . '"' : '';
 
 		$menuclass = '';
+		$arrow     = '';
 
 		if ( $is_parent ) {
 			$menuclass        = 'menupop ';
@@ -517,6 +553,11 @@ class WP_Admin_Bar {
 
 		if ( ! empty( $node->meta['class'] ) ) {
 			$menuclass .= $node->meta['class'];
+		}
+
+		// Print the arrow icon for the menu children with children.
+		if ( ! $is_root_top_item && ! $is_top_secondary_item && $is_parent ) {
+			$arrow = '<span class="wp-admin-bar-arrow" aria-hidden="true"></span>';
 		}
 
 		if ( $menuclass ) {
@@ -528,21 +569,24 @@ class WP_Admin_Bar {
 		if ( $has_link ) {
 			$attributes = array( 'onclick', 'target', 'title', 'rel', 'lang', 'dir' );
 			echo "<a class='ab-item'$aria_attributes href='" . esc_url( $node->href ) . "'";
-			if ( ! empty( $node->meta['onclick'] ) ) {
-				echo ' onclick="' . esc_js( $node->meta['onclick'] ) . '"';
-			}
 		} else {
 			$attributes = array( 'onclick', 'target', 'title', 'rel', 'lang', 'dir' );
 			echo '<div class="ab-item ab-empty-item"' . $aria_attributes;
 		}
 
 		foreach ( $attributes as $attribute ) {
-			if ( ! empty( $node->meta[ $attribute ] ) ) {
+			if ( empty( $node->meta[ $attribute ] ) ) {
+				continue;
+			}
+
+			if ( 'onclick' === $attribute ) {
+				echo " $attribute='" . esc_js( $node->meta[ $attribute ] ) . "'";
+			} else {
 				echo " $attribute='" . esc_attr( $node->meta[ $attribute ] ) . "'";
 			}
 		}
 
-		echo ">{$node->title}";
+		echo ">{$arrow}{$node->title}";
 
 		if ( $has_link ) {
 			echo '</a>';
@@ -582,22 +626,27 @@ class WP_Admin_Bar {
 	}
 
 	/**
+	 * Adds menus to the admin bar.
+	 *
+	 * @since 3.1.0
 	 */
 	public function add_menus() {
-		// User related, aligned right.
+		// User-related, aligned right.
 		add_action( 'admin_bar_menu', 'wp_admin_bar_my_account_menu', 0 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_search_menu', 4 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_my_account_item', 7 );
+		add_action( 'admin_bar_menu', 'wp_admin_bar_recovery_mode_menu', 8 );
 
-		// Site related.
+		// Site-related.
 		add_action( 'admin_bar_menu', 'wp_admin_bar_sidebar_toggle', 0 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_wp_menu', 10 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_my_sites_menu', 20 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_site_menu', 30 );
+		add_action( 'admin_bar_menu', 'wp_admin_bar_edit_site_menu', 40 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_customize_menu', 40 );
 		add_action( 'admin_bar_menu', 'wp_admin_bar_updates_menu', 50 );
 
-		// Content related.
+		// Content-related.
 		if ( ! is_network_admin() && ! is_user_admin() ) {
 			add_action( 'admin_bar_menu', 'wp_admin_bar_comments_menu', 60 );
 			add_action( 'admin_bar_menu', 'wp_admin_bar_new_content_menu', 70 );
