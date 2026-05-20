@@ -1,8 +1,5 @@
 /**
- * Colors
- */
-/**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -18,17 +15,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -41,19 +47,22 @@
  * These variables do not appear to be used anywhere else.
  */
 /**
+ * Breakpoints & Media Queries
+ */
+/**
 *  Converts a hex value into the rgb equivalent.
 *
 * @param {string} hex - the hexadecimal value to convert
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,6 +83,10 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
 .block-library-html__edit .block-library-html__preview-overlay {
   position: absolute;
   width: 100%;
@@ -81,25 +94,66 @@
   top: 0;
   left: 0;
 }
-.block-library-html__edit .block-editor-plain-text {
-  font-family: Menlo, Consolas, monaco, monospace !important;
-  color: #1e1e1e !important;
-  background: #fff !important;
-  padding: 12px !important;
-  border: 1px solid #1e1e1e !important;
-  box-shadow: none !important;
-  border-radius: 2px !important;
-  max-height: 250px;
-  /* Fonts smaller than 16px causes mobile safari to zoom. */
-  font-size: 16px !important;
-}
+
 @media (min-width: 600px) {
-  .block-library-html__edit .block-editor-plain-text {
-    font-size: 13px !important;
+  .block-library-html__modal:not(.is-full-screen) {
+    height: 9999rem;
   }
 }
-.block-library-html__edit .block-editor-plain-text:focus {
-  border-color: var(--wp-admin-theme-color) !important;
-  box-shadow: 0 0 0 1px var(--wp-admin-theme-color) !important;
-  outline: 2px solid transparent !important;
+.block-library-html__modal .components-modal__children-container {
+  height: 100%;
+}
+
+.block-library-html__modal-tabs {
+  flex: 1;
+}
+
+.block-library-html__modal-content {
+  flex: 1;
+}
+
+.block-library-html__modal-tab {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  box-sizing: border-box;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  padding: 16px;
+  font-family: Menlo, Consolas, monaco, monospace;
+}
+
+.block-library-html__modal-editor {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  resize: none;
+  /*rtl:ignore*/
+  direction: ltr;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+.block-library-html__modal-editor:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.block-library-html__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+.block-library-html__preview iframe {
+  height: 100%;
 }

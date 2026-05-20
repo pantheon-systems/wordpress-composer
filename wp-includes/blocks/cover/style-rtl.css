@@ -2,9 +2,6 @@
  * Colors
  */
 /**
- * Breakpoints & Media Queries
- */
-/**
  * SCSS Variables.
  *
  * Please use variables from this sheet to ensure consistency across the UI.
@@ -12,23 +9,29 @@
  * For example, don't add rules to this sheet that affect block visuals. It's purely for UI.
  */
 /**
- * Colors
+ * Fonts & basic variables.
  */
 /**
- * Fonts & basic variables.
+ * Typography
  */
 /**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
  */
 /**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
+ */
+/**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -40,52 +43,18 @@
  * React Native specific.
  * These variables do not appear to be used anywhere else.
  */
-/**
-*  Converts a hex value into the rgb equivalent.
-*
-* @param {string} hex - the hexadecimal value to convert
-* @return {string} comma separated rgb values
-*/
-/**
- * Breakpoint mixins
- */
-/**
- * Long content fade mixin
- *
- * Creates a fading overlay to signify that the content is longer
- * than the space allows.
- */
-/**
- * Focus styles.
- */
-/**
- * Applies editor left position to the selector passed as argument
- */
-/**
- * Styles that are reused verbatim in a few places
- */
-/**
- * Allows users to opt-out of animations via OS-level preferences.
- */
-/**
- * Reset default styles for JavaScript UI based pages.
- * This is a WP-admin agnostic reset
- */
-/**
- * Reset the WP Admin page styles for Gutenberg-like pages.
- */
 .wp-block-cover-image,
 .wp-block-cover {
-  position: relative;
-  background-size: cover;
-  background-position: center center;
   min-height: 430px;
-  width: 100%;
+  padding: 1em;
+  position: relative;
+  background-position: center center;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1em;
-  box-sizing: border-box;
+  overflow: hidden;
+  overflow: clip;
+  box-sizing: border-box; direction: ltr;
   /**
    * Set a default background color for has-background-dim _unless_ it includes another
    * background-color class (e.g. has-green-background-color). The presence of another
@@ -96,27 +65,6 @@
    *   - Issue with background color specificity: https://github.com/WordPress/gutenberg/issues/26545
    *   - Issue with alternative fix: https://github.com/WordPress/gutenberg/issues/26545
    */
-}
-.wp-block-cover-image.has-parallax,
-.wp-block-cover.has-parallax {
-  background-attachment: fixed;
-}
-@supports (-webkit-touch-callout: inherit) {
-  .wp-block-cover-image.has-parallax,
-.wp-block-cover.has-parallax {
-    background-attachment: scroll;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .wp-block-cover-image.has-parallax,
-.wp-block-cover.has-parallax {
-    background-attachment: scroll;
-  }
-}
-.wp-block-cover-image.is-repeated,
-.wp-block-cover.is-repeated {
-  background-repeat: repeat;
-  background-size: auto;
 }
 .wp-block-cover-image.has-background-dim:not([class*=-background-color]),
 .wp-block-cover-image .has-background-dim:not([class*=-background-color]),
@@ -144,7 +92,6 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1;
   opacity: 0.5;
 }
 .wp-block-cover-image.has-background-dim.has-background-dim-10:not(.has-background-gradient)::before,
@@ -293,28 +240,11 @@
 .wp-block-cover .wp-block-cover__background.has-background-dim.has-background-dim-100 {
   opacity: 1;
 }
-.wp-block-cover-image .block-library-cover__padding-visualizer,
-.wp-block-cover .block-library-cover__padding-visualizer {
-  z-index: 2;
-}
 .wp-block-cover-image.alignleft, .wp-block-cover-image.alignright,
 .wp-block-cover.alignleft,
 .wp-block-cover.alignright {
   max-width: 420px;
   width: 100%;
-}
-.wp-block-cover-image::after,
-.wp-block-cover::after {
-  display: block;
-  content: "";
-  font-size: 0;
-  min-height: inherit;
-}
-@supports (position: sticky) {
-  .wp-block-cover-image::after,
-.wp-block-cover::after {
-    content: none;
-  }
 }
 .wp-block-cover-image.aligncenter, .wp-block-cover-image.alignleft, .wp-block-cover-image.alignright,
 .wp-block-cover.aligncenter,
@@ -324,29 +254,9 @@
 }
 .wp-block-cover-image .wp-block-cover__inner-container,
 .wp-block-cover .wp-block-cover__inner-container {
+  position: relative;
   width: 100%;
-  z-index: 1;
-  color: #fff;
-}
-.wp-block-cover-image.is-light .wp-block-cover__inner-container,
-.wp-block-cover.is-light .wp-block-cover__inner-container {
-  color: #000;
-}
-.wp-block-cover-image p:not(.has-text-color),
-.wp-block-cover-image h1:not(.has-text-color),
-.wp-block-cover-image h2:not(.has-text-color),
-.wp-block-cover-image h3:not(.has-text-color),
-.wp-block-cover-image h4:not(.has-text-color),
-.wp-block-cover-image h5:not(.has-text-color),
-.wp-block-cover-image h6:not(.has-text-color),
-.wp-block-cover p:not(.has-text-color),
-.wp-block-cover h1:not(.has-text-color),
-.wp-block-cover h2:not(.has-text-color),
-.wp-block-cover h3:not(.has-text-color),
-.wp-block-cover h4:not(.has-text-color),
-.wp-block-cover h5:not(.has-text-color),
-.wp-block-cover h6:not(.has-text-color) {
-  color: inherit;
+  color: inherit; direction: rtl;
 }
 .wp-block-cover-image.is-position-top-left,
 .wp-block-cover.is-position-top-left {
@@ -396,11 +306,20 @@
 .wp-block-cover-image.has-custom-content-position.has-custom-content-position .wp-block-cover__inner-container,
 .wp-block-cover.has-custom-content-position.has-custom-content-position .wp-block-cover__inner-container {
   margin: 0;
+}
+.wp-block-cover-image.has-custom-content-position.has-custom-content-position.is-position-top-left .wp-block-cover__inner-container, .wp-block-cover-image.has-custom-content-position.has-custom-content-position.is-position-top-right .wp-block-cover__inner-container, .wp-block-cover-image.has-custom-content-position.has-custom-content-position.is-position-center-left .wp-block-cover__inner-container, .wp-block-cover-image.has-custom-content-position.has-custom-content-position.is-position-center-right .wp-block-cover__inner-container, .wp-block-cover-image.has-custom-content-position.has-custom-content-position.is-position-bottom-left .wp-block-cover__inner-container, .wp-block-cover-image.has-custom-content-position.has-custom-content-position.is-position-bottom-right .wp-block-cover__inner-container,
+.wp-block-cover.has-custom-content-position.has-custom-content-position.is-position-top-left .wp-block-cover__inner-container,
+.wp-block-cover.has-custom-content-position.has-custom-content-position.is-position-top-right .wp-block-cover__inner-container,
+.wp-block-cover.has-custom-content-position.has-custom-content-position.is-position-center-left .wp-block-cover__inner-container,
+.wp-block-cover.has-custom-content-position.has-custom-content-position.is-position-center-right .wp-block-cover__inner-container,
+.wp-block-cover.has-custom-content-position.has-custom-content-position.is-position-bottom-left .wp-block-cover__inner-container,
+.wp-block-cover.has-custom-content-position.has-custom-content-position.is-position-bottom-right .wp-block-cover__inner-container {
+  margin: 0;
   width: auto;
 }
-.wp-block-cover-image img.wp-block-cover__image-background,
+.wp-block-cover-image .wp-block-cover__image-background,
 .wp-block-cover-image video.wp-block-cover__video-background,
-.wp-block-cover img.wp-block-cover__image-background,
+.wp-block-cover .wp-block-cover__image-background,
 .wp-block-cover video.wp-block-cover__video-background {
   position: absolute;
   top: 0;
@@ -413,19 +332,86 @@
   height: 100%;
   max-width: none;
   max-height: none;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
   outline: none;
   border: none;
   box-shadow: none;
 }
-
-.wp-block-cover__video-background {
-  z-index: 0;
+.wp-block-cover-image .wp-block-cover__embed-background,
+.wp-block-cover .wp-block-cover__embed-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  outline: none;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+.wp-block-cover-image .wp-block-cover__embed-background .wp-block-embed__wrapper,
+.wp-block-cover .wp-block-cover__embed-background .wp-block-embed__wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+.wp-block-cover-image .wp-block-cover__embed-background iframe,
+.wp-block-cover-image .wp-block-cover__embed-background .wp-block-embed__wrapper iframe,
+.wp-block-cover .wp-block-cover__embed-background iframe,
+.wp-block-cover .wp-block-cover__embed-background .wp-block-embed__wrapper iframe {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  width: 100vw;
+  height: 100vh;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(50%, -50%);
+  pointer-events: none;
 }
 
-.wp-block-cover__image-background {
-  z-index: 0;
+.wp-block-cover-image.has-parallax,
+.wp-block-cover.has-parallax,
+.wp-block-cover__image-background.has-parallax,
+video.wp-block-cover__video-background.has-parallax {
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+@supports (-webkit-touch-callout: inherit) {
+  .wp-block-cover-image.has-parallax,
+  .wp-block-cover.has-parallax,
+  .wp-block-cover__image-background.has-parallax,
+  video.wp-block-cover__video-background.has-parallax {
+    background-attachment: scroll;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wp-block-cover-image.has-parallax,
+  .wp-block-cover.has-parallax,
+  .wp-block-cover__image-background.has-parallax,
+  video.wp-block-cover__video-background.has-parallax {
+    background-attachment: scroll;
+  }
+}
+.wp-block-cover-image.is-repeated,
+.wp-block-cover.is-repeated,
+.wp-block-cover__image-background.is-repeated,
+video.wp-block-cover__video-background.is-repeated {
+  background-repeat: repeat;
+  background-size: auto;
 }
 
 section.wp-block-cover-image h2,
@@ -479,4 +465,45 @@ section.wp-block-cover-image > h2,
   max-width: 840px;
   padding: 0.44em;
   text-align: center;
+}
+
+:where(.wp-block-cover:not(.has-text-color)),
+:where(.wp-block-cover-image:not(.has-text-color)) {
+  color: #fff;
+}
+
+:where(.wp-block-cover.is-light:not(.has-text-color)),
+:where(.wp-block-cover-image.is-light:not(.has-text-color)) {
+  color: #000;
+}
+
+:root :where(.wp-block-cover p:not(.has-text-color)),
+:root :where(.wp-block-cover h1:not(.has-text-color)),
+:root :where(.wp-block-cover h2:not(.has-text-color)),
+:root :where(.wp-block-cover h3:not(.has-text-color)),
+:root :where(.wp-block-cover h4:not(.has-text-color)),
+:root :where(.wp-block-cover h5:not(.has-text-color)),
+:root :where(.wp-block-cover h6:not(.has-text-color)) {
+  color: inherit;
+}
+
+body:not(.editor-styles-wrapper) .wp-block-cover:not(.wp-block-cover:has(.wp-block-cover__background + .wp-block-cover__inner-container)) .wp-block-cover__video-background {
+  z-index: 0;
+}
+body:not(.editor-styles-wrapper) .wp-block-cover:not(.wp-block-cover:has(.wp-block-cover__background + .wp-block-cover__inner-container)) .wp-block-cover__embed-background {
+  z-index: 0;
+}
+body:not(.editor-styles-wrapper) .wp-block-cover:not(.wp-block-cover:has(.wp-block-cover__background + .wp-block-cover__inner-container)) .wp-block-cover__image-background {
+  z-index: 0;
+}
+body:not(.editor-styles-wrapper) .wp-block-cover:not(.wp-block-cover:has(.wp-block-cover__background + .wp-block-cover__inner-container)).has-background-dim:not(.has-background-gradient)::before,
+body:not(.editor-styles-wrapper) .wp-block-cover:not(.wp-block-cover:has(.wp-block-cover__background + .wp-block-cover__inner-container)) .wp-block-cover__background,
+body:not(.editor-styles-wrapper) .wp-block-cover:not(.wp-block-cover:has(.wp-block-cover__background + .wp-block-cover__inner-container)) .wp-block-cover__gradient-background {
+  z-index: 1;
+}
+body:not(.editor-styles-wrapper) .wp-block-cover:not(.wp-block-cover:has(.wp-block-cover__background + .wp-block-cover__inner-container)) .wp-block-cover__inner-container {
+  z-index: 1;
+}
+.has-modal-open body:not(.editor-styles-wrapper) .wp-block-cover:not(.wp-block-cover:has(.wp-block-cover__background + .wp-block-cover__inner-container)) .wp-block-cover__inner-container {
+  z-index: auto;
 }

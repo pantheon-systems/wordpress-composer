@@ -12,6 +12,7 @@
  *
  * @since 5.0.0
  */
+#[AllowDynamicProperties]
 final class WP_Block_Type_Registry {
 	/**
 	 * Registered block types, as `$name => $instance` pairs.
@@ -133,7 +134,7 @@ final class WP_Block_Type_Registry {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param string $name Block type name including namespace.
+	 * @param string|null $name Block type name including namespace.
 	 * @return WP_Block_Type|null The registered block type, or null if it is not registered.
 	 */
 	public function get_registered( $name ) {
@@ -160,11 +161,11 @@ final class WP_Block_Type_Registry {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param string $name Block type name including namespace.
+	 * @param string|null $name Block type name including namespace.
 	 * @return bool True if the block type is registered, false otherwise.
 	 */
 	public function is_registered( $name ) {
-		return isset( $this->registered_block_types[ $name ] );
+		return isset( $name, $this->registered_block_types[ $name ] );
 	}
 
 	public function __wakeup() {

@@ -1,8 +1,8 @@
 /**
- * Colors
+ * Breakpoints & Media Queries
  */
 /**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -18,17 +18,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -47,13 +56,13 @@
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,6 +83,10 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
 .wp-block[data-align=left] > [data-type="core/embed"],
 .wp-block[data-align=right] > [data-type="core/embed"],
 .wp-block-embed.alignleft,
@@ -93,11 +106,15 @@
   min-height: 240px;
 }
 
+.wp-block-group.is-layout-flex .wp-block-embed {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
 .wp-block-embed {
-  margin: 0 0 1em 0;
   overflow-wrap: break-word;
 }
-.wp-block-embed figcaption {
+.wp-block-embed :where(figcaption) {
   margin-top: 0.5em;
   margin-bottom: 1em;
 }

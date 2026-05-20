@@ -1,8 +1,5 @@
 /**
- * Colors
- */
-/**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -18,17 +15,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -41,19 +47,22 @@
  * These variables do not appear to be used anywhere else.
  */
 /**
+ * Breakpoints & Media Queries
+ */
+/**
 *  Converts a hex value into the rgb equivalent.
 *
 * @param {string} hex - the hexadecimal value to convert
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,29 +83,19 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
-:root {
-  --wp-admin-theme-color: #007cba;
-  --wp-admin-theme-color--rgb: 0, 124, 186;
-  --wp-admin-theme-color-darker-10: #006ba1;
-  --wp-admin-theme-color-darker-10--rgb: 0, 107, 161;
-  --wp-admin-theme-color-darker-20: #005a87;
-  --wp-admin-theme-color-darker-20--rgb: 0, 90, 135;
-  --wp-admin-border-width-focus: 2px;
-}
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  :root {
-    --wp-admin-border-width-focus: 1.5px;
-  }
-}
-
-.editor-styles-wrapper .wp-block {
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
+.editor-styles-wrapper :where(:not(.is-layout-flex, .is-layout-grid)) > .wp-block {
   margin-left: auto;
   margin-right: auto;
 }
 
-html :where(.editor-styles-wrapper) {
+.editor-styles-wrapper {
   padding: 8px;
 }
+
 html :where(.editor-styles-wrapper) .block-editor-block-list__layout.is-root-container > .wp-block[data-align=full] {
   margin-left: -8px;
   margin-right: -8px;

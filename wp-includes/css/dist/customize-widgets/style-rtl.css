@@ -1,8 +1,5 @@
 /**
- * Colors
- */
-/**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -18,17 +15,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -41,19 +47,22 @@
  * These variables do not appear to be used anywhere else.
  */
 /**
+ * Breakpoints & Media Queries
+ */
+/**
 *  Converts a hex value into the rgb equivalent.
 *
 * @param {string} hex - the hexadecimal value to convert
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,16 +83,24 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
 :root {
+  --wp-block-synced-color: #7a00df;
+  --wp-block-synced-color--rgb: 122, 0, 223;
+  --wp-bound-block-color: var(--wp-block-synced-color);
+  --wp-editor-canvas-background: #ddd;
   --wp-admin-theme-color: #007cba;
   --wp-admin-theme-color--rgb: 0, 124, 186;
-  --wp-admin-theme-color-darker-10: #006ba1;
-  --wp-admin-theme-color-darker-10--rgb: 0, 107, 161;
+  --wp-admin-theme-color-darker-10: rgb(0, 107, 160.5);
+  --wp-admin-theme-color-darker-10--rgb: 0, 107, 160.5;
   --wp-admin-theme-color-darker-20: #005a87;
   --wp-admin-theme-color-darker-20--rgb: 0, 90, 135;
   --wp-admin-border-width-focus: 2px;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (min-resolution: 192dpi) {
   :root {
     --wp-admin-border-width-focus: 1.5px;
   }
@@ -107,6 +124,14 @@
   transform: translateX(100%);
 }
 
+@media (min-width: 600px) {
+  .customize-widgets-header {
+    margin-bottom: 44px;
+  }
+}
+.customize-widgets-header.is-fixed-toolbar-active {
+  margin-bottom: 0;
+}
 .customize-widgets-header {
   display: flex;
   justify-content: flex-end;
@@ -114,14 +139,6 @@
   background: #f0f0f1;
   border-bottom: 1px solid #e0e0e0;
   z-index: 8;
-}
-@media (min-width: 782px) {
-  .customize-widgets-header {
-    margin-bottom: 44px;
-  }
-}
-.customize-widgets-header.is-fixed-toolbar-active {
-  margin-bottom: 0;
 }
 
 .customize-widgets-header-toolbar {
@@ -134,15 +151,23 @@
   border-radius: 2px;
   color: #fff;
   padding: 0;
-  min-width: 24px;
-  height: 24px;
+  min-width: 32px;
+  height: 32px;
   margin: 12px auto 12px 0;
 }
 .customize-widgets-header-toolbar .customize-widgets-header-toolbar__inserter-toggle.components-button.has-icon::before {
   content: none;
 }
+@media not (prefers-reduced-motion) {
+  .customize-widgets-header-toolbar .customize-widgets-header-toolbar__inserter-toggle.components-button.has-icon svg {
+    transition: transform cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
+  }
+}
 .customize-widgets-header-toolbar .customize-widgets-header-toolbar__inserter-toggle.components-button.has-icon.is-pressed {
   background: #1e1e1e;
+}
+.customize-widgets-header-toolbar .customize-widgets-header-toolbar__inserter-toggle.components-button.has-icon.is-pressed svg {
+  transform: rotate(-45deg);
 }
 .customize-widgets-header-toolbar .components-button.has-icon.customize-widgets-editor-history-button.redo-button {
   margin-right: -12px;
@@ -184,9 +209,6 @@
 .customize-widgets-keyboard-shortcut-help-modal__section {
   margin: 0 0 2rem 0;
 }
-.customize-widgets-keyboard-shortcut-help-modal__main-shortcuts .customize-widgets-keyboard-shortcut-help-modal__shortcut-list {
-  margin-top: -25px;
-}
 .customize-widgets-keyboard-shortcut-help-modal__section-title {
   font-size: 0.9rem;
   font-weight: 600;
@@ -212,7 +234,6 @@
 .customize-widgets-keyboard-shortcut-help-modal__shortcut-description {
   flex: 1;
   margin: 0;
-  flex-basis: auto;
 }
 .customize-widgets-keyboard-shortcut-help-modal__shortcut-key-combination {
   display: block;
@@ -232,18 +253,18 @@
   margin: 0 0.2rem 0 0;
 }
 
-.block-editor-block-contextual-toolbar.is-fixed {
-  top: 0;
-  margin-right: -12px;
-  margin-left: -12px;
-  width: calc(100% + 24px);
-  overflow-y: auto;
-  z-index: 7;
+.components-popover.more-menu-dropdown__content {
+  z-index: 99998;
 }
 
 .customize-control-sidebar_block_editor .block-editor-block-list__block-popover {
-  position: fixed;
+  position: fixed !important;
   z-index: 7;
+}
+
+.customize-widgets-popover .components-popover,
+.customize-control-sidebar_block_editor .components-popover {
+  position: fixed !important;
 }
 
 .customize-widgets-welcome-guide__image__wrapper {
@@ -273,13 +294,13 @@
   line-height: 1.4;
 }
 
+#customize-theme-controls .customize-pane-child.customize-widgets__sidebar-section.open {
+  overflow: unset;
+}
 #customize-theme-controls .customize-pane-child.customize-widgets__sidebar-section {
   min-height: 100%;
   background-color: #fff;
   padding-top: 12px !important;
-}
-#customize-theme-controls .customize-pane-child.customize-widgets__sidebar-section.open {
-  overflow: unset;
 }
 #customize-theme-controls .customize-pane-child.customize-widgets__sidebar-section .customize-section-title {
   position: static !important;
@@ -292,8 +313,7 @@
 }
 
 .customize-control-sidebar_block_editor,
-.customize-widgets-layout__inspector,
-.customize-widgets-popover {
+.customize-widgets-layout__inspector {
   box-sizing: border-box;
 }
 .customize-control-sidebar_block_editor *,
@@ -301,9 +321,6 @@
 .customize-control-sidebar_block_editor *::after,
 .customize-widgets-layout__inspector *,
 .customize-widgets-layout__inspector *::before,
-.customize-widgets-layout__inspector *::after,
-.customize-widgets-popover *,
-.customize-widgets-popover *::before,
-.customize-widgets-popover *::after {
+.customize-widgets-layout__inspector *::after {
   box-sizing: inherit;
 }

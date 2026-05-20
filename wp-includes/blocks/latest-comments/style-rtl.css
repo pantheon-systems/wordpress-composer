@@ -1,81 +1,19 @@
-/**
- * Colors
- */
-/**
- * Breakpoints & Media Queries
- */
-/**
- * SCSS Variables.
- *
- * Please use variables from this sheet to ensure consistency across the UI.
- * Don't add to this sheet unless you're pretty sure the value will be reused in many places.
- * For example, don't add rules to this sheet that affect block visuals. It's purely for UI.
- */
-/**
- * Colors
- */
-/**
- * Fonts & basic variables.
- */
-/**
- * Grid System.
- * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
- */
-/**
- * Dimensions.
- */
-/**
- * Shadows.
- */
-/**
- * Editor widths.
- */
-/**
- * Block & Editor UI.
- */
-/**
- * Block paddings.
- */
-/**
- * React Native specific.
- * These variables do not appear to be used anywhere else.
- */
-/**
-*  Converts a hex value into the rgb equivalent.
-*
-* @param {string} hex - the hexadecimal value to convert
-* @return {string} comma separated rgb values
-*/
-/**
- * Breakpoint mixins
- */
-/**
- * Long content fade mixin
- *
- * Creates a fading overlay to signify that the content is longer
- * than the space allows.
- */
-/**
- * Focus styles.
- */
-/**
- * Applies editor left position to the selector passed as argument
- */
-/**
- * Styles that are reused verbatim in a few places
- */
-/**
- * Allows users to opt-out of animations via OS-level preferences.
- */
-/**
- * Reset default styles for JavaScript UI based pages.
- * This is a WP-admin agnostic reset
- */
-/**
- * Reset the WP Admin page styles for Gutenberg-like pages.
- */
 ol.wp-block-latest-comments {
   margin-right: 0;
+  box-sizing: border-box;
+}
+
+:where(.wp-block-latest-comments:not([style*=line-height] .wp-block-latest-comments__comment)) {
+  line-height: 1.1;
+}
+
+:where(.wp-block-latest-comments:not([style*=line-height] .wp-block-latest-comments__comment-excerpt p)) {
+  line-height: 1.8;
+}
+
+.has-dates :where(.wp-block-latest-comments:not([style*=line-height])),
+.has-excerpts :where(.wp-block-latest-comments:not([style*=line-height])) {
+  line-height: 1.5;
 }
 
 .wp-block-latest-comments .wp-block-latest-comments {
@@ -83,7 +21,6 @@ ol.wp-block-latest-comments {
 }
 
 .wp-block-latest-comments__comment {
-  line-height: 1.1;
   list-style: none;
   margin-bottom: 1em;
 }
@@ -95,13 +32,9 @@ ol.wp-block-latest-comments {
 .has-avatars .wp-block-latest-comments__comment .wp-block-latest-comments__comment-excerpt {
   margin-right: 3.25em;
 }
-.has-dates .wp-block-latest-comments__comment, .has-excerpts .wp-block-latest-comments__comment {
-  line-height: 1.5;
-}
 
 .wp-block-latest-comments__comment-excerpt p {
   font-size: 0.875em;
-  line-height: 1.8;
   margin: 0.36em 0 1.4em;
 }
 
@@ -118,4 +51,9 @@ ol.wp-block-latest-comments {
   height: 2.5em;
   margin-left: 0.75em;
   width: 2.5em;
+}
+
+.wp-block-latest-comments[style*=font-size] a,
+.wp-block-latest-comments[class*=-font-size] a {
+  font-size: inherit;
 }

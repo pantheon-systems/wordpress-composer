@@ -1,8 +1,5 @@
 /**
- * Colors
- */
-/**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -18,17 +15,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -41,19 +47,22 @@
  * These variables do not appear to be used anywhere else.
  */
 /**
+ * Breakpoints & Media Queries
+ */
+/**
 *  Converts a hex value into the rgb equivalent.
 *
 * @param {string} hex - the hexadecimal value to convert
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,13 +83,21 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
-.wp-block-audio figcaption {
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
+.wp-block-audio :where(figcaption) {
   color: #555;
   font-size: 13px;
   text-align: center;
 }
-.is-dark-theme .wp-block-audio figcaption {
+.is-dark-theme .wp-block-audio :where(figcaption) {
   color: rgba(255, 255, 255, 0.65);
+}
+
+.wp-block-audio {
+  margin: 0 0 1em 0;
 }
 
 .wp-block-code {
@@ -90,13 +107,17 @@
   padding: 0.8em 1em;
 }
 
-.wp-block-embed figcaption {
+.wp-block-embed :where(figcaption) {
   color: #555;
   font-size: 13px;
   text-align: center;
 }
-.is-dark-theme .wp-block-embed figcaption {
+.is-dark-theme .wp-block-embed :where(figcaption) {
   color: rgba(255, 255, 255, 0.65);
+}
+
+.wp-block-embed {
+  margin: 0 0 1em 0;
 }
 
 .blocks-gallery-caption {
@@ -108,13 +129,17 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
-.wp-block-image figcaption {
+:root :where(.wp-block-image figcaption) {
   color: #555;
   font-size: 13px;
   text-align: center;
 }
-.is-dark-theme .wp-block-image figcaption {
+.is-dark-theme :root :where(.wp-block-image figcaption) {
   color: rgba(255, 255, 255, 0.65);
+}
+
+.wp-block-image {
+  margin: 0 0 1em 0;
 }
 
 .wp-block-pullquote {
@@ -123,8 +148,8 @@
   margin-bottom: 1.75em;
   color: currentColor;
 }
-.wp-block-pullquote cite,
-.wp-block-pullquote footer, .wp-block-pullquote__citation {
+.wp-block-pullquote :where(cite),
+.wp-block-pullquote :where(footer), .wp-block-pullquote__citation {
   color: currentColor;
   text-transform: uppercase;
   font-size: 0.8125em;
@@ -143,22 +168,27 @@
   position: relative;
   font-style: normal;
 }
-.wp-block-quote.has-text-align-right {
+.wp-block-quote:where(.has-text-align-right) {
   border-left: none;
   border-right: 0.25em solid currentColor;
   padding-left: 0;
   padding-right: 1em;
 }
-.wp-block-quote.has-text-align-center {
+.wp-block-quote:where(.has-text-align-center) {
   border: none;
   padding-left: 0;
 }
-.wp-block-quote.is-style-plain, .wp-block-quote.is-style-large, .wp-block-quote.is-large {
+.wp-block-quote:where(.is-style-plain), .wp-block-quote.is-style-large, .wp-block-quote.is-large {
   border: none;
 }
 
 .wp-block-search .wp-block-search__label {
   font-weight: bold;
+}
+
+.wp-block-search__button {
+  border: 1px solid #ccc;
+  padding: 0.375em 0.625em;
 }
 
 :where(.wp-block-group.has-background) {
@@ -189,37 +219,36 @@
   height: 2px;
 }
 
-.wp-block-table thead {
-  border-bottom: 3px solid;
-}
-.wp-block-table tfoot {
-  border-top: 3px solid;
+.wp-block-table {
+  margin: 0 0 1em 0;
 }
 .wp-block-table td,
 .wp-block-table th {
-  padding: 0.5em;
-  border: 1px solid;
   word-break: normal;
 }
-.wp-block-table figcaption {
+.wp-block-table :where(figcaption) {
   color: #555;
   font-size: 13px;
   text-align: center;
 }
-.is-dark-theme .wp-block-table figcaption {
+.is-dark-theme .wp-block-table :where(figcaption) {
   color: rgba(255, 255, 255, 0.65);
 }
 
-.wp-block-video figcaption {
+.wp-block-video :where(figcaption) {
   color: #555;
   font-size: 13px;
   text-align: center;
 }
-.is-dark-theme .wp-block-video figcaption {
+.is-dark-theme .wp-block-video :where(figcaption) {
   color: rgba(255, 255, 255, 0.65);
 }
 
-.wp-block-template-part.has-background {
+.wp-block-video {
+  margin: 0 0 1em 0;
+}
+
+:root :where(.wp-block-template-part.has-background) {
   padding: 1.25em 2.375em;
   margin-top: 0;
   margin-bottom: 0;

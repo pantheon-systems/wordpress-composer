@@ -1,8 +1,8 @@
 /**
- * Colors
+ * Breakpoints & Media Queries
  */
 /**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -18,17 +18,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -47,13 +56,13 @@
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,10 +83,10 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
-.wp-block-navigation .wp-block-page-list > div,
-.wp-block-navigation .wp-block-page-list {
-  background-color: inherit;
-}
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
 .wp-block-navigation.items-justified-space-between .wp-block-page-list > div,
 .wp-block-navigation.items-justified-space-between .wp-block-page-list {
   display: contents;
@@ -85,6 +94,10 @@
 }
 .wp-block-navigation.items-justified-space-between.has-child-selected .wp-block-page-list > div, .wp-block-navigation.items-justified-space-between.has-child-selected .wp-block-page-list, .wp-block-navigation.items-justified-space-between.is-selected .wp-block-page-list > div, .wp-block-navigation.items-justified-space-between.is-selected .wp-block-page-list {
   flex: inherit;
+}
+
+.wp-block-navigation .wp-block-navigation__submenu-container > .wp-block-page-list {
+  display: block;
 }
 
 .wp-block-pages-list__item__link {
@@ -111,6 +124,6 @@
   min-width: 200px;
 }
 
-.wp-block-page-list .components-notice {
-  margin-left: 0;
+.wp-block-page-list__loading-indicator-container {
+  padding: 8px 12px;
 }

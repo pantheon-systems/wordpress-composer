@@ -1,8 +1,5 @@
 /**
- * Colors
- */
-/**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -18,17 +15,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -41,19 +47,22 @@
  * These variables do not appear to be used anywhere else.
  */
 /**
+ * Breakpoints & Media Queries
+ */
+/**
 *  Converts a hex value into the rgb equivalent.
 *
 * @param {string} hex - the hexadecimal value to convert
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,13 +83,10 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
-ul.wp-block-rss {
-  list-style: none;
-  padding: 0;
-}
-ul.wp-block-rss.wp-block-rss {
-  box-sizing: border-box;
-}
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
 ul.wp-block-rss.alignleft {
   margin-right: 2em;
 }
@@ -91,7 +97,6 @@ ul.wp-block-rss.is-grid {
   display: flex;
   flex-wrap: wrap;
   padding: 0;
-  list-style: none;
 }
 ul.wp-block-rss.is-grid li {
   margin: 0 0 1em 1em;
@@ -99,19 +104,19 @@ ul.wp-block-rss.is-grid li {
 }
 @media (min-width: 600px) {
   ul.wp-block-rss.columns-2 li {
-    width: calc(( 100% / 2 ) - 1em);
+    width: calc(100% / 2 - 1em);
   }
   ul.wp-block-rss.columns-3 li {
-    width: calc(( 100% / 3 ) - 1em);
+    width: calc(100% / 3 - 1em);
   }
   ul.wp-block-rss.columns-4 li {
-    width: calc(( 100% / 4 ) - 1em);
+    width: calc(100% / 4 - 1em);
   }
   ul.wp-block-rss.columns-5 li {
-    width: calc(( 100% / 5 ) - 1em);
+    width: calc(100% / 5 - 1em);
   }
   ul.wp-block-rss.columns-6 li {
-    width: calc(( 100% / 6 ) - 1em);
+    width: calc(100% / 6 - 1em);
   }
 }
 
@@ -119,4 +124,10 @@ ul.wp-block-rss.is-grid li {
 .wp-block-rss__item-author {
   display: block;
   font-size: 0.8125em;
+}
+
+.wp-block-rss {
+  box-sizing: border-box;
+  list-style: none;
+  padding: 0;
 }

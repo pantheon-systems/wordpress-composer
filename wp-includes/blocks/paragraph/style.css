@@ -1,10 +1,4 @@
 /**
- * Colors
- */
-/**
- * Breakpoints & Media Queries
- */
-/**
  * SCSS Variables.
  *
  * Please use variables from this sheet to ensure consistency across the UI.
@@ -18,17 +12,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -39,40 +42,6 @@
 /**
  * React Native specific.
  * These variables do not appear to be used anywhere else.
- */
-/**
-*  Converts a hex value into the rgb equivalent.
-*
-* @param {string} hex - the hexadecimal value to convert
-* @return {string} comma separated rgb values
-*/
-/**
- * Breakpoint mixins
- */
-/**
- * Long content fade mixin
- *
- * Creates a fading overlay to signify that the content is longer
- * than the space allows.
- */
-/**
- * Focus styles.
- */
-/**
- * Applies editor left position to the selector passed as argument
- */
-/**
- * Styles that are reused verbatim in a few places
- */
-/**
- * Allows users to opt-out of animations via OS-level preferences.
- */
-/**
- * Reset default styles for JavaScript UI based pages.
- * This is a WP-admin agnostic reset
- */
-/**
- * Reset the WP Admin page styles for Gutenberg-like pages.
  */
 .is-small-text {
   font-size: 0.875em;
@@ -100,14 +69,24 @@
   font-style: normal;
 }
 
+body.rtl .has-drop-cap:not(:focus)::first-letter {
+  float: initial;
+  margin-left: 0.1em;
+}
+
 p.has-drop-cap.has-background {
   overflow: hidden;
 }
 
-p.has-background {
+:root :where(p.has-background) {
   padding: 1.25em 2.375em;
 }
 
 :where(p.has-text-color:not(.has-link-color)) a {
   color: inherit;
+}
+
+p.has-text-align-right[style*="writing-mode:vertical-rl"],
+p.has-text-align-left[style*="writing-mode:vertical-lr"] {
+  rotate: 180deg;
 }

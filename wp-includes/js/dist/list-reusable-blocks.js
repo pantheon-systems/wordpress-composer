@@ -1,410 +1,356 @@
-/******/ (function() { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	// The require scope
-/******/ 	var __webpack_require__ = {};
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	!function() {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = function(module) {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				function() { return module['default']; } :
-/******/ 				function() { return module; };
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	!function() {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = function(exports, definition) {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	!function() {
-/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
+var wp;
+(wp ||= {}).listReusableBlocks = (() => {
+  var __create = Object.create;
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getProtoOf = Object.getPrototypeOf;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __commonJS = (cb, mod) => function __require() {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  ));
 
-;// CONCATENATED MODULE: external ["wp","element"]
-var external_wp_element_namespaceObject = window["wp"]["element"];
-;// CONCATENATED MODULE: external ["wp","i18n"]
-var external_wp_i18n_namespaceObject = window["wp"]["i18n"];
-;// CONCATENATED MODULE: external "lodash"
-var external_lodash_namespaceObject = window["lodash"];
-;// CONCATENATED MODULE: external ["wp","apiFetch"]
-var external_wp_apiFetch_namespaceObject = window["wp"]["apiFetch"];
-var external_wp_apiFetch_default = /*#__PURE__*/__webpack_require__.n(external_wp_apiFetch_namespaceObject);
-;// CONCATENATED MODULE: ./node_modules/@wordpress/list-reusable-blocks/build-module/utils/file.js
-/**
- * Downloads a file.
- *
- * @param {string} fileName    File Name.
- * @param {string} content     File Content.
- * @param {string} contentType File mime type.
- */
-function download(fileName, content, contentType) {
-  const file = new window.Blob([content], {
-    type: contentType
-  }); // IE11 can't use the click to download technique
-  // we use a specific IE11 technique instead.
+  // package-external:@wordpress/element
+  var require_element = __commonJS({
+    "package-external:@wordpress/element"(exports, module) {
+      module.exports = window.wp.element;
+    }
+  });
 
-  if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveOrOpenBlob(file, fileName);
-  } else {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(file);
-    a.download = fileName;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-}
-/**
- * Reads the textual content of the given file.
- *
- * @param {File} file File.
- * @return {Promise<string>}  Content of the file.
- */
+  // package-external:@wordpress/i18n
+  var require_i18n = __commonJS({
+    "package-external:@wordpress/i18n"(exports, module) {
+      module.exports = window.wp.i18n;
+    }
+  });
 
-function readTextFile(file) {
-  const reader = new window.FileReader();
-  return new Promise(resolve => {
-    reader.onload = () => {
-      resolve(reader.result);
+  // package-external:@wordpress/api-fetch
+  var require_api_fetch = __commonJS({
+    "package-external:@wordpress/api-fetch"(exports, module) {
+      module.exports = window.wp.apiFetch;
+    }
+  });
+
+  // package-external:@wordpress/blob
+  var require_blob = __commonJS({
+    "package-external:@wordpress/blob"(exports, module) {
+      module.exports = window.wp.blob;
+    }
+  });
+
+  // package-external:@wordpress/compose
+  var require_compose = __commonJS({
+    "package-external:@wordpress/compose"(exports, module) {
+      module.exports = window.wp.compose;
+    }
+  });
+
+  // package-external:@wordpress/components
+  var require_components = __commonJS({
+    "package-external:@wordpress/components"(exports, module) {
+      module.exports = window.wp.components;
+    }
+  });
+
+  // vendor-external:react/jsx-runtime
+  var require_jsx_runtime = __commonJS({
+    "vendor-external:react/jsx-runtime"(exports, module) {
+      module.exports = window.ReactJSXRuntime;
+    }
+  });
+
+  // packages/list-reusable-blocks/build-module/index.mjs
+  var import_element2 = __toESM(require_element(), 1);
+  var import_i18n3 = __toESM(require_i18n(), 1);
+
+  // node_modules/tslib/tslib.es6.mjs
+  var __assign = function() {
+    __assign = Object.assign || function __assign2(t) {
+      for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+      return t;
     };
-
-    reader.readAsText(file);
-  });
-}
-
-;// CONCATENATED MODULE: ./node_modules/@wordpress/list-reusable-blocks/build-module/utils/export.js
-/**
- * External dependencies
- */
-
-/**
- * WordPress dependencies
- */
-
-
-/**
- * Internal dependencies
- */
-
-
-/**
- * Export a reusable block as a JSON file.
- *
- * @param {number} id
- */
-
-async function exportReusableBlock(id) {
-  const postType = await external_wp_apiFetch_default()({
-    path: `/wp/v2/types/wp_block`
-  });
-  const post = await external_wp_apiFetch_default()({
-    path: `/wp/v2/${postType.rest_base}/${id}?context=edit`
-  });
-  const title = post.title.raw;
-  const content = post.content.raw;
-  const fileContent = JSON.stringify({
-    __file: 'wp_block',
-    title,
-    content
-  }, null, 2);
-  const fileName = (0,external_lodash_namespaceObject.kebabCase)(title) + '.json';
-  download(fileName, fileContent, 'application/json');
-}
-
-/* harmony default export */ var utils_export = (exportReusableBlock);
-
-;// CONCATENATED MODULE: external ["wp","components"]
-var external_wp_components_namespaceObject = window["wp"]["components"];
-;// CONCATENATED MODULE: external ["wp","compose"]
-var external_wp_compose_namespaceObject = window["wp"]["compose"];
-;// CONCATENATED MODULE: ./node_modules/@wordpress/list-reusable-blocks/build-module/utils/import.js
-/**
- * External dependencies
- */
-
-/**
- * WordPress dependencies
- */
-
-
-/**
- * Internal dependencies
- */
-
-
-/**
- * Import a reusable block from a JSON file.
- *
- * @param {File} file File.
- * @return {Promise} Promise returning the imported reusable block.
- */
-
-async function importReusableBlock(file) {
-  const fileContent = await readTextFile(file);
-  let parsedContent;
-
-  try {
-    parsedContent = JSON.parse(fileContent);
-  } catch (e) {
-    throw new Error('Invalid JSON file');
-  }
-
-  if (parsedContent.__file !== 'wp_block' || !parsedContent.title || !parsedContent.content || !(0,external_lodash_namespaceObject.isString)(parsedContent.title) || !(0,external_lodash_namespaceObject.isString)(parsedContent.content)) {
-    throw new Error('Invalid Reusable block JSON file');
-  }
-
-  const postType = await external_wp_apiFetch_default()({
-    path: `/wp/v2/types/wp_block`
-  });
-  const reusableBlock = await external_wp_apiFetch_default()({
-    path: `/wp/v2/${postType.rest_base}`,
-    data: {
-      title: parsedContent.title,
-      content: parsedContent.content,
-      status: 'publish'
-    },
-    method: 'POST'
-  });
-  return reusableBlock;
-}
-
-/* harmony default export */ var utils_import = (importReusableBlock);
-
-;// CONCATENATED MODULE: ./node_modules/@wordpress/list-reusable-blocks/build-module/components/import-form/index.js
-
-
-/**
- * WordPress dependencies
- */
-
-
-
-
-/**
- * Internal dependencies
- */
-
-
-
-function ImportForm(_ref) {
-  let {
-    instanceId,
-    onUpload
-  } = _ref;
-  const inputId = 'list-reusable-blocks-import-form-' + instanceId;
-  const formRef = (0,external_wp_element_namespaceObject.useRef)();
-  const [isLoading, setIsLoading] = (0,external_wp_element_namespaceObject.useState)(false);
-  const [error, setError] = (0,external_wp_element_namespaceObject.useState)(null);
-  const [file, setFile] = (0,external_wp_element_namespaceObject.useState)(null);
-
-  const onChangeFile = event => {
-    setFile(event.target.files[0]);
-    setError(null);
+    return __assign.apply(this, arguments);
   };
 
-  const onSubmit = event => {
-    event.preventDefault();
+  // node_modules/lower-case/dist.es2015/index.js
+  function lowerCase(str) {
+    return str.toLowerCase();
+  }
 
-    if (!file) {
-      return;
+  // node_modules/no-case/dist.es2015/index.js
+  var DEFAULT_SPLIT_REGEXP = [/([a-z0-9])([A-Z])/g, /([A-Z])([A-Z][a-z])/g];
+  var DEFAULT_STRIP_REGEXP = /[^A-Z0-9]+/gi;
+  function noCase(input, options) {
+    if (options === void 0) {
+      options = {};
     }
+    var _a = options.splitRegexp, splitRegexp = _a === void 0 ? DEFAULT_SPLIT_REGEXP : _a, _b = options.stripRegexp, stripRegexp = _b === void 0 ? DEFAULT_STRIP_REGEXP : _b, _c = options.transform, transform = _c === void 0 ? lowerCase : _c, _d = options.delimiter, delimiter = _d === void 0 ? " " : _d;
+    var result = replace(replace(input, splitRegexp, "$1\0$2"), stripRegexp, "\0");
+    var start = 0;
+    var end = result.length;
+    while (result.charAt(start) === "\0")
+      start++;
+    while (result.charAt(end - 1) === "\0")
+      end--;
+    return result.slice(start, end).split("\0").map(transform).join(delimiter);
+  }
+  function replace(input, re, value) {
+    if (re instanceof RegExp)
+      return input.replace(re, value);
+    return re.reduce(function(input2, re2) {
+      return input2.replace(re2, value);
+    }, input);
+  }
 
-    setIsLoading({
-      isLoading: true
+  // node_modules/dot-case/dist.es2015/index.js
+  function dotCase(input, options) {
+    if (options === void 0) {
+      options = {};
+    }
+    return noCase(input, __assign({ delimiter: "." }, options));
+  }
+
+  // node_modules/param-case/dist.es2015/index.js
+  function paramCase(input, options) {
+    if (options === void 0) {
+      options = {};
+    }
+    return dotCase(input, __assign({ delimiter: "-" }, options));
+  }
+
+  // packages/list-reusable-blocks/build-module/utils/export.mjs
+  var import_api_fetch = __toESM(require_api_fetch(), 1);
+  var import_blob = __toESM(require_blob(), 1);
+  async function exportReusableBlock(id) {
+    const postType = await (0, import_api_fetch.default)({ path: `/wp/v2/types/wp_block` });
+    const post = await (0, import_api_fetch.default)({
+      path: `/wp/v2/${postType.rest_base}/${id}?context=edit`
     });
-    utils_import(file).then(reusableBlock => {
-      if (!formRef) {
+    const title = post.title.raw;
+    const content = post.content.raw;
+    const syncStatus = post.wp_pattern_sync_status;
+    const fileContent = JSON.stringify(
+      {
+        __file: "wp_block",
+        title,
+        content,
+        syncStatus
+      },
+      null,
+      2
+    );
+    const fileName = paramCase(title) + ".json";
+    (0, import_blob.downloadBlob)(fileName, fileContent, "application/json");
+  }
+  var export_default = exportReusableBlock;
+
+  // packages/list-reusable-blocks/build-module/components/import-dropdown/index.mjs
+  var import_compose2 = __toESM(require_compose(), 1);
+  var import_i18n2 = __toESM(require_i18n(), 1);
+  var import_components2 = __toESM(require_components(), 1);
+
+  // packages/list-reusable-blocks/build-module/components/import-form/index.mjs
+  var import_element = __toESM(require_element(), 1);
+  var import_compose = __toESM(require_compose(), 1);
+  var import_i18n = __toESM(require_i18n(), 1);
+  var import_components = __toESM(require_components(), 1);
+
+  // packages/list-reusable-blocks/build-module/utils/import.mjs
+  var import_api_fetch2 = __toESM(require_api_fetch(), 1);
+
+  // packages/list-reusable-blocks/build-module/utils/file.mjs
+  function readTextFile(file) {
+    const reader = new window.FileReader();
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  // packages/list-reusable-blocks/build-module/utils/import.mjs
+  async function importReusableBlock(file) {
+    const fileContent = await readTextFile(file);
+    let parsedContent;
+    try {
+      parsedContent = JSON.parse(fileContent);
+    } catch (e) {
+      throw new Error("Invalid JSON file");
+    }
+    if (parsedContent.__file !== "wp_block" || !parsedContent.title || !parsedContent.content || typeof parsedContent.title !== "string" || typeof parsedContent.content !== "string" || parsedContent.syncStatus && typeof parsedContent.syncStatus !== "string") {
+      throw new Error("Invalid pattern JSON file");
+    }
+    const postType = await (0, import_api_fetch2.default)({ path: `/wp/v2/types/wp_block` });
+    const reusableBlock = await (0, import_api_fetch2.default)({
+      path: `/wp/v2/${postType.rest_base}`,
+      data: {
+        title: parsedContent.title,
+        content: parsedContent.content,
+        status: "publish",
+        meta: parsedContent.syncStatus === "unsynced" ? { wp_pattern_sync_status: parsedContent.syncStatus } : void 0
+      },
+      method: "POST"
+    });
+    return reusableBlock;
+  }
+  var import_default = importReusableBlock;
+
+  // packages/list-reusable-blocks/build-module/components/import-form/index.mjs
+  var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
+  function ImportForm({ instanceId, onUpload }) {
+    const inputId = "list-reusable-blocks-import-form-" + instanceId;
+    const formRef = (0, import_element.useRef)();
+    const [isLoading, setIsLoading] = (0, import_element.useState)(false);
+    const [error, setError] = (0, import_element.useState)(null);
+    const [file, setFile] = (0, import_element.useState)(null);
+    const onChangeFile = (event) => {
+      setFile(event.target.files[0]);
+      setError(null);
+    };
+    const onSubmit = (event) => {
+      event.preventDefault();
+      if (!file) {
         return;
       }
-
-      setIsLoading(false);
-      onUpload(reusableBlock);
-    }).catch(errors => {
-      if (!formRef) {
-        return;
-      }
-
-      let uiMessage;
-
-      switch (errors.message) {
-        case 'Invalid JSON file':
-          uiMessage = (0,external_wp_i18n_namespaceObject.__)('Invalid JSON file');
-          break;
-
-        case 'Invalid Reusable block JSON file':
-          uiMessage = (0,external_wp_i18n_namespaceObject.__)('Invalid Reusable block JSON file');
-          break;
-
-        default:
-          uiMessage = (0,external_wp_i18n_namespaceObject.__)('Unknown error');
-      }
-
-      setIsLoading(false);
-      setError(uiMessage);
-    });
-  };
-
-  const onDismissError = () => {
-    setError(null);
-  };
-
-  return (0,external_wp_element_namespaceObject.createElement)("form", {
-    className: "list-reusable-blocks-import-form",
-    onSubmit: onSubmit,
-    ref: formRef
-  }, error && (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.Notice, {
-    status: "error",
-    onRemove: () => onDismissError()
-  }, error), (0,external_wp_element_namespaceObject.createElement)("label", {
-    htmlFor: inputId,
-    className: "list-reusable-blocks-import-form__label"
-  }, (0,external_wp_i18n_namespaceObject.__)('File')), (0,external_wp_element_namespaceObject.createElement)("input", {
-    id: inputId,
-    type: "file",
-    onChange: onChangeFile
-  }), (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.Button, {
-    type: "submit",
-    isBusy: isLoading,
-    disabled: !file || isLoading,
-    variant: "secondary",
-    className: "list-reusable-blocks-import-form__button"
-  }, (0,external_wp_i18n_namespaceObject._x)('Import', 'button label')));
-}
-
-/* harmony default export */ var import_form = ((0,external_wp_compose_namespaceObject.withInstanceId)(ImportForm));
-
-;// CONCATENATED MODULE: ./node_modules/@wordpress/list-reusable-blocks/build-module/components/import-dropdown/index.js
-
-
-/**
- * External dependencies
- */
-
-/**
- * WordPress dependencies
- */
-
-
-
-/**
- * Internal dependencies
- */
-
-
-
-function ImportDropdown(_ref) {
-  let {
-    onUpload
-  } = _ref;
-  return (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.Dropdown, {
-    position: "bottom right",
-    contentClassName: "list-reusable-blocks-import-dropdown__content",
-    renderToggle: _ref2 => {
-      let {
-        isOpen,
-        onToggle
-      } = _ref2;
-      return (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.Button, {
-        "aria-expanded": isOpen,
-        onClick: onToggle,
-        variant: "primary"
-      }, (0,external_wp_i18n_namespaceObject.__)('Import from JSON'));
-    },
-    renderContent: _ref3 => {
-      let {
-        onClose
-      } = _ref3;
-      return (0,external_wp_element_namespaceObject.createElement)(import_form, {
-        onUpload: (0,external_lodash_namespaceObject.flow)(onClose, onUpload)
+      setIsLoading({ isLoading: true });
+      import_default(file).then((reusableBlock) => {
+        if (!formRef) {
+          return;
+        }
+        setIsLoading(false);
+        onUpload(reusableBlock);
+      }).catch((errors) => {
+        if (!formRef) {
+          return;
+        }
+        let uiMessage;
+        switch (errors.message) {
+          case "Invalid JSON file":
+            uiMessage = (0, import_i18n.__)("Invalid JSON file");
+            break;
+          case "Invalid pattern JSON file":
+            uiMessage = (0, import_i18n.__)("Invalid pattern JSON file");
+            break;
+          default:
+            uiMessage = (0, import_i18n.__)("Unknown error");
+        }
+        setIsLoading(false);
+        setError(uiMessage);
       });
-    }
-  });
-}
-
-/* harmony default export */ var import_dropdown = (ImportDropdown);
-
-;// CONCATENATED MODULE: ./node_modules/@wordpress/list-reusable-blocks/build-module/index.js
-
-
-/**
- * WordPress dependencies
- */
-
-
-/**
- * Internal dependencies
- */
-
-
- // Setup Export Links.
-
-document.body.addEventListener('click', event => {
-  if (!event.target.classList.contains('wp-list-reusable-blocks__export')) {
-    return;
+    };
+    const onDismissError = () => {
+      setError(null);
+    };
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+      "form",
+      {
+        className: "list-reusable-blocks-import-form",
+        onSubmit,
+        ref: formRef,
+        children: [
+          error && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_components.Notice, { status: "error", onRemove: () => onDismissError(), children: error }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            "label",
+            {
+              htmlFor: inputId,
+              className: "list-reusable-blocks-import-form__label",
+              children: (0, import_i18n.__)("File")
+            }
+          ),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", { id: inputId, type: "file", onChange: onChangeFile }),
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            import_components.Button,
+            {
+              __next40pxDefaultSize: true,
+              type: "submit",
+              isBusy: isLoading,
+              accessibleWhenDisabled: true,
+              disabled: !file || isLoading,
+              variant: "secondary",
+              className: "list-reusable-blocks-import-form__button",
+              children: (0, import_i18n._x)("Import", "button label")
+            }
+          )
+        ]
+      }
+    );
   }
+  var import_form_default = (0, import_compose.withInstanceId)(ImportForm);
 
-  event.preventDefault();
-  utils_export(event.target.dataset.id);
-}); // Setup Import Form.
-
-document.addEventListener('DOMContentLoaded', () => {
-  const button = document.querySelector('.page-title-action');
-
-  if (!button) {
-    return;
+  // packages/list-reusable-blocks/build-module/components/import-dropdown/index.mjs
+  var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
+  function ImportDropdown({ onUpload }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+      import_components2.Dropdown,
+      {
+        popoverProps: { placement: "bottom-start" },
+        contentClassName: "list-reusable-blocks-import-dropdown__content",
+        renderToggle: ({ isOpen, onToggle }) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+          import_components2.Button,
+          {
+            size: "compact",
+            className: "list-reusable-blocks-import-dropdown__button",
+            "aria-expanded": isOpen,
+            onClick: onToggle,
+            variant: "primary",
+            children: (0, import_i18n2.__)("Import from JSON")
+          }
+        ),
+        renderContent: ({ onClose }) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_form_default, { onUpload: (0, import_compose2.pipe)(onClose, onUpload) })
+      }
+    );
   }
+  var import_dropdown_default = ImportDropdown;
 
-  const showNotice = () => {
-    const notice = document.createElement('div');
-    notice.className = 'notice notice-success is-dismissible';
-    notice.innerHTML = `<p>${(0,external_wp_i18n_namespaceObject.__)('Reusable block imported successfully!')}</p>`;
-    const headerEnd = document.querySelector('.wp-header-end');
-
-    if (!headerEnd) {
+  // packages/list-reusable-blocks/build-module/index.mjs
+  var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  document.body.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("wp-list-reusable-blocks__export")) {
       return;
     }
-
-    headerEnd.parentNode.insertBefore(notice, headerEnd);
-  };
-
-  const container = document.createElement('div');
-  container.className = 'list-reusable-blocks__container';
-  button.parentNode.insertBefore(container, button);
-  (0,external_wp_element_namespaceObject.render)((0,external_wp_element_namespaceObject.createElement)(import_dropdown, {
-    onUpload: showNotice
-  }), container);
-});
-
-(window.wp = window.wp || {}).listReusableBlocks = __webpack_exports__;
-/******/ })()
-;
+    event.preventDefault();
+    export_default(event.target.dataset.id);
+  });
+  document.addEventListener("DOMContentLoaded", () => {
+    const button = document.querySelector(".page-title-action");
+    if (!button) {
+      return;
+    }
+    const showNotice = () => {
+      const notice = document.createElement("div");
+      notice.className = "notice notice-success is-dismissible";
+      notice.innerHTML = `<p>${(0, import_i18n3.__)("Pattern imported successfully!")}</p>`;
+      const headerEnd = document.querySelector(".wp-header-end");
+      if (!headerEnd) {
+        return;
+      }
+      headerEnd.parentNode.insertBefore(notice, headerEnd);
+    };
+    const container = document.createElement("div");
+    container.className = "list-reusable-blocks__container";
+    button.parentNode.insertBefore(container, button);
+    (0, import_element2.createRoot)(container).render(
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_element2.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_dropdown_default, { onUpload: showNotice }) })
+    );
+  });
+})();

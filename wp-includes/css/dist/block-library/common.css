@@ -2,7 +2,7 @@
  * Colors
  */
 /**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -12,23 +12,29 @@
  * For example, don't add rules to this sheet that affect block visuals. It's purely for UI.
  */
 /**
- * Colors
+ * Fonts & basic variables.
  */
 /**
- * Fonts & basic variables.
+ * Typography
  */
 /**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
  */
 /**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
+ */
+/**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -41,19 +47,22 @@
  * These variables do not appear to be used anywhere else.
  */
 /**
+ * Breakpoints & Media Queries
+ */
+/**
 *  Converts a hex value into the rgb equivalent.
 *
 * @param {string} hex - the hexadecimal value to convert
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,31 +83,36 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
 :root {
+  --wp-block-synced-color: #7a00df;
+  --wp-block-synced-color--rgb: 122, 0, 223;
+  --wp-bound-block-color: var(--wp-block-synced-color);
+  --wp-editor-canvas-background: #ddd;
   --wp-admin-theme-color: #007cba;
   --wp-admin-theme-color--rgb: 0, 124, 186;
-  --wp-admin-theme-color-darker-10: #006ba1;
-  --wp-admin-theme-color-darker-10--rgb: 0, 107, 161;
+  --wp-admin-theme-color-darker-10: rgb(0, 107, 160.5);
+  --wp-admin-theme-color-darker-10--rgb: 0, 107, 160.5;
   --wp-admin-theme-color-darker-20: #005a87;
   --wp-admin-theme-color-darker-20--rgb: 0, 90, 135;
   --wp-admin-border-width-focus: 2px;
 }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (min-resolution: 192dpi) {
   :root {
     --wp-admin-border-width-focus: 1.5px;
   }
 }
 
-:root {
-  /*
-   * Our classes uses the same values we set for gradient value attributes,
-   * and we can not use spacing because of WP multi site kses rule.
-   */
-  /* stylelint-disable function-comma-space-after */
-  /* stylelint-enable function-comma-space-after */
-  --wp--preset--font-size--normal: 16px;
-  --wp--preset--font-size--huge: 42px;
+/**
+ * Element styles.
+ */
+.wp-element-button {
+  cursor: pointer;
 }
+
 :root .has-very-light-gray-background-color {
   background-color: #eee;
 }
@@ -111,26 +125,34 @@
 :root .has-very-dark-gray-color {
   color: #313131;
 }
+:root {
+  /* stylelint-disable @stylistic/function-comma-space-after -- We can not use spacing because of WP multi site kses rule. */
+}
 :root .has-vivid-green-cyan-to-vivid-cyan-blue-gradient-background {
-  background: linear-gradient(135deg, #00d084 0%, #0693e3 100%);
+  background: linear-gradient(135deg, rgb(0, 208, 132) 0%, rgb(6, 147, 227) 100%);
 }
 :root .has-purple-crush-gradient-background {
-  background: linear-gradient(135deg, #34e2e4 0%, #4721fb 50%, #ab1dfe 100%);
+  background: linear-gradient(135deg, rgb(52, 226, 228) 0%, rgb(71, 33, 251) 50%, rgb(171, 29, 254) 100%);
 }
 :root .has-hazy-dawn-gradient-background {
-  background: linear-gradient(135deg, #faaca8 0%, #dad0ec 100%);
+  background: linear-gradient(135deg, rgb(250, 172, 168) 0%, rgb(218, 208, 236) 100%);
 }
 :root .has-subdued-olive-gradient-background {
-  background: linear-gradient(135deg, #fafae1 0%, #67a671 100%);
+  background: linear-gradient(135deg, rgb(250, 250, 225) 0%, rgb(103, 166, 113) 100%);
 }
 :root .has-atomic-cream-gradient-background {
-  background: linear-gradient(135deg, #fdd79a 0%, #004a59 100%);
+  background: linear-gradient(135deg, rgb(253, 215, 154) 0%, rgb(0, 74, 89) 100%);
 }
 :root .has-nightshade-gradient-background {
-  background: linear-gradient(135deg, #330968 0%, #31cdcf 100%);
+  background: linear-gradient(135deg, rgb(51, 9, 104) 0%, rgb(49, 205, 207) 100%);
 }
 :root .has-midnight-gradient-background {
-  background: linear-gradient(135deg, #020381 0%, #2874fc 100%);
+  background: linear-gradient(135deg, rgb(2, 3, 129) 0%, rgb(40, 116, 252) 100%);
+}
+:root {
+  /* stylelint-enable @stylistic/function-comma-space-after */
+  --wp--preset--font-size--normal: 16px;
+  --wp--preset--font-size--huge: 42px;
 }
 
 .has-regular-font-size {
@@ -149,18 +171,22 @@
   font-size: var(--wp--preset--font-size--huge);
 }
 
-.has-text-align-center {
+:root .has-text-align-center {
   text-align: center;
 }
 
-.has-text-align-left {
+:root .has-text-align-left {
   /*rtl:ignore*/
   text-align: left;
 }
 
-.has-text-align-right {
+:root .has-text-align-right {
   /*rtl:ignore*/
   text-align: right;
+}
+
+.has-fit-text {
+  white-space: nowrap !important;
 }
 
 #end-resizable-editor-section {
@@ -189,8 +215,6 @@
 
 .screen-reader-text {
   border: 0;
-  clip: rect(1px, 1px, 1px, 1px);
-  -webkit-clip-path: inset(50%);
   clip-path: inset(50%);
   height: 1px;
   margin: -1px;
@@ -203,9 +227,7 @@
 
 .screen-reader-text:focus {
   background-color: #ddd;
-  clip: auto !important;
-  -webkit-clip-path: none;
-          clip-path: none;
+  clip-path: none;
   color: #444;
   display: block;
   font-size: 1em;
@@ -234,14 +256,75 @@ html :where(.has-border-color) {
   border-style: solid;
 }
 
-html :where([style*="border-width"]) {
+html :where([style*=border-color]) {
   border-style: solid;
+}
+
+html :where([style*=border-top-color]) {
+  border-top-style: solid;
+}
+
+html :where([style*=border-right-color]) {
+  /*rtl:ignore*/
+  border-right-style: solid;
+}
+
+html :where([style*=border-bottom-color]) {
+  border-bottom-style: solid;
+}
+
+html :where([style*=border-left-color]) {
+  /*rtl:ignore*/
+  border-left-style: solid;
+}
+
+html :where([style*=border-width]) {
+  border-style: solid;
+}
+
+html :where([style*=border-top-width]) {
+  border-top-style: solid;
+}
+
+html :where([style*=border-right-width]) {
+  /*rtl:ignore*/
+  border-right-style: solid;
+}
+
+html :where([style*=border-bottom-width]) {
+  border-bottom-style: solid;
+}
+
+html :where([style*=border-left-width]) {
+  /*rtl:ignore*/
+  border-left-style: solid;
 }
 
 /**
  * Provide baseline responsiveness for images.
  */
-html :where(img[class*="wp-image-"]) {
+html :where(img[class*=wp-image-]) {
   height: auto;
   max-width: 100%;
+}
+
+/**
+ * Reset user agent styles for figure element margins.
+ */
+:where(figure) {
+  margin: 0 0 1em 0;
+}
+
+html :where(.is-position-sticky) {
+  /* stylelint-disable length-zero-no-unit -- 0px is set explicitly so that it can be used in a calc value. */
+  --wp-admin--admin-bar--position-offset: var(--wp-admin--admin-bar--height, 0px);
+  /* stylelint-enable length-zero-no-unit */
+}
+
+@media screen and (max-width: 600px) {
+  html :where(.is-position-sticky) {
+    /* stylelint-disable length-zero-no-unit -- 0px is set explicitly so that it can be used in a calc value. */
+    --wp-admin--admin-bar--position-offset: 0px;
+    /* stylelint-enable length-zero-no-unit */
+  }
 }

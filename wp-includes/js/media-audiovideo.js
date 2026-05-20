@@ -1,8 +1,8 @@
-/******/ (function() { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 6045:
-/***/ (function(module) {
+/***/ 1206
+(module) {
 
 var State = wp.media.controller.State,
 	l10n = wp.media.view.l10n,
@@ -39,10 +39,10 @@ AudioDetails = State.extend(/** @lends wp.media.controller.AudioDetails.prototyp
 module.exports = AudioDetails;
 
 
-/***/ }),
+/***/ },
 
-/***/ 580:
-/***/ (function(module) {
+/***/ 5039
+(module) {
 
 /**
  * wp.media.controller.VideoDetails
@@ -79,10 +79,10 @@ VideoDetails = State.extend(/** @lends wp.media.controller.VideoDetails.prototyp
 module.exports = VideoDetails;
 
 
-/***/ }),
+/***/ },
 
-/***/ 6615:
-/***/ (function(module) {
+/***/ 241
+(module) {
 
 /**
  * wp.media.model.PostMedia
@@ -128,10 +128,10 @@ var PostMedia = Backbone.Model.extend(/** @lends wp.media.model.PostMedia.protot
 module.exports = PostMedia;
 
 
-/***/ }),
+/***/ },
 
-/***/ 1764:
-/***/ (function(module) {
+/***/ 3713
+(module) {
 
 var MediaDetails = wp.media.view.MediaDetails,
 	AudioDetails;
@@ -173,10 +173,10 @@ AudioDetails = MediaDetails.extend(/** @lends wp.media.view.AudioDetails.prototy
 module.exports = AudioDetails;
 
 
-/***/ }),
+/***/ },
 
-/***/ 5262:
-/***/ (function(module) {
+/***/ 175
+(module) {
 
 var MediaDetails = wp.media.view.MediaFrame.MediaDetails,
 	MediaLibrary = wp.media.controller.MediaLibrary,
@@ -256,10 +256,10 @@ AudioDetails = MediaDetails.extend(/** @lends wp.media.view.MediaFrame.AudioDeta
 module.exports = AudioDetails;
 
 
-/***/ }),
+/***/ },
 
-/***/ 6445:
-/***/ (function(module) {
+/***/ 741
+(module) {
 
 var Select = wp.media.view.MediaFrame.Select,
 	l10n = wp.media.view.l10n,
@@ -393,10 +393,10 @@ MediaDetails = Select.extend(/** @lends wp.media.view.MediaFrame.MediaDetails.pr
 module.exports = MediaDetails;
 
 
-/***/ }),
+/***/ },
 
-/***/ 2075:
-/***/ (function(module) {
+/***/ 8646
+(module) {
 
 var MediaDetails = wp.media.view.MediaFrame.MediaDetails,
 	MediaLibrary = wp.media.controller.MediaLibrary,
@@ -536,10 +536,10 @@ VideoDetails = MediaDetails.extend(/** @lends wp.media.view.MediaFrame.VideoDeta
 module.exports = VideoDetails;
 
 
-/***/ }),
+/***/ },
 
-/***/ 8867:
-/***/ (function(module) {
+/***/ 9467
+(module) {
 
 /* global MediaElementPlayer */
 var AttachmentDisplay = wp.media.view.Settings.AttachmentDisplay,
@@ -711,10 +711,10 @@ MediaDetails = AttachmentDisplay.extend(/** @lends wp.media.view.MediaDetails.pr
 module.exports = MediaDetails;
 
 
-/***/ }),
+/***/ },
 
-/***/ 7697:
-/***/ (function(module) {
+/***/ 5836
+(module) {
 
 var MediaDetails = wp.media.view.MediaDetails,
 	VideoDetails;
@@ -761,7 +761,7 @@ VideoDetails = MediaDetails.extend(/** @lends wp.media.view.VideoDetails.prototy
 module.exports = VideoDetails;
 
 
-/***/ })
+/***/ }
 
 /******/ 	});
 /************************************************************************/
@@ -790,9 +790,6 @@ module.exports = VideoDetails;
 /******/ 	}
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-!function() {
 /**
  * @output wp-includes/js/media-audiovideo.js
  */
@@ -1068,16 +1065,15 @@ wp.media.video = {
 	}
 };
 
-media.model.PostMedia = __webpack_require__( 6615 );
-media.controller.AudioDetails = __webpack_require__( 6045 );
-media.controller.VideoDetails = __webpack_require__( 580 );
-media.view.MediaFrame.MediaDetails = __webpack_require__( 6445 );
-media.view.MediaFrame.AudioDetails = __webpack_require__( 5262 );
-media.view.MediaFrame.VideoDetails = __webpack_require__( 2075 );
-media.view.MediaDetails = __webpack_require__( 8867 );
-media.view.AudioDetails = __webpack_require__( 1764 );
-media.view.VideoDetails = __webpack_require__( 7697 );
+media.model.PostMedia = __webpack_require__( 241 );
+media.controller.AudioDetails = __webpack_require__( 1206 );
+media.controller.VideoDetails = __webpack_require__( 5039 );
+media.view.MediaFrame.MediaDetails = __webpack_require__( 741 );
+media.view.MediaFrame.AudioDetails = __webpack_require__( 175 );
+media.view.MediaFrame.VideoDetails = __webpack_require__( 8646 );
+media.view.MediaDetails = __webpack_require__( 9467 );
+media.view.AudioDetails = __webpack_require__( 3713 );
+media.view.VideoDetails = __webpack_require__( 5836 );
 
-}();
 /******/ })()
 ;

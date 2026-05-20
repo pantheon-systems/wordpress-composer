@@ -1,8 +1,8 @@
 /**
- * Colors
+ * Breakpoints & Media Queries
  */
 /**
- * Breakpoints & Media Queries
+ * Typography
  */
 /**
  * SCSS Variables.
@@ -18,17 +18,26 @@
  * Fonts & basic variables.
  */
 /**
+ * Typography
+ */
+/**
  * Grid System.
  * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Radius scale.
+ */
+/**
+ * Elevation scale.
  */
 /**
  * Dimensions.
  */
 /**
- * Shadows.
+ * Mobile specific styles
  */
 /**
- * Editor widths.
+ * Editor styles.
  */
 /**
  * Block & Editor UI.
@@ -47,13 +56,13 @@
 * @return {string} comma separated rgb values
 */
 /**
- * Breakpoint mixins
- */
-/**
  * Long content fade mixin
  *
  * Creates a fading overlay to signify that the content is longer
  * than the space allows.
+ */
+/**
+ * Breakpoint mixins
  */
 /**
  * Focus styles.
@@ -74,20 +83,25 @@
 /**
  * Reset the WP Admin page styles for Gutenberg-like pages.
  */
+/**
+ * Creates a checkerboard pattern background to indicate transparency.
+ * @param {String} $size - The size of the squares in the checkerboard pattern. Default is 12px.
+ */
 .wp-block-columns {
   display: flex;
-  margin-bottom: 1.75em;
   box-sizing: border-box;
   flex-wrap: wrap !important;
-  align-items: initial !important;
-  /**
-  * All Columns Alignment
-  */
 }
 @media (min-width: 782px) {
   .wp-block-columns {
     flex-wrap: nowrap !important;
   }
+}
+.wp-block-columns {
+  align-items: initial !important;
+  /**
+  * All Columns Alignment
+  */
 }
 .wp-block-columns.are-vertically-aligned-top {
   align-items: flex-start;
@@ -123,6 +137,10 @@
   flex-grow: 0;
 }
 
+:where(.wp-block-columns) {
+  margin-bottom: 1.75em;
+}
+
 :where(.wp-block-columns.has-background) {
   padding: 1.25em 2.375em;
 }
@@ -144,6 +162,9 @@
 }
 .wp-block-column.is-vertically-aligned-bottom {
   align-self: flex-end;
+}
+.wp-block-column.is-vertically-aligned-stretch {
+  align-self: stretch;
 }
 .wp-block-column.is-vertically-aligned-top, .wp-block-column.is-vertically-aligned-center, .wp-block-column.is-vertically-aligned-bottom {
   width: 100%;
